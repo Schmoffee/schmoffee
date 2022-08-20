@@ -1,0 +1,21 @@
+{
+    "appName": "schmoffee",
+    "roleName": "pinpointLambdaRolee0c47963",
+    "cloudformationPolicyName": "cloudformationPolicye0c47963",
+    "cloudWatchPolicyName": "cloudWatchPolicye0c47963",
+    "pinpointPolicyName": "pinpointPolicye0c47963",
+    "authPolicyName": "pinpoint_amplify_e0c47963",
+    "unauthPolicyName": "pinpoint_amplify_e0c47963",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}

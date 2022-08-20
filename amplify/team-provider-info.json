@@ -10,6 +10,11 @@
       "StackName": "amplify-schmoffee-dev-111934",
       "StackId": "arn:aws:cloudformation:eu-central-1:137688097985:stack/amplify-schmoffee-dev-111934/c4f04000-17cc-11ed-bb78-020d93e48664",
       "AmplifyAppId": "dsvkug5oudm85"
+    },
+    "categories": {
+      "auth": {
+        "Schmoffee": {}
+      }
     }
   }
 }

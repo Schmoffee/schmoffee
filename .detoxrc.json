@@ -1,0 +1,19 @@
+{
+  "testRunner": "jest",
+  "runnerConfig": "e2e/config.json",
+  "skipLegacyWorkersInjection": true,
+  "configurations": {
+    "android": {
+      "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",
+      "build": "cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..",
+      "type": "android.emulator",
+      "name": "Jad_Phone"
+    },
+    "ios": {
+      "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/Schmoffee.app",
+      "build": "xcodebuild -workspace ios/Schmoffee.xcworkspace -configuration Debug -scheme Schmoffee -sdk iphonesimulator -derivedDataPath ios/build -destination id=ACED6039-B495-4459-9411-2F4EED026453",
+      "type": "ios.simulator",
+      "name": "iPhone 13 Pro Max"
+    }
+  }
+}
