@@ -13,7 +13,11 @@
         "pod": "cd ios && pod install && cd ..",
         "refresh": "git pull && npm ci && cd android && ./gradlew clean && cd .. && cd ios && pod install && cd ..",
         "softRefresh": "npm ci && npm audit fix && cd android && ./gradlew clean && cd .. && cd ios && pod install && cd ..",
-        "backendRefresh": "amplify pull --appId dsvkug5oudm85 --envName dev"
+        "backendRefresh": "amplify pull --appId dsvkug5oudm85 --envName dev",
+        "buildAndroid": "detox build --configuration android",
+        "testAndroid": "detox test --configuration android",
+        "buildIos": "detox build --configuration ios",
+        "testIos": "detox test --configuration ios"
     },
     "dependencies": {
         "graphql-scalars": "^1.17.0",
