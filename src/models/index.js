@@ -27,9 +27,10 @@ const Day = {
   "SUNDAY": "SUNDAY"
 };
 
-const { PastOrder, CurrentOrder, Item, Cafe, Rating, User, OrderItem, OrderOption, OrderInfo, Option } = initSchema(schema);
+const { Option, PastOrder, CurrentOrder, Item, Cafe, Rating, User, OrderItem, OrderOption, OrderInfo } = initSchema(schema);
 
 export {
+  Option,
   PastOrder,
   CurrentOrder,
   Item,
@@ -41,6 +42,5 @@ export {
   Day,
   OrderItem,
   OrderOption,
-  OrderInfo,
-  Option
+  OrderInfo
 };

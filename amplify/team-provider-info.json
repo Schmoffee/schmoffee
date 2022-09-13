@@ -14,6 +14,16 @@
     "categories": {
       "auth": {
         "Schmoffee": {}
+      },
+      "function": {
+        "pushNotification": {
+          "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
+          "s3Key": "amplify-builds/pushNotification-674e355636315a6c6d4d-build.zip"
+        },
+        "sendOrder": {
+          "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
+          "s3Key": "amplify-builds/sendOrder-4e58474c536947516357-build.zip"
+        }
       }
     }
   }

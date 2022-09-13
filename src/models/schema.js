@@ -1,5 +1,101 @@
 export const schema = {
     "models": {
+        "Option": {
+            "name": "Option",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "shop": {
+                    "name": "shop",
+                    "isArray": false,
+                    "type": "AWSJSON",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "option_type": {
+                    "name": "option_type",
+                    "isArray": false,
+                    "type": {
+                        "enum": "OptionType"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "price": {
+                    "name": "price",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "image": {
+                    "name": "image",
+                    "isArray": false,
+                    "type": "AWSURL",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "is_in_stock": {
+                    "name": "is_in_stock",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Options",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "PastOrder": {
             "name": "PastOrder",
             "fields": {
@@ -43,60 +139,26 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "sent_time": {
-                    "name": "sent_time",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "received_time": {
-                    "name": "received_time",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "accepted_time": {
-                    "name": "accepted_time",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "preparing_time": {
-                    "name": "preparing_time",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "ready_time": {
-                    "name": "ready_time",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "collected_time": {
-                    "name": "collected_time",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "scheduled_times": {
-                    "name": "scheduled_times",
-                    "isArray": true,
-                    "type": "AWSDateTime",
-                    "isRequired": true,
-                    "attributes": [],
-                    "isArrayNullable": true
-                },
                 "total": {
                     "name": "total",
                     "isArray": false,
                     "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "order_info": {
+                    "name": "order_info",
+                    "isArray": false,
+                    "type": {
+                        "nonModel": "OrderInfo"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "sent_time": {
+                    "name": "sent_time",
+                    "isArray": false,
+                    "type": "AWSDateTime",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -286,16 +348,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "options": {
-                    "name": "options",
-                    "isArray": true,
-                    "type": {
-                        "nonModel": "Option"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "isArrayNullable": true
-                },
                 "rating": {
                     "name": "rating",
                     "isArray": false,
@@ -411,19 +463,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "opening_time": {
-                    "name": "opening_time",
-                    "isArray": false,
+                "opening_hours": {
+                    "name": "opening_hours",
+                    "isArray": true,
                     "type": "AWSTime",
                     "isRequired": true,
-                    "attributes": []
-                },
-                "closing_time": {
-                    "name": "closing_time",
-                    "isArray": false,
-                    "type": "AWSTime",
-                    "isRequired": true,
-                    "attributes": []
+                    "attributes": [],
+                    "isArrayNullable": false
                 },
                 "is_open": {
                     "name": "is_open",
@@ -811,8 +857,8 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "rejected_tim": {
-                    "name": "rejected_tim",
+                "rejected_time": {
+                    "name": "rejected_time",
                     "isArray": false,
                     "type": "AWSDateTime",
                     "isRequired": false,
@@ -855,56 +901,7 @@ export const schema = {
                     "attributes": []
                 }
             }
-        },
-        "Option": {
-            "name": "Option",
-            "fields": {
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "shop": {
-                    "name": "shop",
-                    "isArray": false,
-                    "type": "AWSJSON",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "option_type": {
-                    "name": "option_type",
-                    "isArray": false,
-                    "type": {
-                        "enum": "OptionType"
-                    },
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "price": {
-                    "name": "price",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "image": {
-                    "name": "image",
-                    "isArray": false,
-                    "type": "AWSURL",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "is_common": {
-                    "name": "is_common",
-                    "isArray": false,
-                    "type": "Boolean",
-                    "isRequired": true,
-                    "attributes": []
-                }
-            }
         }
     },
-    "version": "f0f130523360db3e79d4c2df37e0c00d"
+    "version": "c0acbc9866a471d8ef3e3ff76458f2dd"
 };

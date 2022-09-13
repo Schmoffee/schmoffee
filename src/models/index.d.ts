@@ -42,7 +42,7 @@ export declare class OrderOption {
 export declare class OrderInfo {
   readonly status: Status | keyof typeof Status;
   readonly accepted_time?: string | null;
-  readonly rejected_tim?: string | null;
+  readonly rejected_time?: string | null;
   readonly ready_time?: string | null;
   readonly collected_time?: string | null;
   readonly received_time?: string | null;
@@ -51,14 +51,8 @@ export declare class OrderInfo {
   constructor(init: ModelInit<OrderInfo>);
 }
 
-export declare class Option {
-  readonly name: string;
-  readonly shop: string;
-  readonly option_type: OptionType | keyof typeof OptionType;
-  readonly price: number;
-  readonly image?: string | null;
-  readonly is_common: boolean;
-  constructor(init: ModelInit<Option>);
+type OptionMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
 type PastOrderMetaData = {
@@ -85,20 +79,29 @@ type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
+export declare class Option {
+  readonly id: string;
+  readonly name: string;
+  readonly shop: string;
+  readonly option_type: OptionType | keyof typeof OptionType;
+  readonly price: number;
+  readonly image?: string | null;
+  readonly is_in_stock: boolean;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  constructor(init: ModelInit<Option, OptionMetaData>);
+  static copyOf(source: Option, mutator: (draft: MutableModel<Option, OptionMetaData>) => MutableModel<Option, OptionMetaData> | void): Option;
+}
+
 export declare class PastOrder {
   readonly id: string;
   readonly items: OrderItem[];
   readonly user: string;
   readonly shop: string;
   readonly final_status: Status | keyof typeof Status;
-  readonly sent_time: string;
-  readonly received_time: string;
-  readonly accepted_time?: string | null;
-  readonly preparing_time?: string | null;
-  readonly ready_time?: string | null;
-  readonly collected_time?: string | null;
-  readonly scheduled_times?: string[] | null;
   readonly total: number;
+  readonly order_info: OrderInfo;
+  readonly sent_time: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<PastOrder, PastOrderMetaData>);
@@ -126,7 +129,6 @@ export declare class Item {
   readonly name: string;
   readonly price: number;
   readonly image?: string | null;
-  readonly options?: Option[] | null;
   readonly rating?: number | null;
   readonly is_common: boolean;
   readonly is_in_stock: boolean;
@@ -144,8 +146,7 @@ export declare class Cafe {
   readonly latitude: number;
   readonly longitude: number;
   readonly menu: string;
-  readonly opening_time: string;
-  readonly closing_time: string;
+  readonly opening_hours: string[];
   readonly is_open: boolean;
   readonly opening_days?: Day[] | keyof typeof Day | null;
   readonly image?: string | null;

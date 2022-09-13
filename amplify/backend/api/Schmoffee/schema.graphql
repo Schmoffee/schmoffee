@@ -1,17 +1,22 @@
+type Option @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  shop: AWSJSON!
+  option_type: OptionType!
+  price: Float!
+  image: AWSURL
+  is_in_stock: Boolean!
+}
+
 type PastOrder @model @auth(rules: [{allow: public}]) {
   id: ID!
   items: [OrderItem!]!
   user: AWSJSON!
   shop: AWSJSON!
   final_status: Status!
-  sent_time: AWSDateTime!
-  received_time: AWSDateTime!
-  accepted_time: AWSDateTime
-  preparing_time: AWSDateTime
-  ready_time: AWSDateTime
-  collected_time: AWSDateTime
-  scheduled_times: [AWSDateTime!]
   total: Float!
+  order_info: OrderInfo!
+  sent_time: AWSDateTime!
 }
 
 type OrderOption {
@@ -38,7 +43,7 @@ enum Status {
 type OrderInfo {
   status: Status!
   accepted_time: AWSDateTime
-  rejected_tim: AWSDateTime
+  rejected_time: AWSDateTime
   ready_time: AWSDateTime
   collected_time: AWSDateTime
   received_time: AWSDateTime
@@ -61,15 +66,6 @@ enum OptionType {
   BEAN
   SYRUP
   MILK
-}
-
-type Option {
-  name: String!
-  shop: AWSJSON!
-  option_type: OptionType!
-  price: Float!
-  image: AWSURL
-  is_common: Boolean!
 }
 
 type Item @model @auth(rules: [{allow: public}]) {
@@ -102,8 +98,7 @@ type Cafe @model @auth(rules: [{allow: public}]) {
   latitude: Float!
   longitude: Float!
   menu: AWSJSON!
-  opening_time: AWSTime!
-  closing_time: AWSTime!
+  opening_hours: [AWSTime!]!
   is_open: Boolean!
   opening_days: [Day!]
   image: AWSURL
