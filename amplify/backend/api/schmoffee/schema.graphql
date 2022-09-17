@@ -1,17 +1,21 @@
+type Option @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  option_type: OptionType!
+  price: Float!
+  image: AWSURL
+  is_in_stock: Boolean!
+  itemID: ID! @index(name: "byItem")
+}
+
 type PastOrder @model @auth(rules: [{allow: public}]) {
   id: ID!
   items: [OrderItem!]!
-  user: AWSJSON!
-  shop: AWSJSON!
-  final_status: Status!
-  sent_time: AWSDateTime!
-  received_time: AWSDateTime!
-  accepted_time: AWSDateTime
-  preparing_time: AWSDateTime
-  ready_time: AWSDateTime
-  collected_time: AWSDateTime
-  scheduled_times: [AWSDateTime!]
+  final_status: OrderStatus!
   total: Float!
+  order_info: OrderInfo!
+  cafeID: ID! @index(name: "byCafe")
+  userID: ID! @index(name: "byUser")
 }
 
 type OrderOption {
@@ -26,7 +30,7 @@ type OrderItem {
   options: [OrderOption!]
 }
 
-enum Status {
+enum OrderStatus {
   ACCEPTED
   REJECTED
   PREPARING
@@ -36,25 +40,25 @@ enum Status {
 }
 
 type OrderInfo {
-  status: Status!
+  status: OrderStatus!
   accepted_time: AWSDateTime
-  rejected_tim: AWSDateTime
+  rejected_time: AWSDateTime
   ready_time: AWSDateTime
   collected_time: AWSDateTime
   received_time: AWSDateTime
   scheduled_times: [AWSDateTime!]
   preparing_time: AWSDateTime
+  sent_time: AWSTime!
 }
 
 type CurrentOrder @model @auth(rules: [{allow: public}]) {
   id: ID!
   items: [OrderItem!]
-  user: AWSJSON!
-  shop: AWSJSON!
-  sent_time: AWSDateTime!
-  initial_scheduled_time: AWSDateTime!
   total: Float!
   order_info: OrderInfo!
+  cafeID: ID! @index(name: "byCafe")
+  user: User @belongsTo
+  cafe: Cafe @belongsTo
 }
 
 enum OptionType {
@@ -63,26 +67,17 @@ enum OptionType {
   MILK
 }
 
-type Option {
-  name: String!
-  shop: AWSJSON!
-  option_type: OptionType!
-  price: Float!
-  image: AWSURL
-  is_common: Boolean!
-}
-
 type Item @model @auth(rules: [{allow: public}]) {
   id: ID!
-  shop: AWSJSON!
   name: String!
   price: Float!
   image: AWSURL
-  options: [Option!]
-  rating: Float
   is_common: Boolean!
   is_in_stock: Boolean!
   preparation_time: Int!
+  cafeID: ID! @index(name: "byCafe")
+  ratings: [Rating] @hasMany(indexName: "byItem", fields: ["id"])
+  options: [Option] @hasMany(indexName: "byItem", fields: ["id"])
 }
 
 enum Day {
@@ -101,34 +96,39 @@ type Cafe @model @auth(rules: [{allow: public}]) {
   email: AWSEmail!
   latitude: Float!
   longitude: Float!
-  menu: AWSJSON!
-  opening_time: AWSTime!
-  closing_time: AWSTime!
+  opening_hours: [AWSTime!]!
   is_open: Boolean!
   opening_days: [Day!]
   image: AWSURL
   description: String!
   digital_queue: AWSJSON!
+  menu: [Item] @hasMany(indexName: "byCafe", fields: ["id"])
+  past_orders: [PastOrder] @hasMany(indexName: "byCafe", fields: ["id"])
+  current_orders: [CurrentOrder] @hasMany(indexName: "byCafe", fields: ["id"])
+  ratings: [Rating] @hasMany(indexName: "byCafe", fields: ["id"])
 }
 
 type Rating @model @auth(rules: [{allow: public}]) {
   id: ID!
-  order: AWSJSON!
-  user: AWSJSON!
-  shop: AWSJSON!
-  item: AWSJSON!
   rating: Float!
+  cafeID: ID! @index(name: "byCafe")
+  userID: ID! @index(name: "byUser")
+  itemID: ID! @index(name: "byItem")
+  order: PastOrder @hasOne
 }
 
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
-  device_id: ID!
+  device_id: String!
   phone: AWSPhone
   name: String
   payment_method: String
   latitude: Float
   longitude: Float
-  is_locatable: Boolean
-  the_usual: AWSJSON
+  is_locatable: Boolean!
+  ratings: [Rating] @hasMany(indexName: "byUser", fields: ["id"])
+  past_orders: [PastOrder] @hasMany(indexName: "byUser", fields: ["id"])
+  current_order: CurrentOrder @hasOne
+  the_usual: PastOrder @hasOne
 }
  

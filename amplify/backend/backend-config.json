@@ -1,6 +1,6 @@
 {
   "api": {
-    "Schmoffee": {
+    "schmoffee": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -23,30 +23,60 @@
     }
   },
   "auth": {
-    "Schmoffee": {
+    "schmoffeeAuth": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "customAuth": false,
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthCreateAuthChallenge",
+          "triggerProvider": "Cognito",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthDefineAuthChallenge",
+          "triggerProvider": "Cognito",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthPreSignup",
+          "triggerProvider": "Cognito",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse",
+          "triggerProvider": "Cognito",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        }
+      ],
+      "customAuth": true,
       "frontendAuthConfig": {
         "socialProviders": [],
-        "usernameAttributes": [
-          "PHONE_NUMBER"
-        ],
+        "usernameAttributes": [],
         "signupAttributes": [
           "NAME",
           "PHONE_NUMBER"
         ],
         "passwordProtectionSettings": {
           "passwordPolicyMinLength": 8,
-          "passwordPolicyCharacters": [
-            "REQUIRES_LOWERCASE",
-            "REQUIRES_NUMBERS",
-            "REQUIRES_SYMBOLS",
-            "REQUIRES_UPPERCASE"
-          ]
+          "passwordPolicyCharacters": []
         },
-        "mfaConfiguration": "ON",
+        "mfaConfiguration": "OFF",
         "mfaTypes": [
           "SMS"
         ],
@@ -63,7 +93,22 @@
     }
   },
   "function": {
-    "pushNotification": {
+    "schmoffeeAuthCreateAuthChallenge": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "schmoffeeAuthDefineAuthChallenge": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "schmoffeeAuthPreSignup": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "schmoffeeAuthVerifyAuthChallengeResponse": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"

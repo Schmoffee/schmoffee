@@ -1,13 +1,13 @@
 export type AmplifyDependentResourcesAttributes = {
     "api": {
-        "Schmoffee": {
+        "schmoffee": {
             "GraphQLAPIKeyOutput": "string",
             "GraphQLAPIIdOutput": "string",
             "GraphQLAPIEndpointOutput": "string"
         }
     },
     "auth": {
-        "Schmoffee": {
+        "schmoffeeAuth": {
             "IdentityPoolId": "string",
             "IdentityPoolName": "string",
             "UserPoolId": "string",
@@ -26,11 +26,29 @@ export type AmplifyDependentResourcesAttributes = {
         }
     },
     "function": {
-        "pushNotification": {
+        "schmoffeeAuthCreateAuthChallenge": {
             "Name": "string",
             "Arn": "string",
-            "Region": "string",
-            "LambdaExecutionRole": "string"
+            "LambdaExecutionRole": "string",
+            "Region": "string"
+        },
+        "schmoffeeAuthDefineAuthChallenge": {
+            "Name": "string",
+            "Arn": "string",
+            "LambdaExecutionRole": "string",
+            "Region": "string"
+        },
+        "schmoffeeAuthPreSignup": {
+            "Name": "string",
+            "Arn": "string",
+            "LambdaExecutionRole": "string",
+            "Region": "string"
+        },
+        "schmoffeeAuthVerifyAuthChallengeResponse": {
+            "Name": "string",
+            "Arn": "string",
+            "LambdaExecutionRole": "string",
+            "Region": "string"
         }
     }
 }
