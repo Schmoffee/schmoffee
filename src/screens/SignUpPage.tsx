@@ -1,18 +1,14 @@
 import React, {useContext, useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, Text, StatusBar, TouchableOpacity} from 'react-native';
 import FormField from '../components/FormField';
 import {signIn, signUp} from '../utils/queries/auth';
 import {GlobalContext} from '../contexts';
 import {CognitoUser} from 'amazon-cognito-identity-js';
 import {ErrorTypes} from '../utils/enums';
+import {useNavigation} from '@react-navigation/native';
+import {CONST_SCREEN_HOME} from '../../constants';
 
-const SignUpPage = () => {
+export const SignUpPage = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
   const [name, setName] = useState('');
   const [otp, setOtp] = useState('');
@@ -20,6 +16,7 @@ const SignUpPage = () => {
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState();
   const [user, setUser] = useState(null);
+  const navigation = useNavigation();
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -33,6 +30,10 @@ const SignUpPage = () => {
     console.log(newSession);
 
     setLoading(false);
+  };
+
+  const handleNavigate = () => {
+    navigation.navigate(CONST_SCREEN_HOME);
   };
 
   return (
@@ -61,6 +62,10 @@ const SignUpPage = () => {
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleSignUp}>
+          <Text>LOOOL</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleNavigate}>
           <Text>LOOOL</Text>
         </TouchableOpacity>
       </View>
@@ -104,5 +109,3 @@ const styles = StyleSheet.create({
     textAlignVertical: 'bottom',
   },
 });
-
-export default SignUpPage;
