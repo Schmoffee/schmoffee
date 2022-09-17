@@ -17,7 +17,9 @@
         "buildAndroid": "detox build --configuration android",
         "testAndroid": "detox test --configuration android",
         "buildIos": "detox build --configuration ios",
-        "testIos": "detox test --configuration ios"
+        "testIos": "detox test --configuration ios",
+        "prepare": "husky install",
+        "format": "prettier . --ignore-unknown --write"
     },
     "dependencies": {
         "@aws-amplify/auth": "^4.6.6",
@@ -52,6 +54,7 @@
         "babel-jest": "^28.0.0",
         "detox": "^19.10.0",
         "eslint": "^7.32.0",
+        "husky": "^7.0.0",
         "ini": "^1.3.5",
         "inquirer": "^6.5.1",
         "jest": "^28.1.3",
@@ -72,5 +75,11 @@
             "json",
             "node"
         ]
+    },
+    "husky": {
+        "pre-commit": "lint-staged"
+    },
+    "lint-staged": {
+        "**/*.ts": "tsc-files --noEmit"
     }
 }
