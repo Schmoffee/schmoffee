@@ -16,6 +16,10 @@ export const globalReducer = (
       return {...state, the_usual: action.payload};
     case 'SET_SCHEDULED_TIME':
       return {...state, scheduled_time: action.payload};
+    case 'SET_AUTH_STATE':
+      return {...state, auth_state: action.payload};
+    case 'SET_COMMON_ITEMS':
+      return {...state, common_items: action.payload};
     default:
       return state;
   }

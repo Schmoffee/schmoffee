@@ -1,0 +1,134 @@
+type Option @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  option_type: OptionType!
+  price: Float!
+  image: AWSURL
+  is_in_stock: Boolean!
+  itemID: ID! @index(name: "byItem")
+}
+
+type PastOrder @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  items: [OrderItem!]!
+  final_status: OrderStatus!
+  total: Float!
+  order_info: OrderInfo!
+  cafeID: ID! @index(name: "byCafe")
+  userID: ID! @index(name: "byUser")
+}
+
+type OrderOption {
+  name: String!
+  price: Float!
+  option_type: OptionType!
+}
+
+type OrderItem {
+  name: String!
+  price: Float!
+  options: [OrderOption!]
+}
+
+enum OrderStatus {
+  ACCEPTED
+  REJECTED
+  PREPARING
+  READY
+  COLLECTED
+  RECEIVED
+}
+
+type OrderInfo {
+  status: OrderStatus!
+  accepted_time: AWSDateTime
+  rejected_time: AWSDateTime
+  ready_time: AWSDateTime
+  collected_time: AWSDateTime
+  received_time: AWSDateTime
+  scheduled_times: [AWSDateTime!]
+  preparing_time: AWSDateTime
+  sent_time: AWSTime!
+}
+
+type CurrentOrder @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  items: [OrderItem!]
+  total: Float!
+  order_info: OrderInfo!
+  cafeID: ID! @index(name: "byCafe")
+  user: User @belongsTo
+  cafe: Cafe @belongsTo
+}
+
+enum OptionType {
+  BEAN
+  SYRUP
+  MILK
+}
+
+type Item @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  price: Float!
+  image: AWSURL
+  is_common: Boolean!
+  is_in_stock: Boolean!
+  preparation_time: Int!
+  cafeID: ID! @index(name: "byCafe")
+  ratings: [Rating] @hasMany(indexName: "byItem", fields: ["id"])
+  options: [Option] @hasMany(indexName: "byItem", fields: ["id"])
+}
+
+enum Day {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+type Cafe @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  email: AWSEmail!
+  latitude: Float!
+  longitude: Float!
+  opening_hours: [AWSTime!]!
+  is_open: Boolean!
+  opening_days: [Day!]
+  image: AWSURL
+  description: String!
+  digital_queue: AWSJSON!
+  menu: [Item] @hasMany(indexName: "byCafe", fields: ["id"])
+  past_orders: [PastOrder] @hasMany(indexName: "byCafe", fields: ["id"])
+  current_orders: [CurrentOrder] @hasMany(indexName: "byCafe", fields: ["id"])
+  ratings: [Rating] @hasMany(indexName: "byCafe", fields: ["id"])
+}
+
+type Rating @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  rating: Float!
+  cafeID: ID! @index(name: "byCafe")
+  userID: ID! @index(name: "byUser")
+  itemID: ID! @index(name: "byItem")
+  order: PastOrder @hasOne
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  device_id: String!
+  phone: AWSPhone
+  name: String
+  payment_method: String
+  latitude: Float
+  longitude: Float
+  is_locatable: Boolean!
+  ratings: [Rating] @hasMany(indexName: "byUser", fields: ["id"])
+  past_orders: [PastOrder] @hasMany(indexName: "byUser", fields: ["id"])
+  current_order: CurrentOrder @hasOne
+  the_usual: PastOrder @hasOne
+}
+ 

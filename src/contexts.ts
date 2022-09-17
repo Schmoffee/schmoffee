@@ -1,7 +1,10 @@
 import React from 'react';
 import {GlobalState} from './utils/types';
+import {AuthState} from './utils/enums';
 
 export const initalData: GlobalState = {
+  auth_state: AuthState.SIGNED_OUT,
+  common_items: [],
   current_user: null,
   scheduled_time: null,
   the_usual: null,

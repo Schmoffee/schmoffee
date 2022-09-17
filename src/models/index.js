@@ -8,7 +8,7 @@ const OptionType = {
   "MILK": "MILK"
 };
 
-const Status = {
+const OrderStatus = {
   "ACCEPTED": "ACCEPTED",
   "REJECTED": "REJECTED",
   "PREPARING": "PREPARING",
@@ -27,18 +27,18 @@ const Day = {
   "SUNDAY": "SUNDAY"
 };
 
-const { Option, PastOrder, CurrentOrder, Item, Cafe, Rating, User, OrderItem, OrderOption, OrderInfo } = initSchema(schema);
+const { Option, PastOrder, CurrentOrder, User, Rating, Cafe, Item, OrderItem, OrderOption, OrderInfo } = initSchema(schema);
 
 export {
   Option,
   PastOrder,
   CurrentOrder,
-  Item,
-  Cafe,
-  Rating,
   User,
+  Rating,
+  Cafe,
+  Item,
   OptionType,
-  Status,
+  OrderStatus,
   Day,
   OrderItem,
   OrderOption,
