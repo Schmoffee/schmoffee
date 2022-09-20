@@ -1,6 +1,6 @@
 import {CognitoUser} from 'amazon-cognito-identity-js';
 import {ErrorTypes} from '../enums';
-import {Auth, DataStore} from 'aws-amplify';
+import {Auth} from 'aws-amplify';
 const password = Math.random().toString(10) + 'Abc#';
 
 async function signUp(
@@ -16,11 +16,14 @@ async function signUp(
         name: name,
       },
     });
-    console.log('user successfully signed up!: ', user);
     return user;
-  } catch (error) {
-    console.log('Error signing up', error);
-    return null;
+  } catch (error: any) {
+    if (error.code === 'UsernameExistsException') {
+      return ErrorTypes.USERNAME_EXISTS;
+    } else {
+      console.log(error);
+      return ErrorTypes.ELSE;
+    }
   }
 }
 
@@ -29,10 +32,7 @@ async function signIn(phoneNumber: string): Promise<CognitoUser | ErrorTypes> {
     return await Auth.signIn(phoneNumber);
   } catch (error: any) {
     if (error.code === 'UserNotFoundException') {
-      // listen to message on the hub channel 'auth' for those errors and handle them accordingly there
       return ErrorTypes.USER_NOT_EXIST;
-    } else if (error.code === 'UsernameExistsException') {
-      return ErrorTypes.USERNAME_EXISTS;
     } else {
       console.log(error.code);
       return ErrorTypes.ELSE;
@@ -62,12 +62,31 @@ async function getCurrentAuthUser(): Promise<CognitoUser | null> {
   }
 }
 
-async function signOut() {
+async function signOut(): Promise<boolean> {
   try {
     await Auth.signOut();
+    return true;
   } catch (error) {
     console.log('error signing out: ', error);
+    return false;
   }
 }
 
-export {signUp, signIn, sendChallengeAnswer, getCurrentAuthUser, signOut};
+async function globalSignOut(): Promise<boolean> {
+  try {
+    await Auth.signOut({global: true});
+    return true;
+  } catch (error) {
+    console.log('error globally signing out: ', error);
+    return false;
+  }
+}
+
+export {
+  signUp,
+  signIn,
+  sendChallengeAnswer,
+  getCurrentAuthUser,
+  signOut,
+  globalSignOut,
+};

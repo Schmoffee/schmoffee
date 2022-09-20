@@ -10,53 +10,50 @@ async function getCommonItems(): Promise<Item[] | null> {
   }
 }
 
-async function updateUserSignUp(
-  anonymousUser: User,
+async function createSignUpUser(
+  phone: string,
   name: string,
-  phone_number: string,
   is_locatable: boolean,
   payment_method: string,
-): Promise<User | null> {
-  let user: User;
-  const original = await DataStore.query(User, anonymousUser.id);
-  if (original) {
-    user = await DataStore.save(
-      User.copyOf(original, updated => {
-        updated.name = name;
-        updated.phone = phone_number;
-      }),
-    );
-  } else {
-    user = await DataStore.save(
-      new User({
-        device_id: anonymousUser.device_id,
-        name: name,
-        phone: phone_number,
-        is_locatable: is_locatable,
-        payment_method: payment_method,
-      }),
-    );
-  }
-  return user;
-}
-
-async function createAnonymousUser(device_id: string): Promise<User | null> {
+): Promise<User> {
   return await DataStore.save(
     new User({
-      device_id: device_id,
-      is_locatable: false,
+      phone: phone,
+      name: name,
+      is_locatable: is_locatable,
+      payment_method: payment_method,
+      is_signed_in: false,
     }),
   );
 }
 
-async function getUserByDeviceId(device_id: string): Promise<User | null> {
-  const result = await DataStore.query(User, c => c.device_id('eq', device_id));
+async function getUserByPhoneNumber(
+  phone_number: string,
+): Promise<User | null> {
+  const result = await DataStore.query(User, c => c.phone('eq', phone_number));
   return result[0];
+}
+
+async function getUserById(id: string): Promise<User | null> {
+  const result = await DataStore.query(User, c => c.id('eq', id));
+  return result[0];
+}
+
+async function updateAuthState(id: string, is_signed_in: boolean) {
+  const user = await getUserById(id);
+  if (user) {
+    await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.is_signed_in = is_signed_in;
+      }),
+    );
+  }
 }
 
 export {
   getCommonItems,
-  getUserByDeviceId,
-  updateUserSignUp,
-  createAnonymousUser,
+  getUserByPhoneNumber,
+  updateAuthState,
+  createSignUpUser,
+  getUserById,
 };
