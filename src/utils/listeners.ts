@@ -1,36 +1,33 @@
-import {GlobalAction, HubPayload} from './types';
+import {GlobalAction, GlobalState, HubPayload} from './types';
 import {AuthState} from './enums';
 import {Dispatch} from 'react';
-import DeviceInfo from 'react-native-device-info';
-import {createAnonymousUser, getUserByDeviceId} from './queries/datastore';
+import {updateAuthState} from './queries/datastore';
 
 const authListener = async (
   data: {payload: HubPayload},
+  state: GlobalState,
   dispatch: Dispatch<GlobalAction>,
 ) => {
-  const uniqueId: string = await DeviceInfo.getUniqueId();
-  const existingUser = await getUserByDeviceId(uniqueId);
   switch (data.payload.event) {
     case 'signIn':
       dispatch({type: 'SET_AUTH_STATE', payload: AuthState.SIGNED_IN});
-      dispatch({type: 'SET_CURRENT_USER', payload: existingUser});
+      await updateAuthState(state.current_user?.id as string, true);
       console.log('user signed in');
       break;
     case 'signUp':
-      dispatch({type: 'SET_AUTH_STATE', payload: AuthState.SIGNED_IN});
+      dispatch({type: 'SET_AUTH_STATE', payload: AuthState.SIGNED_UP});
       console.log('user signed up');
       break;
     case 'signOut':
+      await updateAuthState(state.current_user?.id as string, false);
       dispatch({type: 'SET_AUTH_STATE', payload: AuthState.SIGNED_OUT});
-      if (existingUser) {
-        dispatch({type: 'SET_CURRENT_USER', payload: existingUser});
-      } else {
-        const newUser = await createAnonymousUser(uniqueId);
-        dispatch({type: 'SET_CURRENT_USER', payload: newUser});
-      }
+      dispatch({type: 'SET_CURRENT_USER', payload: null});
+      dispatch({type: 'SET_AUTH_USER', payload: null});
       console.log('user signed out');
       break;
     case 'signIn_failure':
+      dispatch({type: 'SET_AUTH_STATE', payload: AuthState.SIGNING_IN_FAILED});
+      dispatch({type: 'SET_AUTH_USER', payload: null});
       console.log('user sign in failed');
       break;
     case 'tokenRefresh':
@@ -45,8 +42,6 @@ const authListener = async (
     case 'autoSignIn_failure':
       console.log('Auto Sign In after Sign Up failed');
       break;
-    case 'configured':
-      console.log('the Auth module is configured');
   }
 };
 

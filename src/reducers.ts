@@ -20,6 +20,8 @@ export const globalReducer = (
       return {...state, auth_state: action.payload};
     case 'SET_COMMON_ITEMS':
       return {...state, common_items: action.payload};
+    case 'SET_AUTH_USER':
+      return {...state, auth_user: action.payload};
     default:
       return state;
   }

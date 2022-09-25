@@ -124,7 +124,7 @@ export declare class CurrentOrder {
 
 export declare class User {
   readonly id: string;
-  readonly device_id: string;
+  readonly is_signed_in: boolean;
   readonly phone?: string | null;
   readonly name?: string | null;
   readonly payment_method?: string | null;

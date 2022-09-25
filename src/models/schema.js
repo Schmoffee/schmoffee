@@ -354,10 +354,10 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "device_id": {
-                    "name": "device_id",
+                "is_signed_in": {
+                    "name": "is_signed_in",
                     "isArray": false,
-                    "type": "String",
+                    "type": "Boolean",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -1127,5 +1127,5 @@ export const schema = {
             }
         }
     },
-    "version": "f602b762a76f9614ccaf5440d187c9aa"
+    "version": "ca045a11c0277bd3577303d11473d1e0"
 };
