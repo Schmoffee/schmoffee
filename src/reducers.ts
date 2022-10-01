@@ -12,8 +12,6 @@ export const globalReducer = (
       return {...state, current_shop: action.payload};
     case 'SET_CURRENT_USER':
       return {...state, current_user: action.payload};
-    case 'SET_THE_USUAL':
-      return {...state, the_usual: action.payload};
     case 'SET_SCHEDULED_TIME':
       return {...state, scheduled_time: action.payload};
     case 'SET_AUTH_STATE':

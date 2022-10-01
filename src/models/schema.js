@@ -260,24 +260,17 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "cafeID": {
-                    "name": "cafeID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "user": {
                     "name": "user",
                     "isArray": false,
                     "type": {
                         "model": "User"
                     },
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": [],
                     "association": {
                         "connectionType": "BELONGS_TO",
-                        "targetName": "currentOrderUserId"
+                        "targetName": "userID"
                     }
                 },
                 "cafe": {
@@ -286,11 +279,11 @@ export const schema = {
                     "type": {
                         "model": "Cafe"
                     },
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": [],
                     "association": {
                         "connectionType": "BELONGS_TO",
-                        "targetName": "cafeCurrent_ordersId"
+                        "targetName": "cafeID"
                     }
                 },
                 "createdAt": {
@@ -358,7 +351,7 @@ export const schema = {
                     "name": "is_signed_in",
                     "isArray": false,
                     "type": "Boolean",
-                    "isRequired": true,
+                    "isRequired": false,
                     "attributes": []
                 },
                 "phone": {
@@ -559,7 +552,7 @@ export const schema = {
                     "type": {
                         "model": "PastOrder"
                     },
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": [],
                     "association": {
                         "connectionType": "HAS_ONE",
@@ -587,7 +580,7 @@ export const schema = {
                     "name": "ratingOrderId",
                     "isArray": false,
                     "type": "ID",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 }
             },
@@ -733,7 +726,7 @@ export const schema = {
                     "type": {
                         "model": "Item"
                     },
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": [],
                     "isArrayNullable": true,
                     "association": {
@@ -766,7 +759,7 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "cafeID"
+                        "associatedWith": "cafe"
                     }
                 },
                 "ratings": {
@@ -912,6 +905,15 @@ export const schema = {
                         "associatedWith": "itemID"
                     }
                 },
+                "type": {
+                    "name": "type",
+                    "isArray": false,
+                    "type": {
+                        "enum": "ItemType"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -965,6 +967,14 @@ export const schema = {
         }
     },
     "enums": {
+        "ItemType": {
+            "name": "ItemType",
+            "values": [
+                "COFFEE",
+                "COLD_DRINKS",
+                "SNACKS"
+            ]
+        },
         "OptionType": {
             "name": "OptionType",
             "values": [
@@ -1108,7 +1118,7 @@ export const schema = {
                     "type": "AWSDateTime",
                     "isRequired": true,
                     "attributes": [],
-                    "isArrayNullable": true
+                    "isArrayNullable": false
                 },
                 "preparing_time": {
                     "name": "preparing_time",
@@ -1120,12 +1130,12 @@ export const schema = {
                 "sent_time": {
                     "name": "sent_time",
                     "isArray": false,
-                    "type": "AWSTime",
+                    "type": "AWSDateTime",
                     "isRequired": true,
                     "attributes": []
                 }
             }
         }
     },
-    "version": "ca045a11c0277bd3577303d11473d1e0"
+    "version": "92d1f5ed808e93e3fec57514fe64def1"
 };
