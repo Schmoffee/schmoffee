@@ -6,9 +6,10 @@ import {Amplify} from 'aws-amplify';
 Amplify.configure(awsConfig);
 import {Hub} from 'aws-amplify';
 import {authListener} from './utils/listeners';
-import SignUpPage from './screens /SignUpPage';
 import {getCurrentAuthUser} from './utils/queries/auth';
 import {AuthState} from './utils/enums';
+import {getUserByPhoneNumber} from './utils/queries/datastore';
+import TrackOrder from './flows/TrackOrder/Root';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, initalData);
@@ -20,6 +21,11 @@ const App = () => {
       global_dispatch({
         type: 'SET_AUTH_STATE',
         payload: AuthState.SIGNED_IN,
+      });
+      const currentUser = await getUserByPhoneNumber(user.getUsername());
+      global_dispatch({
+        type: 'SET_CURRENT_USER',
+        payload: currentUser,
       });
     } else {
       global_dispatch({
@@ -36,7 +42,7 @@ const App = () => {
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>
-      <SignUpPage />
+      <TrackOrder />
     </GlobalContext.Provider>
   );
 };

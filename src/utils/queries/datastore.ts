@@ -1,4 +1,11 @@
-import {Item, User} from '../../models';
+import {
+  Cafe,
+  CurrentOrder,
+  Item,
+  OrderInfo,
+  OrderItem,
+  User,
+} from '../../models';
 import {DataStore} from 'aws-amplify';
 
 async function getCommonItems(): Promise<Item[] | null> {
@@ -50,10 +57,36 @@ async function updateAuthState(id: string, is_signed_in: boolean) {
   }
 }
 
+async function sendOrder(
+  items: OrderItem[],
+  total: number,
+  order_info: OrderInfo,
+  cafe: Cafe,
+  user: User,
+): Promise<string> {
+  const order: CurrentOrder = await DataStore.save(
+    new CurrentOrder({
+      items: items,
+      total: total,
+      order_info: order_info,
+      user: user,
+      cafe: cafe,
+    }),
+  );
+  return order.id;
+}
+
+async function getBestShop(): Promise<Cafe | null> {
+  const result = await DataStore.query(Cafe);
+  return result[0];
+}
+
 export {
   getCommonItems,
   getUserByPhoneNumber,
   updateAuthState,
   createSignUpUser,
   getUserById,
+  sendOrder,
+  getBestShop,
 };

@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import FormField from '../components/FormField';
+import FormField from '../../../components/FormField';
 import {
   getCurrentAuthUser,
   globalSignOut,
@@ -14,17 +14,16 @@ import {
   signIn,
   signOut,
   signUp,
-} from '../utils/queries/auth';
-import {GlobalContext} from '../contexts';
+} from '../../../utils/queries/auth';
+import {GlobalContext} from '../../../contexts';
 import {CognitoUser} from 'amazon-cognito-identity-js';
-import {AuthState, ErrorTypes} from '../utils/enums';
-import LoadingPage from './LoadingPage';
+import {AuthState, ErrorTypes} from '../../../utils/enums';
+import LoadingPage from '../../CommonScreens/LoadingPage';
 import {
   createSignUpUser,
   getUserByPhoneNumber,
   updateAuthState,
-} from '../utils/queries/datastore';
-import {User} from '../models';
+} from '../../../utils/queries/datastore';
 
 const SignUpPage = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);

@@ -1,5 +1,11 @@
 import { ModelInit, MutableModel } from "@aws-amplify/datastore";
 
+export enum ItemType {
+  COFFEE = "COFFEE",
+  COLD_DRINKS = "COLD_DRINKS",
+  SNACKS = "SNACKS"
+}
+
 export enum OptionType {
   BEAN = "BEAN",
   SYRUP = "SYRUP",
@@ -46,7 +52,7 @@ export declare class OrderInfo {
   readonly ready_time?: string | null;
   readonly collected_time?: string | null;
   readonly received_time?: string | null;
-  readonly scheduled_times?: string[] | null;
+  readonly scheduled_times: string[];
   readonly preparing_time?: string | null;
   readonly sent_time: string;
   constructor(init: ModelInit<OrderInfo>);
@@ -113,9 +119,8 @@ export declare class CurrentOrder {
   readonly items?: OrderItem[] | null;
   readonly total: number;
   readonly order_info: OrderInfo;
-  readonly cafeID: string;
-  readonly user?: User | null;
-  readonly cafe?: Cafe | null;
+  readonly user: User;
+  readonly cafe: Cafe;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<CurrentOrder, CurrentOrderMetaData>);
@@ -124,7 +129,7 @@ export declare class CurrentOrder {
 
 export declare class User {
   readonly id: string;
-  readonly is_signed_in: boolean;
+  readonly is_signed_in?: boolean | null;
   readonly phone?: string | null;
   readonly name?: string | null;
   readonly payment_method?: string | null;
@@ -133,8 +138,8 @@ export declare class User {
   readonly is_locatable: boolean;
   readonly ratings?: (Rating | null)[] | null;
   readonly past_orders?: (PastOrder | null)[] | null;
-  readonly current_order?: CurrentOrder | null;
-  readonly the_usual?: PastOrder | null;
+  current_order?: CurrentOrder | null;
+  the_usual?: PastOrder | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly userCurrent_orderId?: string | null;
@@ -149,10 +154,10 @@ export declare class Rating {
   readonly cafeID: string;
   readonly userID: string;
   readonly itemID: string;
-  readonly order?: PastOrder | null;
+  readonly order: PastOrder;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly ratingOrderId?: string | null;
+  readonly ratingOrderId: string;
   constructor(init: ModelInit<Rating, RatingMetaData>);
   static copyOf(source: Rating, mutator: (draft: MutableModel<Rating, RatingMetaData>) => MutableModel<Rating, RatingMetaData> | void): Rating;
 }
@@ -169,7 +174,7 @@ export declare class Cafe {
   readonly image?: string | null;
   readonly description: string;
   readonly digital_queue: string;
-  readonly menu?: (Item | null)[] | null;
+  readonly menu?: Item[] | null;
   readonly past_orders?: (PastOrder | null)[] | null;
   readonly current_orders?: (CurrentOrder | null)[] | null;
   readonly ratings?: (Rating | null)[] | null;
@@ -190,6 +195,7 @@ export declare class Item {
   readonly cafeID: string;
   readonly ratings?: (Rating | null)[] | null;
   readonly options?: (Option | null)[] | null;
+  readonly type?: ItemType | keyof typeof ItemType | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Item, ItemMetaData>);
