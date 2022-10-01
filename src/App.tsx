@@ -10,6 +10,7 @@ import {getCurrentAuthUser} from './utils/queries/auth';
 import {AuthState} from './utils/enums';
 import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
 import TrackOrder from './flows/TrackOrder/Root';
+import SignUpPage from './flows/Authentication/screens/SignUpPage';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, initalData);
@@ -40,7 +41,7 @@ const App = () => {
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>
-      <TrackOrder />
+      <SignUpPage />
     </GlobalContext.Provider>
   );
 };

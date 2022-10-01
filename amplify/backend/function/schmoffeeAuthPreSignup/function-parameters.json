@@ -1,8 +1,6 @@
 {
   "trigger": true,
-  "modules": [
-    "custom"
-  ],
+  "modules": ["custom"],
   "parentResource": "schmoffeeAuth",
   "functionName": "schmoffeeAuthPreSignup",
   "resourceName": "schmoffeeAuthPreSignup",

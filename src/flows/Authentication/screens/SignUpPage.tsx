@@ -1,11 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FormField from '../../../components/FormField';
 import {
   getCurrentAuthUser,
@@ -19,11 +13,9 @@ import {GlobalContext} from '../../../contexts';
 import {CognitoUser} from 'amazon-cognito-identity-js';
 import {AuthState, ErrorTypes} from '../../../utils/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
-import {
-  createSignUpUser,
-  getUserByPhoneNumber,
-  updateAuthState,
-} from '../../../utils/queries/datastore';
+import {createSignUpUser, getUserByPhoneNumber, updateAuthState} from '../../../utils/queries/datastore';
+import {Body} from '../../../../typography';
+import {Colors} from '../../../../theme';
 
 const SignUpPage = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
@@ -127,7 +119,10 @@ const SignUpPage = () => {
         <LoadingPage />
       ) : (
         <>
-          <Text>Sign Up</Text>
+          <Body size="large" weight="Black" color={Colors.black}>
+            Hello
+          </Body>
+          {/* <Text style={styles.title}>Sign Up</Text> */}
           <View style={styles.formContainer}>
             <FormField
               style={[styles.subNameContainer, styles.subNameContainerLeft]}

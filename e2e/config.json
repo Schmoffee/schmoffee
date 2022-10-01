@@ -1,19 +1,19 @@
 {
-    "maxWorkers": 1,
-    "testRunner": "jasmine2",
-    "testTimeout": 120000,
-    "testRegex": "\\.e2e\\.ts$",
-    "reporters": ["detox/runners/jest/streamlineReporter"],
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": ["./init.ts"],
-    "verbose": true,
-    "globals": {
-        "__DEV__": true
-    },
-    "transform": {
-        "^.+\\.[t|j]sx?$": "babel-jest"
-    },
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
-    "moduleDirectories": ["node_modules", "src"]
+  "maxWorkers": 1,
+  "testRunner": "jasmine2",
+  "testTimeout": 120000,
+  "testRegex": "\\.e2e\\.ts$",
+  "reporters": ["detox/runners/jest/streamlineReporter"],
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "setupFilesAfterEnv": ["./init.ts"],
+  "verbose": true,
+  "globals": {
+    "__DEV__": true
+  },
+  "transform": {
+    "^.+\\.[t|j]sx?$": "babel-jest"
+  },
+  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+  "moduleDirectories": ["node_modules", "src"]
 }

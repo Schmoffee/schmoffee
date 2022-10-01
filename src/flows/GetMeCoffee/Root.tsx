@@ -17,24 +17,15 @@ const Root = () => {
    * Get all the common items from the database and subscribe to any changes to them.
    */
   useEffect(() => {
-    const subscription = DataStore.observeQuery(
-      Item,
-      item => item.is_common('eq', true),
-      {
-        sort: item => item.type(SortDirection.ASCENDING),
-      },
-    ).subscribe(snapshot => {
+    const subscription = DataStore.observeQuery(Item, item => item.is_common('eq', true), {
+      sort: item => item.type(SortDirection.ASCENDING),
+    }).subscribe(snapshot => {
       const {items, isSynced} = snapshot;
       global_dispatch({type: 'SET_COMMON_ITEMS', payload: items});
       if (isSynced) {
         console.log('Synced');
       }
-      console.log(
-        'items: synced? ',
-        isSynced,
-        ' list: ',
-        JSON.stringify(items, null, 2),
-      );
+      console.log('items: synced? ', isSynced, ' list: ', JSON.stringify(items, null, 2));
     });
     return () => subscription.unsubscribe();
   }, [global_dispatch]);
@@ -53,11 +44,7 @@ const Root = () => {
           },
           styles.wrapperCustom,
         ]}>
-        {({pressed}) => (
-          <Text style={styles.text}>
-            {pressed ? 'Pressed!' : 'Get me coffee'}
-          </Text>
-        )}
+        {({pressed}) => <Text style={styles.text}>{pressed ? 'Pressed!' : 'Get me coffee'}</Text>}
       </Pressable>
     </View>
   );
