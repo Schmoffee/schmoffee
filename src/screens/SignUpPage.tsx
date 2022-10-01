@@ -1,15 +1,15 @@
-import React, {useContext, useState} from 'react';
-import {StyleSheet, View, Text, StatusBar, TouchableOpacity} from 'react-native';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, View, Text, StatusBar, TouchableOpacity } from 'react-native';
 import FormField from '../components/FormField';
-import {signIn, signUp} from '../utils/queries/auth';
-import {GlobalContext} from '../contexts';
-import {CognitoUser} from 'amazon-cognito-identity-js';
-import {ErrorTypes} from '../utils/enums';
-import {useNavigation} from '@react-navigation/native';
-import {CONST_SCREEN_HOME} from '../../constants';
+import { signIn, signUp } from '../utils/queries/auth';
+import { GlobalContext } from '../contexts';
+import { CognitoUser } from 'amazon-cognito-identity-js';
+import { ErrorTypes } from '../utils/enums';
+import { useNavigation } from '@react-navigation/native';
+import { CONST_SCREEN_HOME } from '../../constants';
 
 export const SignUpPage = () => {
-  const {global_state, global_dispatch} = useContext(GlobalContext);
+  const { global_state, global_dispatch } = useContext(GlobalContext);
   const [name, setName] = useState('');
   const [otp, setOtp] = useState('');
   const [number, setNumber] = useState('');

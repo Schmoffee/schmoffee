@@ -1,4 +1,4 @@
-import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import {ActivityIndicator, View, StyleSheet} from 'react-native';
 import React from 'react';
 
 const LoadingPage = () => {

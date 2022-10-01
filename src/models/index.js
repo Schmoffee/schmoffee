@@ -2,6 +2,12 @@
 import { initSchema } from '@aws-amplify/datastore';
 import { schema } from './schema';
 
+const ItemType = {
+  "COFFEE": "COFFEE",
+  "COLD_DRINKS": "COLD_DRINKS",
+  "SNACKS": "SNACKS"
+};
+
 const OptionType = {
   "BEAN": "BEAN",
   "SYRUP": "SYRUP",
@@ -37,6 +43,7 @@ export {
   Rating,
   Cafe,
   Item,
+  ItemType,
   OptionType,
   OrderStatus,
   Day,
