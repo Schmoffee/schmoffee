@@ -8,37 +8,35 @@ import {Hub} from 'aws-amplify';
 import {authListener} from './utils/listeners';
 import {getCurrentAuthUser} from './utils/queries/auth';
 import {AuthState} from './utils/enums';
-import {getUserByPhoneNumber} from './utils/queries/datastore';
+import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
 import TrackOrder from './flows/TrackOrder/Root';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, initalData);
   Hub.listen('auth', data => authListener(data, global_state, global_dispatch));
 
-  const refreshAuthState = async () => {
-    const user = await getCurrentAuthUser();
-    if (user) {
-      global_dispatch({
-        type: 'SET_AUTH_STATE',
-        payload: AuthState.SIGNED_IN,
-      });
-      const currentUser = await getUserByPhoneNumber(user.getUsername());
-      global_dispatch({
-        type: 'SET_CURRENT_USER',
-        payload: currentUser,
-      });
-    } else {
-      global_dispatch({
-        type: 'SET_AUTH_STATE',
-        payload: AuthState.SIGNED_OUT,
-      });
-    }
-    global_dispatch({type: 'SET_AUTH_USER', payload: user});
-  };
-
   useEffect(() => {
+    const refreshAuthState = async () => {
+      const user = await getCurrentAuthUser();
+      if (user) {
+        if (global_state.auth_state !== AuthState.SIGNED_IN) {
+          global_dispatch({
+            type: 'SET_AUTH_STATE',
+            payload: AuthState.SIGNED_IN,
+          });
+        }
+        const currentUser = await getUserByPhoneNumber(user.getUsername());
+        global_dispatch({
+          type: 'SET_CURRENT_USER',
+          payload: currentUser,
+        });
+        await updateAuthState(currentUser?.id as string, true);
+        global_dispatch({type: 'SET_AUTH_USER', payload: user});
+      }
+    };
+
     refreshAuthState().catch(err => console.log(err));
-  }, []);
+  }, [global_state.current_user?.id, global_state.auth_state]);
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>

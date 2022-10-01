@@ -12,7 +12,6 @@ const authListener = async (
   switch (data.payload.event) {
     case 'signIn':
       dispatch({type: 'SET_AUTH_STATE', payload: AuthState.SIGNED_IN});
-      await updateAuthState(state.current_user?.id as string, true);
       console.log('user signed in');
       break;
     case 'signUp':
