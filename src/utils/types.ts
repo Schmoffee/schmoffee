@@ -37,3 +37,22 @@ export type Props = {
   children: ReactNode;
   title: string;
 };
+
+export interface FieldError {
+  error?: string;
+}
+
+export interface FieldBase extends FieldError {
+  value: string;
+}
+
+export interface FieldCode extends FieldError {
+  value: {
+    0: string;
+    1: string;
+    2: string;
+    3: string;
+    4: string;
+    5: string;
+  };
+}

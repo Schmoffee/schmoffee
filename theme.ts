@@ -38,10 +38,21 @@ export const Spacings = {
   s16: 64,
 };
 
+export const Inputs = {
+  focussedBackgroundColor: Colors.greenFaded1,
+  unfocussedBackgroundColor: Colors.white,
+  placeholderColor: '#7F8791',
+  textColor: '#1d1d1d',
+  height: 48,
+  animationDuration: 150,
+};
+
 export const Buttons = {
   flow: {
     height: 56,
     borderRadius: 16,
+    animationDuration: 125,
+
     colors: {
       primary: {
         unpressed: {

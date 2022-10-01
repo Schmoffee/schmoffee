@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useCallback, useContext, useRef, useState} from 'react';
 import {StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FormField from '../../../components/FormField';
 import {
@@ -14,8 +14,10 @@ import {CognitoUser} from 'amazon-cognito-identity-js';
 import {AuthState, ErrorTypes} from '../../../utils/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
 import {createSignUpUser, getUserByPhoneNumber, updateAuthState} from '../../../utils/queries/datastore';
-import {Body} from '../../../../typography';
-import {Colors} from '../../../../theme';
+import {Colors, Spacings} from '../../../../theme';
+import {PageLayout} from '../../../components/Layouts/PageLayout';
+import {InputOTP} from '../../../components/InputComponents/InputOTP';
+import {ActionButton} from '../../../components/Buttons/ActionButton';
 
 const SignUpPage = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
@@ -23,7 +25,10 @@ const SignUpPage = () => {
   const [otp, setOtp] = useState('');
   const [number, setNumber] = useState('');
   const [loading, setLoading] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [session, setSession] = useState<CognitoUser | ErrorTypes | null>(null);
+  const [isPinComplete, setIsPinComplete] = useState(false);
+  const maximumCodeLength = 6;
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -66,6 +71,7 @@ const SignUpPage = () => {
       // TODO: Handle the error appropriately depending on the error type
       setSession(null);
     }
+    setHasLoaded(true);
     setLoading(false);
   };
 
@@ -112,102 +118,67 @@ const SignUpPage = () => {
     }
   };
 
+  const isValidNumber = useCallback(() => {
+    return number.length === 13;
+  }, [number]);
+
+  const isValidName = useCallback(() => {
+    return name.length > 0;
+  }, [name]);
+
+  const page_subheader = hasLoaded
+    ? 'Check your texts for a confirmation code'
+    : 'Enter your name and phone number to sign up';
+
   return (
-    <View style={styles.wrapper} testID={'sign_up_page'}>
+    <PageLayout header="Sign Up" subHeader={page_subheader}>
       <StatusBar translucent={true} backgroundColor="transparent" />
       {loading ? (
-        <LoadingPage />
+        <View style={styles.loadingContainer}>
+          <LoadingPage />
+        </View>
       ) : (
         <>
-          <Body size="large" weight="Black" color={Colors.black}>
-            Hello
-          </Body>
-          {/* <Text style={styles.title}>Sign Up</Text> */}
           <View style={styles.formContainer}>
-            <FormField
-              style={[styles.subNameContainer, styles.subNameContainerLeft]}
-              title={'OTP'}
-              placeholder={'Enter OTP'}
-              setField={setOtp}
-              type={'number'}
-              value={otp}
-            />
-            <View style={styles.namesContainer}>
-              <FormField
-                title={'Phone Number'}
-                placeholder={''}
-                setField={setNumber}
-                type={'number'}
-                value={number}
-                style={undefined}
-              />
-              <FormField
-                style={[styles.subNameContainer, styles.subNameContainerLeft]}
-                title={'Name'}
-                placeholder={'Jane'}
-                setField={setName}
-                type={'name'}
-                value={name}
-              />
-            </View>
+            {hasLoaded ? (
+              <InputOTP code={otp} setCode={setOtp} maxLength={maximumCodeLength} setIsPinComplete={setIsPinComplete} />
+            ) : (
+              <>
+                <FormField title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
+                <FormField title={'Phone Number'} placeholder={''} setField={setNumber} type={'phone'} value={number} />
+              </>
+            )}
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={handleSignUp}>
-              <Text>signup</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleConfirmOTP}>
-              <Text>OTP</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleAuth}>
-              <Text>Auth</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleSignIn}>
-              <Text>Signin</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleSignOut}>
-              <Text>Signout</Text>
-            </TouchableOpacity>
+            <ActionButton
+              label="Sign Up"
+              onPress={handleSignUp}
+              disabled={!(isValidName() && isValidNumber()) || hasLoaded}
+            />
+            <ActionButton label="OTP" onPress={handleConfirmOTP} disabled={isPinComplete ? false : true} />
+            <ActionButton label="Sign In" onPress={handleSignIn} disabled />
+            <ActionButton label="Auth" onPress={handleAuth} disabled />
+            <ActionButton label="Sign Out" onPress={handleSignOut} disabled />
           </View>
         </>
       )}
-    </View>
+    </PageLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: {
-    display: 'flex',
-    flex: 1,
-    backgroundColor: '#EDEBE7',
-    paddingBottom: '5%',
-    paddingHorizontal: '5%',
-  },
   formContainer: {
-    flex: 1,
-    paddingTop: '5%',
+    marginTop: Spacings.s10,
   },
-
-  namesContainer: {
-    flexDirection: 'row',
-    display: 'flex',
-    paddingVertical: '2%',
-  },
-  subNameContainer: {
-    flex: 1,
-  },
-  subNameContainerLeft: {
-    marginRight: '5%',
-  },
-
   buttonContainer: {
-    flex: 1,
     justifyContent: 'flex-end',
     marginBottom: '4%',
   },
-  hyperlink: {
-    marginVertical: '2%',
-    textDecorationLine: 'underline',
-    textAlignVertical: 'bottom',
+  loadingContainer: {
+    // flex: 1,
+    paddingTop: '60%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

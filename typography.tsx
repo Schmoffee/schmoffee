@@ -24,7 +24,7 @@ const bodyFontSizes = {
 
 export const Body: FC<BodyProps> = ({children, style, color, weight, size, ...props}) => {
   const textColor = color ? color : Colors.black;
-  const fontFamily = weight ? 'ProximaNova-' + weight : weight === 'Thin' ? 'ProximaNovaT-Thin' : 'ProximaNova-Regular';
+  const fontFamily = weight ? 'ProximaNova-' + weight : 'ProximaNovaT-Thin';
   let fontSize;
   switch (size) {
     case 'small':
