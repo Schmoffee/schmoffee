@@ -21,6 +21,7 @@ export type GlobalState = {
   scheduled_time: Date | null;
   common_items: Item[];
   auth_user: CognitoUser | null;
+  network_status: boolean;
 };
 
 export type GlobalAction =
@@ -31,7 +32,8 @@ export type GlobalAction =
   | {type: 'SET_SCHEDULED_TIME'; payload: Date | null}
   | {type: 'SET_COMMON_ITEMS'; payload: Item[]}
   | {type: 'SET_AUTH_STATE'; payload: AuthState}
-  | {type: 'SET_AUTH_USER'; payload: CognitoUser | null};
+  | {type: 'SET_AUTH_USER'; payload: CognitoUser | null}
+  | {type: 'SET_NETWORK_STATUS'; payload: boolean};
 
 export type Props = {
   children: ReactNode;

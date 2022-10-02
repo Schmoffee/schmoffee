@@ -41,7 +41,6 @@ async function sendChallengeAnswer(OTP: string, user: CognitoUser): Promise<Cogn
   try {
     return await Auth.sendCustomChallengeAnswer(user, OTP);
   } catch (error) {
-    // TODO: After 3rd error, block the field for a certain period of time
     console.log('The verification failed', error);
     return null;
   }

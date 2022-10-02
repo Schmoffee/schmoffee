@@ -42,4 +42,17 @@ const authListener = async (data: {payload: HubPayload}, state: GlobalState, dis
   }
 };
 
-export {authListener};
+const datastoreListener = async (hubData: {payload: HubPayload}, dispatch: Dispatch<GlobalAction>) => {
+  const {event, data} = hubData.payload;
+  switch (event) {
+    case 'networkStatus':
+      dispatch({type: 'SET_NETWORK_STATUS', payload: data.active});
+      console.log(`connected: ${data.active}`);
+      break;
+    case 'ready':
+      console.log('data completely synced from the cloud');
+      break;
+  }
+};
+
+export {authListener, datastoreListener};

@@ -17,6 +17,8 @@ export const globalReducer = (state: GlobalState, action: GlobalAction): GlobalS
       return {...state, common_items: action.payload};
     case 'SET_AUTH_USER':
       return {...state, auth_user: action.payload};
+    case 'SET_NETWORK_STATUS':
+      return {...state, network_status: action.payload};
     default:
       return state;
   }

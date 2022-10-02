@@ -11,6 +11,7 @@ export const initalData: GlobalState = {
   common_basket: [],
   specific_basket: [],
   auth_user: null,
+  network_status: false,
 };
 
 export const GlobalContext = React.createContext<{
