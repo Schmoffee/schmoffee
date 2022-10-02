@@ -9,27 +9,22 @@ import {
   signOut,
   signUp,
 } from '../../../utils/queries/auth';
-import { GlobalContext } from '../../../contexts';
-import { CognitoUser } from 'amazon-cognito-identity-js';
-import { AuthState, ErrorTypes } from '../../../utils/enums';
+import {GlobalContext} from '../../../contexts';
+import {CognitoUser} from 'amazon-cognito-identity-js';
+import {AuthState, ErrorTypes} from '../../../utils/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
-import {
-  createSignUpUser,
-  getUserByPhoneNumber,
-  updateAuthState,
-} from '../../../utils/queries/datastore';
-import { Colors, Spacings } from '../../../../theme';
-import { PageLayout } from '../../../components/Layouts/PageLayout';
-import { InputOTP } from '../../../components/InputComponents/InputOTP';
-import { ActionButton } from '../../../components/Buttons/ActionButton';
-import { Footer } from '../../../components/Footer/Footer';
-import { useNavigation } from '@react-navigation/native';
-import { AuthRoutes, CoffeeRoutes, RootRoutes } from '../../../utils/types/navigation.types';
-import { CONST_SCREEN_HOME } from '../../../../constants';
+import {createSignUpUser, getUserByPhoneNumber, updateAuthState} from '../../../utils/queries/datastore';
+import {Spacings} from '../../../../theme';
+import {PageLayout} from '../../../components/Layouts/PageLayout';
+import {InputOTP} from '../../../components/InputComponents/InputOTP';
+import {Footer} from '../../../components/Footer/Footer';
+import {useNavigation} from '@react-navigation/native';
+import {RootRoutes} from '../../../utils/types/navigation.types';
+import {CONST_SCREEN_HOME} from '../../../../constants';
+import {getFreeTime, setFreeTime} from '../../../utils/storage';
 
-
-export const Signup = () => {
-  const { global_state, global_dispatch } = useContext(GlobalContext);
+const Signup = () => {
+  const {global_state, global_dispatch} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
 
   const [name, setName] = useState('');
@@ -44,11 +39,12 @@ export const Signup = () => {
   const maximumCodeLength = 6;
 
   useEffect(() => {
+    let timeoutID: string | number | NodeJS.Timeout | undefined;
     async function unlock() {
       const target = await getFreeTime();
       let remaining_time;
       if (target && (remaining_time = +target - Date.now()) > 1000) {
-        setTimeout(() => {
+        timeoutID = setTimeout(() => {
           setIsLocked(false);
         }, remaining_time);
       }
@@ -56,6 +52,9 @@ export const Signup = () => {
     if (isLocked) {
       unlock().catch(e => console.log(e));
     }
+    return () => {
+      if (timeoutID) clearTimeout(timeoutID);
+    };
   }, [isLocked]);
 
   const handleSignUp = async () => {
@@ -66,11 +65,11 @@ export const Signup = () => {
         type: 'SET_AUTH_STATE',
         payload: AuthState.SIGNING_UP_FAILED,
       });
-      global_dispatch({ type: 'SET_AUTH_USER', payload: null });
+      global_dispatch({type: 'SET_AUTH_USER', payload: null});
       setSession(null);
       // TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
     } else {
-      global_dispatch({ type: 'SET_AUTH_USER', payload: result });
+      global_dispatch({type: 'SET_AUTH_USER', payload: result});
       setSession(result);
     }
     // TODO: Gather the location preference and payment method and pass it here
@@ -127,10 +126,10 @@ export const Signup = () => {
         payload: finalUser,
       });
       await updateAuthState(number, true);
-      global_dispatch({ type: 'SET_AUTH_USER', payload: result });
+      global_dispatch({type: 'SET_AUTH_USER', payload: result});
     }
     setLoading(false);
-    navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
+    navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
   };
 
   const handleAuth = async () => {
@@ -162,61 +161,52 @@ export const Signup = () => {
     return name.length > 0;
   }, [name]);
 
-  const page_subheader = hasLoaded ? 'Check your texts for a confirmation code' : 'Enter your name and phone number to sign up';
-
+  const page_subheader = hasLoaded
+    ? 'Check your texts for a confirmation code'
+    : 'Enter your name and phone number to sign up';
 
   return (
-    <PageLayout header='Sign Up' subHeader={page_subheader}>
+    <PageLayout header="Sign Up" subHeader={page_subheader}>
       <StatusBar translucent={true} backgroundColor="transparent" />
-      {
-        loading ? (
-          <View style={styles.loadingContainer}>
-            <LoadingPage />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <LoadingPage />
+        </View>
+      ) : (
+        <>
+          <View style={styles.formContainer}>
+            {hasLoaded ? (
+              <InputOTP code={otp} setCode={setOtp} maxLength={maximumCodeLength} setIsPinComplete={setIsPinComplete} />
+            ) : (
+              <>
+                <FormField title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
+                <FormField title={'Phone Number'} placeholder={''} setField={setNumber} type={'phone'} value={number} />
+              </>
+            )}
           </View>
-        ) : (
-          <>
-            <View style={styles.formContainer}>
-              {hasLoaded ? (
-                <InputOTP
-                  code={otp}
-                  setCode={setOtp}
-                  maxLength={maximumCodeLength}
-                  setIsPinComplete={setIsPinComplete}
-                />
-              ) : (<>
-                <FormField
-                  title={'Enter Name'}
-                  placeholder={'Jane'}
-                  setField={setName}
-                  type={'name'}
-                  value={name} />
-                <FormField
-                  title={'Phone Number'}
-                  placeholder={''}
-                  setField={setNumber}
-                  type={'phone'}
-                  value={number} />
-              </>)}
-
-            </View>
-            <View style={styles.buttonContainer}>
-              {!hasLoaded ? (
-                <Footer buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded} onPress={handleSignIn} buttonText='Sign Up' />
-              ) : (
-                <Footer buttonDisabled={!isPinComplete} onPress={handleConfirmOTP} buttonText='Confirm OTP' />
-              )}
-              {/* <ActionButton label='Sign In' onPress={handleSignIn} disabled /> */}
-              {/* <ActionButton label='Auth' onPress={handleAuth} disabled /> */}
-              {/* <ActionButton label='Sign Out' onPress={handleSignOut} disabled /> */}
-            </View>
-
-          </>
-        )
-      }
-    </PageLayout >
+          <View style={styles.buttonContainer}>
+            {!hasLoaded ? (
+              <Footer
+                buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
+                onPress={handleSignIn}
+                buttonText="Sign Up"
+              />
+            ) : (
+              <Footer buttonDisabled={!isPinComplete} onPress={handleConfirmOTP} buttonText="Confirm OTP" />
+            )}
+            {/* <ActionButton label='Sign In' onPress={handleSignIn} disabled /> */}
+            {/* <ActionButton label='Auth' onPress={handleAuth} disabled /> */}
+            {/* <ActionButton label='Sign Out' onPress={handleSignOut} disabled /> */}
+          </View>
+        </>
+      )}
+    </PageLayout>
   );
 };
 
+export default Signup;
+
+// @ts-ignore
 const styles = StyleSheet.create({
   formContainer: {
     marginTop: Spacings.s10,
@@ -235,4 +225,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-

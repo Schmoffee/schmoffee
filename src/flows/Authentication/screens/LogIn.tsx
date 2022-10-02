@@ -1,8 +1,7 @@
 import React, {useCallback, useState} from 'react';
-import {StyleSheet, View, Text, TextInput} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import FormField from '../../../components/FormField';
-import {Colors, Spacings} from '../../../../theme';
-import {Body} from '../../../../typography';
+import {Spacings} from '../../../../theme';
 import {ActionButton} from '../../../components/Buttons/ActionButton';
 import {PageLayout} from '../../../components/Layouts/PageLayout';
 import {useNavigation} from '@react-navigation/native';
@@ -10,7 +9,7 @@ import {CONST_SCREEN_HOME} from '../../../../constants';
 
 interface LoginProps {}
 
-export const Login = (props: LoginProps) => {
+const Login = (props: LoginProps) => {
   const navigation = useNavigation();
   const [number, setNumber] = useState('');
 
@@ -36,10 +35,12 @@ export const Login = (props: LoginProps) => {
   );
 };
 
+export default Login;
+
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    marginTop: Spacings.s20,
+    marginTop: Spacings.s16,
   },
   formContainer: {
     marginTop: Spacings.s1,
