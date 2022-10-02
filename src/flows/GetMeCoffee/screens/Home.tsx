@@ -14,7 +14,7 @@ export const Home = (props: HomeProps) => {
 
   const handleLogOut = async () => {
     navigation.navigate(CONST_SCREEN_SIGNUP);
-    await signOut();
+    // await signOut();
   };
 
   return (

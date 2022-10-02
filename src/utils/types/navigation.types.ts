@@ -8,12 +8,13 @@ declare global {
 }
 
 export type AuthRoutes = {
+  Intro: undefined;
   Signup: undefined;
   Login: undefined;
 };
 
 export type CoffeeRoutes = {
-  navigate(screen: string): void;
+  navigate(screen: any, navigator?: any): void;
   Home: undefined;
   WhatPage: undefined;
   WhenPage: undefined;
@@ -21,7 +22,7 @@ export type CoffeeRoutes = {
 };
 
 export type RootRoutes = {
-  navigate(screen: string): void;
+  navigate(screen: any, navigator?: any): void;
   Auth: NavigatorScreenParams<AuthRoutes> | undefined;
   Coffee: NavigatorScreenParams<CoffeeRoutes> | undefined;
 };

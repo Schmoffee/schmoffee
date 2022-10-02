@@ -1,3 +1,14 @@
+type UsualOrder {
+  items: [OrderItem!]!
+  schedule: Int!
+  cafeID: ID!
+}
+
+type UserInfo {
+  name: String!
+  phone: AWSPhone!
+}
+
 enum ItemType {
   COFFEE
   COLD_DRINKS
@@ -17,11 +28,11 @@ type Option @model @auth(rules: [{allow: public}]) {
 type PastOrder @model @auth(rules: [{allow: public}]) {
   id: ID!
   items: [OrderItem!]!
-  final_status: OrderStatus!
-  total: Float!
   order_info: OrderInfo!
   cafeID: ID! @index(name: "byCafe")
   userID: ID! @index(name: "byUser")
+  final_status: OrderStatus!
+  total: Float!
 }
 
 type OrderOption {
@@ -63,9 +74,8 @@ type CurrentOrder @model @auth(rules: [{allow: public}]) {
   total: Float!
   order_info: OrderInfo!
   cafeID: ID! @index(name: "byCafe")
+  user_info: UserInfo
   userID: ID!
-  user: User! @belongsTo(fields: ["userID"])
-  cafe: Cafe! @belongsTo(fields: ["cafeID"])
 }
 
 enum OptionType {
@@ -127,15 +137,11 @@ type Rating @model @auth(rules: [{allow: public}]) {
 
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
-  is_signed_in: Boolean
-  phone: AWSPhone
-  name: String
-  payment_method: String
-  latitude: Float
-  longitude: Float
-  is_locatable: Boolean!
+  is_signed_in: Boolean!
+  phone: AWSPhone!
+  name: String!
+  payment_method: String!
   ratings: [Rating] @hasMany(indexName: "byUser", fields: ["id"])
   past_orders: [PastOrder] @hasMany(indexName: "byUser", fields: ["id"])
-  current_order: CurrentOrder @hasOne
-  the_usual: PastOrder @hasOne
+  the_usual: UsualOrder
 }

@@ -4,19 +4,26 @@ export const Colors = {
   greyLight2: '#E1E1E1',
   greyLight3: '#ADADAD',
   black: '#1D1D1D',
-  black2: '#121212',
   greenLight: '#DEFFF1',
-  green1: '#55CF9C',
-  green2: '#3C936E',
-  green3: '#1D563E',
   greenFaded1: '#EAEEEC',
   greenFaded2: '#D8E1DD',
   greenFaded3: '#8E9994',
-  greenDark1: '#243530',
-  greenDark2: '#153428',
-  greenDark3: '#05110C',
   red: '#CE3F59',
   redFaded: '#FCBCC7',
+  blue: '#607897',
+  blueFaded: '#CCE4FF',
+  brown: '#966C3B',
+  brownLight1: '#AB8962',
+  brownLight2: '#BB9F80',
+  brownFaded: '#CAB69D',
+  brownFaded2: '#DFD3C4',
+  gold: '#CAA259',
+  goldFaded: '#E4D0AC',
+  goldFaded2: '#EFE3CD',
+  goldLight1: '#D5B57A',
+  goldLight2: '#DDC393',
+  goldLight3: '#f7f2e7',
+  darkBrown: '#3B1A0B',
 };
 
 export const Spacings = {
@@ -61,41 +68,41 @@ export const Inputs = {
   animationDuration: 150,
 };
 
-export const Buttons = {
-  flow: {
-    height: 56,
-    borderRadius: 16,
-    animationDuration: 125,
+// export const Buttons = {
+//   flow: {
+//     height: 56,
+//     borderRadius: 16,
+//     animationDuration: 125,
 
-    colors: {
-      primary: {
-        unpressed: {
-          background: Colors.greenDark2,
-          text: Colors.greyLight1,
-        },
-        pressed: {
-          background: Colors.greenFaded3,
-          text: Colors.greyLight1,
-        },
-        disabled: {
-          background: Colors.greyLight2,
-          text: Colors.greyLight3,
-        },
-      },
-      secondary: {
-        unpressed: {
-          background: Colors.greenFaded1,
-          text: Colors.greenDark2,
-        },
-        pressed: {
-          background: Colors.greenFaded2,
-          text: Colors.greenDark2,
-        },
-        disabled: {
-          background: Colors.greyLight2,
-          text: Colors.greyLight3,
-        },
-      },
-    },
-  },
-};
+//     colors: {
+//       primary: {
+//         unpressed: {
+//           background: Colors.greenDark2,
+//           text: Colors.greyLight1,
+//         },
+//         pressed: {
+//           background: Colors.greenFaded3,
+//           text: Colors.greyLight1,
+//         },
+//         disabled: {
+//           background: Colors.greyLight2,
+//           text: Colors.greyLight3,
+//         },
+//       },
+//       secondary: {
+//         unpressed: {
+//           background: Colors.greenFaded1,
+//           text: Colors.greenDark2,
+//         },
+//         pressed: {
+//           background: Colors.greenFaded2,
+//           text: Colors.greenDark2,
+//         },
+//         disabled: {
+//           background: Colors.greyLight2,
+//           text: Colors.greyLight3,
+//         },
+//       },
+//     },
+//   },
+// };

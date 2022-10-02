@@ -1,15 +1,15 @@
 import {ModelInit, MutableModel, PersistentModelConstructor} from '@aws-amplify/datastore';
 
-export enum ItemType {
-  COFFEE = 'COFFEE',
-  COLD_DRINKS = 'COLD_DRINKS',
-  SNACKS = 'SNACKS',
-}
-
 export enum OptionType {
   BEAN = 'BEAN',
   SYRUP = 'SYRUP',
   MILK = 'MILK',
+}
+
+export enum ItemType {
+  COFFEE = 'COFFEE',
+  COLD_DRINKS = 'COLD_DRINKS',
+  SNACKS = 'SNACKS',
 }
 
 export enum OrderStatus {
@@ -31,6 +31,13 @@ export enum Day {
   SUNDAY = 'SUNDAY',
 }
 
+export declare class UsualOrder {
+  readonly items: OrderItem[];
+  readonly schedule: number;
+  readonly cafeID: string;
+  constructor(init: ModelInit<UsualOrder>);
+}
+
 export declare class OrderItem {
   readonly name: string;
   readonly price: number;
@@ -43,6 +50,12 @@ export declare class OrderOption {
   readonly price: number;
   readonly option_type: OptionType | keyof typeof OptionType;
   constructor(init: ModelInit<OrderOption>);
+}
+
+export declare class UserInfo {
+  readonly name: string;
+  readonly phone: string;
+  constructor(init: ModelInit<UserInfo>);
 }
 
 export declare class OrderInfo {
@@ -70,7 +83,7 @@ type CurrentOrderMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 };
 
-type UserMetaData = {
+type ItemMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 };
 
@@ -82,7 +95,7 @@ type CafeMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 };
 
-type ItemMetaData = {
+type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 };
 
@@ -106,11 +119,11 @@ export declare class Option {
 export declare class PastOrder {
   readonly id: string;
   readonly items: OrderItem[];
-  readonly final_status: OrderStatus | keyof typeof OrderStatus;
-  readonly total: number;
   readonly order_info: OrderInfo;
   readonly cafeID: string;
   readonly userID: string;
+  readonly final_status: OrderStatus | keyof typeof OrderStatus;
+  readonly total: number;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<PastOrder, PastOrderMetaData>);
@@ -125,8 +138,9 @@ export declare class CurrentOrder {
   readonly items?: OrderItem[] | null;
   readonly total: number;
   readonly order_info: OrderInfo;
-  readonly user: User;
-  readonly cafe: Cafe;
+  readonly cafeID: string;
+  readonly user_info?: UserInfo | null;
+  readonly userID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<CurrentOrder, CurrentOrderMetaData>);
@@ -138,28 +152,25 @@ export declare class CurrentOrder {
   ): CurrentOrder;
 }
 
-export declare class User {
+export declare class Item {
   readonly id: string;
-  readonly is_signed_in?: boolean | null;
-  readonly phone?: string | null;
-  readonly name?: string | null;
-  readonly payment_method?: string | null;
-  readonly latitude?: number | null;
-  readonly longitude?: number | null;
-  readonly is_locatable: boolean;
+  readonly name: string;
+  readonly price: number;
+  readonly image?: string | null;
+  readonly is_common: boolean;
+  readonly is_in_stock: boolean;
+  readonly preparation_time: number;
+  readonly cafeID: string;
   readonly ratings?: (Rating | null)[] | null;
-  readonly past_orders?: (PastOrder | null)[] | null;
-  readonly current_order?: CurrentOrder | null;
-  readonly the_usual?: PastOrder | null;
+  readonly options?: (Option | null)[] | null;
+  readonly type?: ItemType | keyof typeof ItemType | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly userCurrentOrderId?: string | null;
-  readonly userTheUsualId?: string | null;
-  constructor(init: ModelInit<User, UserMetaData>);
+  constructor(init: ModelInit<Item, ItemMetaData>);
   static copyOf(
-    source: User,
-    mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void,
-  ): User;
+    source: Item,
+    mutator: (draft: MutableModel<Item, ItemMetaData>) => MutableModel<Item, ItemMetaData> | void,
+  ): Item;
 }
 
 export declare class Rating {
@@ -204,23 +215,20 @@ export declare class Cafe {
   ): Cafe;
 }
 
-export declare class Item {
+export declare class User {
   readonly id: string;
+  readonly is_signed_in: boolean;
+  readonly phone: string;
   readonly name: string;
-  readonly price: number;
-  readonly image?: string | null;
-  readonly is_common: boolean;
-  readonly is_in_stock: boolean;
-  readonly preparation_time: number;
-  readonly cafeID: string;
+  readonly payment_method: string;
   readonly ratings?: (Rating | null)[] | null;
-  readonly options?: (Option | null)[] | null;
-  readonly type?: ItemType | keyof typeof ItemType | null;
+  readonly past_orders?: (PastOrder | null)[] | null;
+  readonly the_usual?: UsualOrder | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<Item, ItemMetaData>);
+  constructor(init: ModelInit<User, UserMetaData>);
   static copyOf(
-    source: Item,
-    mutator: (draft: MutableModel<Item, ItemMetaData>) => MutableModel<Item, ItemMetaData> | void,
-  ): Item;
+    source: User,
+    mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void,
+  ): User;
 }

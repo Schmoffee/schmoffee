@@ -29,6 +29,5 @@ const styles = StyleSheet.create({
 
   childrenContainer: {
     alignSelf: 'center',
-    paddingBottom: Spacings.s2,
   },
 });

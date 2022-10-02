@@ -28,7 +28,7 @@
         },
         "schmoffeeAuthVerifyAuthChallengeResponse": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
-          "s3Key": "amplify-builds/schmoffeeAuthVerifyAuthChallengeResponse-5142534772624f395678-build.zip"
+          "s3Key": "amplify-builds/schmoffeeAuthVerifyAuthChallengeResponse-3364566e456f68373563-build.zip"
         }
       },
       "auth": {

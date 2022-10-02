@@ -60,8 +60,7 @@ const FormField = ({
           // withShadow
           autoFocus
           containerStyle={styles.phoneInputContainer}
-          textInputStyle={styles.phoneInputText}
-          placeholder={'Enter Phone Number'}
+          placeholder={' '}
           value={value}
         />
       ) : (
@@ -105,9 +104,6 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 60,
     alignSelf: 'center',
-  },
-  phoneInputText: {
-    fontFamily: 'ProximaNova-Regular',
   },
 });
 

@@ -35,14 +35,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: Spacings.s4,
-    borderColor: Colors.greyLight2,
-    borderWidth: 2,
+    // borderColor: Colors.greyLight2,
+    // borderWidth: 2,
   },
   disabledColor: {
-    backgroundColor: Colors.greenFaded2,
+    backgroundColor: Colors.goldLight3,
   },
   activeColor: {
-    backgroundColor: Colors.green3,
+    backgroundColor: Colors.goldLight1,
   },
   text: {
     color: Colors.white,
