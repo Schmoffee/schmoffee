@@ -1,4 +1,4 @@
-import {Cafe, CurrentOrder, Item, OrderInfo, OrderItem, User} from '../../models';
+import {Cafe, CurrentOrder, Item, OrderInfo, OrderItem, User, UserInfo} from '../../models';
 import {DataStore} from 'aws-amplify';
 
 async function getCommonItems(): Promise<Item[] | null> {
@@ -52,18 +52,21 @@ async function sendOrder(
   items: OrderItem[],
   total: number,
   order_info: OrderInfo,
-  cafe: Cafe,
-  user: User,
+  cafeID: string,
+  userID: string,
+  user_info: UserInfo,
 ): Promise<string> {
   const order: CurrentOrder = await DataStore.save(
     new CurrentOrder({
       items: items,
       total: total,
       order_info: order_info,
-      user: user,
-      cafe: cafe,
+      cafeID: cafeID,
+      userID: userID,
+      user_info: user_info,
     }),
   );
+  console.log(order);
   return order.id;
 }
 

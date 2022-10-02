@@ -31,39 +31,58 @@
           "category": "function",
           "resourceName": "schmoffeeAuthCreateAuthChallenge",
           "triggerProvider": "Cognito",
-          "attributes": ["Arn", "Name"]
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
         },
         {
           "category": "function",
           "resourceName": "schmoffeeAuthDefineAuthChallenge",
           "triggerProvider": "Cognito",
-          "attributes": ["Arn", "Name"]
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
         },
         {
           "category": "function",
           "resourceName": "schmoffeeAuthPreSignup",
           "triggerProvider": "Cognito",
-          "attributes": ["Arn", "Name"]
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
         },
         {
           "category": "function",
           "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse",
           "triggerProvider": "Cognito",
-          "attributes": ["Arn", "Name"]
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
         }
       ],
       "customAuth": true,
       "frontendAuthConfig": {
         "socialProviders": [],
         "usernameAttributes": [],
-        "signupAttributes": ["NAME", "PHONE_NUMBER"],
+        "signupAttributes": [
+          "NAME",
+          "PHONE_NUMBER"
+        ],
         "passwordProtectionSettings": {
           "passwordPolicyMinLength": 8,
           "passwordPolicyCharacters": []
         },
         "mfaConfiguration": "OFF",
-        "mfaTypes": ["SMS"],
-        "verificationMechanisms": ["PHONE_NUMBER"]
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "PHONE_NUMBER"
+        ]
       }
     }
   },

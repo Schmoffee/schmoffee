@@ -1,5 +1,3 @@
-import {Ionicons} from '@expo/vector-icons';
-import {useNavigation} from '@react-navigation/native';
 import React, {PropsWithChildren} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {Colors, Spacings} from '../../../theme';
@@ -16,9 +14,7 @@ export const PageLayout = (props: PageLayoutProps) => {
   // const navigation = useNavigation()
   return (
     <View style={styles.root}>
-      <Pressable onPress={() => {}}>
-        <Ionicons name="arrow-back" size={24} color={Colors.red} />
-      </Pressable>
+      <Pressable onPress={() => {}} />
       <View style={styles.header}>
         <Heading size="default" weight="Extrabld" color={Colors.black}>
           {props.header}

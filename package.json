@@ -30,7 +30,6 @@
     "@react-navigation/native-stack": "^6.9.0",
     "amazon-cognito-identity-js": "^5.2.10",
     "aws-amplify": "^4.3.35",
-    "expo-font": "^10.2.1",
     "graphql-scalars": "^1.17.0",
     "jasmine": "^4.3.0",
     "jest-jasmine2": "^28.1.3",

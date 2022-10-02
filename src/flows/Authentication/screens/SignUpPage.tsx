@@ -1,5 +1,5 @@
-import React, {useCallback, useContext, useRef, useState} from 'react';
-import {StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import FormField from '../../../components/FormField';
 import {
   getCurrentAuthUser,
@@ -14,10 +14,11 @@ import {CognitoUser} from 'amazon-cognito-identity-js';
 import {AuthState, ErrorTypes} from '../../../utils/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
 import {createSignUpUser, getUserByPhoneNumber, updateAuthState} from '../../../utils/queries/datastore';
-import {Colors, Spacings} from '../../../../theme';
+import {Spacings} from '../../../../theme';
 import {PageLayout} from '../../../components/Layouts/PageLayout';
 import {InputOTP} from '../../../components/InputComponents/InputOTP';
 import {ActionButton} from '../../../components/Buttons/ActionButton';
+import {getFreeTime, setFreeTime} from '../../../utils/storage';
 
 const SignUpPage = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
@@ -27,8 +28,25 @@ const SignUpPage = () => {
   const [loading, setLoading] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [session, setSession] = useState<CognitoUser | ErrorTypes | null>(null);
-  const [isPinComplete, setIsPinComplete] = useState(false);
+  const [isPinComplete, setIsPinComplete] = useState<boolean>(false);
+  const [trials, setTrials] = useState<number>(0);
+  const [isLocked, setIsLocked] = useState<boolean>(false);
   const maximumCodeLength = 6;
+
+  useEffect(() => {
+    async function unlock() {
+      const target = await getFreeTime();
+      let remaining_time;
+      if (target && (remaining_time = +target - Date.now()) > 1000) {
+        setTimeout(() => {
+          setIsLocked(false);
+        }, remaining_time);
+      }
+    }
+    if (isLocked) {
+      unlock().catch(e => console.log(e));
+    }
+  }, [isLocked]);
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -59,20 +77,27 @@ const SignUpPage = () => {
       // TODO: Alert the user that they will be signed out of all other devices.
       await globalSignOut();
     }
-    const newSession = await signIn(number);
-    if (newSession && newSession instanceof CognitoUser) {
-      setSession(newSession);
-      global_dispatch({
-        type: 'SET_AUTH_STATE',
-        payload: AuthState.CONFIRMING_OTP,
-      });
-      global_dispatch({type: 'SET_AUTH_USER', payload: newSession});
+    if (trials <= 2) {
+      const newSession = await signIn(number);
+      setTrials(prev => prev + 1);
+      if (newSession && newSession instanceof CognitoUser) {
+        setSession(newSession);
+        global_dispatch({
+          type: 'SET_AUTH_STATE',
+          payload: AuthState.CONFIRMING_OTP,
+        });
+        global_dispatch({type: 'SET_AUTH_USER', payload: newSession});
+      } else {
+        // TODO: Handle the error appropriately depending on the error type
+        setSession(null);
+      }
+      setHasLoaded(true);
+      setLoading(false);
     } else {
-      // TODO: Handle the error appropriately depending on the error type
-      setSession(null);
+      setIsLocked(true);
+      await setFreeTime(Date.now() + 60 * 60000);
+      console.log('You tried more than 3 times, you are blocked for 1 hour');
     }
-    setHasLoaded(true);
-    setLoading(false);
   };
 
   const handleConfirmOTP = async () => {
@@ -155,10 +180,10 @@ const SignUpPage = () => {
               onPress={handleSignUp}
               disabled={!(isValidName() && isValidNumber()) || hasLoaded}
             />
-            <ActionButton label="OTP" onPress={handleConfirmOTP} disabled={isPinComplete ? false : true} />
-            <ActionButton label="Sign In" onPress={handleSignIn} disabled />
+            <ActionButton label="OTP" onPress={handleConfirmOTP} disabled={!isPinComplete} />
+            <ActionButton label="Sign In" onPress={handleSignIn} />
             <ActionButton label="Auth" onPress={handleAuth} disabled />
-            <ActionButton label="Sign Out" onPress={handleSignOut} disabled />
+            <ActionButton label="Sign Out" onPress={handleSignOut} />
           </View>
         </>
       )}

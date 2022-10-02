@@ -31,6 +31,29 @@ async function getIsFirstTime(): Promise<boolean> {
 }
 
 /**
+ * Set the time when the app can be used again.
+ */
+async function setFreeTime(time: number) {
+  try {
+    await AsyncStorage.setItem('@FreeTime', String(time));
+  } catch (err) {
+    console.log('Error setting free time', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function getFreeTime() {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@FreeTime');
+    return jsonValue ? jsonValue : '';
+  } catch (err) {
+    console.log('Error getting free time', err);
+  }
+}
+
+/**
  * Returns the storage shop key
  * @return Number The key of the shop
  */
@@ -135,4 +158,6 @@ export {
   getCommonBasket,
   setCurrentShopId,
   getCurrentShopId,
+  setFreeTime,
+  getFreeTime,
 };
