@@ -50,6 +50,7 @@ export const InputOTP = (props: InputOTPProps) => {
     useEffect(() => {
       isLastValue && isCodeComplete ? setIsInputBoxFocused(false) : isCurrentValue ? setIsInputBoxFocused(true) : null;
     }, [props.code]);
+
     const StyledSplitBoxes =
       isInputBoxFocused && isValueFocused ? [styles.splitBoxesFocused, styles.splitBoxes] : styles.splitBoxes;
 
@@ -75,6 +76,8 @@ export const InputOTP = (props: InputOTPProps) => {
         ref={inputRef}
         onBlur={handleOnBlur}
         keyboardType="numeric"
+        autoComplete="sms-otp"
+        textContentType="oneTimeCode"
       />
     </View>
   );
@@ -83,6 +86,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    // backgroundColor: Colors.red,
   },
   textInputHidden: {
     position: 'absolute',
@@ -108,12 +112,11 @@ const styles = StyleSheet.create({
   },
   splitBoxesFocused: {
     borderColor: Colors.greyLight2,
-    backgroundColor: Colors.greyLight2,
+    backgroundColor: Colors.greyLight3,
   },
   splitBoxText: {
     textAlign: 'center',
     color: 'black',
     marginVertical: '30%',
-    height: '100%',
   },
 });

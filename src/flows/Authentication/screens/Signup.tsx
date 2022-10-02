@@ -9,19 +9,29 @@ import {
   signOut,
   signUp,
 } from '../../../utils/queries/auth';
-import {GlobalContext} from '../../../contexts';
-import {CognitoUser} from 'amazon-cognito-identity-js';
-import {AuthState, ErrorTypes} from '../../../utils/enums';
+import { GlobalContext } from '../../../contexts';
+import { CognitoUser } from 'amazon-cognito-identity-js';
+import { AuthState, ErrorTypes } from '../../../utils/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
-import {createSignUpUser, getUserByPhoneNumber, updateAuthState} from '../../../utils/queries/datastore';
-import {Spacings} from '../../../../theme';
-import {PageLayout} from '../../../components/Layouts/PageLayout';
-import {InputOTP} from '../../../components/InputComponents/InputOTP';
-import {ActionButton} from '../../../components/Buttons/ActionButton';
-import {getFreeTime, setFreeTime} from '../../../utils/storage';
+import {
+  createSignUpUser,
+  getUserByPhoneNumber,
+  updateAuthState,
+} from '../../../utils/queries/datastore';
+import { Colors, Spacings } from '../../../../theme';
+import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { InputOTP } from '../../../components/InputComponents/InputOTP';
+import { ActionButton } from '../../../components/Buttons/ActionButton';
+import { Footer } from '../../../components/Footer/Footer';
+import { useNavigation } from '@react-navigation/native';
+import { AuthRoutes, CoffeeRoutes, RootRoutes } from '../../../utils/types/navigation.types';
+import { CONST_SCREEN_HOME } from '../../../../constants';
 
-const SignUpPage = () => {
-  const {global_state, global_dispatch} = useContext(GlobalContext);
+
+export const Signup = () => {
+  const { global_state, global_dispatch } = useContext(GlobalContext);
+  const navigation = useNavigation<RootRoutes>();
+
   const [name, setName] = useState('');
   const [otp, setOtp] = useState('');
   const [number, setNumber] = useState('');
@@ -56,11 +66,11 @@ const SignUpPage = () => {
         type: 'SET_AUTH_STATE',
         payload: AuthState.SIGNING_UP_FAILED,
       });
-      global_dispatch({type: 'SET_AUTH_USER', payload: null});
+      global_dispatch({ type: 'SET_AUTH_USER', payload: null });
       setSession(null);
       // TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
     } else {
-      global_dispatch({type: 'SET_AUTH_USER', payload: result});
+      global_dispatch({ type: 'SET_AUTH_USER', payload: result });
       setSession(result);
     }
     // TODO: Gather the location preference and payment method and pass it here
@@ -117,9 +127,10 @@ const SignUpPage = () => {
         payload: finalUser,
       });
       await updateAuthState(number, true);
-      global_dispatch({type: 'SET_AUTH_USER', payload: result});
+      global_dispatch({ type: 'SET_AUTH_USER', payload: result });
     }
     setLoading(false);
+    navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
   };
 
   const handleAuth = async () => {
@@ -151,43 +162,58 @@ const SignUpPage = () => {
     return name.length > 0;
   }, [name]);
 
-  const page_subheader = hasLoaded
-    ? 'Check your texts for a confirmation code'
-    : 'Enter your name and phone number to sign up';
+  const page_subheader = hasLoaded ? 'Check your texts for a confirmation code' : 'Enter your name and phone number to sign up';
+
 
   return (
-    <PageLayout header="Sign Up" subHeader={page_subheader}>
+    <PageLayout header='Sign Up' subHeader={page_subheader}>
       <StatusBar translucent={true} backgroundColor="transparent" />
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <LoadingPage />
-        </View>
-      ) : (
-        <>
-          <View style={styles.formContainer}>
-            {hasLoaded ? (
-              <InputOTP code={otp} setCode={setOtp} maxLength={maximumCodeLength} setIsPinComplete={setIsPinComplete} />
-            ) : (
-              <>
-                <FormField title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
-                <FormField title={'Phone Number'} placeholder={''} setField={setNumber} type={'phone'} value={number} />
-              </>
-            )}
+      {
+        loading ? (
+          <View style={styles.loadingContainer}>
+            <LoadingPage />
           </View>
-          <View style={styles.buttonContainer}>
-            <ActionButton
-              label="Sign Up"
-              onPress={handleSignUp}
-              disabled={!(isValidName() && isValidNumber()) || hasLoaded}
-            />
-            <ActionButton label="OTP" onPress={handleConfirmOTP} disabled={!isPinComplete} />
-            <ActionButton label="Sign In" onPress={handleSignIn} />
-            <ActionButton label="Auth" onPress={handleAuth} disabled />
-            <ActionButton label="Sign Out" onPress={handleSignOut} />
-          </View>
-        </>
-      )}
-    </PageLayout>
+        ) : (
+          <>
+            <View style={styles.formContainer}>
+              {hasLoaded ? (
+                <InputOTP
+                  code={otp}
+                  setCode={setOtp}
+                  maxLength={maximumCodeLength}
+                  setIsPinComplete={setIsPinComplete}
+                />
+              ) : (<>
+                <FormField
+                  title={'Enter Name'}
+                  placeholder={'Jane'}
+                  setField={setName}
+                  type={'name'}
+                  value={name} />
+                <FormField
+                  title={'Phone Number'}
+                  placeholder={''}
+                  setField={setNumber}
+                  type={'phone'}
+                  value={number} />
+              </>)}
+
+            </View>
+            <View style={styles.buttonContainer}>
+              {!hasLoaded ? (
+                <Footer buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded} onPress={handleSignIn} buttonText='Sign Up' />
+              ) : (
+                <Footer buttonDisabled={!isPinComplete} onPress={handleConfirmOTP} buttonText='Confirm OTP' />
+              )}
+              {/* <ActionButton label='Sign In' onPress={handleSignIn} disabled /> */}
+              {/* <ActionButton label='Auth' onPress={handleAuth} disabled /> */}
+              {/* <ActionButton label='Sign Out' onPress={handleSignOut} disabled /> */}
+            </View>
+
+          </>
+        )
+      }
+    </PageLayout >
   );
 };
 
@@ -196,15 +222,17 @@ const styles = StyleSheet.create({
     marginTop: Spacings.s10,
   },
   buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
     justifyContent: 'flex-end',
-    marginBottom: '4%',
+    paddingVertical: Spacings.s3,
   },
   loadingContainer: {
-    // flex: 1,
     paddingTop: '60%',
+    paddingLeft: '3%',
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
 
-export default SignUpPage;

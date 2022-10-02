@@ -10,6 +10,9 @@ import {getCurrentAuthUser} from './utils/queries/auth';
 import {AuthState} from './utils/enums';
 import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
 import TrackOrder from './flows/TrackOrder/Root';
+import SignUpPage from './flows/Authentication/screens/SignUpPage';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import Navigator from './navigation/Navigator';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, initalData);
@@ -51,7 +54,9 @@ const App = () => {
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>
-      <TrackOrder />
+      <SafeAreaProvider>
+        <Navigator />
+      </SafeAreaProvider>
     </GlobalContext.Provider>
   );
 };
