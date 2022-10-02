@@ -1,8 +1,5 @@
 import {GlobalAction, GlobalState} from './utils/types';
-export const globalReducer = (
-  state: GlobalState,
-  action: GlobalAction,
-): GlobalState => {
+export const globalReducer = (state: GlobalState, action: GlobalAction): GlobalState => {
   switch (action.type) {
     case 'SET_COMMON_BASKET':
       return {...state, common_basket: action.payload};

@@ -1,34 +1,34 @@
-import { ModelInit, MutableModel } from "@aws-amplify/datastore";
+import {ModelInit, MutableModel, PersistentModelConstructor} from '@aws-amplify/datastore';
 
 export enum ItemType {
-  COFFEE = "COFFEE",
-  COLD_DRINKS = "COLD_DRINKS",
-  SNACKS = "SNACKS"
+  COFFEE = 'COFFEE',
+  COLD_DRINKS = 'COLD_DRINKS',
+  SNACKS = 'SNACKS',
 }
 
 export enum OptionType {
-  BEAN = "BEAN",
-  SYRUP = "SYRUP",
-  MILK = "MILK"
+  BEAN = 'BEAN',
+  SYRUP = 'SYRUP',
+  MILK = 'MILK',
 }
 
 export enum OrderStatus {
-  ACCEPTED = "ACCEPTED",
-  REJECTED = "REJECTED",
-  PREPARING = "PREPARING",
-  READY = "READY",
-  COLLECTED = "COLLECTED",
-  RECEIVED = "RECEIVED"
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  PREPARING = 'PREPARING',
+  READY = 'READY',
+  COLLECTED = 'COLLECTED',
+  RECEIVED = 'RECEIVED',
 }
 
 export enum Day {
-  MONDAY = "MONDAY",
-  TUESDAY = "TUESDAY",
-  WEDNESDAY = "WEDNESDAY",
-  THURSDAY = "THURSDAY",
-  FRIDAY = "FRIDAY",
-  SATURDAY = "SATURDAY",
-  SUNDAY = "SUNDAY"
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
 }
 
 export declare class OrderItem {
@@ -60,31 +60,31 @@ export declare class OrderInfo {
 
 type OptionMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
-}
+};
 
 type PastOrderMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
-}
+};
 
 type CurrentOrderMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
-}
+};
 
 type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
-}
+};
 
 type RatingMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
-}
+};
 
 type CafeMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
-}
+};
 
 type ItemMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
-}
+};
 
 export declare class Option {
   readonly id: string;
@@ -97,7 +97,10 @@ export declare class Option {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Option, OptionMetaData>);
-  static copyOf(source: Option, mutator: (draft: MutableModel<Option, OptionMetaData>) => MutableModel<Option, OptionMetaData> | void): Option;
+  static copyOf(
+    source: Option,
+    mutator: (draft: MutableModel<Option, OptionMetaData>) => MutableModel<Option, OptionMetaData> | void,
+  ): Option;
 }
 
 export declare class PastOrder {
@@ -111,7 +114,10 @@ export declare class PastOrder {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<PastOrder, PastOrderMetaData>);
-  static copyOf(source: PastOrder, mutator: (draft: MutableModel<PastOrder, PastOrderMetaData>) => MutableModel<PastOrder, PastOrderMetaData> | void): PastOrder;
+  static copyOf(
+    source: PastOrder,
+    mutator: (draft: MutableModel<PastOrder, PastOrderMetaData>) => MutableModel<PastOrder, PastOrderMetaData> | void,
+  ): PastOrder;
 }
 
 export declare class CurrentOrder {
@@ -124,7 +130,12 @@ export declare class CurrentOrder {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<CurrentOrder, CurrentOrderMetaData>);
-  static copyOf(source: CurrentOrder, mutator: (draft: MutableModel<CurrentOrder, CurrentOrderMetaData>) => MutableModel<CurrentOrder, CurrentOrderMetaData> | void): CurrentOrder;
+  static copyOf(
+    source: CurrentOrder,
+    mutator: (
+      draft: MutableModel<CurrentOrder, CurrentOrderMetaData>,
+    ) => MutableModel<CurrentOrder, CurrentOrderMetaData> | void,
+  ): CurrentOrder;
 }
 
 export declare class User {
@@ -138,14 +149,17 @@ export declare class User {
   readonly is_locatable: boolean;
   readonly ratings?: (Rating | null)[] | null;
   readonly past_orders?: (PastOrder | null)[] | null;
-  current_order?: CurrentOrder | null;
-  the_usual?: PastOrder | null;
+  readonly current_order?: CurrentOrder | null;
+  readonly the_usual?: PastOrder | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly userCurrent_orderId?: string | null;
-  readonly userThe_usualId?: string | null;
+  readonly userCurrentOrderId?: string | null;
+  readonly userTheUsualId?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);
-  static copyOf(source: User, mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void): User;
+  static copyOf(
+    source: User,
+    mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void,
+  ): User;
 }
 
 export declare class Rating {
@@ -159,7 +173,10 @@ export declare class Rating {
   readonly updatedAt?: string | null;
   readonly ratingOrderId: string;
   constructor(init: ModelInit<Rating, RatingMetaData>);
-  static copyOf(source: Rating, mutator: (draft: MutableModel<Rating, RatingMetaData>) => MutableModel<Rating, RatingMetaData> | void): Rating;
+  static copyOf(
+    source: Rating,
+    mutator: (draft: MutableModel<Rating, RatingMetaData>) => MutableModel<Rating, RatingMetaData> | void,
+  ): Rating;
 }
 
 export declare class Cafe {
@@ -181,7 +198,10 @@ export declare class Cafe {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Cafe, CafeMetaData>);
-  static copyOf(source: Cafe, mutator: (draft: MutableModel<Cafe, CafeMetaData>) => MutableModel<Cafe, CafeMetaData> | void): Cafe;
+  static copyOf(
+    source: Cafe,
+    mutator: (draft: MutableModel<Cafe, CafeMetaData>) => MutableModel<Cafe, CafeMetaData> | void,
+  ): Cafe;
 }
 
 export declare class Item {
@@ -199,5 +219,8 @@ export declare class Item {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<Item, ItemMetaData>);
-  static copyOf(source: Item, mutator: (draft: MutableModel<Item, ItemMetaData>) => MutableModel<Item, ItemMetaData> | void): Item;
+  static copyOf(
+    source: Item,
+    mutator: (draft: MutableModel<Item, ItemMetaData>) => MutableModel<Item, ItemMetaData> | void,
+  ): Item;
 }

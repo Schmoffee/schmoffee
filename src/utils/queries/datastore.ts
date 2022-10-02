@@ -1,11 +1,4 @@
-import {
-  Cafe,
-  CurrentOrder,
-  Item,
-  OrderInfo,
-  OrderItem,
-  User,
-} from '../../models';
+import {Cafe, CurrentOrder, Item, OrderInfo, OrderItem, User} from '../../models';
 import {DataStore} from 'aws-amplify';
 
 async function getCommonItems(): Promise<Item[] | null> {
@@ -34,9 +27,7 @@ async function createSignUpUser(
   );
 }
 
-async function getUserByPhoneNumber(
-  phone_number: string,
-): Promise<User | null> {
+async function getUserByPhoneNumber(phone_number: string): Promise<User | null> {
   const result = await DataStore.query(User, c => c.phone('eq', phone_number));
   return result[0];
 }
@@ -81,12 +72,4 @@ async function getBestShop(): Promise<Cafe | null> {
   return result[0];
 }
 
-export {
-  getCommonItems,
-  getUserByPhoneNumber,
-  updateAuthState,
-  createSignUpUser,
-  getUserById,
-  sendOrder,
-  getBestShop,
-};
+export {getCommonItems, getUserByPhoneNumber, updateAuthState, createSignUpUser, getUserById, sendOrder, getBestShop};

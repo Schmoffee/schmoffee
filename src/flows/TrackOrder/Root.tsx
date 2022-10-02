@@ -1,13 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {GlobalContext} from '../../contexts';
 import {DataStore} from 'aws-amplify';
-import {
-  Cafe,
-  CurrentOrder,
-  OrderInfo,
-  OrderItem,
-  OrderStatus,
-} from '../../models';
+import {Cafe, CurrentOrder, OrderInfo, OrderItem, OrderStatus} from '../../models';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {getBestShop, sendOrder} from '../../utils/queries/datastore';
 
@@ -30,9 +24,7 @@ const Root = () => {
             payload: {...global_state.current_user, current_order: items[0]},
           });
         } else {
-          items.length === 0
-            ? console.log('No current order found')
-            : console.log('More than one current order found');
+          items.length === 0 ? console.log('No current order found') : console.log('More than one current order found');
         }
         if (isSynced) {
           console.log('Synced');
@@ -40,12 +32,7 @@ const Root = () => {
       });
       return () => subscription.unsubscribe();
     }
-  }, [
-    global_dispatch,
-    global_state.auth_user,
-    global_state.current_user,
-    orderId,
-  ]);
+  }, [global_dispatch, global_state.auth_user, global_state.current_user, orderId]);
 
   return (
     <View>

@@ -4,11 +4,7 @@ import {Dispatch} from 'react';
 import {updateAuthState} from './queries/datastore';
 import {DataStore} from 'aws-amplify';
 
-const authListener = async (
-  data: {payload: HubPayload},
-  state: GlobalState,
-  dispatch: Dispatch<GlobalAction>,
-) => {
+const authListener = async (data: {payload: HubPayload}, state: GlobalState, dispatch: Dispatch<GlobalAction>) => {
   switch (data.payload.event) {
     case 'signIn':
       dispatch({type: 'SET_AUTH_STATE', payload: AuthState.SIGNED_IN});

@@ -3,10 +3,7 @@ import {ErrorTypes} from '../enums';
 import {Auth} from 'aws-amplify';
 const password = Math.random().toString(10) + 'Abc#';
 
-async function signUp(
-  phoneNumber: string,
-  name: string,
-): Promise<CognitoUser | null | ErrorTypes> {
+async function signUp(phoneNumber: string, name: string): Promise<CognitoUser | null | ErrorTypes> {
   try {
     const {user} = await Auth.signUp({
       username: phoneNumber,
@@ -40,10 +37,7 @@ async function signIn(phoneNumber: string): Promise<CognitoUser | ErrorTypes> {
   }
 }
 
-async function sendChallengeAnswer(
-  OTP: string,
-  user: CognitoUser,
-): Promise<CognitoUser | null> {
+async function sendChallengeAnswer(OTP: string, user: CognitoUser): Promise<CognitoUser | null> {
   try {
     return await Auth.sendCustomChallengeAnswer(user, OTP);
   } catch (error) {
@@ -82,11 +76,4 @@ async function globalSignOut(): Promise<boolean> {
   }
 }
 
-export {
-  signUp,
-  signIn,
-  sendChallengeAnswer,
-  getCurrentAuthUser,
-  signOut,
-  globalSignOut,
-};
+export {signUp, signIn, sendChallengeAnswer, getCurrentAuthUser, signOut, globalSignOut};

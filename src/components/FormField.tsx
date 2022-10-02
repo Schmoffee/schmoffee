@@ -1,11 +1,13 @@
 import React from 'react';
 import {StyleSheet, View, Text, TextInput} from 'react-native';
+import {Colors, Spacings} from '../../theme';
+import {Body} from '../../typography';
+import PhoneInput from 'react-native-phone-number-input';
 
 // @ts-ignore
 
 /**
  * Custom form field reused throughout the app.
- * @param style
  * @param title
  * @param placeholder
  * @param setField
@@ -15,7 +17,6 @@ import {StyleSheet, View, Text, TextInput} from 'react-native';
  */
 const FormField = ({
   // @ts-ignore
-  style,
   title = 'Title',
   placeholder = '',
   // @ts-ignore
@@ -40,35 +41,73 @@ const FormField = ({
   }
 
   return (
-    <View style={style}>
-      <Text style={[styles.text]}>{title}</Text>
-      <TextInput
-        style={styles.input}
-        secureTextEntry={secureTextEntry}
-        placeholder={placeholder}
-        placeholderTextColor={'#D3D3D3'}
-        onChangeText={text => setField(text)}
-        value={value}
-        autoCorrect={autoCorrect}
-        maxLength={maxLength}
-        textContentType={'oneTimeCode'}
-      />
+    <View style={[styles.root]}>
+      <View style={styles.titleContainer}>
+        <Body size="medium" weight="Bold">
+          {title}
+        </Body>
+      </View>
+      {type === 'phone' ? (
+        <PhoneInput
+          defaultCode="GB"
+          layout="first"
+          onChangeText={text => {
+            setField(text);
+          }}
+          onChangeFormattedText={text => {
+            setField(text);
+          }}
+          // withShadow
+          autoFocus
+          containerStyle={styles.phoneInputContainer}
+          textInputStyle={styles.phoneInputText}
+          placeholder={'Enter Phone Number'}
+          value={value}
+        />
+      ) : (
+        <TextInput
+          style={styles.input}
+          secureTextEntry={secureTextEntry}
+          placeholder={placeholder}
+          placeholderTextColor={Colors.greyLight3}
+          onChangeText={text => setField(text)}
+          value={value}
+          autoCorrect={autoCorrect}
+          maxLength={maxLength}
+          // textContentType={'oneTimeCode'}
+        />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  text: {
-    marginBottom: '2.5%',
+  root: {
+    width: '100%',
+    marginBottom: Spacings.s4,
+    alignItems: 'center',
   },
-
   input: {
-    backgroundColor: '#F9F9F9',
-    height: 37,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: '3.5%',
-    color: 'black',
+    backgroundColor: Colors.greyLight1,
+    height: Spacings.s13,
+    borderRadius: 13,
+    paddingHorizontal: Spacings.s3,
+    width: '80%',
+  },
+  titleContainer: {
+    marginBottom: Spacings.s1,
+    marginLeft: Spacings.s1,
+  },
+  phoneInputContainer: {
+    backgroundColor: Colors.greyLight1,
+    borderRadius: 13,
+    paddingHorizontal: Spacings.s3,
+    width: '80%',
+    height: 60,
+    alignSelf: 'center',
+  },
+  phoneInputText: {
+    fontFamily: 'ProximaNova-Regular',
   },
 });
 
