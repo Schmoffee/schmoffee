@@ -18,15 +18,22 @@ import {Colors, Spacings} from '../../../../theme';
 import {PageLayout} from '../../../components/Layouts/PageLayout';
 import {InputOTP} from '../../../components/InputComponents/InputOTP';
 import {ActionButton} from '../../../components/Buttons/ActionButton';
+import {Footer} from '../../../components/Footer/Footer';
+import {useNavigation} from '@react-navigation/native';
+import {AuthRoutes, CoffeeRoutes, RootRoutes} from '../../../utils/types/navigation.types';
+import {CONST_SCREEN_HOME} from '../../../../constants';
 
-const SignUpPage = () => {
+export const Signup = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
+  const navigation = useNavigation<RootRoutes>();
+
   const [name, setName] = useState('');
   const [otp, setOtp] = useState('');
   const [number, setNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [session, setSession] = useState<CognitoUser | ErrorTypes | null>(null);
+
   const [isPinComplete, setIsPinComplete] = useState(false);
   const maximumCodeLength = 6;
 
@@ -95,6 +102,7 @@ const SignUpPage = () => {
       global_dispatch({type: 'SET_AUTH_USER', payload: result});
     }
     setLoading(false);
+    navigation.navigate(CONST_SCREEN_HOME);
   };
 
   const handleAuth = async () => {
@@ -150,15 +158,22 @@ const SignUpPage = () => {
             )}
           </View>
           <View style={styles.buttonContainer}>
-            <ActionButton
-              label="Sign Up"
-              onPress={handleSignUp}
-              disabled={!(isValidName() && isValidNumber()) || hasLoaded}
-            />
-            <ActionButton label="OTP" onPress={handleConfirmOTP} disabled={isPinComplete ? false : true} />
-            <ActionButton label="Sign In" onPress={handleSignIn} disabled />
-            <ActionButton label="Auth" onPress={handleAuth} disabled />
-            <ActionButton label="Sign Out" onPress={handleSignOut} disabled />
+            {!hasLoaded ? (
+              <Footer
+                buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
+                onPress={() => setHasLoaded(true)}
+                buttonText="Sign Up"
+              />
+            ) : (
+              <Footer
+                buttonDisabled={!isPinComplete}
+                onPress={() => navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME})}
+                buttonText="Confirm OTP"
+              />
+            )}
+            {/* <ActionButton label='Sign In' onPress={handleSignIn} disabled /> */}
+            {/* <ActionButton label='Auth' onPress={handleAuth} disabled /> */}
+            {/* <ActionButton label='Sign Out' onPress={handleSignOut} disabled /> */}
           </View>
         </>
       )}
@@ -171,15 +186,16 @@ const styles = StyleSheet.create({
     marginTop: Spacings.s10,
   },
   buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
     justifyContent: 'flex-end',
-    marginBottom: '4%',
+    paddingVertical: Spacings.s3,
   },
   loadingContainer: {
-    // flex: 1,
     paddingTop: '60%',
+    paddingLeft: '3%',
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
-
-export default SignUpPage;

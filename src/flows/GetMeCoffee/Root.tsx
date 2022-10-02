@@ -4,6 +4,12 @@ import {GlobalContext} from '../../contexts';
 import {getCommonItems} from '../../utils/queries/datastore';
 import {DataStore, SortDirection} from 'aws-amplify';
 import {Item} from '../../models';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {CoffeeRoutes} from '../../utils/types/navigation.types';
+import {Home} from './screens/Home';
+import {PreviewPage} from './screens/PreviewPage';
+import {WhatPage} from './screens/WhatPage';
+import {WhenPage} from './screens/WhenPage';
 
 /**
  * Top/Root level component of the "Get me Coffee" flow.
@@ -12,6 +18,7 @@ import {Item} from '../../models';
  */
 const Root = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
+  const CoffeeStack = createNativeStackNavigator<CoffeeRoutes>();
 
   /**
    * Get all the common items from the database and subscribe to any changes to them.
@@ -31,22 +38,18 @@ const Root = () => {
   }, [global_dispatch]);
 
   return (
-    <View style={styles.container}>
-      <Pressable
-        onPress={async () => {
-          const items = await getCommonItems();
-          console.log('items: ', JSON.stringify(items, null, 2));
-          console.log(global_state.common_items);
-        }}
-        style={({pressed}) => [
-          {
-            backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
-          },
-          styles.wrapperCustom,
-        ]}>
-        {({pressed}) => <Text style={styles.text}>{pressed ? 'Pressed!' : 'Get me coffee'}</Text>}
-      </Pressable>
-    </View>
+    <CoffeeStack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+      }}>
+      <CoffeeStack.Screen name="Home" component={Home} />
+      <CoffeeStack.Screen name="WhatPage" component={WhatPage} />
+      <CoffeeStack.Screen name="WhenPage" component={WhenPage} />
+      <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
+    </CoffeeStack.Navigator>
   );
 };
 

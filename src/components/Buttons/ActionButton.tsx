@@ -30,14 +30,16 @@ export const ActionButton = (props: ActionButtonProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 8,
+    borderRadius: Spacings.s3,
     padding: Spacings.s4,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: Spacings.s4,
+    borderColor: Colors.greyLight2,
+    borderWidth: 2,
   },
   disabledColor: {
-    backgroundColor: Colors.greenFaded1,
+    backgroundColor: Colors.greenFaded2,
   },
   activeColor: {
     backgroundColor: Colors.green3,
