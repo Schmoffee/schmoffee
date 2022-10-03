@@ -1,4 +1,4 @@
-import {GlobalAction, GlobalState, HubPayload} from './types';
+import {GlobalAction, GlobalState, HubPayload} from './types/data.types';
 import {AuthState} from './enums';
 import {Dispatch} from 'react';
 import {updateAuthState} from './queries/datastore';

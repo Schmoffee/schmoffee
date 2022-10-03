@@ -197,13 +197,10 @@ export declare class Cafe {
 
 export declare class User {
   readonly id: string;
-  readonly is_signed_in?: boolean | null;
-  readonly phone?: string | null;
-  readonly name?: string | null;
+  readonly is_signed_in: boolean;
+  readonly phone: string;
+  readonly name: string;
   readonly payment_method?: string | null;
-  readonly latitude?: number | null;
-  readonly longitude?: number | null;
-  readonly is_locatable: boolean;
   readonly ratings?: (Rating | null)[] | null;
   readonly past_orders?: (PastOrder | null)[] | null;
   readonly the_usual?: UsualOrder | null;

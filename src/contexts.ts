@@ -1,23 +1,50 @@
 import React from 'react';
-import {GlobalState} from './utils/types';
+import {GlobalState, OrderingState, TrackOrderState} from './utils/types/data.types';
 import {AuthState} from './utils/enums';
 
-export const initalData: GlobalState = {
+export const globalData: GlobalState = {
   auth_state: AuthState.SIGNED_OUT,
-  common_items: [],
   current_user: null,
-  scheduled_time: null,
-  current_shop: null,
-  common_basket: [],
-  specific_basket: [],
   auth_user: null,
   network_status: false,
 };
 
-export const GlobalContext = React.createContext<{
+export const trackOrderData: TrackOrderState = {
+  current_order: null,
+  is_locatable: false,
+  location: null,
+};
+
+export const orderingData: OrderingState = {
+  current_shop: null,
+  common_basket: [],
+  scheduled_time: null,
+  specific_basket: [],
+  common_items: [],
+};
+
+const GlobalContext = React.createContext<{
   global_state: GlobalState;
   global_dispatch: React.Dispatch<any>;
 }>({
-  global_state: initalData,
+  global_state: globalData,
   global_dispatch: () => null,
 });
+
+const TrackOrderContext = React.createContext<{
+  track_order_state: TrackOrderState;
+  track_order_dispatch: React.Dispatch<any>;
+}>({
+  track_order_state: trackOrderData,
+  track_order_dispatch: () => null,
+});
+
+const OrderingContext = React.createContext<{
+  ordering_state: OrderingState;
+  ordering_dispatch: React.Dispatch<any>;
+}>({
+  ordering_state: orderingData,
+  ordering_dispatch: () => null,
+});
+
+export {TrackOrderContext, GlobalContext, OrderingContext};

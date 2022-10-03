@@ -54,6 +54,29 @@ async function getFreeTime() {
 }
 
 /**
+ * Set the time when the app can be used again.
+ */
+async function setIsLocatable(isLocatable: boolean) {
+  try {
+    await AsyncStorage.setItem('@IsLocatable', String(isLocatable));
+  } catch (err) {
+    console.log('Error setting isLocatable ', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function getIsLocatable() {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@IsLocatable');
+    return jsonValue === 'true';
+  } catch (err) {
+    console.log('Error getting isLocatable', err);
+  }
+}
+
+/**
  * Returns the storage shop key
  * @return Number The key of the shop
  */
@@ -160,4 +183,6 @@ export {
   getCurrentShopId,
   setFreeTime,
   getFreeTime,
+  getIsLocatable,
+  setIsLocatable,
 };

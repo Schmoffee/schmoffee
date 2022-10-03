@@ -22,6 +22,8 @@ import {useNavigation} from '@react-navigation/native';
 import {RootRoutes} from '../../../utils/types/navigation.types';
 import {CONST_SCREEN_HOME} from '../../../../constants';
 import {getFreeTime, setFreeTime} from '../../../utils/storage';
+import {LocalUser} from '../../../utils/types/data.types';
+import {User} from '../../../models';
 
 const Signup = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
@@ -72,8 +74,7 @@ const Signup = () => {
       global_dispatch({type: 'SET_AUTH_USER', payload: result});
       setSession(result);
     }
-    // TODO: Gather the location preference and payment method and pass it here
-    await createSignUpUser(number, name, true, 'stripe');
+    await createSignUpUser(number, name);
     await handleSignIn();
   };
 
@@ -120,13 +121,25 @@ const Signup = () => {
       // TODO: Handle the error appropriately depending on the error type
     } else {
       // TODO: Make sure the number is available and up to date where this query is called.
-      const finalUser = await getUserByPhoneNumber(number);
-      global_dispatch({
-        type: 'SET_CURRENT_USER',
-        payload: finalUser,
-      });
-      await updateAuthState(number, true);
-      global_dispatch({type: 'SET_AUTH_USER', payload: result});
+      const finalUser: User | null = await getUserByPhoneNumber(number);
+      if (finalUser) {
+        const localUser: LocalUser = {
+          id: finalUser.id,
+          name: finalUser.name,
+          is_signed_in: finalUser.is_signed_in,
+          phone: finalUser.phone,
+          payment_method: finalUser.payment_method,
+          the_usual: finalUser.the_usual,
+        };
+        global_dispatch({
+          type: 'SET_CURRENT_USER',
+          payload: localUser,
+        });
+        await updateAuthState(number, true);
+        global_dispatch({type: 'SET_AUTH_USER', payload: result});
+      } else {
+        console.log('We have a problem');
+      }
     }
     setLoading(false);
     navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});

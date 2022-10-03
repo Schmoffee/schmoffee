@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Colors, Spacings} from '../../../theme';
-import {FooterType} from '../../utils/types/common.types';
+import {Spacings} from '../../../theme';
+import {FooterType} from '../../utils/types/component.types';
 import {ActionButton} from '../Buttons/ActionButton';
 
 export const Footer = (props: FooterType) => {
