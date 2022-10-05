@@ -1,5 +1,6 @@
 import { ModelInit, MutableModel } from "@aws-amplify/datastore";
 
+
 export enum OptionType {
   BEAN = "BEAN",
   SYRUP = "SYRUP",
@@ -145,11 +146,11 @@ export declare class Item {
   readonly id: string;
   readonly name: string;
   readonly price: number;
-  readonly image?: string | null;
-  readonly is_common: boolean;
-  readonly is_in_stock: boolean;
-  readonly preparation_time: number;
-  readonly cafeID: string;
+  readonly image?: ImageProps | null;
+  readonly is_common?: boolean;
+  readonly is_in_stock?: boolean;
+  readonly preparation_time?: number;
+  readonly cafeID?: string;
   readonly ratings?: (Rating | null)[] | null;
   readonly options?: (Option | null)[] | null;
   readonly type?: ItemType | keyof typeof ItemType | null;
