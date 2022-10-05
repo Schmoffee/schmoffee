@@ -1,6 +1,6 @@
 import React, {useEffect, useReducer} from 'react';
 import {globalReducer} from './reducers';
-import {GlobalContext, initalData} from './contexts';
+import {GlobalContext, globalData} from './contexts';
 import awsConfig from './aws-exports';
 import {Amplify} from 'aws-amplify';
 Amplify.configure(awsConfig);
@@ -11,9 +11,10 @@ import {AuthState} from './utils/enums';
 import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Navigator from './navigation/Navigator';
+import {LocalUser} from './utils/types/data.types';
 
 const App = () => {
-  const [global_state, global_dispatch] = useReducer(globalReducer, initalData);
+  const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
 
   useEffect(() => {
     const auth_hub = Hub.listen('auth', data => authListener(data, global_state, global_dispatch));
@@ -37,13 +38,25 @@ const App = () => {
           });
         }
         const currentUser = await getUserByPhoneNumber(user.getUsername());
-        console.log(currentUser);
-        global_dispatch({
-          type: 'SET_CURRENT_USER',
-          payload: currentUser,
-        });
-        await updateAuthState(currentUser?.id as string, true);
-        global_dispatch({type: 'SET_AUTH_USER', payload: user});
+        if (currentUser) {
+          const localUser: LocalUser = {
+            id: currentUser.id,
+            name: currentUser.name,
+            is_signed_in: currentUser.is_signed_in,
+            phone: currentUser.phone,
+            payment_method: currentUser.payment_method,
+            the_usual: currentUser.the_usual,
+          };
+          console.log(currentUser);
+          global_dispatch({
+            type: 'SET_CURRENT_USER',
+            payload: localUser,
+          });
+          await updateAuthState(currentUser?.id as string, true);
+          global_dispatch({type: 'SET_AUTH_USER', payload: user});
+        } else {
+          console.log('We have a problem');
+        }
       }
     };
 

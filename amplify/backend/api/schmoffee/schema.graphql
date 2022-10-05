@@ -137,15 +137,11 @@ type Rating @model @auth(rules: [{allow: public}]) {
 
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
-  is_signed_in: Boolean
-  phone: AWSPhone
-  name: String
+  is_signed_in: Boolean!
+  phone: AWSPhone!
+  name: String!
   payment_method: String
-  latitude: Float
-  longitude: Float
-  is_locatable: Boolean!
   ratings: [Rating] @hasMany(indexName: "byUser", fields: ["id"])
   past_orders: [PastOrder] @hasMany(indexName: "byUser", fields: ["id"])
   the_usual: UsualOrder
 }
- 

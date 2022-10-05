@@ -805,21 +805,21 @@ export const schema = {
                     "name": "is_signed_in",
                     "isArray": false,
                     "type": "Boolean",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "phone": {
                     "name": "phone",
                     "isArray": false,
                     "type": "AWSPhone",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "name": {
                     "name": "name",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "payment_method": {
@@ -827,27 +827,6 @@ export const schema = {
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
-                    "attributes": []
-                },
-                "latitude": {
-                    "name": "latitude",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "longitude": {
-                    "name": "longitude",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "is_locatable": {
-                    "name": "is_locatable",
-                    "isArray": false,
-                    "type": "Boolean",
-                    "isRequired": true,
                     "attributes": []
                 },
                 "ratings": {
@@ -1149,5 +1128,5 @@ export const schema = {
             }
         }
     },
-    "version": "6f629952cbbddf641c2d60aeb6a6236d"
+    "version": "e55856e91dc5d4c82d593a3dbfbf6055"
 };

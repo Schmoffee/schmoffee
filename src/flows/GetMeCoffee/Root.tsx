@@ -1,7 +1,6 @@
-import React, {useContext, useEffect} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {GlobalContext} from '../../contexts';
-import {getCommonItems} from '../../utils/queries/datastore';
+import React, {useContext, useEffect, useReducer} from 'react';
+import {StyleSheet} from 'react-native';
+import {GlobalContext, orderingData, OrderingContext} from '../../contexts';
 import {DataStore, SortDirection} from 'aws-amplify';
 import {Item} from '../../models';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -10,6 +9,7 @@ import {Home} from './screens/Home';
 import {PreviewPage} from './screens/PreviewPage';
 import {WhatPage} from './screens/WhatPage';
 import {WhenPage} from './screens/WhenPage';
+import {orderingReducer} from '../../reducers';
 
 /**
  * Top/Root level component of the "Get me Coffee" flow.
@@ -18,6 +18,7 @@ import {WhenPage} from './screens/WhenPage';
  */
 const Root = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
+  const [ordering_state, ordering_dispatch] = useReducer(orderingReducer, orderingData);
   const CoffeeStack = createNativeStackNavigator<CoffeeRoutes>();
 
   /**
@@ -38,40 +39,21 @@ const Root = () => {
   }, [global_dispatch]);
 
   return (
-    <CoffeeStack.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: true,
-        gestureDirection: 'horizontal',
-      }}>
-      <CoffeeStack.Screen name="Home" component={Home} />
-      <CoffeeStack.Screen name="WhatPage" component={WhatPage} />
-      <CoffeeStack.Screen name="WhenPage" component={WhenPage} />
-      <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
-    </CoffeeStack.Navigator>
+    <OrderingContext.Provider value={{ordering_state, ordering_dispatch}}>
+      <CoffeeStack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerShown: false,
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+        }}>
+        <CoffeeStack.Screen name="Home" component={Home} />
+        <CoffeeStack.Screen name="WhatPage" component={WhatPage} />
+        <CoffeeStack.Screen name="WhenPage" component={WhenPage} />
+        <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
+      </CoffeeStack.Navigator>
+    </OrderingContext.Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  text: {
-    fontSize: 16,
-  },
-  wrapperCustom: {
-    borderRadius: 8,
-    padding: 6,
-  },
-  logBox: {
-    padding: 20,
-    margin: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#f0f0f0',
-    backgroundColor: '#f9f9f9',
-  },
-});
 
 export default Root;
