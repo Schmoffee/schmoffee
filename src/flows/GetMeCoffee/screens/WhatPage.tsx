@@ -1,11 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useReducer } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useContext, useReducer, useState } from 'react';
+import { View, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { CONST_SCREEN_WHEN } from '../../../../constants';
 import { Colors, Spacings } from '../../../../theme';
 import { CardSection } from '../../../components/CardSection';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { GlobalContext, OrderingContext, orderingData } from '../../../contexts';
 import { DATA_ITEMS } from '../../../data/items.data';
+import { Item } from '../../../models';
+import { orderingReducer } from '../../../reducers';
 import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 
 
@@ -13,24 +16,68 @@ interface WhatPageProps { }
 
 export const WhatPage = (props: WhatPageProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
-  const coffees = DATA_ITEMS.filter((item) => item.family === 'Coffee');
-  const pastries = DATA_ITEMS.filter((item) => item.family === 'Pastry');
-  const juices = DATA_ITEMS.filter((item) => item.family === 'Juice');
+  const [items, setItems] = useState(DATA_ITEMS);
+  const [ordering_state, ordering_dispatch] = useReducer(orderingReducer, orderingData);
+  const basket = ordering_state.common_basket;
+
+  const [query, setQuery] = useState('');
+
+
+  const getCoffees = () => {
+    return items.filter((item) => item.family === 'Coffee');
+  };
+  const getJuices = () => {
+    return items.filter((item) => item.family === 'Juice');
+  };
+  const getPastries = () => {
+    return items.filter((item) => item.family === 'Pastry');
+  };
+
+  const contains = ({ name }: Item, query: string) => {
+    const nameLower = name.toLowerCase();
+    if (nameLower.includes(query)) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleSearch = (text: string) => {
+    const formattedQuery = text.toLowerCase();
+    const filteredData = DATA_ITEMS.filter((item) => {
+      return contains(item, formattedQuery);
+    });
+    setItems(filteredData);
+    setQuery(text)
+  };
+
+
+
 
   return (
     <PageLayout
       header="What do you crave?"
       footer={{
-        buttonDisabled: false,
+        buttonDisabled: !(basket.length > 0),
         onPress: () => navigation.navigate(CONST_SCREEN_WHEN),
         buttonText: 'Continue',
       }}
     >
-      {/* <View style={styles.container}> */}
+      <View
+        style={styles.searchInputContainer}
+      >
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          clearButtonMode="always"
+          value={query}
+          onChangeText={queryText => handleSearch(queryText)}
+          placeholder="Search"
+        />
+      </View>
       <ScrollView style={styles.container}>
-        <CardSection title="Coffee" items={coffees} />
-        <CardSection title="Juices" items={juices} />
-        <CardSection title="Pastries" items={pastries} />
+        <CardSection title="Coffee" items={getCoffees()} />
+        <CardSection title="Juices" items={getJuices()} />
+        <CardSection title="Pastries" items={getPastries()} />
       </ScrollView>
     </PageLayout >
   );
@@ -38,6 +85,14 @@ export const WhatPage = (props: WhatPageProps) => {
 
 const styles = StyleSheet.create({
   container: {
-
   },
+  searchInputContainer: {
+    backgroundColor: Colors.greyLight1,
+    borderRadius: Spacings.s5,
+    padding: Spacings.s2,
+    marginTop: -Spacings.s2,
+    marginHorizontal: Spacings.s4,
+    marginBottom: Spacings.s2,
+  },
+
 });

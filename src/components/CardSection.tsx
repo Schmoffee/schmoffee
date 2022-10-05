@@ -15,20 +15,27 @@ export const CardSection = (props: CardSectionProps) => {
     return (
         <View style={styles.container}>
             <Body size='large' weight='Bold' color={Colors.darkBrown2}>{title}</Body>
-            <FlatList
-                horizontal
-                data={items}
-                contentContainerStyle={{ paddingVertical: 16 }}
-                contentInsetAdjustmentBehavior="never"
-                snapToAlignment="center"
-                decelerationRate="fast"
-                automaticallyAdjustContentInsets={false}
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-                scrollEventThrottle={1}
-                renderItem={({ item }) => <CardItem item={item} />}
-                keyExtractor={(item) => item.id}
-            />
+            {items && items.length > 0 ? (
+                <FlatList
+                    horizontal
+                    data={items}
+                    contentContainerStyle={{ paddingVertical: 16 }}
+                    contentInsetAdjustmentBehavior="never"
+                    snapToAlignment="center"
+                    decelerationRate="fast"
+                    automaticallyAdjustContentInsets={false}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    scrollEventThrottle={1}
+                    renderItem={({ item }) => <CardItem item={item} />}
+                    keyExtractor={(item) => item.id}
+                />
+            ) : (
+                <View style={styles.emptyContainer}>
+                    <Body size='medium' weight='Black' color={Colors.darkBrown2}>Uh oh... there's nothing here!</Body>
+                </View>
+            )}
+
         </View>
     )
 }
@@ -39,12 +46,14 @@ const styles = StyleSheet.create({
         marginVertical: Spacings.s1,
         borderBottomColor: Colors.brownFaded2,
         borderBottomWidth: 2,
-        // borderTopColor: Colors.goldFaded2,
-        // borderTopWidth: 1,
-        // borderWidth: 1,
     },
     cardContainer: {
         flexDirection: 'row',
-        // flexWrap: 'wrap',
     },
+    emptyContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: Spacings.s2,
+    },
+
 })

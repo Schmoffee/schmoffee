@@ -29,14 +29,14 @@ const Root = () => {
       sort: item => item.type(SortDirection.ASCENDING),
     }).subscribe(snapshot => {
       const { items, isSynced } = snapshot;
-      global_dispatch({ type: 'SET_COMMON_ITEMS', payload: items });
+      ordering_dispatch({ type: 'SET_COMMON_ITEMS', payload: items });
       if (isSynced) {
         console.log('Synced');
       }
       console.log('items: synced? ', isSynced, ' list: ', JSON.stringify(items, null, 2));
     });
     return () => subscription.unsubscribe();
-  }, [global_dispatch]);
+  }, [ordering_dispatch]);
 
   return (
     <OrderingContext.Provider value={{ ordering_state, ordering_dispatch }}>

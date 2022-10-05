@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: '100%',
-        paddingVertical: Spacings.s3,
+        // paddingVertical: Spacings.s3,
+        // backgroundColor: Colors.goldFaded4,
     },
 
     childrenContainer: {
