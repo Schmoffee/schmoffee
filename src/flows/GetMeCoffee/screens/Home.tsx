@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { View, StyleSheet, Pressable, TouchableOpacity, Text } from 'react-native';
-import { CONST_SCREEN_SIGNUP, CONST_SCREEN_WHAT } from '../../../../constants';
+import { CONST_SCREEN_LOGIN, CONST_SCREEN_SIGNUP, CONST_SCREEN_WHAT } from '../../../../constants';
 import { Body } from '../../../../typography';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
 import { signOut } from '../../../utils/queries/auth';

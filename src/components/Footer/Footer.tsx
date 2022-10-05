@@ -8,11 +8,9 @@ export const Footer = (props: FooterType) => {
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
         setKeyboardVisible(true);
-        console.log('keyboard visible');
     });
     const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
         setKeyboardVisible(false);
-        console.log('keyboard hidden');
     });
     return (
         <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} enabled keyboardVerticalOffset={210}>

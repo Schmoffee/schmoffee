@@ -26,7 +26,7 @@ import { LocalUser } from '../../../utils/types/data.types';
 import { User } from '../../../models';
 import { Body } from '../../../../typography';
 
-const Signup = () => {
+export const Signup = () => {
   const { global_state, global_dispatch } = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
 
@@ -166,12 +166,6 @@ const Signup = () => {
       });
     }
   };
-
-
-
-
-
-
 
   const isValidNumber = useCallback(() => {
     return number.length === 13;
