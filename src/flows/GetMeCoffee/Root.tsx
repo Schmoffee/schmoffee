@@ -1,15 +1,15 @@
-import React, {useContext, useEffect} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {GlobalContext} from '../../contexts';
-import {getCommonItems} from '../../utils/queries/datastore';
-import {DataStore, SortDirection} from 'aws-amplify';
-import {Item} from '../../models';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {CoffeeRoutes} from '../../utils/types/navigation.types';
-import {Home} from './screens/Home';
-import {PreviewPage} from './screens/PreviewPage';
-import {WhatPage} from './screens/WhatPage';
-import {WhenPage} from './screens/WhenPage';
+import React, { useContext, useEffect } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { GlobalContext } from '../../contexts';
+import { getCommonItems } from '../../utils/queries/datastore';
+import { DataStore, SortDirection } from 'aws-amplify';
+import { Item } from '../../models';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { CoffeeRoutes } from '../../utils/types/navigation.types';
+import { Home } from './screens/Home';
+import { PreviewPage } from './screens/PreviewPage';
+import { WhatPage } from './screens/WhatPage';
+import { WhenPage } from './screens/WhenPage';
 
 /**
  * Top/Root level component of the "Get me Coffee" flow.
@@ -17,7 +17,7 @@ import {WhenPage} from './screens/WhenPage';
  * @constructor
  */
 const Root = () => {
-  const {global_state, global_dispatch} = useContext(GlobalContext);
+  const { global_state, global_dispatch } = useContext(GlobalContext);
   const CoffeeStack = createNativeStackNavigator<CoffeeRoutes>();
 
   /**
@@ -27,8 +27,8 @@ const Root = () => {
     const subscription = DataStore.observeQuery(Item, item => item.is_common('eq', true), {
       sort: item => item.type(SortDirection.ASCENDING),
     }).subscribe(snapshot => {
-      const {items, isSynced} = snapshot;
-      global_dispatch({type: 'SET_COMMON_ITEMS', payload: items});
+      const { items, isSynced } = snapshot;
+      global_dispatch({ type: 'SET_COMMON_ITEMS', payload: items });
       if (isSynced) {
         console.log('Synced');
       }
@@ -38,13 +38,11 @@ const Root = () => {
   }, [global_dispatch]);
 
   return (
-    <CoffeeStack.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: true,
-        gestureDirection: 'horizontal',
-      }}>
+    <CoffeeStack.Navigator initialRouteName="Home" screenOptions={{
+      headerShown: false,
+      gestureEnabled: true,
+      gestureDirection: 'horizontal',
+    }}>
       <CoffeeStack.Screen name="Home" component={Home} />
       <CoffeeStack.Screen name="WhatPage" component={WhatPage} />
       <CoffeeStack.Screen name="WhenPage" component={WhenPage} />

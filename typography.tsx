@@ -1,6 +1,6 @@
-import React, {FC, PropsWithChildren} from 'react';
-import {Text, StyleSheet, TextProps} from 'react-native';
-import {Colors} from './theme';
+import React, { FC, PropsWithChildren } from 'react';
+import { Text, StyleSheet, TextProps } from 'react-native';
+import { Colors } from './theme';
 
 interface BodyProps extends TextProps, PropsWithChildren {
   style?: any;
@@ -22,9 +22,9 @@ const bodyFontSizes = {
   large: 18,
 };
 
-export const Body: FC<BodyProps> = ({children, style, color, weight, size, ...props}) => {
+export const Body: FC<BodyProps> = ({ children, style, color, weight, size, ...props }) => {
   const textColor = color ? color : Colors.black;
-  const fontFamily = weight ? 'ProximaNova-' + weight : 'ProximaNovaT-Thin';
+  const fontFamily = weight ? 'ProximaNova-' + weight : weight === 'Thin' ? 'ProximaNovaT-Thin' : 'ProximaNova-Regular';
   let fontSize;
   switch (size) {
     case 'small':
@@ -57,7 +57,7 @@ const headingFontSizes = {
   large: 52,
 };
 
-export const Heading: FC<HeadingProps> = ({children, style, color, weight, size, ...props}) => {
+export const Heading: FC<HeadingProps> = ({ children, style, color, weight, size, ...props }) => {
   const textColor = color ? color : Colors.black;
   const fontFamily = weight ? 'ProximaNova-' + weight : weight === 'Thin' ? 'ProximaNovaT-Thin' : 'ProximaNova-Regular';
   let fontSize;
@@ -84,7 +84,7 @@ export const Heading: FC<HeadingProps> = ({children, style, color, weight, size,
   );
 };
 
-export const Error: FC<BodyProps> = ({children}) => {
+export const Error: FC<BodyProps> = ({ children }) => {
   return (
     <Body weight={'Bold'} size={'small'} color={Colors.red}>
       {children}
