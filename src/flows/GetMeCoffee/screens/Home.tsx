@@ -1,13 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { CONST_SCREEN_LOGIN, CONST_SCREEN_WHAT } from '../../../../constants';
+import React, { useContext } from 'react';
+import { View, StyleSheet, Pressable, TouchableOpacity, Text } from 'react-native';
+import { CONST_SCREEN_SIGNUP, CONST_SCREEN_WHAT } from '../../../../constants';
 import { Body } from '../../../../typography';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { signOut } from '../../../utils/queries/auth';
 import { RootRoutes } from '../../../utils/types/navigation.types';
+import { Cafe, OrderInfo, OrderItem, OrderStatus, User, UserInfo } from '../../../models';
+import { getBestShop, sendOrder } from '../../../utils/queries/datastore';
+import { GlobalContext, OrderingContext } from '../../../contexts';
 
 
 export const Home = () => {
+  const { global_state, global_dispatch } = useContext(GlobalContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const navigation = useNavigation<RootRoutes>();
 
   const handleLogOut = async () => {
@@ -30,6 +36,52 @@ export const Home = () => {
           </Body>
         </View>
       </TouchableOpacity>
+      <View>
+        <Pressable
+          style={({ pressed }) => [
+            {
+              backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+            },
+          ]}
+          onPress={async () => {
+            // TODO: If a current order is already running, deny.
+            console.log('started');
+            const best_shop: Cafe | null = await getBestShop();
+            ordering_dispatch({ type: 'SET_CURRENT_SHOP', payload: best_shop });
+            if (global_state.current_user && best_shop) {
+              const user: User = global_state.current_user;
+              let ordered_items: OrderItem[] = [];
+              let total = 0;
+              for (const common_item of ordering_state.common_items) {
+                const order_item: OrderItem = {
+                  name: common_item.name,
+                  price: common_item.price,
+                  options: null,
+                };
+                ordered_items.push(order_item);
+                total += common_item.price;
+              }
+              const order_info: OrderInfo = {
+                sent_time: new Date().toISOString(),
+                status: OrderStatus.RECEIVED,
+                scheduled_times: [new Date(Date.now() + 30 * 60000).toISOString()],
+              };
+              const user_info: UserInfo = { name: user.name as string, phone: user.phone as string };
+              console.log('sending order');
+              const order_id: string = await sendOrder(
+                ordered_items,
+                total,
+                order_info,
+                best_shop.id,
+                global_state.current_user.id,
+                user_info,
+              );
+              console.log(order_id);
+            }
+          }}>
+          <Text>Send Order</Text>
+        </Pressable>
+      </View>
     </PageLayout>
   );
 };

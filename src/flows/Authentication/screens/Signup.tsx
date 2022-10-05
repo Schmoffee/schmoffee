@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import React, { useCallback, useContext, useState } from 'react';
 import { Keyboard, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+=======
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {StatusBar, StyleSheet, View} from 'react-native';
+>>>>>>> 11b0bb5374f7817488c9553b09dc981ce3e6538a
 import FormField from '../../../components/FormField';
 import {
   getCurrentAuthUser,
@@ -9,10 +14,11 @@ import {
   signOut,
   signUp,
 } from '../../../utils/queries/auth';
-import { GlobalContext } from '../../../contexts';
-import { CognitoUser } from 'amazon-cognito-identity-js';
-import { AuthState, ErrorTypes } from '../../../utils/enums';
+import {GlobalContext} from '../../../contexts';
+import {CognitoUser} from 'amazon-cognito-identity-js';
+import {AuthState, ErrorTypes} from '../../../utils/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
+<<<<<<< HEAD
 import { createSignUpUser, getUserByPhoneNumber, updateAuthState } from '../../../utils/queries/datastore';
 import { Colors, Spacings } from '../../../../theme';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
@@ -25,6 +31,22 @@ import { Body } from '../../../../typography';
 
 export const Signup = () => {
   const { global_state, global_dispatch } = useContext(GlobalContext);
+=======
+import {createSignUpUser, getUserByPhoneNumber, updateAuthState} from '../../../utils/queries/datastore';
+import {Spacings} from '../../../../theme';
+import {PageLayout} from '../../../components/Layouts/PageLayout';
+import {InputOTP} from '../../../components/InputComponents/InputOTP';
+import {Footer} from '../../../components/Footer/Footer';
+import {useNavigation} from '@react-navigation/native';
+import {RootRoutes} from '../../../utils/types/navigation.types';
+import {CONST_SCREEN_HOME} from '../../../../constants';
+import {getFreeTime, setFreeTime} from '../../../utils/storage';
+import {LocalUser} from '../../../utils/types/data.types';
+import {User} from '../../../models';
+
+const Signup = () => {
+  const {global_state, global_dispatch} = useContext(GlobalContext);
+>>>>>>> 11b0bb5374f7817488c9553b09dc981ce3e6538a
   const navigation = useNavigation<RootRoutes>();
 
   const [name, setName] = useState('');
@@ -33,10 +55,32 @@ export const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [session, setSession] = useState<CognitoUser | ErrorTypes | null>(null);
-
-  const [isPinComplete, setIsPinComplete] = useState(false);
+  const [isPinComplete, setIsPinComplete] = useState<boolean>(false);
+  const [trials, setTrials] = useState<number>(0);
+  const [isLocked, setIsLocked] = useState<boolean>(false);
   const maximumCodeLength = 6;
 
+<<<<<<< HEAD
+=======
+  useEffect(() => {
+    let timeoutID: string | number | NodeJS.Timeout | undefined;
+    async function unlock() {
+      const target = await getFreeTime();
+      let remaining_time;
+      if (target && (remaining_time = +target - Date.now()) > 1000) {
+        timeoutID = setTimeout(() => {
+          setIsLocked(false);
+        }, remaining_time);
+      }
+    }
+    if (isLocked) {
+      unlock().catch(e => console.log(e));
+    }
+    return () => {
+      if (timeoutID) clearTimeout(timeoutID);
+    };
+  }, [isLocked]);
+>>>>>>> 11b0bb5374f7817488c9553b09dc981ce3e6538a
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -46,15 +90,14 @@ export const Signup = () => {
         type: 'SET_AUTH_STATE',
         payload: AuthState.SIGNING_UP_FAILED,
       });
-      global_dispatch({ type: 'SET_AUTH_USER', payload: null });
+      global_dispatch({type: 'SET_AUTH_USER', payload: null});
       setSession(null);
       // TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
     } else {
-      global_dispatch({ type: 'SET_AUTH_USER', payload: result });
+      global_dispatch({type: 'SET_AUTH_USER', payload: result});
       setSession(result);
     }
-    // TODO: Gather the location preference and payment method and pass it here
-    await createSignUpUser(number, name, true, 'stripe');
+    await createSignUpUser(number, name);
     await handleSignIn();
   };
 
@@ -67,20 +110,27 @@ export const Signup = () => {
       // TODO: Alert the user that they will be signed out of all other devices.
       await globalSignOut();
     }
-    const newSession = await signIn(number);
-    if (newSession && newSession instanceof CognitoUser) {
-      setSession(newSession);
-      global_dispatch({
-        type: 'SET_AUTH_STATE',
-        payload: AuthState.CONFIRMING_OTP,
-      });
-      global_dispatch({ type: 'SET_AUTH_USER', payload: newSession });
+    if (trials <= 2) {
+      const newSession = await signIn(number);
+      setTrials(prev => prev + 1);
+      if (newSession && newSession instanceof CognitoUser) {
+        setSession(newSession);
+        global_dispatch({
+          type: 'SET_AUTH_STATE',
+          payload: AuthState.CONFIRMING_OTP,
+        });
+        global_dispatch({type: 'SET_AUTH_USER', payload: newSession});
+      } else {
+        // TODO: Handle the error appropriately depending on the error type
+        setSession(null);
+      }
+      setHasLoaded(true);
+      setLoading(false);
     } else {
-      // TODO: Handle the error appropriately depending on the error type
-      setSession(null);
+      setIsLocked(true);
+      await setFreeTime(Date.now() + 60 * 60000);
+      console.log('You tried more than 3 times, you are blocked for 1 hour');
     }
-    setHasLoaded(true);
-    setLoading(false);
   };
 
   const handleConfirmOTP = async () => {
@@ -94,16 +144,28 @@ export const Signup = () => {
       // TODO: Handle the error appropriately depending on the error type
     } else {
       // TODO: Make sure the number is available and up to date where this query is called.
-      const finalUser = await getUserByPhoneNumber(number);
-      global_dispatch({
-        type: 'SET_CURRENT_USER',
-        payload: finalUser,
-      });
-      await updateAuthState(number, true);
-      global_dispatch({ type: 'SET_AUTH_USER', payload: result });
+      const finalUser: User | null = await getUserByPhoneNumber(number);
+      if (finalUser) {
+        const localUser: LocalUser = {
+          id: finalUser.id,
+          name: finalUser.name,
+          is_signed_in: finalUser.is_signed_in,
+          phone: finalUser.phone,
+          payment_method: finalUser.payment_method,
+          the_usual: finalUser.the_usual,
+        };
+        global_dispatch({
+          type: 'SET_CURRENT_USER',
+          payload: localUser,
+        });
+        await updateAuthState(number, true);
+        global_dispatch({type: 'SET_AUTH_USER', payload: result});
+      } else {
+        console.log('We have a problem');
+      }
     }
     setLoading(false);
-    navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
+    navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
   };
 
   const handleAuth = async () => {
@@ -146,7 +208,11 @@ export const Signup = () => {
     : 'Enter your name and phone number to sign up';
 
   return (
+<<<<<<< HEAD
     <PageLayout header="Sign up" subHeader={page_subheader} onPress={Keyboard.dismiss}>
+=======
+    <PageLayout header="Sign Up" subHeader={page_subheader}>
+>>>>>>> 11b0bb5374f7817488c9553b09dc981ce3e6538a
       <StatusBar translucent={true} backgroundColor="transparent" />
       {loading ? (
         <View style={styles.loadingContainer}>
@@ -164,6 +230,7 @@ export const Signup = () => {
               </>
             )}
           </View>
+<<<<<<< HEAD
           {/* <View style={styles.buttonContainer}> */}
           {!hasLoaded ? (
             <Footer
@@ -196,9 +263,31 @@ export const Signup = () => {
       )
       }
     </PageLayout >
+=======
+          <View style={styles.buttonContainer}>
+            {!hasLoaded ? (
+              <Footer
+                buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
+                onPress={handleSignIn}
+                buttonText="Sign Up"
+              />
+            ) : (
+              <Footer buttonDisabled={!isPinComplete} onPress={handleConfirmOTP} buttonText="Confirm OTP" />
+            )}
+            {/* <ActionButton label='Sign In' onPress={handleSignIn} disabled /> */}
+            {/* <ActionButton label='Auth' onPress={handleAuth} disabled /> */}
+            {/* <ActionButton label='Sign Out' onPress={handleSignOut} disabled /> */}
+          </View>
+        </>
+      )}
+    </PageLayout>
+>>>>>>> 11b0bb5374f7817488c9553b09dc981ce3e6538a
   );
 };
 
+export default Signup;
+
+// @ts-ignore
 const styles = StyleSheet.create({
   formContainer: {
     marginTop: Spacings.s1,

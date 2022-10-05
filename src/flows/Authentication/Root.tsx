@@ -1,10 +1,9 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {AuthRoutes} from '../../utils/types/navigation.types';
-import {Intro} from './screens/Intro';
-import {Login} from './screens/LogIn';
-import {Signup} from './screens/Signup';
+import { AuthRoutes } from '../../utils/types/navigation.types';
+import { Intro } from './screens/Intro';
+import { Login } from './screens/LogIn';
+import { Signup } from './screens/Signup';
 
 const Root = () => {
   const AuthStack = createNativeStackNavigator<AuthRoutes>();

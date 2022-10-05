@@ -1,28 +1,30 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {GlobalContext} from '../../contexts';
+import React, {useContext, useEffect, useReducer, useRef} from 'react';
+import {GlobalContext, TrackOrderContext, trackOrderData} from '../../contexts';
 import {DataStore} from 'aws-amplify';
-import {Cafe, CurrentOrder, OrderInfo, OrderItem, OrderStatus} from '../../models';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {getBestShop, sendOrder} from '../../utils/queries/datastore';
+import {CurrentOrder, User} from '../../models';
+import {Text, View} from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import {requestLocationPermission, subscribeToLocation} from '../../utils/location';
+import {getIsLocatable, setIsLocatable} from '../../utils/storage';
+import {trackOrderReducer} from '../../reducers';
 
 const Root = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
-  const [orderId, setOrderId] = useState<string>('');
+  const [track_order_state, track_order_dispatch] = useReducer(trackOrderReducer, trackOrderData);
+  const watchID = useRef<number>(); //used to watch the users location
 
   /**
-   * Get the user's curent order from the database and subscribe to any changes to it.
+   * Get the user's current order from the database and subscribe to any changes to it.
    */
   useEffect(() => {
-    if (global_state.auth_user && global_state.current_user && orderId !== '') {
+    if (global_state.auth_user && global_state.current_user) {
+      const user: User = global_state.current_user;
       const subscription = DataStore.observeQuery(CurrentOrder, current_order =>
-        current_order.id('eq', orderId),
+        current_order.userID('eq', user.id),
       ).subscribe(snapshot => {
         const {items, isSynced} = snapshot;
         if (items.length === 1) {
-          global_dispatch({
-            type: 'SET_CURRENT_USER',
-            payload: {...global_state.current_user, current_order: items[0]},
-          });
+          track_order_dispatch({type: 'SET_CURRENT_ORDER', payload: items[0]});
         } else {
           items.length === 0 ? console.log('No current order found') : console.log('More than one current order found');
         }
@@ -32,73 +34,40 @@ const Root = () => {
       });
       return () => subscription.unsubscribe();
     }
-  }, [global_dispatch, global_state.auth_user, global_state.current_user, orderId]);
+  }, [global_dispatch, global_state.auth_user, global_state.current_user]);
+
+  useEffect(() => {
+    let currWatch: number | undefined = watchID.current;
+    async function trackLocation() {
+      if (track_order_state.is_locatable) {
+        subscribeToLocation(watchID, global_dispatch);
+      } else {
+        const authorized = await getIsLocatable();
+        if (authorized) track_order_dispatch({type: 'SET_IS_LOCATABLE', payload: true});
+      }
+    }
+
+    trackLocation().catch(e => console.log(e));
+    return () => {
+      if (currWatch) {
+        Geolocation.clearWatch(currWatch);
+      }
+      Geolocation.stopObserving();
+    };
+  }, [global_dispatch, track_order_state.is_locatable]);
+
+  async function handleLocationRequest() {
+    const authorized = await requestLocationPermission();
+    track_order_dispatch({type: 'SET_IS_LOCATABLE', payload: authorized});
+    await setIsLocatable(true);
+  }
 
   return (
-    <View>
-      <Pressable
-        style={({pressed}) => [
-          {
-            backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
-          },
-          styles.wrapperCustom,
-        ]}
-        onPress={async () => {
-          let ordered_items: OrderItem[] = [];
-          let total = 0;
-          for (const common_item of global_state.common_items) {
-            const order_item: OrderItem = {
-              name: common_item.name,
-              price: common_item.price,
-              options: null,
-            };
-            ordered_items.push(order_item);
-            total += common_item.price;
-          }
-          const order_info: OrderInfo = {
-            sent_time: new Date().toISOString(),
-            status: OrderStatus.RECEIVED,
-            scheduled_times: [new Date(Date.now() + 30 * 60000).toISOString()],
-          };
-          const best_shop: Cafe | null = await getBestShop();
-          global_dispatch({type: 'SET_CURRENT_SHOP', payload: best_shop});
-          if (global_state.current_user && global_state.current_shop) {
-            console.log('sending order');
-            const order_id: string = await sendOrder(
-              ordered_items,
-              total,
-              order_info,
-              global_state.current_shop,
-              global_state.current_user,
-            );
-            console.log(order_id);
-            setOrderId(order_id);
-          }
-        }}>
-        <Text>Send Order</Text>
-      </Pressable>
-      <Text>{JSON.stringify(global_state.current_user?.current_order)}</Text>
-    </View>
+    <TrackOrderContext.Provider value={{track_order_state, track_order_dispatch}}>
+      <View>
+        <Text>Hello</Text>
+      </View>
+    </TrackOrderContext.Provider>
   );
 };
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  text: {
-    fontSize: 16,
-  },
-  wrapperCustom: {
-    borderRadius: 8,
-    padding: 6,
-  },
-  logBox: {
-    padding: 20,
-    margin: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#f0f0f0',
-    backgroundColor: '#f9f9f9',
-  },
-});
 export default Root;

@@ -31,6 +31,52 @@ async function getIsFirstTime(): Promise<boolean> {
 }
 
 /**
+ * Set the time when the app can be used again.
+ */
+async function setFreeTime(time: number) {
+  try {
+    await AsyncStorage.setItem('@FreeTime', String(time));
+  } catch (err) {
+    console.log('Error setting free time', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function getFreeTime() {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@FreeTime');
+    return jsonValue ? jsonValue : '';
+  } catch (err) {
+    console.log('Error getting free time', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function setIsLocatable(isLocatable: boolean) {
+  try {
+    await AsyncStorage.setItem('@IsLocatable', String(isLocatable));
+  } catch (err) {
+    console.log('Error setting isLocatable ', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function getIsLocatable() {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@IsLocatable');
+    return jsonValue === 'true';
+  } catch (err) {
+    console.log('Error getting isLocatable', err);
+  }
+}
+
+/**
  * Returns the storage shop key
  * @return Number The key of the shop
  */
@@ -135,4 +181,8 @@ export {
   getCommonBasket,
   setCurrentShopId,
   getCurrentShopId,
+  setFreeTime,
+  getFreeTime,
+  getIsLocatable,
+  setIsLocatable,
 };

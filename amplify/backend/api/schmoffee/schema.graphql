@@ -140,7 +140,7 @@ type User @model @auth(rules: [{allow: public}]) {
   is_signed_in: Boolean!
   phone: AWSPhone!
   name: String!
-  payment_method: String!
+  payment_method: String
   ratings: [Rating] @hasMany(indexName: "byUser", fields: ["id"])
   past_orders: [PastOrder] @hasMany(indexName: "byUser", fields: ["id"])
   the_usual: UsualOrder

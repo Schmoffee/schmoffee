@@ -1,5 +1,18 @@
-import {Cafe, CurrentOrder, Item, OrderInfo, OrderItem, User} from '../../models';
+import {
+  Cafe,
+  CurrentOrder,
+  Item,
+  OrderInfo,
+  OrderItem,
+  OrderStatus,
+  PastOrder,
+  Rating,
+  User,
+  UserInfo,
+} from '../../models';
 import {DataStore} from 'aws-amplify';
+import {DigitalQueue, LocalUser, Location, PreferenceWeights, PreRating} from '../types/data.types';
+import {getDistance} from 'geolib';
 
 async function getCommonItems(): Promise<Item[] | null> {
   try {
@@ -10,18 +23,11 @@ async function getCommonItems(): Promise<Item[] | null> {
   }
 }
 
-async function createSignUpUser(
-  phone: string,
-  name: string,
-  is_locatable: boolean,
-  payment_method: string,
-): Promise<User> {
+async function createSignUpUser(phone: string, name: string): Promise<User> {
   return await DataStore.save(
     new User({
       phone: phone,
       name: name,
-      is_locatable: is_locatable,
-      payment_method: payment_method,
       is_signed_in: false,
     }),
   );
@@ -48,28 +54,196 @@ async function updateAuthState(id: string, is_signed_in: boolean) {
   }
 }
 
+async function updatePaymentMethod(id: string, payment_method: string) {
+  const user = await getUserById(id);
+  if (user) {
+    await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.payment_method = payment_method;
+      }),
+    );
+  }
+}
+
 async function sendOrder(
   items: OrderItem[],
   total: number,
   order_info: OrderInfo,
-  cafe: Cafe,
-  user: User,
+  cafeID: string,
+  userID: string,
+  user_info: UserInfo,
 ): Promise<string> {
   const order: CurrentOrder = await DataStore.save(
     new CurrentOrder({
       items: items,
       total: total,
       order_info: order_info,
-      user: user,
-      cafe: cafe,
+      cafeID: cafeID,
+      userID: userID,
+      user_info: user_info,
     }),
   );
+  console.log(order);
   return order.id;
 }
 
-async function getBestShop(): Promise<Cafe | null> {
-  const result = await DataStore.query(Cafe);
-  return result[0];
+async function terminateOrder(
+  order_id: string,
+  ratings: PreRating[],
+  items: OrderItem[],
+  order_info: OrderInfo,
+  cafeID: string,
+  userID: string,
+  final_status: OrderStatus,
+  total: number,
+) {
+  const past_order = await DataStore.save(
+    new PastOrder({
+      items: items,
+      userID: userID,
+      order_info: order_info,
+      cafeID: cafeID,
+      final_status: final_status,
+      total: total,
+    }),
+  );
+
+  await DataStore.delete(CurrentOrder, order => order.id('eq', order_id));
+
+  for (const rating of ratings) {
+    await DataStore.save(
+      new Rating({
+        itemID: rating.itemID,
+        rating: rating.rating,
+        userID: past_order.userID,
+        cafeID: past_order.cafeID,
+        ratingOrderId: past_order.id,
+        order: past_order,
+      }),
+    );
+  }
 }
 
-export {getCommonItems, getUserByPhoneNumber, updateAuthState, createSignUpUser, getUserById, sendOrder, getBestShop};
+async function getUserRatings(userID: string) {
+  const results = await DataStore.query(User, c => c.id('eq', userID));
+  if (results) return results[0].ratings;
+  else return null;
+}
+
+/**
+ * Returns the cafe with the best score based on the user's preferences.
+ * @param user
+ * @param items
+ * @param schedule_time
+ * @param target
+ */
+async function getBestShop(
+  user: LocalUser,
+  items: OrderItem[],
+  schedule_time: number,
+  target: Location,
+): Promise<Cafe | null> {
+  // TODO: Only get the shops that are in the vicinity (5 minute walk)
+  const cafes = await DataStore.query(Cafe);
+  const weights: PreferenceWeights = {distance: -1, personal_taste: 1.5, general_taste: 1, price: -1.5, queue: -2};
+  let best_shop: Cafe | null = null;
+  let best_score = -1;
+  for (const cafe of cafes) {
+    const score = await getScore(user, items, schedule_time, target, weights, cafe);
+    if (score && score > best_score) {
+      best_score = score;
+      best_shop = cafe;
+    }
+  }
+  return best_shop;
+}
+
+/**
+ *  Factors: distance, personal ratings, general ratings, digital queue and price
+ * @param user
+ * @param items
+ * @param schedule_time
+ * @param target
+ * @param weights
+ * @param cafe
+ */
+async function getScore(
+  user: LocalUser,
+  items: OrderItem[],
+  schedule_time: number,
+  target: Location,
+  weights: PreferenceWeights,
+  cafe: Cafe,
+): Promise<number | null> {
+  let distance_score = weights.distance * getDistance(target, {latitude: cafe.latitude, longitude: cafe.longitude});
+  let personal_taste_score = 0;
+  let general_taste_score = 0;
+  let queue_score = 0;
+  let price_score = 0;
+  if (cafe.menu) {
+    const item_names = items.map(item => item.name);
+    const concerned_cafe_items = cafe.menu.filter(item => item_names.includes(item.name));
+    const formatted_cafe = {
+      id: cafe.id,
+      menu: concerned_cafe_items.map(item => item.id),
+      sum_ratings: 0,
+      num_ratings: 0,
+    };
+    const personal_ratings: Rating[] = (await getUserRatings(user.id)) as Rating[];
+    if (personal_ratings) {
+      personal_ratings.forEach(rating => {
+        if (formatted_cafe.menu?.includes(rating.itemID)) {
+          formatted_cafe.sum_ratings += rating.rating;
+          formatted_cafe.num_ratings += 1;
+        }
+      });
+
+      if (formatted_cafe.num_ratings > 0) {
+        personal_taste_score = weights.personal_taste * (formatted_cafe.sum_ratings / formatted_cafe.num_ratings);
+      }
+    }
+    if (cafe.ratings) {
+      cafe.ratings.forEach(rating => {
+        if (rating && formatted_cafe.menu?.includes(rating.itemID)) {
+          formatted_cafe.sum_ratings += rating.rating;
+          formatted_cafe.num_ratings += 1;
+        }
+      });
+      if (formatted_cafe.num_ratings > 0) {
+        general_taste_score = weights.general_taste * (formatted_cafe.sum_ratings / formatted_cafe.num_ratings);
+      }
+    }
+
+    const target_minute = new Date(Date.now()).getMinutes() + schedule_time;
+    const total_preparation_time = concerned_cafe_items.reduce((acc, item) => acc + item.preparation_time, 0);
+    const preparation_range = [target_minute - total_preparation_time, target_minute];
+
+    const digital_queue: DigitalQueue = JSON.parse(cafe.digital_queue);
+    let worst_case = 0;
+    for (let current_minute = preparation_range[0]; current_minute <= preparation_range[1]; current_minute++) {
+      if (digital_queue[current_minute].length > worst_case) {
+        worst_case = digital_queue[current_minute].length;
+      }
+    }
+    queue_score = weights.queue * worst_case;
+
+    const price = concerned_cafe_items.reduce((acc, item) => acc + item.price, 0);
+    price_score = weights.price * price;
+
+    return distance_score + personal_taste_score + general_taste_score + queue_score + price_score;
+  } else {
+    return null;
+  }
+}
+
+export {
+  getCommonItems,
+  getUserByPhoneNumber,
+  updateAuthState,
+  createSignUpUser,
+  getUserById,
+  sendOrder,
+  getBestShop,
+  terminateOrder,
+  updatePaymentMethod,
+};

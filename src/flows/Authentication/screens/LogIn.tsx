@@ -87,6 +87,8 @@ export const Login = (props: LoginProps) => {
     );
 };
 
+export default Login;
+
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',

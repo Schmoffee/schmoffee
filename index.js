@@ -5,7 +5,7 @@
 import {AppRegistry} from 'react-native';
 import App from './src/App';
 import {name as appName} from './app.json';
-import {Amplify, DataStore} from 'aws-amplify';
+import {DataStore} from 'aws-amplify';
 
 DataStore.configure({
   authProviders: undefined,
