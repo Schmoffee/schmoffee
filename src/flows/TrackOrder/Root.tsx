@@ -4,8 +4,8 @@ import {DataStore} from 'aws-amplify';
 import {CurrentOrder, User} from '../../models';
 import {Text, View} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import {requestLocationPermission, subscribeToLocation} from '../../utils/location';
-import {getIsLocatable, setIsLocatable} from '../../utils/storage';
+import {requestLocationPermission, subscribeToLocation} from '../../utils/helpers/location';
+import {getIsLocatable, setIsLocatable} from '../../utils/helpers/storage';
 import {trackOrderReducer} from '../../reducers';
 
 const Root = () => {

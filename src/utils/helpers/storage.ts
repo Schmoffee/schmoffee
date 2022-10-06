@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Item} from '../models';
+import {Item} from '../../models';
 
 /**
  * Load initial values in the async storage.

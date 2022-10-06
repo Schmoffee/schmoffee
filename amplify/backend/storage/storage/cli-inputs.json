@@ -1,0 +1,16 @@
+{
+  "resourceName": "storage",
+  "policyUUID": "aff85853",
+  "bucketName": "schmoffeestorage",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

@@ -39,6 +39,7 @@ export declare class UsualOrder {
 }
 
 export declare class OrderItem {
+  readonly quantity: number;
   readonly name: string;
   readonly price: number;
   readonly options?: OrderOption[] | null;
@@ -204,6 +205,7 @@ export declare class User {
   readonly ratings?: (Rating | null)[] | null;
   readonly past_orders?: (PastOrder | null)[] | null;
   readonly the_usual?: UsualOrder | null;
+  readonly customer_id?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);

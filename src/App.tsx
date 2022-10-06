@@ -4,12 +4,12 @@ import { GlobalContext, globalData } from './contexts';
 import awsConfig from './aws-exports';
 import { Amplify } from 'aws-amplify';
 Amplify.configure(awsConfig);
-import { Hub } from 'aws-amplify';
-import { authListener, datastoreListener } from './utils/listeners';
-import { getCurrentAuthUser } from './utils/queries/auth';
-import { AuthState } from './utils/enums';
-import { getUserByPhoneNumber, updateAuthState } from './utils/queries/datastore';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {Hub} from 'aws-amplify';
+import {authListener, datastoreListener} from './utils/helpers/listeners';
+import {getCurrentAuthUser} from './utils/queries/auth';
+import {AuthState} from './utils/types/enums';
+import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Navigator from './navigation/Navigator';
 import { LocalUser } from './utils/types/data.types';
 
@@ -46,6 +46,7 @@ const App = () => {
             phone: currentUser.phone,
             payment_method: currentUser.payment_method,
             the_usual: currentUser.the_usual,
+            customer_id: currentUser.customer_id,
           };
           console.log(currentUser);
           global_dispatch({

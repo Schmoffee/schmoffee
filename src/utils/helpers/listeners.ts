@@ -1,7 +1,7 @@
-import {GlobalAction, GlobalState, HubPayload} from './types/data.types';
-import {AuthState} from './enums';
+import {GlobalAction, GlobalState, HubPayload} from '../types/data.types';
+import {AuthState} from '../types/enums';
 import {Dispatch} from 'react';
-import {updateAuthState} from './queries/datastore';
+import {updateAuthState} from '../queries/datastore';
 import {DataStore} from 'aws-amplify';
 
 const authListener = async (data: {payload: HubPayload}, state: GlobalState, dispatch: Dispatch<GlobalAction>) => {
