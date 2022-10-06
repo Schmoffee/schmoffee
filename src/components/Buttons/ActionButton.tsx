@@ -1,12 +1,13 @@
 import React from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity} from 'react-native';
-import {Colors, Spacings} from '../../../theme';
-import {Body} from '../../../typography';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Colors, Spacings } from '../../../theme';
+import { Body } from '../../../typography';
 
 interface ActionButtonProps {
   label: string;
   onPress: () => void;
   disabled?: boolean;
+  variant?: 'primary' | 'secondary' | 'tertiary';
 }
 
 export const ActionButton = (props: ActionButtonProps) => {
@@ -17,10 +18,36 @@ export const ActionButton = (props: ActionButtonProps) => {
     props.onPress();
   };
 
+  const getButtonStyle = () => {
+    switch (props.variant) {
+      case 'primary':
+        return styles.primaryButton;
+      case 'secondary':
+        return styles.secondaryButton;
+      case 'tertiary':
+        return styles.tertiaryButton;
+      default:
+        return styles.primaryButton;
+    }
+  };
+
+  const getLabelStyle = () => {
+    switch (props.variant) {
+      case 'primary':
+        return styles.primaryLabel;
+      case 'secondary':
+        return styles.secondaryLabel;
+      case 'tertiary':
+        return styles.tertiaryLabel;
+      default:
+        return styles.primaryLabel;
+    }
+  };
+
   return (
     <TouchableOpacity onPress={handlePress}>
-      <View style={[styles.container, props.disabled ? styles.disabledColor : styles.activeColor]}>
-        <Body size="medium" weight="Bold" style={styles.text}>
+      <View style={[styles.container, props.disabled ? styles.disabledColor : styles.activeColor, getButtonStyle()]}>
+        <Body size="medium" weight="Bold" style={[styles.text, getLabelStyle()]}>
           {props.label}
         </Body>
       </View>
@@ -30,21 +57,47 @@ export const ActionButton = (props: ActionButtonProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: Spacings.s3,
-    padding: Spacings.s4,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: Spacings.s4,
-    borderColor: Colors.greyLight2,
-    borderWidth: 2,
+
   },
   disabledColor: {
-    backgroundColor: Colors.greenFaded2,
+    backgroundColor: Colors.grey
   },
   activeColor: {
-    backgroundColor: Colors.green3,
+    backgroundColor: Colors.darkBrown2,
   },
   text: {
     color: Colors.white,
+  },
+  primaryButton: {
+    borderRadius: Spacings.s4,
+    padding: Spacings.s4,
+  },
+  secondaryButton: {
+    borderRadius: Spacings.s12,
+    padding: Spacings.s2,
+    marginHorizontal: Spacings.s9,
+  },
+  tertiaryButton: {
+    borderRadius: Spacings.s12,
+    padding: Spacings.s2,
+    marginHorizontal: Spacings.s9,
+    borderColor: Colors.darkBrown2,
+    borderWidth: 5,
+    backgroundColor: 'transparent',
+  },
+
+  primaryLabel: {
+    color: Colors.white,
+  },
+  secondaryLabel: {
+    color: Colors.white,
+    fontSize: 22,
+  },
+  tertiaryLabel: {
+    color: Colors.darkBrown2,
+    fontSize: 22,
   },
 });

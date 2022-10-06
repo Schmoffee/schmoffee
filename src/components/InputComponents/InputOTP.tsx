@@ -13,11 +13,13 @@ interface InputOTPProps {
 export const InputOTP = (props: InputOTPProps) => {
   const boxArray = new Array(props.maxLength).fill(0);
   const inputRef = useRef() as MutableRefObject<TextInput>;
+  const [pressed, setPressed] = useState(false);
 
   const [isInputBoxFocused, setIsInputBoxFocused] = useState(false);
 
   const handleOnPress = useCallback(() => {
     setIsInputBoxFocused(true);
+    setPressed(true);
     inputRef.current.focus();
   }, []);
 
@@ -48,7 +50,11 @@ export const InputOTP = (props: InputOTPProps) => {
     const isValueFocused = isCurrentValue || (isLastValue && isCodeComplete);
 
     useEffect(() => {
-      isLastValue && isCodeComplete ? setIsInputBoxFocused(false) : isCurrentValue ? setIsInputBoxFocused(true) : null;
+      (isLastValue && isCodeComplete) || !pressed
+        ? setIsInputBoxFocused(false)
+        : isCurrentValue
+        ? setIsInputBoxFocused(true)
+        : null;
     }, [props.code]);
 
     const StyledSplitBoxes =
@@ -109,10 +115,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.greenFaded3,
     borderWidth: 1,
     borderRadius: 5,
+    // backgroundColor: Colors.goldLight3,
   },
   splitBoxesFocused: {
-    borderColor: Colors.greyLight2,
-    backgroundColor: Colors.greyLight3,
+    borderColor: Colors.greyLight1,
+    backgroundColor: Colors.brownFaded2,
   },
   splitBoxText: {
     textAlign: 'center',

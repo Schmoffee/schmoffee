@@ -1,22 +1,35 @@
 export const Colors = {
   white: '#FFFFFF',
+  white2: '#f3f3f3',
   greyLight1: '#F5F5F5',
   greyLight2: '#E1E1E1',
   greyLight3: '#ADADAD',
+  grey: '#ededed',
   black: '#1D1D1D',
-  black2: '#121212',
   greenLight: '#DEFFF1',
-  green1: '#55CF9C',
-  green2: '#3C936E',
-  green3: '#1D563E',
   greenFaded1: '#EAEEEC',
   greenFaded2: '#D8E1DD',
   greenFaded3: '#8E9994',
-  greenDark1: '#243530',
-  greenDark2: '#153428',
-  greenDark3: '#05110C',
   red: '#CE3F59',
   redFaded: '#FCBCC7',
+  blue: '#5c86ca',
+  blueFaded: '#8baadb',
+  brown: '#966C3B',
+  brown2: '#bd9d7f',
+  brownLight1: '#AB8962',
+  brownLight2: '#BB9F80',
+  brownFaded: '#CAB69D',
+  brownFaded2: '#DFD3C4',
+  gold: '#CAA259',
+  goldFaded1: '#f2e9d6',
+  goldFaded2: '#ecdfc5',
+  goldFaded3: '#e7d6b5',
+  goldFaded4: '#FFFDFA',
+  goldLight1: '#D5B57A',
+  goldLight2: '#DDC393',
+  goldLight3: '#f3fbff',
+  darkBrown: '#3B1A0B',
+  darkBrown2: '#3B2C1E',
 };
 
 export const Spacings = {
@@ -61,41 +74,41 @@ export const Inputs = {
   animationDuration: 150,
 };
 
-export const Buttons = {
-  flow: {
-    height: 56,
-    borderRadius: 16,
-    animationDuration: 125,
+// export const Buttons = {
+//   flow: {
+//     height: 56,
+//     borderRadius: 16,
+//     animationDuration: 125,
 
-    colors: {
-      primary: {
-        unpressed: {
-          background: Colors.greenDark2,
-          text: Colors.greyLight1,
-        },
-        pressed: {
-          background: Colors.greenFaded3,
-          text: Colors.greyLight1,
-        },
-        disabled: {
-          background: Colors.greyLight2,
-          text: Colors.greyLight3,
-        },
-      },
-      secondary: {
-        unpressed: {
-          background: Colors.greenFaded1,
-          text: Colors.greenDark2,
-        },
-        pressed: {
-          background: Colors.greenFaded2,
-          text: Colors.greenDark2,
-        },
-        disabled: {
-          background: Colors.greyLight2,
-          text: Colors.greyLight3,
-        },
-      },
-    },
-  },
-};
+//     colors: {
+//       primary: {
+//         unpressed: {
+//           background: Colors.greenDark2,
+//           text: Colors.greyLight1,
+//         },
+//         pressed: {
+//           background: Colors.greenFaded3,
+//           text: Colors.greyLight1,
+//         },
+//         disabled: {
+//           background: Colors.greyLight2,
+//           text: Colors.greyLight3,
+//         },
+//       },
+//       secondary: {
+//         unpressed: {
+//           background: Colors.greenFaded1,
+//           text: Colors.greenDark2,
+//         },
+//         pressed: {
+//           background: Colors.greenFaded2,
+//           text: Colors.greenDark2,
+//         },
+//         disabled: {
+//           background: Colors.greyLight2,
+//           text: Colors.greyLight3,
+//         },
+//       },
+//     },
+//   },
+// };

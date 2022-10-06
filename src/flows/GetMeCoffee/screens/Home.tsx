@@ -1,25 +1,24 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext} from 'react';
-import {View, StyleSheet, Pressable, TouchableOpacity, Text} from 'react-native';
-import {CONST_SCREEN_SIGNUP, CONST_SCREEN_WHAT} from '../../../../constants';
-import {Body} from '../../../../typography';
-import {PageLayout} from '../../../components/Layouts/PageLayout';
-import {signOut} from '../../../utils/queries/auth';
-import {RootRoutes} from '../../../utils/types/navigation.types';
-import {Cafe, OrderInfo, OrderItem, OrderStatus, User, UserInfo} from '../../../models';
-import {getBestShop, sendOrder} from '../../../utils/queries/datastore';
-import {GlobalContext, OrderingContext} from '../../../contexts';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext } from 'react';
+import { View, StyleSheet, Pressable, TouchableOpacity, Text } from 'react-native';
+import { CONST_SCREEN_LOGIN, CONST_SCREEN_SIGNUP, CONST_SCREEN_WHAT } from '../../../../constants';
+import { Body } from '../../../../typography';
+import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { signOut } from '../../../utils/queries/auth';
+import { RootRoutes } from '../../../utils/types/navigation.types';
+import { Cafe, OrderInfo, OrderItem, OrderStatus, User, UserInfo } from '../../../models';
+import { getBestShop, sendOrder } from '../../../utils/queries/datastore';
+import { GlobalContext, OrderingContext } from '../../../contexts';
 
-interface HomeProps {}
 
-export const Home = (props: HomeProps) => {
-  const {global_state, global_dispatch} = useContext(GlobalContext);
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+export const Home = () => {
+  const { global_state, global_dispatch } = useContext(GlobalContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const navigation = useNavigation<RootRoutes>();
 
   const handleLogOut = async () => {
-    navigation.navigate(CONST_SCREEN_SIGNUP);
-    await signOut();
+    navigation.navigate(CONST_SCREEN_LOGIN);
+    // await signOut();
   };
 
   return (
@@ -39,7 +38,7 @@ export const Home = (props: HomeProps) => {
       </TouchableOpacity>
       <View>
         <Pressable
-          style={({pressed}) => [
+          style={({ pressed }) => [
             {
               backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
             },
@@ -48,7 +47,7 @@ export const Home = (props: HomeProps) => {
             // TODO: If a current order is already running, deny.
             console.log('started');
             const best_shop: Cafe | null = await getBestShop();
-            ordering_dispatch({type: 'SET_CURRENT_SHOP', payload: best_shop});
+            ordering_dispatch({ type: 'SET_CURRENT_SHOP', payload: best_shop });
             if (global_state.current_user && best_shop) {
               const user: User = global_state.current_user;
               let ordered_items: OrderItem[] = [];
@@ -67,7 +66,7 @@ export const Home = (props: HomeProps) => {
                 status: OrderStatus.RECEIVED,
                 scheduled_times: [new Date(Date.now() + 30 * 60000).toISOString()],
               };
-              const user_info: UserInfo = {name: user.name as string, phone: user.phone as string};
+              const user_info: UserInfo = { name: user.name as string, phone: user.phone as string };
               console.log('sending order');
               const order_id: string = await sendOrder(
                 ordered_items,
