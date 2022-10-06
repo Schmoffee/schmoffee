@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "954779945360",
+    "project_id": "schmoffee-5108b",
+    "storage_bucket": "schmoffee-5108b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:954779945360:android:c4a2ecdd53d9b413808b15",
+        "android_client_info": {
+          "package_name": "com.schmoffee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "954779945360-v263k3uvfgg392rr298pvbr8kov507d4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvYBeNx9GM1c5dR47nJ2jJldaV3HxUsHU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "954779945360-v263k3uvfgg392rr298pvbr8kov507d4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
