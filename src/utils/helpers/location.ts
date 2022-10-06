@@ -1,7 +1,7 @@
 import {PermissionsAndroid, Platform} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {Dispatch} from 'react';
-import {TrackOrderAction} from './types/data.types';
+import {TrackOrderAction} from '../types/data.types';
 
 /**
  * Track the current user's location. Update it in the backend ans set the map center accordingly.

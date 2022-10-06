@@ -124,10 +124,25 @@ async function terminateOrder(
   }
 }
 
-async function getUserRatings(userID: string) {
+async function getUserRatings(userID: string): Promise<Rating[] | null> {
   const results = await DataStore.query(User, c => c.id('eq', userID));
-  if (results) return results[0].ratings;
+  if (results) return results[0].ratings as Rating[];
   else return null;
+}
+
+async function getUserPastOrders(userID: string): Promise<PastOrder[] | null> {
+  return await DataStore.query(PastOrder, c => c.userID('eq', userID));
+}
+
+async function updateCustomerId(customerId: string, userID: string) {
+  const user = await getUserById(userID);
+  if (user) {
+    await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.customer_id = customerId;
+      }),
+    );
+  }
 }
 
 /**
@@ -189,7 +204,7 @@ async function getScore(
       sum_ratings: 0,
       num_ratings: 0,
     };
-    const personal_ratings: Rating[] = (await getUserRatings(user.id)) as Rating[];
+    const personal_ratings: Rating[] | null = await getUserRatings(user.id);
     if (personal_ratings) {
       personal_ratings.forEach(rating => {
         if (formatted_cafe.menu?.includes(rating.itemID)) {
@@ -246,4 +261,6 @@ export {
   getBestShop,
   terminateOrder,
   updatePaymentMethod,
+  getUserPastOrders,
+  updateCustomerId,
 };

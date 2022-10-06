@@ -49,6 +49,18 @@ export type AmplifyDependentResourcesAttributes = {
             "Arn": "string",
             "LambdaExecutionRole": "string",
             "Region": "string"
+        },
+        "schmoffeePayWithStripe": {
+            "Name": "string",
+            "Arn": "string",
+            "Region": "string",
+            "LambdaExecutionRole": "string"
+        }
+    },
+    "storage": {
+        "storage": {
+            "BucketName": "string",
+            "Region": "string"
         }
     }
 }

@@ -2,12 +2,16 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "schmoffee",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "schmoff49830e3",
     "userPoolName": "Schmoffee-dev",
-    "autoVerifiedAttributes": ["phone_number"],
+    "autoVerifiedAttributes": [
+      "phone_number"
+    ],
     "mfaConfiguration": "OFF",
-    "mfaTypes": ["SMS Text Message"],
+    "mfaTypes": [
+      "SMS Text Message"
+    ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
@@ -15,12 +19,21 @@
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
-    "requiredAttributes": ["name", "phone_number"],
+    "requiredAttributes": [
+      "name",
+      "phone_number"
+    ],
     "aliasAttributes": [],
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
-    "userpoolClientWriteAttributes": ["name", "phone_number"],
-    "userpoolClientReadAttributes": ["name", "phone_number"],
+    "userpoolClientWriteAttributes": [
+      "name",
+      "phone_number"
+    ],
+    "userpoolClientReadAttributes": [
+      "name",
+      "phone_number"
+    ],
     "userpoolClientLambdaRole": "schmoff49830e3_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": true,
     "sharedId": "f49830e3",
@@ -31,15 +44,81 @@
     "userPoolGroups": false,
     "adminQueries": false,
     "triggers": {
-      "CreateAuthChallenge": ["boilerplate-create-challenge"],
-      "DefineAuthChallenge": ["boilerplate-define-challenge"],
-      "PreSignup": ["custom"],
-      "VerifyAuthChallengeResponse": ["boilerplate-verify"]
+      "CreateAuthChallenge": [
+        "boilerplate-create-challenge"
+      ],
+      "DefineAuthChallenge": [
+        "boilerplate-define-challenge"
+      ],
+      "PreSignup": [
+        "custom"
+      ],
+      "VerifyAuthChallengeResponse": [
+        "boilerplate-verify"
+      ]
     },
     "hostedUI": false,
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
-    "useEnabledMfas": true
+    "useEnabledMfas": true,
+    "authRoleArn": {
+      "Fn::GetAtt": [
+        "AuthRole",
+        "Arn"
+      ]
+    },
+    "unauthRoleArn": {
+      "Fn::GetAtt": [
+        "UnauthRole",
+        "Arn"
+      ]
+    },
+    "breakCircularDependency": true,
+    "dependsOn": [
+      {
+        "category": "function",
+        "resourceName": "schmoffeeAuthCreateAuthChallenge",
+        "triggerProvider": "Cognito",
+        "attributes": [
+          "Arn",
+          "Name"
+        ]
+      },
+      {
+        "category": "function",
+        "resourceName": "schmoffeeAuthDefineAuthChallenge",
+        "triggerProvider": "Cognito",
+        "attributes": [
+          "Arn",
+          "Name"
+        ]
+      },
+      {
+        "category": "function",
+        "resourceName": "schmoffeeAuthPreSignup",
+        "triggerProvider": "Cognito",
+        "attributes": [
+          "Arn",
+          "Name"
+        ]
+      },
+      {
+        "category": "function",
+        "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse",
+        "triggerProvider": "Cognito",
+        "attributes": [
+          "Arn",
+          "Name"
+        ]
+      }
+    ],
+    "permissions": [],
+    "authTriggerConnections": [
+      "{\"triggerType\":\"CreateAuthChallenge\",\"lambdaFunctionName\":\"schmoffeeAuthCreateAuthChallenge\"}",
+      "{\"triggerType\":\"DefineAuthChallenge\",\"lambdaFunctionName\":\"schmoffeeAuthDefineAuthChallenge\"}",
+      "{\"triggerType\":\"PreSignUp\",\"lambdaFunctionName\":\"schmoffeeAuthPreSignup\"}",
+      "{\"triggerType\":\"VerifyAuthChallengeResponse\",\"lambdaFunctionName\":\"schmoffeeAuthVerifyAuthChallengeResponse\"}"
+    ]
   }
 }

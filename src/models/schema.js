@@ -866,6 +866,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "customer_id": {
+                    "name": "customer_id",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -983,6 +990,13 @@ export const schema = {
         "OrderItem": {
             "name": "OrderItem",
             "fields": {
+                "quantity": {
+                    "name": "quantity",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "name": {
                     "name": "name",
                     "isArray": false,
@@ -1128,5 +1142,5 @@ export const schema = {
             }
         }
     },
-    "version": "e55856e91dc5d4c82d593a3dbfbf6055"
+    "version": "691ec8c5fb4bd90db591aee4aacab9f7"
 };

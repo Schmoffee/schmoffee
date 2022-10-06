@@ -1,5 +1,5 @@
 import {CognitoUser} from 'amazon-cognito-identity-js';
-import {ErrorTypes} from '../enums';
+import {ErrorTypes} from '../types/enums';
 import {Auth} from 'aws-amplify';
 const password = Math.random().toString(10) + 'Abc#';
 

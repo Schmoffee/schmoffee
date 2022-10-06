@@ -11,7 +11,7 @@ import {
 } from '../../../utils/queries/auth';
 import {GlobalContext} from '../../../contexts';
 import {CognitoUser} from 'amazon-cognito-identity-js';
-import {AuthState, ErrorTypes} from '../../../utils/enums';
+import {AuthState, ErrorTypes} from '../../../utils/types/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
 import {createSignUpUser, getUserByPhoneNumber, updateAuthState} from '../../../utils/queries/datastore';
 import {Spacings} from '../../../../theme';
@@ -21,7 +21,7 @@ import {Footer} from '../../../components/Footer/Footer';
 import {useNavigation} from '@react-navigation/native';
 import {RootRoutes} from '../../../utils/types/navigation.types';
 import {CONST_SCREEN_HOME} from '../../../../constants';
-import {getFreeTime, setFreeTime} from '../../../utils/storage';
+import {getFreeTime, setFreeTime} from '../../../utils/helpers/storage';
 import {LocalUser} from '../../../utils/types/data.types';
 import {User} from '../../../models';
 
@@ -130,6 +130,7 @@ const Signup = () => {
           phone: finalUser.phone,
           payment_method: finalUser.payment_method,
           the_usual: finalUser.the_usual,
+          customer_id: finalUser.customer_id,
         };
         global_dispatch({
           type: 'SET_CURRENT_USER',
