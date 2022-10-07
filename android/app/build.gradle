@@ -269,6 +269,8 @@ dependencies {
     implementation 'com.google.android.material:material:<1.5.0>'
     implementation 'com.stripe:stripe-android:20.14.0'
     implementation 'com.google.android.gms:play-services-wallet:19.1.0'
+    implementation "com.google.firebase:firebase-core:15.0.2"
+    implementation "com.google.firebase:firebase-messaging:15.0.2"
     androidTestImplementation('com.wix:detox:+')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
@@ -325,3 +327,5 @@ def isNewArchitectureEnabled() {
     // - Set an environment variable `ORG_GRADLE_PROJECT_newArchEnabled=true`
     return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
 }
+
+apply plugin: "com.google.gms.google-services"
