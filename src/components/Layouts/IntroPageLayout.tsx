@@ -74,7 +74,7 @@ const IntroPage = (props: IntroPageProps) => {
             opacity,
             width: isIndexOne ? SIZE * 2 : SIZE,
             height: isIndexOne ? SIZE * 0.45 : SIZE,
-            backgroundColor: isIndexZero ? 'transparent' : isIndexOne ? Colors.goldFaded1 : Colors.gold,
+            backgroundColor: isIndexZero ? 'transparent' : isIndexOne ? 'transparent' : Colors.gold,
         };
     });
 

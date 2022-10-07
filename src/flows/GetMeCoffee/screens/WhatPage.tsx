@@ -5,10 +5,9 @@ import { CONST_SCREEN_WHEN } from '../../../../constants';
 import { Colors, Spacings } from '../../../../theme';
 import { CardSection } from '../../../components/CardSection';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
-import { GlobalContext, OrderingContext, orderingData } from '../../../contexts';
+import { OrderingContext } from '../../../contexts';
 import { DATA_ITEMS } from '../../../data/items.data';
 import { Item } from '../../../models';
-import { orderingReducer } from '../../../reducers';
 import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 
 
@@ -17,8 +16,7 @@ interface WhatPageProps { }
 export const WhatPage = (props: WhatPageProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const [items, setItems] = useState(DATA_ITEMS);
-  const [ordering_state, ordering_dispatch] = useReducer(orderingReducer, orderingData);
-  const basket = ordering_state.common_basket;
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext)
 
   const [query, setQuery] = useState('');
 
@@ -57,14 +55,14 @@ export const WhatPage = (props: WhatPageProps) => {
     <PageLayout
       header="What do you crave?"
       footer={{
-        buttonDisabled: !(basket.length > 0),
+        buttonDisabled: (ordering_state.common_basket.length === 0),
         onPress: () => navigation.navigate(CONST_SCREEN_WHEN),
         buttonText: 'Continue',
+        type: 'basket'
       }}
     >
       <View
-        style={styles.searchInputContainer}
-      >
+        style={styles.searchInputContainer}>
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
@@ -77,7 +75,7 @@ export const WhatPage = (props: WhatPageProps) => {
       <ScrollView style={styles.container}>
         <CardSection title="Coffee" items={getCoffees()} />
         <CardSection title="Juices" items={getJuices()} />
-        <CardSection title="Pastries" items={getPastries()} />
+        <CardSection title="Pastries" items={getPastries()} hideDivider />
       </ScrollView>
     </PageLayout >
   );
@@ -90,9 +88,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.greyLight1,
     borderRadius: Spacings.s5,
     padding: Spacings.s2,
-    marginTop: -Spacings.s2,
+    // marginTop: -Spacings.s2,
     marginHorizontal: Spacings.s4,
-    marginBottom: Spacings.s2,
+    marginBottom: -Spacings.s1,
+    // height: 60,
+    overflow: 'hidden'
   },
 
 });

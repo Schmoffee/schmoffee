@@ -284,6 +284,8 @@ PODS:
   - React-jsinspector (0.69.3)
   - React-logger (0.69.3):
     - glog
+  - react-native-blur (4.2.0):
+    - React-Core
   - react-native-geolocation-service (5.3.1):
     - React
   - react-native-netinfo (9.3.0):
@@ -453,6 +455,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -536,6 +539,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-blur:
+    :path: "../node_modules/@react-native-community/blur"
   react-native-geolocation-service:
     :path: "../node_modules/react-native-geolocation-service"
   react-native-netinfo:
@@ -620,6 +625,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 1842ca163b160aeb224d2c65b2a60c393b273c67
   React-jsinspector: bb2605f98aada5d81f3494690da3ef3b4ff3b716
   React-logger: 23a50ef4c18bf9adbb51e2c979318e6b3a2e44a1
+  react-native-blur: 3e9c8e8e9f7d17fa1b94e1a0ae9fd816675f5382
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
   react-native-netinfo: 129bd99f607a2dc5bb096168f3e5c150fd1f1c95
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a

@@ -14,7 +14,7 @@ export const Colors = {
   redFaded: '#FCBCC7',
   blue: '#5c86ca',
   blueFaded: '#8baadb',
-  brown: '#966C3B',
+  brown: '#A67D56',
   brown2: '#bd9d7f',
   brownLight1: '#AB8962',
   brownLight2: '#BB9F80',

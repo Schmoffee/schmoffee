@@ -36,7 +36,7 @@ export const Home = () => {
           </Body>
         </View>
       </TouchableOpacity>
-      <View>
+      {/* <View>
         <Pressable
           style={({ pressed }) => [
             {
@@ -81,7 +81,7 @@ export const Home = () => {
           }}>
           <Text>Send Order</Text>
         </Pressable>
-      </View>
+      </View> */}
     </PageLayout>
   );
 };

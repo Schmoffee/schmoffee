@@ -13,6 +13,7 @@ interface PageLayoutProps extends PropsWithChildren {
     transformContent?: boolean;
     onPress?: () => void;
     backgroundColor?: string;
+    showCircle?: boolean;
 }
 
 export const PageLayout = (props: PageLayoutProps) => {
@@ -21,7 +22,7 @@ export const PageLayout = (props: PageLayoutProps) => {
         <>
             <Pressable onPress={props.onPress} />
             <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
-                <Pressable onPress={() => { }}></Pressable>
+                {props.showCircle ? <View style={styles.bigSemiCircle} /> : null}
                 <View style={styles.header}>
                     <Heading size="default" weight="Extrabld" color={Colors.black}>
                         {props.header}
@@ -29,7 +30,7 @@ export const PageLayout = (props: PageLayoutProps) => {
                 </View>
                 {props.subHeader ? (
                     <View style={styles.subHeader}>
-                        <Body size="small" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
+                        <Body size="small" weight="Bold" color={Colors.greyLight2} style={styles.subHeader}>
                             {props.subHeader}
                         </Body>
                     </View>) : null}
@@ -43,14 +44,27 @@ export const PageLayout = (props: PageLayoutProps) => {
                     </View>
                 ) : null}
             </View>
+            {/* </Pressable> */}
         </>
 
     );
 };
 
 const styles = StyleSheet.create({
+    bigSemiCircle: {
+        position: 'absolute',
+        top: -150,
+        width: '105%',
+        justifyContent: 'center',
+        height: '45%',
+        borderRadius: 300,
+        backgroundColor: Colors.brown,
+        overflow: 'hidden'
+
+    },
+
     root: {
-        paddingHorizontal: Spacings.s2,
+        // paddingHorizontal: Spacings.s2,
         paddingTop: Spacings.s11,
         paddingBottom: Spacings.s9,
         height: '100%',
@@ -60,7 +74,6 @@ const styles = StyleSheet.create({
         marginTop: Spacings.s10,
     },
     mainContentContainer: {
-        // flex: 1,
     },
     header: {
         alignSelf: 'center',
@@ -74,9 +87,9 @@ const styles = StyleSheet.create({
         width: '80%',
     },
     footerContainer: {
-        // position: 'absolute',
-        // bottom: Spacings.s10,
-        // left: Spacings.s4,
-        // right: Spacings.s4,
+        position: 'absolute',
+        bottom: Spacings.s10,
+        left: Spacings.s4,
+        right: Spacings.s4,
     },
 });

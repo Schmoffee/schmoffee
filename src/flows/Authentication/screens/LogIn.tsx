@@ -63,7 +63,8 @@ export const Login = (props: LoginProps) => {
                             <Footer
                                 buttonDisabled={!isPinComplete}
                                 onPress={handleLogIn}
-                                buttonText="Confirm OTP">
+                                buttonText="Confirm OTP"
+                                buttonVariant='secondary'>
                                 <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_SIGNUP)}>
                                     <Body size="medium" weight="Bold" color={Colors.blue}>
                                         Don't have an account? Sign up
@@ -71,7 +72,7 @@ export const Login = (props: LoginProps) => {
                                 </TouchableOpacity>
                             </Footer>
                         ) : (
-                            <Footer buttonVariant='primary' buttonDisabled={!isValidNumber()} onPress={() => setHasLoaded(true)} buttonText="Log in">
+                            <Footer buttonVariant='secondary' buttonDisabled={!isValidNumber()} onPress={() => setHasLoaded(true)} buttonText="Log in">
                                 <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_SIGNUP)}>
                                     <Body size="medium" weight="Bold" color={Colors.blue}>
                                         Don't have an account? Sign up

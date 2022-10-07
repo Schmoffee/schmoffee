@@ -205,7 +205,7 @@ export const Signup = () => {
                 buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
                 onPress={() => setHasLoaded(true)}
                 // onPress={handleSignUp}
-                buttonVariant="primary"
+                buttonVariant="secondary"
                 buttonText="Sign Up">
                 <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
                   <Body size="medium" weight="Bold" color={Colors.blue}>
@@ -215,6 +215,7 @@ export const Signup = () => {
               </Footer>
             ) : (
               <Footer
+                buttonVariant='secondary'
                 buttonDisabled={!isPinComplete}
                 onPress={() => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME })}
                 // onPress={handleConfirmOTP}

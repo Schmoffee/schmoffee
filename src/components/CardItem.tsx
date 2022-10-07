@@ -15,7 +15,6 @@ export const CardItem = ({ item }: CardItemProps) => {
     const { ordering_state, ordering_dispatch } = useContext(OrderingContext)
     const onPress = useCallback((item: Item) => {
         ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: [...ordering_state.common_basket, item] });
-        console.log('basket: ', ordering_state.common_basket.length);
     }, [ordering_state, ordering_dispatch]);
 
 
@@ -29,7 +28,7 @@ export const CardItem = ({ item }: CardItemProps) => {
                         <Body size='medium' weight='Regular' color={Colors.darkBrown2}>{item.name}</Body>
                     </View>
                     <View style={styles.priceContainer}>
-                        <Body size='medium' weight='Bold' color={Colors.darkBrown2}>{`£${item.price}`}</Body>
+                        <Body size='medium' weight='Bold' color={Colors.darkBrown2}>{`£${item.price.toFixed(2)}`}</Body>
                         <TouchableOpacity >
                             <View style={styles.iconContainer} />
                         </TouchableOpacity>
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
             height: 3
         },
         shadowRadius: 5,
-        shadowOpacity: 0.5
+        shadowOpacity: 0.2
     },
     imageContainer: {
         justifyContent: 'flex-start',

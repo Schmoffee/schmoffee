@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   primaryButton: {
-    borderRadius: Spacings.s4,
+    borderRadius: Spacings.s5,
     padding: Spacings.s4,
   },
   secondaryButton: {
