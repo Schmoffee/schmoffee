@@ -403,6 +403,27 @@ PODS:
   - RNVectorIcons (9.2.0):
     - React-Core
   - SocketRocket (0.6.0)
+  - Stripe (22.8.3):
+    - Stripe/Stripe3DS2 (= 22.8.3)
+    - StripeApplePay (= 22.8.3)
+    - StripeCore (= 22.8.3)
+    - StripeUICore (= 22.8.3)
+  - stripe-react-native (0.19.0):
+    - React-Core
+    - Stripe (~> 22.8.1)
+    - StripeFinancialConnections (~> 22.8.1)
+  - Stripe/Stripe3DS2 (22.8.3):
+    - StripeApplePay (= 22.8.3)
+    - StripeCore (= 22.8.3)
+    - StripeUICore (= 22.8.3)
+  - StripeApplePay (22.8.3):
+    - StripeCore (= 22.8.3)
+  - StripeCore (22.8.3)
+  - StripeFinancialConnections (22.8.3):
+    - StripeCore (= 22.8.3)
+    - StripeUICore (= 22.8.3)
+  - StripeUICore (22.8.3):
+    - StripeCore (= 22.8.3)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -474,6 +495,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - "stripe-react-native (from `../node_modules/@stripe/stripe-react-native`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -492,6 +514,11 @@ SPEC REPOS:
     - libevent
     - OpenSSL-Universal
     - SocketRocket
+    - Stripe
+    - StripeApplePay
+    - StripeCore
+    - StripeFinancialConnections
+    - StripeUICore
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -579,6 +606,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  stripe-react-native:
+    :path: "../node_modules/@stripe/stripe-react-native"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -598,10 +627,10 @@ SPEC CHECKSUMS:
   Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
   FlipperKit: cbdee19bdd4e7f05472a66ce290f1b729ba3cb86
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: cfec46900e485b4b7613ff79308c30791825f32c
+  glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  RCT-Folly: b550401a0c8e8e6977ae8667596bccd274a87278
+  RCT-Folly: b9d9fe1fc70114b751c076104e52f3b1b5e5a95a
   RCTRequired: 66822c147facf02f7774af99825e0a31e39df42e
   RCTTypeSafety: 309306c4e711b14a83c55c2816a6cc490ec19827
   React: a779632422a918b26db4f1b57225a41c14d20525
@@ -639,6 +668,12 @@ SPEC CHECKSUMS:
   RNScreens: 0df01424e9e0ed7827200d6ed1087ddd06c493f9
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
+  Stripe: 90c12b350ae9e8a262efa87d230c00110c741f88
+  stripe-react-native: 0e50141806454839806143db5ce514a0cddd4d12
+  StripeApplePay: ce1edb7b3cb8b1abe29734f0fb887ee839a08043
+  StripeCore: 7197196aa2344c5c5eaf4a1ba406950c06b1c01c
+  StripeFinancialConnections: ff08ef2f655b8f577f0bf70f10b588517dfa667e
+  StripeUICore: 5b635db49163d62f9aa831269031de382bcb2bbd
   Yoga: 44c64131616253fa83366295acdbce3d14926041
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
