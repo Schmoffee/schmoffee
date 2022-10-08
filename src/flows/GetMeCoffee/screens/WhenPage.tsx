@@ -115,7 +115,7 @@ export const WhenPage = (props: WhenPageProps) => {
           switchBorderRadius={30} // Sets the border Radius of the switch slider. If unset, it remains the circleSize.
         />
       </View>
-      {/* {isEnabled ? (
+      {isEnabled ? (
         <BlurView
           style={styles.absolute}
           blurType="dark"
@@ -123,7 +123,7 @@ export const WhenPage = (props: WhenPageProps) => {
           reducedTransparencyFallbackColor="white"
         />
       ) : null
-      } */}
+      }
 
       <View style={styles.bottomSheetContainer}>
         <BottomSheet
@@ -132,9 +132,19 @@ export const WhenPage = (props: WhenPageProps) => {
           onChange={handleSheetChange}
           backgroundStyle={styles.bottomSheetBackground}
           onClose={handleClosePress}
+          handleComponent={() => (
+            <TouchableOpacity onPress={handleClosePress}>
+              <View style={styles.bottomSheetHandleContainer}>
+                <View style={styles.bottomSheetHandle} />
+              </View>
+            </TouchableOpacity>
+
+          )}
+
           index={-1}
         >
           <Body size='large' weight='Bold' color={Colors.darkBrown2} style={styles.bottomSheetHeader}>Schedule (mins)</Body>
+
           <Picker
             style={styles.bottomSheetContainer}
             selectedValue={focusedIndex}
@@ -145,25 +155,25 @@ export const WhenPage = (props: WhenPageProps) => {
             ))}
           </Picker>
         </BottomSheet>
-      </View>
+      </View >
 
     </PageLayout >
   );
 };
 
 const styles = StyleSheet.create({
-  contentContainer: {
-    // flex: 1,
-    alignItems: 'center',
-    marginTop: Spacings.s6,
-
-  },
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: Spacings.s7,
     marginTop: Spacings.s10,
+  },
+  contentContainer: {
+    // flex: 1,
+    alignItems: 'center',
+    marginTop: Spacings.s6,
+
   },
   textContainer: {
     marginHorizontal: Spacings.s9,
@@ -178,6 +188,35 @@ const styles = StyleSheet.create({
     zIndex: 100,
 
   },
+  bottomSheetHeaderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: Spacings.s7,
+    // marginTop: Spacings.s10,
+  },
+
+  bottomSheetHeader: {
+    marginTop: Spacings.s5,
+    alignSelf: 'center',
+    fontSize: 25,
+  },
+  bottomSheetHandleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+
+  },
+  bottomSheetHandle: {
+    width: 20,
+    height: 20,
+    borderRadius: 2.5,
+    backgroundColor: Colors.brown2,
+    marginTop: Spacings.s5,
+    marginRight: Spacings.s5,
+
+  },
+
   itemContainer: {
     fontSize: 30,
     marginVertical: Spacings.s4,
@@ -191,11 +230,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOpacity: 0.1
   },
-  bottomSheetHeader: {
-    marginTop: Spacings.s5,
-    alignSelf: 'center',
-    fontSize: 25,
-  },
+
   bottomSheetBackground: {
     // backgroundColor: Colors.greyLight1,
   },
