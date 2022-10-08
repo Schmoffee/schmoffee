@@ -1,19 +1,18 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
-import { View, StyleSheet, Pressable, TouchableOpacity, Text } from 'react-native';
-import { CONST_SCREEN_LOGIN, CONST_SCREEN_SIGNUP, CONST_SCREEN_WHAT } from '../../../../constants';
-import { Body } from '../../../../typography';
-import { PageLayout } from '../../../components/Layouts/PageLayout';
-import { signOut } from '../../../utils/queries/auth';
-import { RootRoutes } from '../../../utils/types/navigation.types';
-import { Cafe, OrderInfo, OrderItem, OrderStatus, User, UserInfo } from '../../../models';
-import { getBestShop, sendOrder } from '../../../utils/queries/datastore';
-import { GlobalContext, OrderingContext } from '../../../contexts';
-
+import {useNavigation} from '@react-navigation/native';
+import React, {useContext} from 'react';
+import {View, StyleSheet, Pressable, TouchableOpacity, Text} from 'react-native';
+import {CONST_SCREEN_LOGIN, CONST_SCREEN_SIGNUP, CONST_SCREEN_WHAT} from '../../../../constants';
+import {Body} from '../../../../typography';
+import {PageLayout} from '../../../components/Layouts/PageLayout';
+import {signOut} from '../../../utils/queries/auth';
+import {RootRoutes} from '../../../utils/types/navigation.types';
+import {Cafe, OrderInfo, OrderItem, OrderStatus, User, UserInfo} from '../../../models';
+import {getBestShop, sendOrder} from '../../../utils/queries/datastore';
+import {GlobalContext, OrderingContext} from '../../../contexts';
 
 export const Home = () => {
-  const { global_state, global_dispatch } = useContext(GlobalContext);
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
+  const {global_state, global_dispatch} = useContext(GlobalContext);
+  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
   const navigation = useNavigation<RootRoutes>();
 
   const handleLogOut = async () => {

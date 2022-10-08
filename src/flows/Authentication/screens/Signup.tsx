@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Keyboard, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {Keyboard, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import FormField from '../../../components/FormField';
 import {
   getCurrentAuthUser,
@@ -9,25 +9,25 @@ import {
   signOut,
   signUp,
 } from '../../../utils/queries/auth';
-import { GlobalContext } from '../../../contexts';
-import { CognitoUser } from 'amazon-cognito-identity-js';
-import { AuthState, ErrorTypes } from '../../../utils/enums';
+import {GlobalContext} from '../../../contexts';
+import {CognitoUser} from 'amazon-cognito-identity-js';
+import {AuthState, ErrorTypes} from '../../../utils/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
-import { createSignUpUser, getUserByPhoneNumber, updateAuthState } from '../../../utils/queries/datastore';
-import { Colors, Spacings } from '../../../../theme';
-import { PageLayout } from '../../../components/Layouts/PageLayout';
-import { InputOTP } from '../../../components/InputComponents/InputOTP';
-import { Footer } from '../../../components/Footer/Footer';
-import { useNavigation } from '@react-navigation/native';
-import { RootRoutes } from '../../../utils/types/navigation.types';
-import { CONST_SCREEN_HOME, CONST_SCREEN_LOGIN } from '../../../../constants';
-import { getFreeTime, setFreeTime } from '../../../utils/storage';
-import { LocalUser } from '../../../utils/types/data.types';
-import { User } from '../../../models';
-import { Body } from '../../../../typography';
+import {createSignUpUser, getUserByPhoneNumber, updateAuthState} from '../../../utils/queries/datastore';
+import {Colors, Spacings} from '../../../../theme';
+import {PageLayout} from '../../../components/Layouts/PageLayout';
+import {InputOTP} from '../../../components/InputComponents/InputOTP';
+import {Footer} from '../../../components/Footer/Footer';
+import {useNavigation} from '@react-navigation/native';
+import {RootRoutes} from '../../../utils/types/navigation.types';
+import {CONST_SCREEN_HOME, CONST_SCREEN_LOGIN} from '../../../../constants';
+import {getFreeTime, setFreeTime} from '../../../utils/storage';
+import {LocalUser} from '../../../utils/types/data.types';
+import {User} from '../../../models';
+import {Body} from '../../../../typography';
 
 export const Signup = () => {
-  const { global_state, global_dispatch } = useContext(GlobalContext);
+  const {global_state, global_dispatch} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
 
   const [name, setName] = useState('');
@@ -68,11 +68,11 @@ export const Signup = () => {
         type: 'SET_AUTH_STATE',
         payload: AuthState.SIGNING_UP_FAILED,
       });
-      global_dispatch({ type: 'SET_AUTH_USER', payload: null });
+      global_dispatch({type: 'SET_AUTH_USER', payload: null});
       setSession(null);
       // TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
     } else {
-      global_dispatch({ type: 'SET_AUTH_USER', payload: result });
+      global_dispatch({type: 'SET_AUTH_USER', payload: result});
       setSession(result);
     }
     await createSignUpUser(number, name);
@@ -97,7 +97,7 @@ export const Signup = () => {
           type: 'SET_AUTH_STATE',
           payload: AuthState.CONFIRMING_OTP,
         });
-        global_dispatch({ type: 'SET_AUTH_USER', payload: newSession });
+        global_dispatch({type: 'SET_AUTH_USER', payload: newSession});
       } else {
         // TODO: Handle the error appropriately depending on the error type
         setSession(null);
@@ -137,13 +137,13 @@ export const Signup = () => {
           payload: localUser,
         });
         await updateAuthState(number, true);
-        global_dispatch({ type: 'SET_AUTH_USER', payload: result });
+        global_dispatch({type: 'SET_AUTH_USER', payload: result});
       } else {
         console.log('We have a problem');
       }
     }
     setLoading(false);
-    navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
+    navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
   };
 
   const handleAuth = async () => {
@@ -199,39 +199,36 @@ export const Signup = () => {
             )}
           </View>
           {/* <View style={styles.buttonContainer}> */}
-          {
-            !hasLoaded ? (
-              <Footer
-                buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
-                onPress={() => setHasLoaded(true)}
-                // onPress={handleSignUp}
-                buttonVariant="secondary"
-                buttonText="Sign Up">
-                <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
-                  <Body size="medium" weight="Bold" color={Colors.blue}>
-                    Already have an account? Sign in
-                  </Body>
-                </TouchableOpacity>
-              </Footer>
-            ) : (
-              <Footer
-                buttonVariant='secondary'
-                buttonDisabled={!isPinComplete}
-                onPress={() => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME })}
-                // onPress={handleConfirmOTP}
-                buttonText="Confirm OTP">
-                <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
-                  <Body size="medium" weight="Bold" color={Colors.blue}>
-                    Already have an account? Sign in
-                  </Body>
-                </TouchableOpacity>
-              </Footer>
-            )
-          }
+          {!hasLoaded ? (
+            <Footer
+              buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
+              onPress={() => setHasLoaded(true)}
+              // onPress={handleSignUp}
+              buttonVariant="secondary"
+              buttonText="Sign Up">
+              <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
+                <Body size="medium" weight="Bold" color={Colors.blue}>
+                  Already have an account? Sign in
+                </Body>
+              </TouchableOpacity>
+            </Footer>
+          ) : (
+            <Footer
+              buttonVariant="secondary"
+              buttonDisabled={!isPinComplete}
+              onPress={() => navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME})}
+              // onPress={handleConfirmOTP}
+              buttonText="Confirm OTP">
+              <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
+                <Body size="medium" weight="Bold" color={Colors.blue}>
+                  Already have an account? Sign in
+                </Body>
+              </TouchableOpacity>
+            </Footer>
+          )}
         </>
-      )
-      }
-    </PageLayout >
+      )}
+    </PageLayout>
   );
 };
 

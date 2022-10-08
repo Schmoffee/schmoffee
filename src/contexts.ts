@@ -1,6 +1,6 @@
 import React from 'react';
-import { GlobalState, OrderingState, TrackOrderState } from './utils/types/data.types';
-import { AuthState } from './utils/enums';
+import {GlobalState, OrderingState, TrackOrderState} from './utils/types/data.types';
+import {AuthState} from './utils/enums';
 
 export const globalData: GlobalState = {
   auth_state: AuthState.SIGNED_OUT,
@@ -47,4 +47,4 @@ const OrderingContext = React.createContext<{
   ordering_dispatch: () => null,
 });
 
-export { TrackOrderContext, GlobalContext, OrderingContext };
+export {TrackOrderContext, GlobalContext, OrderingContext};

@@ -1,9 +1,9 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {NavigatorScreenParams} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends RootRoutes { }
+    interface RootParamList extends RootRoutes {}
   }
 }
 
