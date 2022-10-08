@@ -38,31 +38,31 @@ export const PageLayout = (props: PageLayoutProps) => {
     })
     return (
         <>
-            <Pressable onPress={props.onPress}>
-                <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
-                    {props.showCircle ? <View style={styles.bigSemiCircle} /> : null}
-                    <View style={styles.header}>
-                        <Heading size="default" weight="Extrabld" color={Colors.black}>
-                            {props.header}
-                        </Heading>
-                    </View>
-                    {props.subHeader ? (
-                        <View style={styles.subHeader}>
-                            <Body size="small" weight="Bold" color={Colors.greyLight2} style={styles.subHeader}>
-                                {props.subHeader}
-                            </Body>
-                        </View>) : null}
-
-                    <View style={styles.contentContainer}>{props.children}</View>
-                    {props.footer ? (
-                        <View style={footerStyle.root}>
-                            <View>
-                                <Footer {...props.footer} />
-                            </View>
-                        </View>
-                    ) : null}
+            <Pressable onPress={props.onPress} />
+            <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
+                {props.showCircle ? <View style={styles.bigSemiCircle} /> : null}
+                <View style={styles.header}>
+                    <Heading size="default" weight="Extrabld" color={Colors.black}>
+                        {props.header}
+                    </Heading>
                 </View>
-            </Pressable>
+                {props.subHeader ? (
+                    <View style={styles.subHeader}>
+                        <Body size="small" weight="Bold" color={Colors.greyLight2} style={styles.subHeader}>
+                            {props.subHeader}
+                        </Body>
+                    </View>) : null}
+
+                <View style={styles.contentContainer}>{props.children}</View>
+                {props.footer ? (
+                    <View style={footerStyle.root}>
+                        <View>
+                            <Footer {...props.footer} />
+                        </View>
+                    </View>
+                ) : null}
+            </View>
+            {/* </Pressable> */}
         </>
 
     );

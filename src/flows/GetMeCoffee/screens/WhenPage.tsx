@@ -8,12 +8,14 @@ import { Body } from '../../../../typography';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
 import { OrderingContext } from '../../../contexts';
 import { CoffeeRoutes } from '../../../utils/types/navigation.types';
-import BottomSheet, { BottomSheetFlatList, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import BottomSheet from "@gorhom/bottom-sheet";
+import { BlurView } from "@react-native-community/blur";
+import Picker from '@gregfrench/react-native-wheel-picker';
 
 
 interface WhenPageProps { }
+
+var PickerItem = Picker.Item;
 
 export const WhenPage = (props: WhenPageProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
@@ -21,11 +23,11 @@ export const WhenPage = (props: WhenPageProps) => {
   const [isEnabled, setIsEnabled] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["1%", "90%"], []);
+  const snapPoints = useMemo(() => ["90%"], []);
 
   const data = [5, 10, 15, 20, 25, 30, 35, 40, 45]
   const [scheduledTime, setScheduleTime] = useState(data[0])
-  const [focusedItem, setFocusedItem] = useState(0)
+  const [focusedIndex, setFocusedIndex] = useState(0)
 
 
   // callbacks
@@ -38,42 +40,31 @@ export const WhenPage = (props: WhenPageProps) => {
     setIsEnabled(false)
     setScheduleTime(data[0])
     ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime })
-    setFocusedItem(data[0])
     bottomSheetRef.current?.close();
+    setFocusedIndex(data[0])
+
   }, []);
 
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState)
     if (isEnabled) {
       setScheduleTime(data[0])
+      setFocusedIndex(0)
       bottomSheetRef.current?.close();
     } else {
-      bottomSheetRef.current?.snapToIndex(1);
+      bottomSheetRef.current?.snapToIndex(0);
     }
   }
-  const handleItemPress = useCallback((value: number) => {
-    setScheduleTime(value)
-    ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: value })
-    setFocusedItem(value)
-  }, [setFocusedItem, setScheduleTime, ordering_dispatch]);
+  const handleOnValueChange = useCallback((value: number) => {
+    setScheduleTime(data[value])
+    ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: data[value] })
+    setFocusedIndex(value)
+  }, [setFocusedIndex, setScheduleTime, ordering_dispatch]);
 
   const handleOnContinue = () => {
     ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime })
     navigation.navigate(CONST_SCREEN_PREVIEW)
   }
-
-
-  const renderItem = useCallback(
-    ({ item }) => (
-      <TouchableOpacity onPress={() => handleItemPress(item)}>
-        <View style={[styles.itemContainer, { backgroundColor: focusedItem === item ? Colors.blue : Colors.greenFaded2 }]}>
-          <Body size='large' weight='Bold'>{item}</Body>
-        </View>
-      </TouchableOpacity >
-    ),
-    [handleItemPress, focusedItem]
-  );
-
 
   return (
 
@@ -81,7 +72,7 @@ export const WhenPage = (props: WhenPageProps) => {
       header="When do you need it?"
       subHeader="Schedule your pick-up."
       footer={{
-        buttonDisabled: isEnabled && !(focusedItem != 0),
+        buttonDisabled: isEnabled && !(focusedIndex != 0),
         onPress: handleOnContinue,
         buttonText: isEnabled ? 'Schedule' : 'Continue',
 
@@ -124,7 +115,7 @@ export const WhenPage = (props: WhenPageProps) => {
           switchBorderRadius={30} // Sets the border Radius of the switch slider. If unset, it remains the circleSize.
         />
       </View>
-      {isEnabled ? (
+      {/* {isEnabled ? (
         <BlurView
           style={styles.absolute}
           blurType="dark"
@@ -132,7 +123,7 @@ export const WhenPage = (props: WhenPageProps) => {
           reducedTransparencyFallbackColor="white"
         />
       ) : null
-      }
+      } */}
 
       <View style={styles.bottomSheetContainer}>
         <BottomSheet
@@ -141,16 +132,18 @@ export const WhenPage = (props: WhenPageProps) => {
           onChange={handleSheetChange}
           backgroundStyle={styles.bottomSheetBackground}
           onClose={handleClosePress}
-          enableHandlePanningGesture={false}
-          handleComponent={() => <View />}
+          index={-1}
         >
           <Body size='large' weight='Bold' color={Colors.darkBrown2} style={styles.bottomSheetHeader}>Schedule (mins)</Body>
-          <BottomSheetFlatList
-            data={data}
-            // keyExtractor={(i) => i}
-            renderItem={renderItem}
-            contentContainerStyle={styles.contentContainer}
-          />
+          <Picker
+            style={styles.bottomSheetContainer}
+            selectedValue={focusedIndex}
+            itemStyle={styles.itemContainer}
+            onValueChange={(index) => handleOnValueChange(index)}>
+            {data.map((value, i) => (
+              <PickerItem label={value.toString()} value={i} key={i} />
+            ))}
+          </Picker>
         </BottomSheet>
       </View>
 
@@ -160,7 +153,7 @@ export const WhenPage = (props: WhenPageProps) => {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    flex: 1,
+    // flex: 1,
     alignItems: 'center',
     marginTop: Spacings.s6,
 
@@ -179,18 +172,15 @@ const styles = StyleSheet.create({
     paddingVertical: 30
   },
   bottomSheetContainer: {
-    height: '70%',
-    marginBottom: Spacings.s20,
+    height: '100%',
+    // marginBottom: Spacings.s20,
     elevation: 200,
     zIndex: 100,
 
   },
   itemContainer: {
-    width: 200,
-    height: 40,
-    backgroundColor: Colors.goldFaded3,
-    borderRadius: 10,
-    marginVertical: Spacings.s1,
+    fontSize: 30,
+    marginVertical: Spacings.s4,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000000',
@@ -199,7 +189,7 @@ const styles = StyleSheet.create({
       height: 2
     },
     shadowRadius: 2,
-    shadowOpacity: 0.21
+    shadowOpacity: 0.1
   },
   bottomSheetHeader: {
     marginTop: Spacings.s5,
