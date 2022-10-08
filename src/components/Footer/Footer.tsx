@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     },
     container: {
         justifyContent: 'center',
+        // height: 100,
     },
     basketLengthContainer: {
         backgroundColor: Colors.goldFaded4,

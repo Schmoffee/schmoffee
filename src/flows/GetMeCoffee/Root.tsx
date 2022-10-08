@@ -41,7 +41,7 @@ const Root = () => {
   return (
     <OrderingContext.Provider value={{ ordering_state, ordering_dispatch }}>
       <CoffeeStack.Navigator
-        initialRouteName="Home"
+        initialRouteName="WhenPage"
         screenOptions={{
           headerShown: false,
           gestureEnabled: true,

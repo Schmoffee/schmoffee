@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { PropsWithChildren } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Spacings } from '../../../theme';
 import { Body, Heading } from '../../../typography';
 import { FooterType } from '../../utils/types/component.types';
@@ -18,33 +19,50 @@ interface PageLayoutProps extends PropsWithChildren {
 
 export const PageLayout = (props: PageLayoutProps) => {
     const backgroundStyle = props.backgroundColor || Colors.goldFaded4;
+
+    const insets = useSafeAreaInsets()
+
+    const footerStyle = StyleSheet.create({
+        root: {
+            height: 100,
+            justifyContent: 'flex-end',
+            paddingHorizontal: Spacings.s4,
+            // backgroundColor: Colors.red,
+            position: 'absolute',
+            bottom: insets.bottom,
+            left: 0,
+            right: 0,
+
+
+        },
+    })
     return (
         <>
-            <Pressable onPress={props.onPress} />
-            <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
-                {props.showCircle ? <View style={styles.bigSemiCircle} /> : null}
-                <View style={styles.header}>
-                    <Heading size="default" weight="Extrabld" color={Colors.black}>
-                        {props.header}
-                    </Heading>
-                </View>
-                {props.subHeader ? (
-                    <View style={styles.subHeader}>
-                        <Body size="small" weight="Bold" color={Colors.greyLight2} style={styles.subHeader}>
-                            {props.subHeader}
-                        </Body>
-                    </View>) : null}
-
-                <View style={styles.contentContainer}>{props.children}</View>
-                {props.footer ? (
-                    <View style={styles.footerContainer}>
-                        <View>
-                            <Footer {...props.footer} />
-                        </View>
+            <Pressable onPress={props.onPress}>
+                <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
+                    {props.showCircle ? <View style={styles.bigSemiCircle} /> : null}
+                    <View style={styles.header}>
+                        <Heading size="default" weight="Extrabld" color={Colors.black}>
+                            {props.header}
+                        </Heading>
                     </View>
-                ) : null}
-            </View>
-            {/* </Pressable> */}
+                    {props.subHeader ? (
+                        <View style={styles.subHeader}>
+                            <Body size="small" weight="Bold" color={Colors.greyLight2} style={styles.subHeader}>
+                                {props.subHeader}
+                            </Body>
+                        </View>) : null}
+
+                    <View style={styles.contentContainer}>{props.children}</View>
+                    {props.footer ? (
+                        <View style={footerStyle.root}>
+                            <View>
+                                <Footer {...props.footer} />
+                            </View>
+                        </View>
+                    ) : null}
+                </View>
+            </Pressable>
         </>
 
     );
@@ -86,10 +104,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         width: '80%',
     },
-    footerContainer: {
-        position: 'absolute',
-        bottom: Spacings.s10,
-        left: Spacings.s4,
-        right: Spacings.s4,
-    },
+
 });

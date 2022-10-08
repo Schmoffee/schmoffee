@@ -19,14 +19,14 @@ export const WhenPage = (props: WhenPageProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const { ordering_state, ordering_dispatch } = useContext(OrderingContext)
   const [isEnabled, setIsEnabled] = useState(false);
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ["1%", "90%"], []);
+
   const data = [5, 10, 15, 20, 25, 30, 35, 40, 45]
   const [scheduledTime, setScheduleTime] = useState(data[0])
   const [focusedItem, setFocusedItem] = useState(0)
 
-
-
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["1%", "90%"], []);
 
   // callbacks
   const handleSheetChange = useCallback((index: number) => {
@@ -38,7 +38,6 @@ export const WhenPage = (props: WhenPageProps) => {
     setIsEnabled(false)
     setScheduleTime(data[0])
     ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime })
-
     setFocusedItem(data[0])
     bottomSheetRef.current?.close();
   }, []);
@@ -126,15 +125,12 @@ export const WhenPage = (props: WhenPageProps) => {
         />
       </View>
       {isEnabled ? (
-
         <BlurView
-
           style={styles.absolute}
           blurType="dark"
           blurAmount={2}
           reducedTransparencyFallbackColor="white"
         />
-
       ) : null
       }
 
@@ -145,12 +141,13 @@ export const WhenPage = (props: WhenPageProps) => {
           onChange={handleSheetChange}
           backgroundStyle={styles.bottomSheetBackground}
           onClose={handleClosePress}
-          enablePanDownToClose
+          enableHandlePanningGesture={false}
+          handleComponent={() => <View />}
         >
           <Body size='large' weight='Bold' color={Colors.darkBrown2} style={styles.bottomSheetHeader}>Schedule (mins)</Body>
           <BottomSheetFlatList
             data={data}
-            keyExtractor={(i) => i}
+            // keyExtractor={(i) => i}
             renderItem={renderItem}
             contentContainerStyle={styles.contentContainer}
           />
@@ -210,7 +207,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   bottomSheetBackground: {
-    backgroundColor: Colors.greyLight1,
+    // backgroundColor: Colors.greyLight1,
   },
   absolute: {
     position: 'absolute',
@@ -219,6 +216,7 @@ const styles = StyleSheet.create({
     bottom: '30%',
     right: 0,
     borderRadius: 20,
+    height: '121%',
   },
 
 

@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   primaryButton: {
     borderRadius: Spacings.s5,
     padding: Spacings.s4,
+    paddingHorizontal: Spacings.s30,
   },
   secondaryButton: {
     borderRadius: Spacings.s12,

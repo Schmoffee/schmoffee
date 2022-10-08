@@ -18,7 +18,7 @@ const RootStack = createNativeStackNavigator<RootRoutes>();
 function RootNavigator() {
   return (
     <RootStack.Navigator
-      initialRouteName="Auth"
+      initialRouteName="Coffee"
       screenOptions={{
         gestureEnabled: false,
         headerShown: false,
