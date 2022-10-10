@@ -44,7 +44,7 @@
     "react-native-geolocation-service": "^5.3.1",
     "react-native-gesture-handler": "^2.6.2",
     "react-native-phone-number-input": "^2.1.0",
-    "react-native-reanimated": "^2.10.0",
+    "react-native-reanimated": "^2.9.1",
     "react-native-redash": "^14.2.2",
     "react-native-screens": "^3.17.0",
     "react-native-svg": "^13.2.0",

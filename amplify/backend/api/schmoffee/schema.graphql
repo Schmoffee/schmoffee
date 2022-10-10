@@ -42,8 +42,10 @@ type OrderOption {
 }
 
 type OrderItem {
+  quantity: Int!
   name: String!
   price: Float!
+  preparation_time: Int!
   options: [OrderOption!]
 }
 
@@ -54,6 +56,7 @@ enum OrderStatus {
   READY
   COLLECTED
   RECEIVED
+  SENT
 }
 
 type OrderInfo {
@@ -70,11 +73,11 @@ type OrderInfo {
 
 type CurrentOrder @model @auth(rules: [{allow: public}]) {
   id: ID!
-  items: [OrderItem!]
+  items: [OrderItem!]!
   total: Float!
   order_info: OrderInfo!
   cafeID: ID! @index(name: "byCafe")
-  user_info: UserInfo
+  user_info: UserInfo!
   userID: ID!
 }
 
@@ -144,4 +147,5 @@ type User @model @auth(rules: [{allow: public}]) {
   ratings: [Rating] @hasMany(indexName: "byUser", fields: ["id"])
   past_orders: [PastOrder] @hasMany(indexName: "byUser", fields: ["id"])
   the_usual: UsualOrder
+  customer_id: String
 }

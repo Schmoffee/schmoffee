@@ -1,17 +1,44 @@
-import React, {useContext} from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity, Image} from 'react-native';
-import {Colors, Spacings} from '../../theme';
-import {Body} from '../../typography';
-import {OrderingContext} from '../contexts';
-import {OrderItem} from '../models';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useRef } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Easing } from 'react-native';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
+import { Colors, Spacings } from '../../theme';
+import { Body } from '../../typography';
+import { OrderingContext } from '../contexts';
+import { OrderItem } from '../models';
+import { CoffeeRoutes } from '../utils/types/navigation.types';
 
 interface BasketItemProps {
   item: OrderItem;
 }
 
 export const BasketItem = (props: BasketItemProps) => {
-  const {item} = props;
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { item } = props;
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
+  const navigation = useNavigation<CoffeeRoutes>()
+  const imageRef = useRef<Image>()
+  const anim = useSharedValue(0);
+  useEffect(() => {
+    anim.value = 0;
+    anim.value = withTiming(1, {
+      duration: 500,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    })
+  }, []);
+
+
+  const onItemPress = () => {
+    'worklet';
+    //measure image position & size
+    imageRef.current?.measure?.((x, y, width, height, pageX, pageY) => {
+      let imageSpecs = { width, height, pageX, pageY, borderRadius: 10 }
+      navigation.navigate('ItemPage', {
+        item,
+        imageSpecs
+      },
+      );
+    });
+  };
 
   const getQuantity = () => {
     let quantity = 0;
@@ -23,24 +50,24 @@ export const BasketItem = (props: BasketItemProps) => {
     return quantity;
   };
 
-  const reduceQuantity = () => {
+  const onReduceQuantity = () => {
     const index = ordering_state.common_basket.findIndex((basketItem: any) => basketItem.name === item.name);
     if (index > -1) {
       const newBasket = [...ordering_state.common_basket];
       newBasket[index].quantity = newBasket[index].quantity - 1;
-      ordering_dispatch({type: 'SET_COMMON_BASKET', payload: newBasket});
+      ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
     }
   };
 
-  const increaseQuantity = () => {
+  const onIncreaseQuantity = () => {
     const index = ordering_state.common_basket.findIndex((basketItem: any) => basketItem.name === item.name);
     if (index > -1) {
       const newBasket = [...ordering_state.common_basket];
       newBasket[index].quantity = newBasket[index].quantity + 1;
-      ordering_dispatch({type: 'SET_COMMON_BASKET', payload: newBasket});
+      ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
     }
   };
-  const removeItem = () => {
+  const onRemoveItem = () => {
     const index = ordering_state.common_basket.findIndex((basketItem: any) => basketItem.name === item.name);
     if (index > -1) {
       const newBasket = [...ordering_state.common_basket];
@@ -51,15 +78,15 @@ export const BasketItem = (props: BasketItemProps) => {
         newBasket[index].quantity = newBasket[index].quantity - 1;
       }
 
-      ordering_dispatch({type: 'SET_COMMON_BASKET', payload: newBasket});
+      ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
     }
   };
 
   return (
-    <TouchableOpacity onPress={() => removeItem()} style={styles.container}>
+    <TouchableOpacity onPress={onItemPress} style={styles.container}>
       <View style={styles.item}>
         <View style={styles.itemImage}>
-          <Image source={props.item.image} style={styles.image} />
+          <Image ref={imageRef} source={props.item.image} style={styles.image} />
         </View>
         <View style={styles.quantityLabel}>
           <Body size="small" weight="Regular" color={Colors.darkBrown2}>

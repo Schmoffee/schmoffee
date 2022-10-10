@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
-import {Body} from '../../../typography';
-import {CardItem} from './CardItem';
-import {Item} from '../../models';
-import {Colors, Spacings} from '../../../theme';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { Body } from '../../../typography';
+import { CardItem } from './CardItem';
+import { Item } from '../../models';
+import { Colors, Spacings } from '../../../theme';
 
 interface CardSectionProps {
   title: string;
@@ -12,9 +12,9 @@ interface CardSectionProps {
 }
 
 export const CardSection = (props: CardSectionProps) => {
-  const {title, items} = props;
+  const { title, items } = props;
   return (
-    <View style={[styles.container, {borderBottomColor: props.hideDivider ? 'transparent' : Colors.brownFaded2}]}>
+    <View style={[styles.container, { borderBottomColor: props.hideDivider ? 'transparent' : Colors.brownFaded2 }]}>
       <Body size="large" weight="Bold" color={Colors.darkBrown2}>
         {title}
       </Body>
@@ -22,7 +22,7 @@ export const CardSection = (props: CardSectionProps) => {
         <FlatList
           horizontal
           data={items}
-          contentContainerStyle={{paddingVertical: 16}}
+          contentContainerStyle={{ paddingVertical: 16 }}
           contentInsetAdjustmentBehavior="never"
           snapToAlignment="center"
           decelerationRate="fast"
@@ -30,7 +30,7 @@ export const CardSection = (props: CardSectionProps) => {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={1}
-          renderItem={({item}) => <CardItem item={item} />}
+          renderItem={({ item, index }) => <CardItem item={item} index={index} />}
           keyExtractor={item => item.id}
         />
       ) : (

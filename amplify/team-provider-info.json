@@ -29,6 +29,10 @@
         "schmoffeeAuthVerifyAuthChallengeResponse": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
           "s3Key": "amplify-builds/schmoffeeAuthVerifyAuthChallengeResponse-3364566e456f68373563-build.zip"
+        },
+        "schmoffeePayWithStripe": {
+          "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
+          "s3Key": "amplify-builds/schmoffeePayWithStripe-6a6346314a72716a4b77-build.zip"
         }
       },
       "auth": {

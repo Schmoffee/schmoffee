@@ -1,14 +1,14 @@
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
-import {CONST_SCREEN_HOME} from '../../../../constants';
-import {PageLayout} from '../../../components/Layouts/PageLayout';
-import {BasketSection} from '../../../components/PreviewComponents/BasketSection';
-import {PreviewSection} from '../../../components/PreviewComponents/PreviewSection';
-import {ScheduleSection} from '../../../components/PreviewComponents/ScheduleSection';
-import {CoffeeRoutes} from '../../../utils/types/navigation.types';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { CONST_SCREEN_HOME } from '../../../../constants';
+import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { BasketSection } from '../../../components/PreviewComponents/BasketSection';
+import { PreviewSection } from '../../../components/PreviewComponents/PreviewSection';
+import { ScheduleSection } from '../../../components/PreviewComponents/ScheduleSection';
+import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 
-interface PreviewPageProps {}
+interface PreviewPageProps { }
 
 export const PreviewPage = (props: PreviewPageProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
@@ -17,6 +17,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
     <PageLayout
       header="Preview Order"
       subHeader="Make sure everything looks good."
+      showCircle
       footer={{
         buttonDisabled: false,
         onPress: () => navigation.navigate(CONST_SCREEN_HOME),
