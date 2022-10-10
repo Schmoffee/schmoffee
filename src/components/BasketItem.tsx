@@ -14,17 +14,11 @@ interface BasketItemProps {
 
 export const BasketItem = (props: BasketItemProps) => {
   const { item } = props;
+  console.log(item)
   const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>()
   const imageRef = useRef<Image>()
-  const anim = useSharedValue(0);
-  useEffect(() => {
-    anim.value = 0;
-    anim.value = withTiming(1, {
-      duration: 500,
-      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-    })
-  }, []);
+
 
 
   const onItemPress = () => {
