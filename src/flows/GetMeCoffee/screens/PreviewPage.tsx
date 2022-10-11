@@ -1,14 +1,21 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useMemo} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {useStripe, initStripe, confirmPaymentSheetPayment} from '@stripe/stripe-react-native';
 import {PageLayout} from '../../../components/Layouts/PageLayout';
 import {CoffeeRoutes} from '../../../utils/types/navigation.types';
 import {initializePaymentSheet, openPaymentSheet} from '../../../utils/helpers/payment';
+import {BasketSection} from '../../../components/PreviewComponents/BasketSection';
+import {PreviewSection} from '../../../components/PreviewComponents/PreviewSection';
+import {ScheduleSection} from '../../../components/PreviewComponents/ScheduleSection';
 import {GlobalContext, OrderingContext} from '../../../contexts';
-import {OrderItem, User} from '../../../models';
+import {Cafe, OrderItem, User} from '../../../models';
 import {Alert} from 'react-native';
+import {DATA_SHOPS} from '../../../data/shops.data';
+import {Body} from '../../../../typography';
+import {Colors} from '../../../../theme';
 
-interface PreviewPageProps { }
+interface PreviewPageProps {}
 
 export const PreviewPage = (props: PreviewPageProps) => {
   const {global_state} = useContext(GlobalContext);
@@ -23,7 +30,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
     return 0;
   }, [ordering_state.specific_basket]);
   const current_shop = DATA_SHOPS[0] as Cafe;
-
+  // 21007329
   /**
    * Calculate and return the total price of the options of an item
    * @param item The target item
@@ -111,12 +118,11 @@ export const PreviewPage = (props: PreviewPageProps) => {
         onPress: () => checkout(),
         buttonText: 'Order',
       }}>
-      {/* <ScrollView style={styles.container}> */}
       <BasketSection />
       <ScheduleSection />
       <PreviewSection title="Location">
-        <View style={styles.locationContainer}>
-          <View style={styles.locationTextContainer}>
+        <View>
+          <View>
             <Body size="small" weight="Bold" color={Colors.greyLight2}>
               {current_shop.name}
             </Body>
@@ -124,12 +130,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
               New York, NY 10001
             </Body>
           </View>
-
         </View>
       </PreviewSection>
-
-      {/* <PreviewSection title="Payment Method" /> */}
-      {/* </ScrollView> */}
     </PageLayout>
   );
 };

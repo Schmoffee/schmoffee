@@ -8,8 +8,7 @@ import {AuthState} from './utils/types/enums';
 import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Navigator from './navigation/Navigator';
-import { LocalUser } from './utils/types/data.types';
-import LiquidSwipe from './components/LiquidSwipe';
+import {LocalUser} from './utils/types/data.types';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);

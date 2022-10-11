@@ -1,6 +1,6 @@
 import {Cafe, CurrentOrder, Item, OrderItem, UsualOrder} from '../../models';
-import {AuthState} from '../enums';
 import {CognitoUser} from 'amazon-cognito-identity-js';
+import {AuthState} from './enums';
 
 export type HubPayload = {
   event: string;
