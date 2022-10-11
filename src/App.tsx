@@ -1,15 +1,12 @@
-import React, { useEffect, useReducer } from 'react';
-import { globalReducer } from './reducers';
-import { GlobalContext, globalData } from './contexts';
-import awsConfig from './aws-exports';
-import { Amplify } from 'aws-amplify';
-Amplify.configure(awsConfig);
-import { Hub } from 'aws-amplify';
-import { authListener, datastoreListener } from './utils/listeners';
-import { getCurrentAuthUser } from './utils/queries/auth';
-import { AuthState } from './utils/enums';
-import { getUserByPhoneNumber, updateAuthState } from './utils/queries/datastore';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import React, {useEffect, useReducer} from 'react';
+import {globalReducer} from './reducers';
+import {GlobalContext, globalData} from './contexts';
+import {Hub} from 'aws-amplify';
+import {authListener, datastoreListener} from './utils/helpers/listeners';
+import {getCurrentAuthUser} from './utils/queries/auth';
+import {AuthState} from './utils/types/enums';
+import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Navigator from './navigation/Navigator';
 import { LocalUser } from './utils/types/data.types';
 import LiquidSwipe from './components/LiquidSwipe';
@@ -47,6 +44,7 @@ const App = () => {
             phone: currentUser.phone,
             payment_method: currentUser.payment_method,
             the_usual: currentUser.the_usual,
+            customer_id: currentUser.customer_id,
           };
           console.log(currentUser);
           global_dispatch({
@@ -54,7 +52,7 @@ const App = () => {
             payload: localUser,
           });
           await updateAuthState(currentUser?.id as string, true);
-          global_dispatch({ type: 'SET_AUTH_USER', payload: user });
+          global_dispatch({type: 'SET_AUTH_USER', payload: user});
         } else {
           console.log('We have a problem');
         }
@@ -65,7 +63,7 @@ const App = () => {
   }, [global_state.current_user?.id, global_state.auth_state]);
 
   return (
-    <GlobalContext.Provider value={{ global_state, global_dispatch }}>
+    <GlobalContext.Provider value={{global_state, global_dispatch}}>
       <SafeAreaProvider>
         <Navigator />
       </SafeAreaProvider>

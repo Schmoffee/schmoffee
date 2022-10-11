@@ -1,4 +1,4 @@
-import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplify/datastore";
+import { ModelInit, MutableModel } from "@aws-amplify/datastore";
 
 export enum OptionType {
   BEAN = "BEAN",
@@ -40,7 +40,7 @@ export declare class UsualOrder {
 }
 
 export declare class OrderItem {
-  quantity: number;
+  readonly quantity: number;
   readonly name: string;
   readonly price: number;
   readonly preparation_time: number;

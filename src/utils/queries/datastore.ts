@@ -108,8 +108,6 @@ async function terminateOrder(
     }),
   );
 
-  await DataStore.delete(CurrentOrder, order => order.id('eq', order_id));
-
   for (const rating of ratings) {
     await DataStore.save(
       new Rating({
@@ -124,10 +122,25 @@ async function terminateOrder(
   }
 }
 
-async function getUserRatings(userID: string) {
+async function getUserRatings(userID: string): Promise<Rating[] | null> {
   const results = await DataStore.query(User, c => c.id('eq', userID));
-  if (results) return results[0].ratings;
+  if (results) return results[0].ratings as Rating[];
   else return null;
+}
+
+async function getUserPastOrders(userID: string): Promise<PastOrder[] | null> {
+  return await DataStore.query(PastOrder, c => c.userID('eq', userID));
+}
+
+async function updateCustomerId(customerId: string, userID: string) {
+  const user = await getUserById(userID);
+  if (user) {
+    await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.customer_id = customerId;
+      }),
+    );
+  }
 }
 
 /**
@@ -189,7 +202,7 @@ async function getScore(
       sum_ratings: 0,
       num_ratings: 0,
     };
-    const personal_ratings: Rating[] = (await getUserRatings(user.id)) as Rating[];
+    const personal_ratings: Rating[] | null = await getUserRatings(user.id);
     if (personal_ratings) {
       personal_ratings.forEach(rating => {
         if (formatted_cafe.menu?.includes(rating.itemID)) {
@@ -213,8 +226,8 @@ async function getScore(
         general_taste_score = weights.general_taste * (formatted_cafe.sum_ratings / formatted_cafe.num_ratings);
       }
     }
-
-    const target_minute = new Date(Date.now()).getMinutes() + schedule_time;
+    const now = new Date(Date.now());
+    const target_minute = now.getHours() * 60 + now.getMinutes() + schedule_time;
     const total_preparation_time = concerned_cafe_items.reduce((acc, item) => acc + item.preparation_time, 0);
     const preparation_range = [target_minute - total_preparation_time, target_minute];
 
@@ -246,4 +259,6 @@ export {
   getBestShop,
   terminateOrder,
   updatePaymentMethod,
+  getUserPastOrders,
+  updateCustomerId,
 };

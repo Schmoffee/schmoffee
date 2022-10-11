@@ -26,6 +26,7 @@ import {LocalUser} from '../../../utils/types/data.types';
 import {User} from '../../../models';
 import {Body} from '../../../../typography';
 
+
 export const Signup = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
@@ -131,6 +132,7 @@ export const Signup = () => {
           phone: finalUser.phone,
           payment_method: finalUser.payment_method,
           the_usual: finalUser.the_usual,
+          customer_id: finalUser.customer_id,
         };
         global_dispatch({
           type: 'SET_CURRENT_USER',

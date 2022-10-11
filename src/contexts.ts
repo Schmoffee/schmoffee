@@ -1,6 +1,6 @@
 import React from 'react';
 import {GlobalState, OrderingState, TrackOrderState} from './utils/types/data.types';
-import {AuthState} from './utils/enums';
+import {AuthState} from './utils/types/enums';
 
 export const globalData: GlobalState = {
   auth_state: AuthState.SIGNED_OUT,
