@@ -18,7 +18,7 @@ export const trackOrderData: TrackOrderState = {
 export const orderingData: OrderingState = {
   current_shop: null,
   common_basket: [],
-  scheduled_time: null,
+  scheduled_time: 5,
   specific_basket: [],
   common_items: [],
 };

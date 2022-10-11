@@ -44,7 +44,8 @@ type OrderOption {
 type OrderItem {
   quantity: Int!
   name: String!
-  price: Float!preparation_time: Int!
+  price: Float!
+  preparation_time: Int!
   options: [OrderOption!]
 }
 

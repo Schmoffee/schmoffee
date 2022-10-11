@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { Colors, Spacings } from '../../../theme';
-import { Body } from '../../../typography';
+import {StyleSheet, View, Text, TextInput, TouchableOpacity} from 'react-native';
+import {Colors, Spacings} from '../../../theme';
+import {Body} from '../../../typography';
 
 interface ActionButtonProps {
   label: string;
@@ -60,10 +60,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: Spacings.s4,
-
   },
   disabledColor: {
-    backgroundColor: Colors.grey
+    backgroundColor: Colors.grey,
   },
   activeColor: {
     backgroundColor: Colors.darkBrown2,
@@ -72,8 +71,9 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   primaryButton: {
-    borderRadius: Spacings.s4,
+    borderRadius: Spacings.s5,
     padding: Spacings.s4,
+    paddingHorizontal: Spacings.s30,
   },
   secondaryButton: {
     borderRadius: Spacings.s12,

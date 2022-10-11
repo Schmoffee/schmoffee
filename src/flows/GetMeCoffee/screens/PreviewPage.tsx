@@ -1,12 +1,19 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useMemo} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {useStripe, initStripe, confirmPaymentSheetPayment} from '@stripe/stripe-react-native';
 import {PageLayout} from '../../../components/Layouts/PageLayout';
 import {CoffeeRoutes} from '../../../utils/types/navigation.types';
 import {initializePaymentSheet, openPaymentSheet} from '../../../utils/helpers/payment';
+import {BasketSection} from '../../../components/PreviewComponents/BasketSection';
+import {PreviewSection} from '../../../components/PreviewComponents/PreviewSection';
+import {ScheduleSection} from '../../../components/PreviewComponents/ScheduleSection';
 import {GlobalContext, OrderingContext} from '../../../contexts';
-import {OrderItem, User} from '../../../models';
+import {Cafe, OrderItem, User} from '../../../models';
 import {Alert} from 'react-native';
+import {DATA_SHOPS} from '../../../data/shops.data';
+import {Body} from '../../../../typography';
+import {Colors} from '../../../../theme';
 
 interface PreviewPageProps {}
 
@@ -22,7 +29,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
     }, 0);
     return 0;
   }, [ordering_state.specific_basket]);
-
+  const current_shop = DATA_SHOPS[0] as Cafe;
+  // 21007329
   /**
    * Calculate and return the total price of the options of an item
    * @param item The target item
@@ -104,11 +112,26 @@ export const PreviewPage = (props: PreviewPageProps) => {
     <PageLayout
       header="Preview Order"
       subHeader="Make sure everything looks good."
+      showCircle
       footer={{
         buttonDisabled: false,
         onPress: () => checkout(),
         buttonText: 'Order',
-      }}
-    />
+      }}>
+      <BasketSection />
+      <ScheduleSection />
+      <PreviewSection title="Location">
+        <View>
+          <View>
+            <Body size="small" weight="Bold" color={Colors.greyLight2}>
+              {current_shop.name}
+            </Body>
+            <Body size="small" weight="Bold" color={Colors.greyLight2}>
+              New York, NY 10001
+            </Body>
+          </View>
+        </View>
+      </PreviewSection>
+    </PageLayout>
   );
 };

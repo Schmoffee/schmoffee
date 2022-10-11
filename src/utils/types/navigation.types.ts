@@ -19,6 +19,7 @@ export type CoffeeRoutes = {
   WhatPage: undefined;
   WhenPage: undefined;
   PreviewPage: undefined;
+  ItemPage: undefined;
 };
 
 export type RootRoutes = {

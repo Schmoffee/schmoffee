@@ -9,7 +9,9 @@ import { Home } from './screens/Home';
 import { PreviewPage } from './screens/PreviewPage';
 import { WhatPage } from './screens/WhatPage';
 import { WhenPage } from './screens/WhenPage';
+
 import { orderingReducer } from '../../reducers';
+import ItemPage from './screens/ItemPage';
 
 /**
  * Top/Root level component of the "Get me Coffee" flow.
@@ -29,14 +31,14 @@ const Root = () => {
       sort: item => item.type(SortDirection.ASCENDING),
     }).subscribe(snapshot => {
       const { items, isSynced } = snapshot;
-      global_dispatch({ type: 'SET_COMMON_ITEMS', payload: items });
+      ordering_dispatch({ type: 'SET_COMMON_ITEMS', payload: items });
       if (isSynced) {
         console.log('Synced');
       }
       console.log('items: synced? ', isSynced, ' list: ', JSON.stringify(items, null, 2));
     });
     return () => subscription.unsubscribe();
-  }, [global_dispatch]);
+  }, [ordering_dispatch]);
 
   return (
     <OrderingContext.Provider value={{ ordering_state, ordering_dispatch }}>
@@ -46,11 +48,14 @@ const Root = () => {
           headerShown: false,
           gestureEnabled: true,
           gestureDirection: 'horizontal',
+          animation: 'none',
         }}>
         <CoffeeStack.Screen name="Home" component={Home} />
         <CoffeeStack.Screen name="WhatPage" component={WhatPage} />
         <CoffeeStack.Screen name="WhenPage" component={WhenPage} />
         <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
+        <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
+
       </CoffeeStack.Navigator>
     </OrderingContext.Provider>
   );

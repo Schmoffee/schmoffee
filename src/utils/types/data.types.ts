@@ -1,6 +1,6 @@
 import {Cafe, CurrentOrder, Item, OrderItem, UsualOrder} from '../../models';
-import {AuthState} from './enums';
 import {CognitoUser} from 'amazon-cognito-identity-js';
+import {AuthState} from './enums';
 
 export type HubPayload = {
   event: string;
@@ -27,8 +27,8 @@ export type TrackOrderState = {
 export type OrderingState = {
   current_shop: Cafe | null;
   common_basket: OrderItem[];
+  scheduled_time: number;
   specific_basket: OrderItem[];
-  scheduled_time: number | null;
   common_items: Item[];
 };
 
@@ -57,7 +57,7 @@ export type OrderingAction =
   | {type: 'SET_CURRENT_SHOP'; payload: Cafe | null}
   | {type: 'SET_COMMON_BASKET'; payload: OrderItem[]}
   | {type: 'SET_SPECIFIC_BASKET'; payload: OrderItem[]}
-  | {type: 'SET_SCHEDULED_TIME'; payload: number | null}
+  | {type: 'SET_SCHEDULED_TIME'; payload: number}
   | {type: 'SET_COMMON_ITEMS'; payload: Item[]};
 
 export type PreRating = {
