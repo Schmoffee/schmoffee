@@ -10,7 +10,7 @@ import { DATA_ITEMS } from '../../../data/items.data';
 import { Item } from '../../../models';
 import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 import { BasketSection } from '../../../components/PreviewComponents/BasketSection';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface WhatPageProps { }
 
@@ -19,11 +19,18 @@ export const WhatPage = (props: WhatPageProps) => {
   const [items, setItems] = useState(DATA_ITEMS);
   const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
 
+  const translateY = useSharedValue(0);
+
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    translateY.value = event.contentOffset.y;
+  });
+
+
   const anim = useSharedValue(0);
   useEffect(() => {
     anim.value = 0;
     anim.value = withTiming(1, {
-      duration: 500,
+      duration: 800,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
     })
   }, []);
@@ -59,10 +66,10 @@ export const WhatPage = (props: WhatPageProps) => {
 
   const pageStyle = useAnimatedStyle(
     () => ({
-      opacity: anim.value * 0.5,
+      // opacity: anim.value * 0.5,
       transform: [
         {
-          translateY: interpolate(anim.value, [0, 1], [-100, 0])
+          translateY: interpolate(anim.value, [0, 1], [-150, 0])
         }
       ]
     }),
@@ -92,20 +99,24 @@ export const WhatPage = (props: WhatPageProps) => {
         />
       </View>
 
-      <BasketSection />
 
 
-      <ScrollView style={[styles.container, pageStyle]}>
+
+      <Animated.ScrollView style={[styles.container, pageStyle]}
+        onScroll={scrollHandler}
+        pagingEnabled
+        scrollEventThrottle={16}>
+        <BasketSection translateY={translateY} />
         <CardSection title="Coffee" items={getCoffees()} />
         <CardSection title="Juices" items={getJuices()} />
         <CardSection title="Pastries" items={getPastries()} hideDivider />
-      </ScrollView>
+      </Animated.ScrollView>
     </PageLayout >
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: { marginTop: Spacings.s4 },
   basketContainer: {},
   searchInputContainer: {
     backgroundColor: Colors.greyLight1,

@@ -1,11 +1,11 @@
-import {CognitoUser} from 'amazon-cognito-identity-js';
-import {ErrorTypes} from '../enums';
-import {Auth} from 'aws-amplify';
+import { CognitoUser } from 'amazon-cognito-identity-js';
+import { ErrorTypes } from '../enums';
+import { Auth } from 'aws-amplify';
 const password = Math.random().toString(10) + 'Abc#';
 
 async function signUp(phoneNumber: string, name: string): Promise<CognitoUser | null | ErrorTypes> {
   try {
-    const {user} = await Auth.signUp({
+    const { user } = await Auth.signUp({
       username: phoneNumber,
       password,
       attributes: {
@@ -67,7 +67,7 @@ async function signOut(): Promise<boolean> {
 
 async function globalSignOut(): Promise<boolean> {
   try {
-    await Auth.signOut({global: true});
+    await Auth.signOut({ global: true });
     return true;
   } catch (error) {
     console.log('error globally signing out: ', error);
@@ -75,4 +75,4 @@ async function globalSignOut(): Promise<boolean> {
   }
 }
 
-export {signUp, signIn, sendChallengeAnswer, getCurrentAuthUser, signOut, globalSignOut};
+export { signUp, signIn, sendChallengeAnswer, getCurrentAuthUser, signOut, globalSignOut };

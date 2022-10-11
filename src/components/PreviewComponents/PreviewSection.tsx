@@ -1,7 +1,7 @@
 import React from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity} from 'react-native';
-import {Colors, Spacings} from '../../../theme';
-import {Body} from '../../../typography';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Colors, Spacings } from '../../../theme';
+import { Body } from '../../../typography';
 
 interface PreviewSectionProps {
   title: string;
@@ -26,6 +26,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.greyLight1,
     marginVertical: Spacings.s2,
     height: 250,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: -1,
+    },
+    shadowRadius: 5,
+    shadowOpacity: 0.2,
   },
   header: {
     height: 30,

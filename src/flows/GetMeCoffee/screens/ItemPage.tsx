@@ -95,7 +95,6 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
 
 
     const onAddItem = useCallback(() => {
-        console.log(...ordering_state.common_basket)
         if (ordering_state.common_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
             const index = ordering_state.common_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
             const newBasket = [...ordering_state.common_basket];

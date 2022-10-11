@@ -20,9 +20,9 @@ export const CardItem = ({ item, index }: CardItemProps) => {
     const imageRef = useRef<Image>()
     const anim = useSharedValue(0);
     useEffect(() => {
-        anim.value = 0;
+        anim.value = -1;
         anim.value = withTiming(1, {
-            duration: 500,
+            duration: 900,
             easing: Easing.bezier(0.25, 0.1, 0.25, 1),
         })
     }, []);
