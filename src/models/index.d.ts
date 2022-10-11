@@ -18,7 +18,8 @@ export enum OrderStatus {
   PREPARING = "PREPARING",
   READY = "READY",
   COLLECTED = "COLLECTED",
-  RECEIVED = "RECEIVED"
+  RECEIVED = "RECEIVED",
+  SENT = "SENT"
 }
 
 export enum Day {
@@ -42,6 +43,7 @@ export declare class OrderItem {
   readonly quantity: number;
   readonly name: string;
   readonly price: number;
+  readonly preparation_time: number;
   readonly options?: OrderOption[] | null;
   constructor(init: ModelInit<OrderItem>);
 }
@@ -130,11 +132,11 @@ export declare class PastOrder {
 
 export declare class CurrentOrder {
   readonly id: string;
-  readonly items?: OrderItem[] | null;
+  readonly items: OrderItem[];
   readonly total: number;
   readonly order_info: OrderInfo;
   readonly cafeID: string;
-  readonly user_info?: UserInfo | null;
+  readonly user_info: UserInfo;
   readonly userID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;

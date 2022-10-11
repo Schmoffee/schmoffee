@@ -20,7 +20,8 @@ const OrderStatus = {
   "PREPARING": "PREPARING",
   "READY": "READY",
   "COLLECTED": "COLLECTED",
-  "RECEIVED": "RECEIVED"
+  "RECEIVED": "RECEIVED",
+  "SENT": "SENT"
 };
 
 const Day = {

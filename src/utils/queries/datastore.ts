@@ -108,8 +108,6 @@ async function terminateOrder(
     }),
   );
 
-  await DataStore.delete(CurrentOrder, order => order.id('eq', order_id));
-
   for (const rating of ratings) {
     await DataStore.save(
       new Rating({
@@ -228,8 +226,8 @@ async function getScore(
         general_taste_score = weights.general_taste * (formatted_cafe.sum_ratings / formatted_cafe.num_ratings);
       }
     }
-
-    const target_minute = new Date(Date.now()).getMinutes() + schedule_time;
+    const now = new Date(Date.now());
+    const target_minute = now.getHours() * 60 + now.getMinutes() + schedule_time;
     const total_preparation_time = concerned_cafe_items.reduce((acc, item) => acc + item.preparation_time, 0);
     const preparation_range = [target_minute - total_preparation_time, target_minute];
 
