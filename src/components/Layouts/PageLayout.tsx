@@ -20,7 +20,7 @@ interface PageLayoutProps extends PropsWithChildren {
 }
 
 export const PageLayout = (props: PageLayoutProps) => {
-    const backgroundStyle = props.backgroundColor || Colors.goldFaded4;
+    const backgroundStyle = props.backgroundColor || Colors.goldFaded1;
 
     const insets = useSafeAreaInsets();
 

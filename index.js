@@ -2,13 +2,12 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
+import { AppRegistry } from 'react-native';
 import App from './src/App';
-import {name as appName} from './app.json';
-import {DataStore} from 'aws-amplify';
-import PushNotification from '@aws-amplify/pushnotification';
+import { name as appName } from './app.json';
+import { DataStore } from 'aws-amplify';
 import awsConfig from './src/aws-exports';
-import {Amplify} from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
 Amplify.configure({
   ...awsConfig,
   PushNotification: {

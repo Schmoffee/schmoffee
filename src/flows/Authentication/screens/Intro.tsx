@@ -1,8 +1,8 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
-import {Colors} from '../../../../theme';
-import Animated, {useAnimatedScrollHandler, useSharedValue} from 'react-native-reanimated';
-import {IntroPage} from '../../../components/Layouts/IntroPageLayout';
+import { Image, StyleSheet, View } from 'react-native';
+import { Colors } from '../../../../theme';
+import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated';
+import { IntroPage } from '../../../components/Layouts/IntroPageLayout';
 
 export const Intro = () => {
   const WORDS = ['Welcome', 'to', 'Schmoffee'];
@@ -13,16 +13,21 @@ export const Intro = () => {
   });
 
   return (
-    <Animated.ScrollView
-      onScroll={scrollHandler}
-      pagingEnabled
-      scrollEventThrottle={16}
-      showsVerticalScrollIndicator={false}
-      style={styles.container}>
-      {WORDS.map((title, index) => {
-        return <IntroPage key={index.toString()} title={title} translateY={translateY} index={index} />;
-      })}
-    </Animated.ScrollView>
+    <>
+      <Animated.ScrollView
+        onScroll={scrollHandler}
+        pagingEnabled
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        style={styles.container}>
+        {WORDS.map((title, index) => {
+          return <IntroPage key={index.toString()} title={title} translateY={translateY} index={index} />;
+        })}
+      </Animated.ScrollView>
+      {/* <View style={styles.image}>
+        <Image source={require('../../../assets/svgs/logo.png')} />
+      </View> */}
+    </>
   );
 };
 
@@ -45,5 +50,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: '100%',
     width: '25%',
+  },
+  image: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
+    height: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+    transform: [{ scale: 0.08 }],
   },
 });

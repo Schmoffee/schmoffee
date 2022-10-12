@@ -91,7 +91,7 @@ export const BasketItem = (props: BasketItemProps) => {
   const rItemStyle = useAnimatedStyle(
     () => ({
       marginHorizontal: interpolate(anim.value, [0, 1], [-4, 15]),
-      transform: [{ scale: interpolate(anim.value, [0, 1], [1, 1.1]) }],
+      transform: [{ scale: interpolate(anim.value, [0, 1], [1, 1.15]) }],
     }),
     []
   );

@@ -29,7 +29,7 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
     useEffect(() => {
         anim.value = 0;
         anim.value = withTiming(1, {
-            duration: 500,
+            duration: 600,
             easing: Easing.bezier(0.25, 0.1, 0.25, 1),
         })
     }, []);
