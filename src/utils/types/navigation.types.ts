@@ -7,6 +7,12 @@ declare global {
   }
 }
 
+export type SideDrawerRoutes = {
+  ChangePayment: undefined;
+  UpdateProfile: undefined;
+  Settings: undefined;
+};
+
 export type AuthRoutes = {
   Intro: undefined;
   Signup: undefined;
@@ -23,9 +29,11 @@ export type CoffeeRoutes = {
 };
 
 export type RootRoutes = {
+  openDrawer(): void;
   navigate(screen: any, navigator?: any): void;
   Auth: NavigatorScreenParams<AuthRoutes> | undefined;
   Coffee: NavigatorScreenParams<CoffeeRoutes> | undefined;
+  SideDrawer: NavigatorScreenParams<SideDrawerRoutes> | undefined;
 };
 
 export type CoffeeScreenProps = NativeStackNavigationProp<CoffeeRoutes>;

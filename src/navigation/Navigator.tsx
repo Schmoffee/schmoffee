@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { createContext, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootRoutes } from '../utils/types/navigation.types';
 import CoffeeRoot from '../flows/GetMeCoffee/Root';
 import AuthRoot from '../flows/Authentication/Root';
+import SideDrawerRoot from '../flows/HamburgerMenu/Root';
 
 export default function Navigator() {
   return (
@@ -26,6 +27,8 @@ function RootNavigator() {
       <RootStack.Group>
         <RootStack.Screen name="Auth" component={AuthRoot} />
         <RootStack.Screen name="Coffee" component={CoffeeRoot} />
+        <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />
+
       </RootStack.Group>
     </RootStack.Navigator>
   );

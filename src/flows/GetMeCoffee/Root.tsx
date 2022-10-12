@@ -55,7 +55,6 @@ const Root = () => {
         <CoffeeStack.Screen name="WhenPage" component={WhenPage} />
         <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
         <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
-
       </CoffeeStack.Navigator>
     </OrderingContext.Provider>
   );

@@ -28,20 +28,6 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
         })
     }, []);
 
-    const getHighlightedText = (text: string) => {
-        const value = query || '';
-        const parts = text.split(new RegExp(`(${value})`, 'gi'));
-        return (
-            <Text>
-                {parts.map((part, i) => (
-                    <Text key={i} style={part.toLowerCase() === value.toLowerCase() ? null : {}}>
-                        {part}
-                    </Text>
-                ))}
-            </Text>
-        );
-    };
-
 
 
 
@@ -101,15 +87,6 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
                         <Body size="medium" weight="Regular" color={Colors.darkBrown2}>
                             {item.name}
                         </Body>
-                        <View>
-                            <Body size="small" weight="Regular" color={Colors.darkBrown2}>
-
-                                {getHighlightedText(item.name)}
-                            </Body>
-                        </View>
-
-
-
                     </View>
                     <View style={styles.priceContainer}>
                         <Body size="medium" weight="Bold" color={Colors.darkBrown2}>{`£${item.price.toFixed(2)}`}</Body>

@@ -7,6 +7,8 @@ import { Colors, Spacings } from '../../../theme';
 import { Body, Heading } from '../../../typography';
 import { FooterType } from '../../utils/types/component.types';
 import { Footer } from '../Footer/Footer';
+import HamburgerButton from '../HamburgerMenu/HamburgerButton';
+import HamburgerIcon from '../HamburgerMenu/HamburgerIcon';
 
 interface PageLayoutProps extends PropsWithChildren {
     style?: any;
@@ -17,10 +19,12 @@ interface PageLayoutProps extends PropsWithChildren {
     onPress?: () => void;
     backgroundColor?: string;
     showCircle?: boolean;
+    hamburger?: boolean;
 }
 
 export const PageLayout = (props: PageLayoutProps) => {
     const backgroundStyle = props.backgroundColor || Colors.goldFaded1;
+    const navigation = useNavigation();
 
     const insets = useSafeAreaInsets();
 
@@ -48,6 +52,7 @@ export const PageLayout = (props: PageLayoutProps) => {
                     <Heading size="default" weight="Extrabld" color={Colors.black}>
                         {props.header}
                     </Heading>
+                    {props.hamburger && <HamburgerButton navigation={navigation} />}
                 </View>
                 {props.subHeader ? (
                     <View style={styles.subHeader}>
@@ -85,10 +90,12 @@ const styles = StyleSheet.create({
     },
     mainContentContainer: {},
     header: {
-        alignSelf: 'center',
-        alignItems: 'center',
+        // alignSelf: 'center',
+        // alignItems: 'center',
         marginTop: Spacings.s7,
         // zIndex: 2,
+        flexDirection: 'row',
+        justifyContent: 'center',
 
     },
     subHeader: {
