@@ -1,15 +1,12 @@
 import * as React from 'react';
 import Svg, { Line } from 'react-native-svg';
 
-interface HamburgerIconProps {
-    width?: number;
-    navigation: any;
-}
-const HamburgerIcon = (props: HamburgerIconProps) => {
+
+const HamburgerIcon = () => {
     return (
         <Svg
-            width="46"
-            height="36"
+            width="36"
+            height="26"
             viewBox="0 0 46 36"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

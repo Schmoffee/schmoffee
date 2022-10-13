@@ -9,9 +9,11 @@ import { Cafe, OrderInfo, OrderItem, OrderStatus, User, UserInfo } from '../../.
 import { getBestShop, sendOrder } from '../../../utils/queries/datastore';
 import { GlobalContext, OrderingContext } from '../../../contexts';
 import { LocalUser } from '../../../utils/types/data.types';
-import { PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, { interpolate, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
 import { Colors, Spacings } from '../../../../theme';
+import { SideDrawerContent } from '../../../components/HamburgerMenu/SideDrawerContent';
+
 
 
 
@@ -50,8 +52,8 @@ export const Home = () => {
 
   const rPageStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: anim.value }, { skewY: `${anim.value / 2500}rad` }],
-      opacity: interpolate(anim.value, [0, HOME_WIDTH / 2], [1, 0.70])
+      transform: [{ translateX: anim.value }, { skewY: `${anim.value / 2400}rad` }],
+      opacity: interpolate(anim.value, [0, HOME_WIDTH / 2], [1, 0.7]),
     };
 
   });
@@ -59,25 +61,16 @@ export const Home = () => {
   const rContainerStyle = useAnimatedStyle(() => {
     return {
       opacity: 1,
-
     };
   });
 
-  const rSideDrawerStyle = useAnimatedStyle(() => {
-    console.log(anim.value)
+  const rBackgroundStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: anim.value - HOME_WIDTH }, {
-        skewY: anim.value > 195 ? `-${195 / 1200}rad` : `-${anim.value / 1200}rad`
-      }],
-      opacity: anim.value / HOME_WIDTH * 10,
-      shadowOffset: {
-        width: 0,
-        height: 0,
-      },
-      shadowOpacity: anim.value / HOME_WIDTH,
-      shadowRadius: 0.5,
     };
   });
+
+
+
 
   const handlePagePress = () => {
     if (anim.value === 195) {
@@ -85,33 +78,35 @@ export const Home = () => {
     }
   }
 
+  const handleHamburgerPress = () => {
+    if (anim.value === 0) {
+      anim.value = withTiming(195)
+    }
+    else {
+      anim.value = withTiming(0)
+    }
+  }
 
-
-  const handleLogOut = async () => {
-    navigation.navigate(CONST_SCREEN_LOGIN);
-    // await signOut();
-  };
 
   return (
-    <PanGestureHandler onGestureEvent={gestureHandler}>
+    <PanGestureHandler onGestureEvent={gestureHandler} hitSlop={{
+      left: 0, width: anim.value >= 194 ? 0 : HOME_WIDTH / 2
+    }
+    }>
       <Animated.View style={rContainerStyle}>
         <Pressable onPressOut={handlePagePress}>
           <Animated.View style={rPageStyle}>
             <PageLayout
+              hamburger
+              hamburgerOnPress={handleHamburgerPress}
               header="Schmoffee"
-              backgroundColor={Colors.goldFaded4}
+
               footer={{
                 buttonDisabled: false,
                 onPress: () => navigation.navigate(CONST_SCREEN_WHAT),
                 buttonText: 'Get me coffee',
               }}>
-              <TouchableOpacity onPress={handleLogOut}>
-                <View style={styles.button}>
-                  <Body size="medium" weight="Extrabld">
-                    Log Out
-                  </Body>
-                </View>
-              </TouchableOpacity>
+
               <View>
                 <Pressable
                   style={({ pressed }) => [
@@ -168,39 +163,8 @@ export const Home = () => {
             </PageLayout>
           </Animated.View>
         </Pressable>
-        <Animated.View style={[styles.sideDrawer, rSideDrawerStyle]}>
-          <ScrollView>
-            <View style={styles.sideDrawerContent}>
-              <Heading size="default" weight="Extrabld">
-                Side Drawer
-              </Heading>
-              <TouchableOpacity onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_SETTINGS })}>
-                <View style={styles.sideDrawerButton}>
-                  <Body size="medium" weight="Bold">
-                    Settings
-                  </Body>
-                </View>
-              </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_UPDATE_PROFILE })}>
-                <View style={styles.sideDrawerButton}>
-                  <Body size="medium" weight="Bold">
-                    Update profile
-                  </Body>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_CHANGE_PAYMENT })}>
-                <View style={styles.sideDrawerButton}>
-                  <Body size="medium" weight="Bold">
-                    Change payment
-                  </Body>
-                </View>
-              </TouchableOpacity>
-
-            </View>
-          </ScrollView>
-        </Animated.View>
+        <SideDrawerContent anim={anim} />
 
       </Animated.View >
 
@@ -211,36 +175,4 @@ export const Home = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  button: {
-    // backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sideDrawer: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    width: '50%',
-    backgroundColor: Colors.greyLight1,
-  },
-  sideDrawerContent: {
-    padding: Spacings.s5,
-    height: '100%',
-    marginVertical: Spacings.s8,
-  },
-  sideDrawerButton: {
-    borderColor: Colors.gold,
-    borderWidth: 1,
-    padding: Spacings.s2,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: Spacings.s12,
-  },
-
-
-
 });

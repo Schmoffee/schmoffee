@@ -1,117 +1,116 @@
-import React, { useContext } from 'react';
-import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import Close from 'react-native-vector-icons/AntDesign';
-import { StyleSheet, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native'
+import React from 'react'
+import { Pressable, StyleSheet, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import Animated, { useAnimatedStyle } from 'react-native-reanimated'
+import { CONST_SCREEN_SETTINGS, CONST_SCREEN_UPDATE_PROFILE, CONST_SCREEN_CHANGE_PAYMENT, CONST_SCREEN_LOGIN } from '../../../constants'
+import { Colors, Spacings } from '../../../theme'
+import { Heading, Body } from '../../../typography'
+import { RootRoutes } from '../../utils/types/navigation.types'
 
-/**
- * Sidebar drawer and its contents
- */
-function SideDrawerContent(props: any) {
+interface SideDrawerContentProps {
+    anim: Animated.SharedValue<number>
+}
+
+export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
+    const navigation = useNavigation<RootRoutes>()
+    const HOME_WIDTH = useWindowDimensions().width;
+
+
+    const handleLogOut = async () => {
+        navigation.navigate(CONST_SCREEN_LOGIN);
+        // await signOut();
+    };
+
+    const rSideDrawerStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ translateX: anim.value - HOME_WIDTH }, {
+                skewY: anim.value > 195 ? `-${195 / 1200}rad` : `-${anim.value / 1200}rad`
+            }],
+            opacity: anim.value / HOME_WIDTH * 10,
+            shadowOffset: {
+                width: 0,
+                height: 0,
+            },
+            shadowOpacity: anim.value / HOME_WIDTH,
+            shadowRadius: 1,
+
+        };
+    });
 
     return (
-        <DrawerContentScrollView {...props}>
-            <Close.Button
-                onPress={() => props.navigation.closeDrawer()}
-                name="close"
-                color={'#173C4F'}
-                underlayColor={'transparent'}
-                backgroundColor={'transparent'}
-                size={25}
-                style={styles.close_button}
-            />
-            <Text style={styles.welcome_text}>
-                {/* Hi {context.currentUser.first_name}! */}
-            </Text>
-            <DrawerItem
-                label="My orders"
-                onPress={() => {
-                    props.navigation.closeDrawer();
-                    props.navigation.navigate('Order history');
-                }}
-                activeTintColor="#2196f3"
-                activeBackgroundColor="rgba(0, 0, 0, .04)"
-                inactiveTintColor="rgba(0, 0, 0, .87)"
-                inactiveBackgroundColor="transparent"
-                style={styles.drawer_item}
-                labelStyle={styles.drawer_item_label}
-            />
-            {/* {context.currBasket.data.length !== 0 ? (
-                <DrawerItem
-                    label="My basket"
-                    onPress={() => {
-                        props.navigation.closeDrawer();
-                        props.navigation.navigate('Basket page');
-                    }}
-                    activeTintColor="#2196f3"
-                    activeBackgroundColor="rgba(0, 0, 0, .04)"
-                    inactiveTintColor="rgba(0, 0, 0, .87)"
-                    inactiveBackgroundColor="transparent"
-                    style={styles.drawer_item}
-                    labelStyle={styles.drawer_item_label}
-                />
-            ) : null} */}
-            <DrawerItem
-                label="Change details"
-                onPress={() => {
-                    props.navigation.closeDrawer();
-                    props.navigation.navigate('Change details');
-                }}
-                activeTintColor="#2196f3"
-                activeBackgroundColor="rgba(0, 0, 0, .04)"
-                inactiveTintColor="rgba(0, 0, 0, .87)"
-                inactiveBackgroundColor="transparent"
-                style={styles.drawer_item}
-                labelStyle={styles.drawer_item_label}
-            />
-            <DrawerItem
-                label="Change password"
-                onPress={() => {
-                    props.navigation.closeDrawer();
-                    props.navigation.navigate('Change password');
-                }}
-                activeTintColor="#2196f3"
-                activeBackgroundColor="rgba(0, 0, 0, .04)"
-                inactiveTintColor="rgba(0, 0, 0, .87)"
-                inactiveBackgroundColor="transparent"
-                style={styles.drawer_item}
-                labelStyle={styles.drawer_item_label}
-            />
-            <DrawerItem
-                label="Logout"
-                onPress={() => { }}
-                activeTintColor="#2196f3"
-                activeBackgroundColor="rgba(0, 0, 0, .04)"
-                inactiveTintColor="rgba(0, 0, 0, .87)"
-                inactiveBackgroundColor="transparent"
-                style={styles.drawer_item}
-                labelStyle={styles.drawer_item_label}
-            />
-        </DrawerContentScrollView>
-    );
+        <Animated.View style={[styles.sideDrawer, rSideDrawerStyle]}>
+            <View>
+                <View style={styles.sideDrawerContent}>
+                    <Heading size="default" weight="Extrabld">
+                        Hi, Meyad!
+                    </Heading>
+                    <TouchableOpacity onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_SETTINGS })}>
+                        <View style={styles.sideDrawerButton}>
+                            <Body size="medium" weight="Bold">
+                                Settings
+                            </Body>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_UPDATE_PROFILE })}>
+                        <View style={styles.sideDrawerButton}>
+                            <Body size="medium" weight="Bold">
+                                Update profile
+                            </Body>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_CHANGE_PAYMENT })}>
+                        <View style={styles.sideDrawerButton}>
+                            <Body size="medium" weight="Bold">
+                                Change payment
+                            </Body>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={handleLogOut}>
+                        <View style={styles.logOut}>
+                            <Body size="medium" weight="Extrabld">
+                                Log Out
+                            </Body>
+                        </View>
+                    </TouchableOpacity>
+
+                </View>
+            </View>
+        </Animated.View>
+    )
 }
 
 const styles = StyleSheet.create({
-    drawer_item: {
-        borderStyle: 'solid',
-        borderBottomWidth: 1,
-        borderColor: '#CECECE',
+    sideDrawer: {
+        position: 'absolute',
+        top: Spacings.s2,
+        bottom: 0,
+        right: 0,
+        width: '50%',
+        backgroundColor: Colors.greyLight1,
     },
-    close_button: {
-        alignSelf: 'flex-end',
+    sideDrawerContent: {
+        padding: Spacings.s5,
+        height: '100%',
+        marginVertical: Spacings.s8,
     },
-    drawer_item_label: {
-        color: '#173C4F',
-        fontSize: 17,
-        fontWeight: '700',
-        fontFamily: 'Poppins',
+    sideDrawerButton: {
+        borderColor: Colors.gold,
+        borderWidth: 1,
+        padding: Spacings.s2,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: Spacings.s12,
     },
-    welcome_text: {
-        marginLeft: '6%',
-        fontWeight: 'bold',
-        fontSize: 25,
-        color: '#173C4F',
-        marginVertical: 20,
+    logOut: {
+        // backgroundColor: 'red',
+        padding: 10,
+        marginTop: Spacings.s8,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-});
-
-export default SideDrawerContent;
+})

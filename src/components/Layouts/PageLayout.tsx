@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { PropsWithChildren, useEffect } from 'react';
-import { View, StyleSheet, Pressable, Animated } from 'react-native';
+import { View, StyleSheet, Pressable, Animated, TouchableOpacity } from 'react-native';
 import { useAnimatedStyle, interpolate, Easing, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Spacings } from '../../../theme';
@@ -20,6 +20,7 @@ interface PageLayoutProps extends PropsWithChildren {
     backgroundColor?: string;
     showCircle?: boolean;
     hamburger?: boolean;
+    hamburgerOnPress?: () => void;
 }
 
 export const PageLayout = (props: PageLayoutProps) => {
@@ -49,10 +50,18 @@ export const PageLayout = (props: PageLayoutProps) => {
             <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
                 {props.showCircle ? <View style={[styles.bigSemiCircle]} /> : null}
                 <View style={styles.header}>
+                    {props.hamburger ? (
+
+                        <TouchableOpacity onPress={props.hamburgerOnPress}>
+                            <View style={styles.hamburgerButton}>
+                                <HamburgerIcon />
+                            </View>
+                        </TouchableOpacity>
+                    ) : null}
+
                     <Heading size="default" weight="Extrabld" color={Colors.black}>
                         {props.header}
                     </Heading>
-                    {props.hamburger && <HamburgerButton navigation={navigation} />}
                 </View>
                 {props.subHeader ? (
                     <View style={styles.subHeader}>
@@ -90,14 +99,20 @@ const styles = StyleSheet.create({
     },
     mainContentContainer: {},
     header: {
-        // alignSelf: 'center',
-        // alignItems: 'center',
+        alignItems: 'center',
         marginTop: Spacings.s7,
-        // zIndex: 2,
         flexDirection: 'row',
         justifyContent: 'center',
 
     },
+    hamburgerButton: {
+        justifyContent: 'center',
+        position: 'absolute',
+        left: -100,
+        top: -14,
+
+    },
+
     subHeader: {
         alignSelf: 'center',
         marginTop: Spacings.s2,
