@@ -1,18 +1,18 @@
-import React, {useCallback, useState} from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard} from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard } from 'react-native';
 import FormField from '../../../components/FormField';
-import {Colors, Spacings} from '../../../../theme';
-import {Body} from '../../../../typography';
-import {ActionButton} from '../../../components/Buttons/ActionButton';
-import {PageLayout} from '../../../components/Layouts/PageLayout';
-import {useNavigation} from '@react-navigation/native';
-import {CONST_SCREEN_HOME, CONST_SCREEN_SIGNUP} from '../../../../constants';
-import {RootRoutes} from '../../../utils/types/navigation.types';
-import {Footer} from '../../../components/Footer/Footer';
+import { Colors, Spacings } from '../../../../theme';
+import { Body } from '../../../../typography';
+import { ActionButton } from '../../../components/Buttons/ActionButton';
+import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { useNavigation } from '@react-navigation/native';
+import { CONST_SCREEN_HOME, CONST_SCREEN_SIGNUP } from '../../../../constants';
+import { RootRoutes } from '../../../utils/types/navigation.types';
+import { Footer } from '../../../components/Footer/Footer';
 import LoadingPage from '../../CommonScreens/LoadingPage';
-import {InputOTP} from '../../../components/InputComponents/InputOTP';
+import { InputOTP } from '../../../components/Input/InputOTP';
 
-interface LoginProps {}
+interface LoginProps { }
 
 export const Login = (props: LoginProps) => {
   const navigation = useNavigation<RootRoutes>();
@@ -29,7 +29,7 @@ export const Login = (props: LoginProps) => {
   }, [number]);
 
   const handleLogIn = () => {
-    navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
+    navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
     setLoading(false);
     setIsPinComplete(false);
     setOtp('');

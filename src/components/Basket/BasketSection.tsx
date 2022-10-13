@@ -6,7 +6,7 @@ import { rotateTranslation } from 'react-native-redash';
 import { Colors, Spacings } from '../../../theme';
 import { Body } from '../../../typography';
 import { OrderingContext } from '../../contexts';
-import { BasketItem } from '../BasketItem';
+import { BasketItem } from './BasketItem';
 
 interface BasketSectionProps {
     translateY?: Animated.SharedValue<number>;

@@ -28,7 +28,6 @@ function RootNavigator() {
         <RootStack.Screen name="Auth" component={AuthRoot} />
         <RootStack.Screen name="Coffee" component={CoffeeRoot} />
         <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />
-
       </RootStack.Group>
     </RootStack.Navigator>
   );

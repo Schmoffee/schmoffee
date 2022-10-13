@@ -15,7 +15,7 @@ import LoadingPage from '../../CommonScreens/LoadingPage';
 import { createSignUpUser, getUserByPhoneNumber, updateAuthState } from '../../../utils/queries/datastore';
 import { Colors, Spacings } from '../../../../theme';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
-import { InputOTP } from '../../../components/InputComponents/InputOTP';
+import { InputOTP } from '../../../components/Input/InputOTP';
 import { Footer } from '../../../components/Footer/Footer';
 import { useNavigation } from '@react-navigation/native';
 import { RootRoutes } from '../../../utils/types/navigation.types';

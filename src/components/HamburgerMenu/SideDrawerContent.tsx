@@ -24,15 +24,10 @@ export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
     const rSideDrawerStyle = useAnimatedStyle(() => {
         return {
             transform: [{ translateX: anim.value - HOME_WIDTH }, {
-                skewY: anim.value > 195 ? `-${195 / 1200}rad` : `-${anim.value / 1200}rad`
+                skewY: anim.value > 195 ? `-${195 / 1200}rad` : `-${anim.value / 2000}rad`
             }],
             opacity: anim.value / HOME_WIDTH * 10,
-            shadowOffset: {
-                width: 0,
-                height: 0,
-            },
-            shadowOpacity: anim.value / HOME_WIDTH,
-            shadowRadius: 1,
+
 
         };
     });
