@@ -283,6 +283,15 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "status": {
+                    "name": "status",
+                    "isArray": false,
+                    "type": {
+                        "enum": "OrderStatus"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1081,15 +1090,6 @@ export const schema = {
         "OrderInfo": {
             "name": "OrderInfo",
             "fields": {
-                "status": {
-                    "name": "status",
-                    "isArray": false,
-                    "type": {
-                        "enum": "OrderStatus"
-                    },
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "accepted_time": {
                     "name": "accepted_time",
                     "isArray": false,
@@ -1150,5 +1150,5 @@ export const schema = {
             }
         }
     },
-    "version": "ff92eeab0c4cccc062b108ae79243b24"
+    "version": "eab0e40fec6193d1ec5034dcca0ca6d7"
 };

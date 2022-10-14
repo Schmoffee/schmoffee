@@ -60,7 +60,6 @@ enum OrderStatus {
 }
 
 type OrderInfo {
-  status: OrderStatus!
   accepted_time: AWSDateTime
   rejected_time: AWSDateTime
   ready_time: AWSDateTime
@@ -79,6 +78,7 @@ type CurrentOrder @model @auth(rules: [{allow: public}]) {
   cafeID: ID! @index(name: "byCafe")
   user_info: UserInfo!
   userID: ID!
+  status: OrderStatus!
 }
 
 enum OptionType {

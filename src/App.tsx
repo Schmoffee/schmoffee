@@ -1,4 +1,5 @@
-import React, {useEffect, useReducer} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
+import {Pressable, Text} from 'react-native';
 import {globalReducer} from './reducers';
 import {GlobalContext, globalData} from './contexts';
 import {Hub} from 'aws-amplify';
@@ -6,12 +7,25 @@ import {authListener, datastoreListener} from './utils/helpers/listeners';
 import {getCurrentAuthUser} from './utils/queries/auth';
 import {AuthState} from './utils/types/enums';
 import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Navigator from './navigation/Navigator';
 import {LocalUser} from './utils/types/data.types';
+import {getEndPoint, sendNotificationToUser, updateEndpoint} from './utils/helpers/notifications';
+import Navigator from './navigation/Navigator';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import PushNotification from '@aws-amplify/pushnotification';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
+  const [token, setToken] = useState('');
+  PushNotification.onRegister((tok: any) => {
+    console.log('yooo');
+    setToken(tok);
+  });
+  PushNotification.onNotification((notification: any) => {
+    console.log('in app notification received', notification);
+  });
+  PushNotification.onNotificationOpened((notification: any) => {
+    console.log('the notification is opened from iOS', notification);
+  });
 
   useEffect(() => {
     const auth_hub = Hub.listen('auth', data => authListener(data, global_state, global_dispatch));
@@ -34,7 +48,10 @@ const App = () => {
             payload: AuthState.SIGNED_IN,
           });
         }
-        const currentUser = await getUserByPhoneNumber(user.getUsername());
+        // PushNotification.onRegister((token: any) => {
+        //   updateEndpoint(token, user.sub);
+        // });
+        const currentUser = await getUserByPhoneNumber(user.user.getUsername());
         if (currentUser) {
           const localUser: LocalUser = {
             id: currentUser.id,
@@ -50,8 +67,7 @@ const App = () => {
             type: 'SET_CURRENT_USER',
             payload: localUser,
           });
-          await updateAuthState(currentUser?.id as string, true);
-          global_dispatch({type: 'SET_AUTH_USER', payload: user});
+          await updateAuthState(currentUser.id as string, true);
         } else {
           console.log('We have a problem');
         }
@@ -63,9 +79,13 @@ const App = () => {
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>
-      <SafeAreaProvider>
-        <Navigator />
-      </SafeAreaProvider>
+      <Pressable
+        onPress={async () => {
+          await updateEndpoint('+447375901046', 'lol');
+          await sendNotificationToUser('lol', '+447375901046', 'GCM');
+        }}>
+        <Text>Get Endpoint</Text>
+      </Pressable>
     </GlobalContext.Provider>
   );
 };

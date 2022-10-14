@@ -14,8 +14,13 @@ export type DigitalQueue = {[minute: number]: string[]};
 export type GlobalState = {
   auth_state: AuthState;
   current_user: LocalUser | null;
-  auth_user: CognitoUser | null;
+  auth_user: AuthUser | null;
   network_status: boolean;
+};
+
+export type AuthUser = {
+  sub: string;
+  user: CognitoUser;
 };
 
 export type TrackOrderState = {
@@ -45,7 +50,7 @@ export type PreferenceWeights = {
 export type GlobalAction =
   | {type: 'SET_CURRENT_USER'; payload: LocalUser | null}
   | {type: 'SET_AUTH_STATE'; payload: AuthState}
-  | {type: 'SET_AUTH_USER'; payload: CognitoUser | null}
+  | {type: 'SET_AUTH_USER'; payload: AuthUser | null}
   | {type: 'SET_NETWORK_STATUS'; payload: boolean};
 
 export type TrackOrderAction =

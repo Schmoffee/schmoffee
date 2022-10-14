@@ -39,7 +39,6 @@ async function fetchPaymentSheetParams(paymentParams: PaymentParams) {
       console.log(error);
     }
   });
-  console.log(response);
   if (response) {
     const data = await response.json();
     console.log(data);
