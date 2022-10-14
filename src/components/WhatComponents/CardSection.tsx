@@ -9,6 +9,7 @@ interface CardSectionProps {
   title: string;
   items: Item[];
   hideDivider?: boolean;
+  query?: string;
 }
 
 export const CardSection = (props: CardSectionProps) => {
@@ -30,7 +31,7 @@ export const CardSection = (props: CardSectionProps) => {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={1}
-          renderItem={({ item, index }) => <CardItem item={item} index={index} />}
+          renderItem={({ item, index }) => <CardItem query={props.query} item={item} index={index} />}
           keyExtractor={item => item.id}
         />
       ) : (

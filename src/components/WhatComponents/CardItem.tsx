@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useContext, useEffect, useReducer, useRef } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Text } from 'react-native';
 import { Colors, Spacings } from '../../../theme';
 import { Body } from '../../../typography';
 import { Item, OrderInfo, OrderItem } from '../../models';
@@ -12,9 +12,10 @@ import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTi
 interface CardItemProps {
     item: Item;
     index: number;
+    query?: string;
 }
 
-export const CardItem = ({ item, index }: CardItemProps) => {
+export const CardItem = ({ item, index, query }: CardItemProps) => {
     const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
     const navigation = useNavigation<CoffeeRoutes>()
     const imageRef = useRef<Image>()
@@ -26,6 +27,8 @@ export const CardItem = ({ item, index }: CardItemProps) => {
             easing: Easing.bezier(0.25, 0.1, 0.25, 1),
         })
     }, []);
+
+
 
 
     const onItemPress = () => {
@@ -45,7 +48,7 @@ export const CardItem = ({ item, index }: CardItemProps) => {
         if (ordering_state.common_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
             const index = ordering_state.common_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
             const newBasket = [...ordering_state.common_basket];
-            newBasket[index].quantity = newBasket[index].quantity + 1;
+            // newBasket[index].quantity = newBasket[index].quantity + 1;
             ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
         } else {
             ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: [...ordering_state.common_basket, item] });

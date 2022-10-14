@@ -53,8 +53,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacings.s2,
   },
   timeContainer: {
-    // backgroundColor: Colors.greyLight2,
-    height: 40,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },

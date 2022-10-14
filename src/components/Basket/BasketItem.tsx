@@ -2,11 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Easing, Alert } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { Colors, Spacings } from '../../theme';
-import { Body } from '../../typography';
-import { OrderingContext } from '../contexts';
-import { OrderItem } from '../models';
-import { CoffeeRoutes } from '../utils/types/navigation.types';
+import { Colors, Spacings } from '../../../theme';
+import { Body } from '../../../typography';
+import { OrderingContext } from '../../contexts';
+import { OrderItem } from '../../models';
+import { CoffeeRoutes } from '../../utils/types/navigation.types';
 
 interface BasketItemProps {
   item: OrderItem;
@@ -18,7 +18,7 @@ export const BasketItem = (props: BasketItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>()
   const imageRef = useRef<Image>()
   const anim = useSharedValue(1);
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
 
 
@@ -91,7 +91,7 @@ export const BasketItem = (props: BasketItemProps) => {
   const rItemStyle = useAnimatedStyle(
     () => ({
       marginHorizontal: interpolate(anim.value, [0, 1], [-4, 15]),
-      transform: [{ scale: interpolate(anim.value, [0, 1], [1, 1.1]) }],
+      transform: [{ scale: interpolate(anim.value, [0, 1], [1, 1.15]) }],
     }),
     []
   );
@@ -138,10 +138,10 @@ export const BasketItem = (props: BasketItemProps) => {
 
 
   useEffect(() => {
-    if (expanded) {
+    if (!expanded) {
       anim.value = withTiming(0)
     } else {
-      anim.value = withTiming(1, {})
+      anim.value = withTiming(1)
     }
   }, [expanded, anim])
 

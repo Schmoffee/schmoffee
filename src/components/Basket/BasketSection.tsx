@@ -6,7 +6,7 @@ import { rotateTranslation } from 'react-native-redash';
 import { Colors, Spacings } from '../../../theme';
 import { Body } from '../../../typography';
 import { OrderingContext } from '../../contexts';
-import { BasketItem } from '../BasketItem';
+import { BasketItem } from './BasketItem';
 
 interface BasketSectionProps {
     translateY?: Animated.SharedValue<number>;
@@ -24,7 +24,7 @@ export const BasketSection = (props: BasketSectionProps) => {
     }));
 
     const rContainerStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(translateY.value, [0, 100], [1, 0], Extrapolate.CLAMP),
+        opacity: interpolate(translateY.value, [0, 200], [1, 0], Extrapolate.CLAMP),
 
         transform: [
             {
