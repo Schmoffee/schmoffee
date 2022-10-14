@@ -62,7 +62,6 @@ export declare class UserInfo {
 }
 
 export declare class OrderInfo {
-  readonly status: OrderStatus | keyof typeof OrderStatus;
   readonly accepted_time?: string | null;
   readonly rejected_time?: string | null;
   readonly ready_time?: string | null;
@@ -138,6 +137,7 @@ export declare class CurrentOrder {
   readonly cafeID: string;
   readonly user_info: UserInfo;
   readonly userID: string;
+  readonly status: OrderStatus | keyof typeof OrderStatus;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<CurrentOrder, CurrentOrderMetaData>);

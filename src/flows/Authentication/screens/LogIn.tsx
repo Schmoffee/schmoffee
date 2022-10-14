@@ -11,6 +11,7 @@ import {RootRoutes} from '../../../utils/types/navigation.types';
 import {Footer} from '../../../components/Footer/Footer';
 import LoadingPage from '../../CommonScreens/LoadingPage';
 import {InputOTP} from '../../../components/InputComponents/InputOTP';
+import {signIn} from '../../../utils/queries/auth';
 
 interface LoginProps {}
 
@@ -75,7 +76,13 @@ export const Login = (props: LoginProps) => {
               <Footer
                 buttonVariant="secondary"
                 buttonDisabled={!isValidNumber()}
-                onPress={() => setHasLoaded(true)}
+                onPress={async () => {
+                  const newSession = await signIn(number);
+                  console.log(newSession);
+                  if (newSession) {
+                    setHasLoaded(true);
+                  }
+                }}
                 buttonText="Log in">
                 <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_SIGNUP)}>
                   <Body size="medium" weight="Bold" color={Colors.blue}>

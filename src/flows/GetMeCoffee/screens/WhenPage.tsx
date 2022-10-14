@@ -1,26 +1,21 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, Pressable, TouchableOpacity, Easing } from 'react-native';
-import { Switch } from 'react-native-switch';
-import { CONST_SCREEN_PREVIEW, CONST_SCREEN_WHEN } from '../../../../constants';
-import { Colors, Spacings } from '../../../../theme';
-import { Body } from '../../../../typography';
-import { PageLayout } from '../../../components/Layouts/PageLayout';
-import { OrderingContext } from '../../../contexts';
-import { CoffeeRoutes } from '../../../utils/types/navigation.types';
+import {useNavigation} from '@react-navigation/native';
+import React, {useCallback, useContext, useMemo, useRef, useState} from 'react';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {Switch} from 'react-native-switch';
+import {CONST_SCREEN_PREVIEW} from '../../../../constants';
+import {Colors, Spacings} from '../../../../theme';
+import {Body} from '../../../../typography';
+import {PageLayout} from '../../../components/Layouts/PageLayout';
+import {OrderingContext} from '../../../contexts';
+import {CoffeeRoutes} from '../../../utils/types/navigation.types';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { BlurView } from '@react-native-community/blur';
-import Picker from '@gregfrench/react-native-wheel-picker';
-import { useSharedValue, withTiming } from 'react-native-reanimated';
+import {BlurView} from '@react-native-community/blur';
 
-interface WhenPageProps { }
-
-var PickerItem = Picker.Item;
+interface WhenPageProps {}
 
 export const WhenPage = (props: WhenPageProps) => {
-
   const navigation = useNavigation<CoffeeRoutes>();
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
+  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
   const [isEnabled, setIsEnabled] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -38,7 +33,7 @@ export const WhenPage = (props: WhenPageProps) => {
   const handleClosePress = useCallback(() => {
     setIsEnabled(false);
     setScheduleTime(data[0]);
-    ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime });
+    ordering_dispatch({type: 'SET_SCHEDULED_TIME', payload: scheduledTime});
     bottomSheetRef.current?.close();
     setFocusedIndex(data[0]);
   }, []);
@@ -56,20 +51,20 @@ export const WhenPage = (props: WhenPageProps) => {
   const handleOnValueChange = useCallback(
     (value: number) => {
       setScheduleTime(data[value]);
-      ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: data[value] });
+      ordering_dispatch({type: 'SET_SCHEDULED_TIME', payload: data[value]});
       setFocusedIndex(value);
     },
     [setFocusedIndex, setScheduleTime, ordering_dispatch],
   );
 
   const handleOnContinue = () => {
-    ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime });
+    ordering_dispatch({type: 'SET_SCHEDULED_TIME', payload: scheduledTime});
     navigation.navigate(CONST_SCREEN_PREVIEW);
   };
   const getDateString = (value: number) => {
     const date = new Date();
     let hours = date.getHours();
-    let minutes = date.getMinutes() + value;
+    let minutes: string | number = date.getMinutes() + value;
     let ampm = hours >= 12 ? 'pm' : 'am';
     hours = hours % 12;
     hours = hours ? hours : 12;
@@ -99,8 +94,9 @@ export const WhenPage = (props: WhenPageProps) => {
           <Body size="large" weight="Regular" color={Colors.darkBrown2}>
             Schedule for
           </Body>
-          <Body size="medium" weight="Regular" color={Colors.brown2}>{`${ordering_state.scheduled_time}-${ordering_state.scheduled_time + 2
-            } mins`}</Body>
+          <Body size="medium" weight="Regular" color={Colors.brown2}>{`${ordering_state.scheduled_time}-${
+            ordering_state.scheduled_time + 2
+          } mins`}</Body>
         </View>
         <Switch
           barHeight={60}
@@ -108,15 +104,15 @@ export const WhenPage = (props: WhenPageProps) => {
           renderInsideCircle={
             isEnabled
               ? () => (
-                <Body size="medium" weight="Bold" color={Colors.darkBrown2}>
-                  Schedule
-                </Body>
-              )
+                  <Body size="medium" weight="Bold" color={Colors.darkBrown2}>
+                    Schedule
+                  </Body>
+                )
               : () => (
-                <Body size="medium" weight="Bold" color={Colors.darkBrown2}>
-                  ASAP
-                </Body>
-              )
+                  <Body size="medium" weight="Bold" color={Colors.darkBrown2}>
+                    ASAP
+                  </Body>
+                )
           }
           value={isEnabled}
           onValueChange={toggleSwitch}
@@ -142,13 +138,12 @@ export const WhenPage = (props: WhenPageProps) => {
           switchWidthMultiplier={3} // multiplied by the `circleSize` prop to calculate total width of the Switch
           switchBorderRadius={30}
           inActiveText={'in a \nbit'}
-          inactiveTextStyle={styles.counterTextStyle}// Sets the border Radius of the switch slider. If unset, it remains the circleSize.
+          inactiveTextStyle={styles.counterTextStyle} // Sets the border Radius of the switch slider. If unset, it remains the circleSize.
         />
       </View>
       {isEnabled ? (
         <BlurView style={styles.absolute} blurType="dark" blurAmount={2} reducedTransparencyFallbackColor="white" />
       ) : null}
-
 
       <View style={styles.bottomSheetContainer}>
         <BottomSheet
@@ -162,7 +157,6 @@ export const WhenPage = (props: WhenPageProps) => {
               <View style={styles.bottomSheetHandleContainer}>
                 <View style={styles.bottomSheetHandle} />
                 {/* <Icon name="ios-add" size={30} color="#4F8EF7" /> */}
-
               </View>
             </TouchableOpacity>
           )}
@@ -171,15 +165,15 @@ export const WhenPage = (props: WhenPageProps) => {
             Schedule (mins)
           </Body>
 
-          <Picker
-            style={styles.bottomSheetContainer}
-            selectedValue={focusedIndex}
-            itemStyle={styles.itemContainer}
-            onValueChange={index => handleOnValueChange(index)}>
-            {data.map((value, i) => (
-              <PickerItem label={value.toString() + "  |  " + getDateString(value)} value={i} key={i} />
-            ))}
-          </Picker>
+          {/*<Picker*/}
+          {/*  style={styles.bottomSheetContainer}*/}
+          {/*  selectedValue={focusedIndex}*/}
+          {/*  itemStyle={styles.itemContainer}*/}
+          {/*  onValueChange={index => handleOnValueChange(index)}>*/}
+          {/*  {data.map((value, i) => (*/}
+          {/*    <PickerItem label={value.toString() + '  |  ' + getDateString(value)} value={i} key={i} />*/}
+          {/*  ))}*/}
+          {/*</Picker>*/}
         </BottomSheet>
       </View>
     </PageLayout>
@@ -277,5 +271,5 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     position: 'absolute',
     left: 105,
-  }
+  },
 });

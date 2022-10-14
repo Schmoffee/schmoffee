@@ -81,6 +81,7 @@ async function sendOrder(
       cafeID: cafeID,
       userID: userID,
       user_info: user_info,
+      status: OrderStatus.SENT,
     }),
   );
   console.log(order);

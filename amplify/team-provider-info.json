@@ -33,6 +33,10 @@
         "schmoffeePayWithStripe": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
           "s3Key": "amplify-builds/schmoffeePayWithStripe-6a6346314a72716a4b77-build.zip"
+        },
+        "schmoffeeSendNotification": {
+          "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
+          "s3Key": "amplify-builds/schmoffeeSendNotification-4e73356c674d37315631-build.zip"
         }
       },
       "auth": {
