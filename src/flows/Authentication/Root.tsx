@@ -10,7 +10,7 @@ const Root = () => {
 
   return (
     <AuthStack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Intro"
       screenOptions={{
         headerShown: false,
       }}>

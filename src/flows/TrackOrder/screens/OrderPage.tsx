@@ -1,3 +1,15 @@
-const TrackOrder = () => {};
+import React from 'react'
 
-export default TrackOrder;
+
+
+interface OrderPageProps {
+}
+
+export const OrderPage = (props: OrderPageProps) => {
+    return (
+        <div>
+
+        </div>
+    );
+}
+

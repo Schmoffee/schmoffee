@@ -5,6 +5,7 @@ import { RootRoutes } from '../utils/types/navigation.types';
 import CoffeeRoot from '../flows/GetMeCoffee/Root';
 import AuthRoot from '../flows/Authentication/Root';
 import SideDrawerRoot from '../flows/HamburgerMenu/Root';
+import TrackOrderRoot from '../flows/TrackOrder/Root';
 
 export default function Navigator() {
   return (
@@ -28,6 +29,8 @@ function RootNavigator() {
         <RootStack.Screen name="Auth" component={AuthRoot} />
         <RootStack.Screen name="Coffee" component={CoffeeRoot} />
         <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />
+        <RootStack.Screen name="TrackOrder" component={TrackOrderRoot} />
+
       </RootStack.Group>
     </RootStack.Navigator>
   );

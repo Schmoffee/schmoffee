@@ -1,8 +1,7 @@
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
-import { View, StyleSheet, Pressable, TouchableOpacity, Text, useWindowDimensions } from 'react-native';
-import { CONST_SCREEN_CHANGE_PAYMENT, CONST_SCREEN_LOGIN, CONST_SCREEN_SETTINGS, CONST_SCREEN_SIGNUP, CONST_SCREEN_UPDATE_PROFILE, CONST_SCREEN_WHAT } from '../../../../constants';
-import { Body, Heading } from '../../../../typography';
+import { View, StyleSheet, Pressable, useWindowDimensions } from 'react-native';
+import { CONST_SCREEN_WHAT } from '../../../../constants';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
 import { RootRoutes } from '../../../utils/types/navigation.types';
 import { Cafe, OrderInfo, OrderItem, OrderStatus, User, UserInfo } from '../../../models';
@@ -10,8 +9,7 @@ import { getBestShop, sendOrder } from '../../../utils/queries/datastore';
 import { GlobalContext, OrderingContext } from '../../../contexts';
 import { LocalUser } from '../../../utils/types/data.types';
 import { PanGestureHandler } from 'react-native-gesture-handler';
-import Animated, { interpolate, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated'
-import { Colors, Spacings } from '../../../../theme';
+import Animated, { interpolate, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { SideDrawerContent } from '../../../components/HamburgerMenu/SideDrawerContent';
 
 
@@ -22,9 +20,15 @@ export const Home = () => {
   const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const navigation = useNavigation<RootRoutes>();
   const HOME_WIDTH = useWindowDimensions().width;
-
-
   const anim = useSharedValue(0)
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        anim.value = withTiming(0)
+      };
+    }, [])
+  );
 
   const gestureHandler = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
@@ -79,6 +83,8 @@ export const Home = () => {
       anim.value = withTiming(0)
     }
   }
+
+
 
 
   return (

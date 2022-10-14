@@ -24,7 +24,7 @@ export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
     const rSideDrawerStyle = useAnimatedStyle(() => {
         return {
             transform: [{ translateX: anim.value - HOME_WIDTH }, {
-                skewY: anim.value > 195 ? `-${195 / 1200}rad` : `-${anim.value / 2000}rad`
+                skewY: anim.value > 195 ? `-${195 / 2000}rad` : `-${anim.value / 2000}rad`
             }],
             opacity: anim.value / HOME_WIDTH * 10,
 
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     },
     sideDrawerButton: {
         borderColor: Colors.gold,
-        borderWidth: 1,
+        borderWidth: 3,
         padding: Spacings.s2,
         borderRadius: 5,
         alignItems: 'center',

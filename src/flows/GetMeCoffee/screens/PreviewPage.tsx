@@ -116,7 +116,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
       showCircle
       footer={{
         buttonDisabled: false,
-        onPress: () => navigation.navigate(CONST_SCREEN_RATING_PAGE),
+        onPress: () => navigation.navigate('TrackOrder', { screen: CONST_SCREEN_RATING_PAGE }),
         buttonText: 'Order',
       }}>
       <BasketSection />

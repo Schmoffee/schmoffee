@@ -26,6 +26,10 @@ export type CoffeeRoutes = {
   WhenPage: undefined;
   PreviewPage: undefined;
   ItemPage: undefined;
+};
+
+export type TrackOrderRoutes = {
+  OrderPage: undefined;
   RatingPage: undefined;
 };
 
@@ -35,6 +39,7 @@ export type RootRoutes = {
   Auth: NavigatorScreenParams<AuthRoutes> | undefined;
   Coffee: NavigatorScreenParams<CoffeeRoutes> | undefined;
   SideDrawer: NavigatorScreenParams<SideDrawerRoutes> | undefined;
+  TrackOrder: NavigatorScreenParams<TrackOrderRoutes> | undefined;
 };
 
 export type CoffeeScreenProps = NativeStackNavigationProp<CoffeeRoutes>;
