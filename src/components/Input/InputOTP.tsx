@@ -1,7 +1,7 @@
-import React, {useRef, useState, useEffect, MutableRefObject, useCallback} from 'react';
-import {TextInput, View, Text, StyleSheet, Pressable, TouchableOpacity} from 'react-native';
-import {Colors} from '../../../theme';
-import {Body} from '../../../typography';
+import React, { useRef, useState, useEffect, MutableRefObject, useCallback } from 'react';
+import { TextInput, View, Text, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { Colors } from '../../../theme';
+import { Body } from '../../../typography';
 
 interface InputOTPProps {
   code: string;
@@ -53,8 +53,8 @@ export const InputOTP = (props: InputOTPProps) => {
       (isLastValue && isCodeComplete) || !pressed
         ? setIsInputBoxFocused(false)
         : isCurrentValue
-        ? setIsInputBoxFocused(true)
-        : null;
+          ? setIsInputBoxFocused(true)
+          : null;
     }, [props.code]);
 
     const StyledSplitBoxes =
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   splitBoxesFocused: {
     borderColor: Colors.greyLight1,
-    backgroundColor: Colors.brownFaded2,
+    backgroundColor: Colors.goldFaded3,
   },
   splitBoxText: {
     textAlign: 'center',

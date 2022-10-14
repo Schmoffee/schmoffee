@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { View, StyleSheet, ScrollView, TextInput } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, StyleSheet, TextInput } from 'react-native';
 import { CONST_SCREEN_WHEN } from '../../../../constants';
 import { Colors, Spacings } from '../../../../theme';
 import { CardSection } from '../../../components/WhatComponents/CardSection';
@@ -9,7 +9,7 @@ import { OrderingContext } from '../../../contexts';
 import { DATA_ITEMS } from '../../../data/items.data';
 import { Item } from '../../../models';
 import { CoffeeRoutes } from '../../../utils/types/navigation.types';
-import { BasketSection } from '../../../components/PreviewComponents/BasketSection';
+import { BasketSection } from '../../../components/Basket/BasketSection';
 import Animated, { Easing, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface WhatPageProps { }
@@ -30,7 +30,7 @@ export const WhatPage = (props: WhatPageProps) => {
   useEffect(() => {
     anim.value = 0;
     anim.value = withTiming(1, {
-      duration: 800,
+      duration: 600,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
     })
   }, []);
@@ -107,7 +107,7 @@ export const WhatPage = (props: WhatPageProps) => {
         pagingEnabled
         scrollEventThrottle={16}>
         <BasketSection translateY={translateY} />
-        <CardSection title="Coffee" items={getCoffees()} />
+        <CardSection query={query} title="Coffee" items={getCoffees()} />
         <CardSection title="Juices" items={getJuices()} />
         <CardSection title="Pastries" items={getPastries()} hideDivider />
       </Animated.ScrollView>

@@ -1,27 +1,28 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {useStripe, initStripe, confirmPaymentSheetPayment} from '@stripe/stripe-react-native';
-import {PageLayout} from '../../../components/Layouts/PageLayout';
-import {CoffeeRoutes} from '../../../utils/types/navigation.types';
-import {initializePaymentSheet, openPaymentSheet} from '../../../utils/helpers/payment';
-import {BasketSection} from '../../../components/PreviewComponents/BasketSection';
-import {PreviewSection} from '../../../components/PreviewComponents/PreviewSection';
-import {ScheduleSection} from '../../../components/PreviewComponents/ScheduleSection';
-import {GlobalContext, OrderingContext} from '../../../contexts';
-import {Cafe, OrderItem, User} from '../../../models';
-import {Alert} from 'react-native';
-import {DATA_SHOPS} from '../../../data/shops.data';
-import {Body} from '../../../../typography';
-import {Colors} from '../../../../theme';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { useStripe, initStripe, confirmPaymentSheetPayment } from '@stripe/stripe-react-native';
+import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { CoffeeRoutes } from '../../../utils/types/navigation.types';
+import { initializePaymentSheet, openPaymentSheet } from '../../../utils/helpers/payment';
+import { BasketSection } from '../../../components/Basket/BasketSection';
+import { PreviewSection } from '../../../components/PreviewComponents/PreviewSection';
+import { ScheduleSection } from '../../../components/PreviewComponents/ScheduleSection';
+import { GlobalContext, OrderingContext } from '../../../contexts';
+import { Cafe, OrderItem, User } from '../../../models';
+import { Alert } from 'react-native';
+import { DATA_SHOPS } from '../../../data/shops.data';
+import { Body } from '../../../../typography';
+import { Colors } from '../../../../theme';
+import { CONST_SCREEN_RATING_PAGE } from '../../../../constants';
 
-interface PreviewPageProps {}
+interface PreviewPageProps { }
 
 export const PreviewPage = (props: PreviewPageProps) => {
-  const {global_state} = useContext(GlobalContext);
-  const {ordering_state} = useContext(OrderingContext);
+  const { global_state } = useContext(GlobalContext);
+  const { ordering_state } = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
-  const {initPaymentSheet, presentPaymentSheet} = useStripe(); // Stripe hook payment methods
+  const { initPaymentSheet, presentPaymentSheet } = useStripe(); // Stripe hook payment methods
   const [loading, setLoading] = React.useState(true);
   const total: number = useMemo(() => {
     ordering_state.specific_basket.reduce(function (acc, item) {
@@ -39,8 +40,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
   function getOptionsPrice(item: OrderItem) {
     return item.options
       ? item.options.reduce(function (acc, option) {
-          return acc + option.price;
-        }, 0)
+        return acc + option.price;
+      }, 0)
       : 0;
   }
 
@@ -99,7 +100,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   // TODO: Call this method when the order is accepted
   async function confirmPayment() {
-    const {error} = await confirmPaymentSheetPayment();
+    const { error } = await confirmPaymentSheetPayment();
 
     if (error) {
       Alert.alert(`Error code: ${error.code}`, error.message);
@@ -115,7 +116,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
       showCircle
       footer={{
         buttonDisabled: false,
-        onPress: () => checkout(),
+        onPress: () => navigation.navigate('TrackOrder', { screen: CONST_SCREEN_RATING_PAGE }),
         buttonText: 'Order',
       }}>
       <BasketSection />

@@ -1,12 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { PropsWithChildren, useEffect } from 'react';
-import { View, StyleSheet, Pressable, Animated } from 'react-native';
+import { View, StyleSheet, Pressable, Animated, TouchableOpacity } from 'react-native';
 import { useAnimatedStyle, interpolate, Easing, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Spacings } from '../../../theme';
 import { Body, Heading } from '../../../typography';
 import { FooterType } from '../../utils/types/component.types';
 import { Footer } from '../Footer/Footer';
+import HamburgerButton from '../HamburgerMenu/HamburgerButton';
+import HamburgerIcon from '../HamburgerMenu/HamburgerIcon';
 
 interface PageLayoutProps extends PropsWithChildren {
     style?: any;
@@ -17,10 +19,13 @@ interface PageLayoutProps extends PropsWithChildren {
     onPress?: () => void;
     backgroundColor?: string;
     showCircle?: boolean;
+    hamburger?: boolean;
+    hamburgerOnPress?: () => void;
 }
 
 export const PageLayout = (props: PageLayoutProps) => {
-    const backgroundStyle = props.backgroundColor || Colors.goldFaded4;
+    const backgroundStyle = props.backgroundColor || Colors.goldFaded1;
+    const navigation = useNavigation();
 
     const insets = useSafeAreaInsets();
 
@@ -45,6 +50,15 @@ export const PageLayout = (props: PageLayoutProps) => {
             <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
                 {props.showCircle ? <View style={[styles.bigSemiCircle]} /> : null}
                 <View style={styles.header}>
+                    {props.hamburger ? (
+
+                        <TouchableOpacity onPress={props.hamburgerOnPress}>
+                            <View style={styles.hamburgerButton}>
+                                <HamburgerIcon />
+                            </View>
+                        </TouchableOpacity>
+                    ) : null}
+
                     <Heading size="default" weight="Extrabld" color={Colors.black}>
                         {props.header}
                     </Heading>
@@ -85,12 +99,20 @@ const styles = StyleSheet.create({
     },
     mainContentContainer: {},
     header: {
-        alignSelf: 'center',
         alignItems: 'center',
         marginTop: Spacings.s7,
-        // zIndex: 2,
+        flexDirection: 'row',
+        justifyContent: 'center',
 
     },
+    hamburgerButton: {
+        justifyContent: 'center',
+        position: 'absolute',
+        left: -100,
+        top: -14,
+
+    },
+
     subHeader: {
         alignSelf: 'center',
         marginTop: Spacings.s2,

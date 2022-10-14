@@ -1,8 +1,9 @@
-import React from 'react';
-import {StyleSheet, View, Text, TextInput} from 'react-native';
-import {Colors, Spacings} from '../../theme';
-import {Body} from '../../typography';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Text, TextInput } from 'react-native';
+import { Colors, Spacings } from '../../theme';
+import { Body } from '../../typography';
 import PhoneInput from 'react-native-phone-number-input';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 // @ts-ignore
 
@@ -23,6 +24,7 @@ const FormField = ({
   setField,
   value = '',
   type = '',
+  index = 0,
 }) => {
   let secureTextEntry = false;
   let autoCorrect = true;
@@ -40,43 +42,70 @@ const FormField = ({
       break;
   }
 
+  const anim = useSharedValue(0);
+  useEffect(() => {
+    anim.value = 0;
+    anim.value = withTiming(1, {
+      duration: 650,
+      easing: Easing.bezier(0.15, 0.1, 0.25, 1),
+    })
+  }, []);
+
+
+  const rFormLeftStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [-100, 0]) }],
+      opacity: anim.value,
+    }
+  }, []);
+
+  const rFormRightStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [100, 0]) }],
+      opacity: anim.value,
+    }
+  }, []);
+
+
   return (
-    <View style={[styles.root]}>
+    <Animated.View style={[styles.root, index === 0 ? rFormLeftStyle : rFormRightStyle]} >
       <View style={styles.titleContainer}>
         <Body size="medium" weight="Bold">
           {title}
         </Body>
       </View>
-      {type === 'phone' ? (
-        <PhoneInput
-          defaultCode="GB"
-          layout="first"
-          onChangeText={text => {
-            setField(text);
-          }}
-          onChangeFormattedText={text => {
-            setField(text);
-          }}
-          // withShadow
-          autoFocus
-          containerStyle={styles.phoneInputContainer}
-          placeholder={' '}
-          value={value}
-        />
-      ) : (
-        <TextInput
-          style={styles.input}
-          secureTextEntry={secureTextEntry}
-          placeholder={placeholder}
-          placeholderTextColor={Colors.greyLight3}
-          onChangeText={text => setField(text)}
-          value={value}
-          autoCorrect={autoCorrect}
-          maxLength={maxLength}
+      {
+        type === 'phone' ? (
+          <PhoneInput
+            defaultCode="GB"
+            layout="first"
+            onChangeText={text => {
+              setField(text);
+            }}
+            onChangeFormattedText={text => {
+              setField(text);
+            }}
+            // withShadow
+            autoFocus
+            containerStyle={styles.phoneInputContainer}
+            placeholder={' '}
+            value={value}
+          />
+        ) : (
+          <TextInput
+            style={styles.input}
+            secureTextEntry={secureTextEntry}
+            placeholder={placeholder}
+            placeholderTextColor={Colors.greyLight3}
+            onChangeText={text => setField(text)}
+            value={value}
+            autoCorrect={autoCorrect}
+            maxLength={maxLength}
           // textContentType={'oneTimeCode'}
-        />
-      )}
-    </View>
+          />
+        )
+      }
+    </Animated.View >
   );
 };
 

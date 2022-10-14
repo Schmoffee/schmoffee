@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useReducer } from 'react';
-import { StyleSheet } from 'react-native';
 import { GlobalContext, orderingData, OrderingContext } from '../../contexts';
 import { DataStore, SortDirection } from 'aws-amplify';
 import { Item } from '../../models';
@@ -9,7 +8,6 @@ import { Home } from './screens/Home';
 import { PreviewPage } from './screens/PreviewPage';
 import { WhatPage } from './screens/WhatPage';
 import { WhenPage } from './screens/WhenPage';
-
 import { orderingReducer } from '../../reducers';
 import ItemPage from './screens/ItemPage';
 
@@ -55,7 +53,6 @@ const Root = () => {
         <CoffeeStack.Screen name="WhenPage" component={WhenPage} />
         <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
         <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
-
       </CoffeeStack.Navigator>
     </OrderingContext.Provider>
   );
