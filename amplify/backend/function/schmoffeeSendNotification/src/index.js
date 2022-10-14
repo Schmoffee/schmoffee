@@ -112,5 +112,5 @@ exports.handler = async event => {
     });
   }
 
-  SendMessage();
+  return SendMessage();
 };

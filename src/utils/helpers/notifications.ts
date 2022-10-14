@@ -67,8 +67,10 @@ async function sendNotificationToUser(userId: string, token: string, service: st
     }
   });
   console.log(response);
-  const data = await response.json();
-  console.log(data);
+  if (response) {
+    const data = await response.json();
+    console.log(data);
+  }
 }
 
 export {updateEndpoint, getEndPoint, sendNotificationToUser};

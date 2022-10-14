@@ -9,7 +9,7 @@ import LoadingPage from '../../CommonScreens/LoadingPage';
 import {createSignUpUser, getUserByPhoneNumber} from '../../../utils/queries/datastore';
 import {Colors, Spacings} from '../../../../theme';
 import {PageLayout} from '../../../components/Layouts/PageLayout';
-import {InputOTP} from '../../../components/InputComponents/InputOTP';
+import {InputOTP} from '../../../components/Input/InputOTP';
 import {Footer} from '../../../components/Footer/Footer';
 import {useNavigation} from '@react-navigation/native';
 import {RootRoutes} from '../../../utils/types/navigation.types';
@@ -165,7 +165,7 @@ export const Signup = () => {
           {!hasLoaded ? (
             <Footer
               buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
-              onPress={async () => await sendNotificationToUser('lol')}
+              onPress={async () => {}}
               // onPress={handleSignUp}
               buttonVariant="secondary"
               buttonText="Sign Up">
