@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Keyboard, Pressable } from 'react-native';
-import FormField from '../../../components/FormField';
+import FormField from '../../../components/Input/FormField';
 import { Colors, Spacings } from '../../../../theme';
 import { Body } from '../../../../typography';
 import { PageLayout } from '../../../components/Layouts/PageLayout';

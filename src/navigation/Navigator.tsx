@@ -20,7 +20,7 @@ const RootStack = createNativeStackNavigator<RootRoutes>();
 function RootNavigator() {
   return (
     <RootStack.Navigator
-      initialRouteName="Coffee"
+      initialRouteName="TrackOrder"
       screenOptions={{
         gestureEnabled: false,
         headerShown: false,

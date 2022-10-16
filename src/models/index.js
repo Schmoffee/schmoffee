@@ -8,6 +8,11 @@ const OptionType = {
   "MILK": "MILK"
 };
 
+const PlatformType = {
+  "IOS": "IOS",
+  "ANDROID": "ANDROID"
+};
+
 const ItemType = {
   "COFFEE": "COFFEE",
   "COLD_DRINKS": "COLD_DRINKS",
@@ -45,6 +50,7 @@ export {
   Cafe,
   User,
   OptionType,
+  PlatformType,
   ItemType,
   OrderStatus,
   Day,

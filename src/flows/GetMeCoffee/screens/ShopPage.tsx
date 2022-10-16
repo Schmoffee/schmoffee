@@ -6,7 +6,7 @@ import { CardSection } from '../../../components/WhatComponents/CardSection';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
 import { OrderingContext } from '../../../contexts';
 import { DATA_ITEMS } from '../../../data/items.data';
-import { Item } from '../../../models';
+import { Item, OrderItem } from '../../../models';
 import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 import { BasketSection } from '../../../components/Basket/BasketSection';
 import Animated, { Easing, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -23,8 +23,6 @@ export const ShopPage = () => {
     const navigation = useNavigation<CoffeeRoutes>();
     const [items, setItems] = useState(DATA_ITEMS);
     const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
-
-
     const translateY = useSharedValue(0);
 
     const scrollHandler = useAnimatedScrollHandler(event => {
@@ -96,20 +94,6 @@ export const ShopPage = () => {
 
 
     return (
-
-        // <PageLayout
-        //   header="What do you crave?"
-        //   headerChildren={
-        //     <HeaderImage y={translateY} source={require('../../../assets/pngs/shop.png')} />
-        //   }
-        //   footer={{
-        //     buttonDisabled: ordering_state.common_basket.length === 0,
-        //     onPress: () => navigation.navigate(CONST_SCREEN_WHEN),
-        //     buttonText: 'Continue',
-        //     type: 'basket',
-        //     // children: <BasketSection translateY={translateY} />
-        //   }}>
-
         <View style={styles.root}>
 
             <View style={styles.header}>

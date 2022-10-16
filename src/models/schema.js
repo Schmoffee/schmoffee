@@ -283,6 +283,15 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "status": {
+                    "name": "status",
+                    "isArray": false,
+                    "type": {
+                        "enum": "OrderStatus"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -873,6 +882,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "device_token": {
+                    "name": "device_token",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -923,6 +939,13 @@ export const schema = {
                 "BEAN",
                 "SYRUP",
                 "MILK"
+            ]
+        },
+        "PlatformType": {
+            "name": "PlatformType",
+            "values": [
+                "IOS",
+                "ANDROID"
             ]
         },
         "ItemType": {
@@ -1012,6 +1035,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "image": {
+                    "name": "image",
+                    "isArray": false,
+                    "type": "AWSURL",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "preparation_time": {
                     "name": "preparation_time",
                     "isArray": false,
@@ -1075,21 +1105,28 @@ export const schema = {
                     "type": "AWSPhone",
                     "isRequired": true,
                     "attributes": []
+                },
+                "device_token": {
+                    "name": "device_token",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "platform": {
+                    "name": "platform",
+                    "isArray": false,
+                    "type": {
+                        "enum": "PlatformType"
+                    },
+                    "isRequired": true,
+                    "attributes": []
                 }
             }
         },
         "OrderInfo": {
             "name": "OrderInfo",
             "fields": {
-                "status": {
-                    "name": "status",
-                    "isArray": false,
-                    "type": {
-                        "enum": "OrderStatus"
-                    },
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "accepted_time": {
                     "name": "accepted_time",
                     "isArray": false,
@@ -1150,5 +1187,5 @@ export const schema = {
             }
         }
     },
-    "version": "ff92eeab0c4cccc062b108ae79243b24"
+    "version": "2285286d8cbcb5034287b6095f5424b0"
 };

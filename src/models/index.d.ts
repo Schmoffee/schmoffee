@@ -6,6 +6,11 @@ export enum OptionType {
   MILK = "MILK"
 }
 
+export enum PlatformType {
+  IOS = "IOS",
+  ANDROID = "ANDROID"
+}
+
 export enum ItemType {
   COFFEE = "COFFEE",
   COLD_DRINKS = "COLD_DRINKS",
@@ -43,6 +48,7 @@ export declare class OrderItem {
   readonly quantity: number;
   readonly name: string;
   readonly price: number;
+  readonly image?: string | null;
   readonly preparation_time: number;
   readonly options?: OrderOption[] | null;
   constructor(init: ModelInit<OrderItem>);
@@ -58,11 +64,12 @@ export declare class OrderOption {
 export declare class UserInfo {
   readonly name: string;
   readonly phone: string;
+  readonly device_token: string;
+  readonly platform: PlatformType | keyof typeof PlatformType;
   constructor(init: ModelInit<UserInfo>);
 }
 
 export declare class OrderInfo {
-  readonly status: OrderStatus | keyof typeof OrderStatus;
   readonly accepted_time?: string | null;
   readonly rejected_time?: string | null;
   readonly ready_time?: string | null;
@@ -138,6 +145,7 @@ export declare class CurrentOrder {
   readonly cafeID: string;
   readonly user_info: UserInfo;
   readonly userID: string;
+  readonly status: OrderStatus | keyof typeof OrderStatus;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<CurrentOrder, CurrentOrderMetaData>);
@@ -208,6 +216,7 @@ export declare class User {
   readonly past_orders?: (PastOrder | null)[] | null;
   readonly the_usual?: UsualOrder | null;
   readonly customer_id?: string | null;
+  readonly device_token: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);

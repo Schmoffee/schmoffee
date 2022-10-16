@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Keyboard, Pressable, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
-import FormField from '../../../components/FormField';
+import FormField from '../../../components/Input/FormField';
 import {
   getCurrentAuthUser,
   globalSignOut,
@@ -176,7 +176,6 @@ export const Signup = () => {
     }
     setOtp('');
     setLoading(false);
-
   };
 
 

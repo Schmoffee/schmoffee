@@ -11,7 +11,6 @@ import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { BlurView } from '@react-native-community/blur';
 import Picker from '@gregfrench/react-native-wheel-picker';
-import { useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface WhenPageProps { }
 
@@ -77,9 +76,9 @@ export const WhenPage = (props: WhenPageProps) => {
       hours = hours + 1;
       minutes = minutes - 60;
     }
-    minutes = minutes < 10 ? '0' + minutes : minutes;
+    let minuteString = minutes < 10 ? '0' + minutes.toString : minutes.toString;
 
-    let strTime = hours + ':' + minutes + ' ' + ampm;
+    let strTime = hours + ':' + minuteString + ' ' + ampm;
     return strTime;
   };
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, Alert } from 'react-native';
-import { Colors, Spacings } from '../../theme';
-import { Body } from '../../typography';
+import { Colors, Spacings } from '../../../theme';
+import { Body } from '../../../typography';
 import PhoneInput from 'react-native-phone-number-input';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 

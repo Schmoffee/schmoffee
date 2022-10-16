@@ -23,11 +23,11 @@ export const BasketSection = (props: BasketSectionProps) => {
     }));
 
     const rContainerStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(translateY.value, [0, 100], [0, 1], Extrapolate.CLAMP),
+        opacity: interpolate(translateY.value, [0, 100], [1, 0], Extrapolate.CLAMP),
 
         transform: [
             {
-                translateY: interpolate(translateY.value, [0, 55], [55, 0], Extrapolate.CLAMP)
+                translateY: interpolate(translateY.value, [0, 155], [0, 55], Extrapolate.CLAMP)
             },
             {
                 scale: interpolate(translateY.value, [0, 100], [1, 0.9], Extrapolate.CLAMP)

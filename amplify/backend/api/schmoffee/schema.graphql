@@ -7,6 +7,13 @@ type UsualOrder {
 type UserInfo {
   name: String!
   phone: AWSPhone!
+  device_token: String!
+  platform: PlatformType!
+}
+
+enum PlatformType {
+  IOS
+  ANDROID
 }
 
 enum ItemType {
@@ -45,6 +52,7 @@ type OrderItem {
   quantity: Int!
   name: String!
   price: Float!
+  image: AWSURL
   preparation_time: Int!
   options: [OrderOption!]
 }
@@ -60,7 +68,6 @@ enum OrderStatus {
 }
 
 type OrderInfo {
-  status: OrderStatus!
   accepted_time: AWSDateTime
   rejected_time: AWSDateTime
   ready_time: AWSDateTime
@@ -79,6 +86,7 @@ type CurrentOrder @model @auth(rules: [{allow: public}]) {
   cafeID: ID! @index(name: "byCafe")
   user_info: UserInfo!
   userID: ID!
+  status: OrderStatus!
 }
 
 enum OptionType {
@@ -148,4 +156,5 @@ type User @model @auth(rules: [{allow: public}]) {
   past_orders: [PastOrder] @hasMany(indexName: "byUser", fields: ["id"])
   the_usual: UsualOrder
   customer_id: String
+  device_token: String!
 }

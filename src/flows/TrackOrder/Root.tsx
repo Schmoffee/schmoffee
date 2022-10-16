@@ -71,7 +71,7 @@ const Root = () => {
   return (
     <TrackOrderContext.Provider value={{ track_order_state, track_order_dispatch }}>
       <TrackOrderStack.Navigator
-        initialRouteName='RatingPage'
+        initialRouteName='OrderPage'
         screenOptions={{
           headerShown: false,
           gestureEnabled: true

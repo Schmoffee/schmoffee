@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import FormField from '../../../components/FormField';
+import FormField from '../../../components/Input/FormField';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
 import { GlobalContext } from '../../../contexts';
 
