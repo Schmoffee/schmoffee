@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Alert } from 'react-native';
 import { Colors, Spacings } from '../../theme';
 import { Body } from '../../typography';
 import PhoneInput from 'react-native-phone-number-input';
@@ -33,11 +33,7 @@ const FormField = ({
     case 'name':
       autoCorrect = false;
       break;
-    case 'email':
-      autoCorrect = false;
-      break;
-    case 'password':
-      secureTextEntry = true;
+    case 'phone':
       autoCorrect = false;
       break;
   }
@@ -54,19 +50,39 @@ const FormField = ({
 
   const rFormLeftStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: interpolate(anim.value, [0, 1], [-100, 0]) }],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [-150, 0]) }],
       opacity: anim.value,
     }
   }, []);
 
   const rFormRightStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: interpolate(anim.value, [0, 1], [100, 0]) }],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [150, 0]) }],
       opacity: anim.value,
     }
   }, []);
 
 
+  const handleAlphaChange = (value: string) => {
+    const re = /^[A-Za-z]+$/;
+    if (value === "" || re.test(value)) {
+      setField(value);
+    }
+    else {
+      setField(value.slice(0, -1));
+      Alert.alert("Please enter alphabet characters only");
+    }
+  };
+
+  const handleNumericChange = (value: string) => {
+    const re = /^[0-9]+$/;
+    if (value === "" || re.test(value)) {
+      setField(value);
+    }
+    else {
+      Alert.alert("Please enter numeric characters only");
+    }
+  };
   return (
     <Animated.View style={[styles.root, index === 0 ? rFormLeftStyle : rFormRightStyle]} >
       <View style={styles.titleContainer}>
@@ -80,7 +96,7 @@ const FormField = ({
             defaultCode="GB"
             layout="first"
             onChangeText={text => {
-              setField(text);
+              handleNumericChange(text);
             }}
             onChangeFormattedText={text => {
               setField(text);
@@ -97,11 +113,11 @@ const FormField = ({
             secureTextEntry={secureTextEntry}
             placeholder={placeholder}
             placeholderTextColor={Colors.greyLight3}
-            onChangeText={text => setField(text)}
+            onChangeText={(text) => handleAlphaChange(text)}
             value={value}
             autoCorrect={autoCorrect}
             maxLength={maxLength}
-          // textContentType={'oneTimeCode'}
+            keyboardType={'default'}
           />
         )
       }
