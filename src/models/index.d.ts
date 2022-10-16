@@ -146,8 +146,6 @@ export declare class CurrentOrder {
 
 export declare class Item {
   readonly id: string;
-  quantity: number;
-  description: string;
   readonly name: string;
   readonly price: number;
   readonly image?: string | null;

@@ -55,11 +55,11 @@ export const RatingPage = (props: RatingPageProps) => {
   const navigation = useNavigation()
   const current_shop = DATA_SHOPS[0] as Cafe;
   const { ordering_state, ordering_dispatch } = useContext(OrderingContext)
-  console.log(ordering_state.common_basket)
+
   return (
     <PageLayout header={'Rate your order'} footer={{
       buttonDisabled: false,
-      onPress: () => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME }),
+      onPress: () => navigation.push('Coffee', { screen: CONST_SCREEN_HOME }),
       buttonText: 'Rate',
     }}>
       <View style={styles.container}>

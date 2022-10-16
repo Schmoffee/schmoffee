@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Easing, Alert } from 'react-native';
+import { StyleSheet, View, Text, Image, Easing, Pressable, Alert } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Colors, Spacings } from '../../../theme';
 import { Body } from '../../../typography';
@@ -164,7 +164,7 @@ export const BasketItem = (props: BasketItemProps) => {
 
 
   return (
-    <TouchableOpacity onPress={onItemPress} style={styles.container}>
+    <Pressable onPress={onItemPress} style={styles.container}>
       <View style={styles.item}>
         <Animated.View style={[rItemStyle]}>
           <View style={styles.itemImage}>
@@ -175,16 +175,16 @@ export const BasketItem = (props: BasketItemProps) => {
                   {getQuantity()}
                 </Body>
               </Animated.View>
-              <TouchableOpacity onPress={onIncreaseQuantity}>
+              <Pressable onPress={onIncreaseQuantity}>
                 <Animated.View style={[styles.quantityPlusButton, rIncrQuantStyle]}>
                   <Text style={styles.quantityPlusText}>+</Text>
                 </Animated.View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onReduceQuantity} style={styles.random}>
+              </Pressable>
+              <Pressable onPress={onReduceQuantity} style={styles.random}>
                 <Animated.View style={[styles.quantityPlusButton, rRedQuantStyle]}>
                   <Text style={styles.quantityPlusText}>-</Text>
                 </Animated.View>
-              </TouchableOpacity>
+              </Pressable>
             </Animated.View>
           </View>
         </Animated.View>
@@ -195,7 +195,7 @@ export const BasketItem = (props: BasketItemProps) => {
           </Body>
         </Animated.View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

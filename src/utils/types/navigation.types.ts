@@ -21,6 +21,7 @@ export type AuthRoutes = {
 
 export type CoffeeRoutes = {
   navigate(screen: any, navigator?: any): void;
+  push(screen: any, navigator?: any): void;
   Home: undefined;
   WhatPage: undefined;
   WhenPage: undefined;
