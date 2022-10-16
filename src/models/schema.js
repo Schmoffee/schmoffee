@@ -882,6 +882,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "device_token": {
+                    "name": "device_token",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -932,6 +939,13 @@ export const schema = {
                 "BEAN",
                 "SYRUP",
                 "MILK"
+            ]
+        },
+        "PlatformType": {
+            "name": "PlatformType",
+            "values": [
+                "IOS",
+                "ANDROID"
             ]
         },
         "ItemType": {
@@ -1084,6 +1098,22 @@ export const schema = {
                     "type": "AWSPhone",
                     "isRequired": true,
                     "attributes": []
+                },
+                "device_token": {
+                    "name": "device_token",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "platform": {
+                    "name": "platform",
+                    "isArray": false,
+                    "type": {
+                        "enum": "PlatformType"
+                    },
+                    "isRequired": true,
+                    "attributes": []
                 }
             }
         },
@@ -1150,5 +1180,5 @@ export const schema = {
             }
         }
     },
-    "version": "eab0e40fec6193d1ec5034dcca0ca6d7"
+    "version": "fca54b5ae7d6452e9fb398d030f7dbf7"
 };

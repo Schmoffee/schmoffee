@@ -58,7 +58,7 @@ async function getCurrentAuthUser(): Promise<AuthUser | null> {
     }
     return null;
   } catch (error) {
-    console.log('error getting current user: ', error);
+    console.log('error getting current auth user: ', error);
     return null;
   }
 }

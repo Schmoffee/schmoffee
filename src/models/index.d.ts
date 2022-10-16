@@ -1,9 +1,14 @@
-import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplify/datastore";
+import { ModelInit, MutableModel } from "@aws-amplify/datastore";
 
 export enum OptionType {
   BEAN = "BEAN",
   SYRUP = "SYRUP",
   MILK = "MILK"
+}
+
+export enum PlatformType {
+  IOS = "IOS",
+  ANDROID = "ANDROID"
 }
 
 export enum ItemType {
@@ -58,6 +63,8 @@ export declare class OrderOption {
 export declare class UserInfo {
   readonly name: string;
   readonly phone: string;
+  readonly device_token: string;
+  readonly platform: PlatformType | keyof typeof PlatformType;
   constructor(init: ModelInit<UserInfo>);
 }
 
@@ -146,8 +153,6 @@ export declare class CurrentOrder {
 
 export declare class Item {
   readonly id: string;
-  quantity: number;
-  description: string;
   readonly name: string;
   readonly price: number;
   readonly image?: string | null;
@@ -210,6 +215,7 @@ export declare class User {
   readonly past_orders?: (PastOrder | null)[] | null;
   readonly the_usual?: UsualOrder | null;
   readonly customer_id?: string | null;
+  readonly device_token: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<User, UserMetaData>);
