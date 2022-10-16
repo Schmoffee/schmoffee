@@ -1,31 +1,17 @@
-import React, {useEffect, useReducer, useState} from 'react';
-import {Pressable, Text} from 'react-native';
+import React, {useEffect, useReducer} from 'react';
+import {NativeModules, Pressable, Text} from 'react-native';
 import {globalReducer} from './reducers';
 import {GlobalContext, globalData} from './contexts';
 import {Hub} from 'aws-amplify';
 import {authListener, datastoreListener} from './utils/helpers/listeners';
 import {getCurrentAuthUser} from './utils/queries/auth';
 import {AuthState} from './utils/types/enums';
-import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
+import {getUserByPhoneNumber, updateAuthState, updateDeviceToken} from './utils/queries/datastore';
 import {LocalUser} from './utils/types/data.types';
-import {getEndPoint, sendNotificationToUser, updateEndpoint} from './utils/helpers/notifications';
-import Navigator from './navigation/Navigator';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import PushNotification from '@aws-amplify/pushnotification';
+import {updateEndpoint} from './utils/helpers/notifications';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
-  const [token, setToken] = useState('');
-  PushNotification.onRegister((tok: any) => {
-    console.log('yooo');
-    setToken(tok);
-  });
-  PushNotification.onNotification((notification: any) => {
-    console.log('in app notification received', notification);
-  });
-  PushNotification.onNotificationOpened((notification: any) => {
-    console.log('the notification is opened from iOS', notification);
-  });
 
   useEffect(() => {
     const auth_hub = Hub.listen('auth', data => authListener(data, global_state, global_dispatch));
@@ -48,11 +34,24 @@ const App = () => {
             payload: AuthState.SIGNED_IN,
           });
         }
-        // PushNotification.onRegister((token: any) => {
-        //   updateEndpoint(token, user.sub);
-        // });
+        global_dispatch({type: 'SET_AUTH_USER', payload: user});
         const currentUser = await getUserByPhoneNumber(user.user.getUsername());
         if (currentUser) {
+          await updateAuthState(currentUser.id as string, true);
+          let current_token = currentUser.device_token;
+          NativeModules.RNPushNotification.getToken(
+            async (token: string) => {
+              console.log(token);
+              if (token !== current_token) {
+                current_token = token;
+                await updateEndpoint(token, user.sub);
+                await updateDeviceToken(token, currentUser.id);
+              }
+            },
+            (error: any) => {
+              console.log(error);
+            },
+          );
           const localUser: LocalUser = {
             id: currentUser.id,
             name: currentUser.name,
@@ -61,28 +60,37 @@ const App = () => {
             payment_method: currentUser.payment_method,
             the_usual: currentUser.the_usual,
             customer_id: currentUser.customer_id,
+            device_token: current_token,
           };
           console.log(currentUser);
           global_dispatch({
             type: 'SET_CURRENT_USER',
             payload: localUser,
           });
-          await updateAuthState(currentUser.id as string, true);
         } else {
-          console.log('We have a problem');
+          console.log('Auth user found but corresponding database user not found');
         }
       }
     };
 
-    refreshAuthState().catch(err => console.log(err));
+    refreshAuthState().catch(error => console.log(error));
   }, [global_state.current_user?.id, global_state.auth_state]);
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>
       <Pressable
         onPress={async () => {
-          await updateEndpoint('+447375901046', 'lol');
-          await sendNotificationToUser('lol', '+447375901046', 'GCM');
+          NativeModules.RNPushNotification.getToken(
+            async (token: string) => {
+              console.log(token);
+              if (token) {
+                await updateEndpoint(token, 'lol');
+              }
+            },
+            (error: any) => {
+              console.log(error);
+            },
+          );
         }}>
         <Text>Get Endpoint</Text>
       </Pressable>

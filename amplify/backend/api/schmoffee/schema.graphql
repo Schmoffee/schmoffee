@@ -7,6 +7,13 @@ type UsualOrder {
 type UserInfo {
   name: String!
   phone: AWSPhone!
+  device_token: String!
+  platform: PlatformType!
+}
+
+enum PlatformType {
+  IOS
+  ANDROID
 }
 
 enum ItemType {
@@ -148,4 +155,5 @@ type User @model @auth(rules: [{allow: public}]) {
   past_orders: [PastOrder] @hasMany(indexName: "byUser", fields: ["id"])
   the_usual: UsualOrder
   customer_id: String
+  device_token: String!
 }

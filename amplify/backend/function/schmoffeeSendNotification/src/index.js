@@ -8,13 +8,9 @@ const AWS = require('aws-sdk');
  */
 exports.handler = async event => {
   const body = JSON.parse(event.body);
-
-  const users = {
-    [body.userID]: {},
-  };
   const region = 'eu-central-1';
-  const title = 'Status Update';
-  const message = 'Yooo';
+  const title = body.title;
+  const message = body.message;
   const applicationId = '3648ce85f9d543e1877c149dccf556b4';
   const recipient = {
     token: body.token,
@@ -42,6 +38,9 @@ exports.handler = async event => {
             Priority: priority,
             SilentPush: silent,
             Title: title,
+            IconReference: 'ic_launcher.png',
+            SmallImageIconUrl: 'https://www.schmoffee.co.uk/img/small_icon.png',
+            ImageIconUrl: 'https://www.schmoffee.co.uk/img/icon.png',
           },
         },
       };
@@ -60,57 +59,44 @@ exports.handler = async event => {
             SilentPush: silent,
             Title: title,
           },
-          Users: users,
         },
       };
     }
-
     return messageRequest;
   }
 
-  function getResponse(isSuccess, data) {
-    let status;
-    let code;
-    if (isSuccess) {
-      if (data.MessageResponse.Result[recipient.token].DeliveryStatus === 'SUCCESSFUL') {
-        status = 'Message sent! Response information: ';
-        code = 200;
-      } else {
-        status = "The message wasn't sent. Response information: ";
-        code = 400;
-      }
+  const messageRequest = CreateMessageRequest();
+  AWS.config.update({region: region});
+  const pinpoint = new AWS.Pinpoint();
+  const params = {
+    ApplicationId: applicationId,
+    MessageRequest: messageRequest,
+  };
+
+  let status;
+  let code;
+  try {
+    let data = await pinpoint.sendMessages(params).promise();
+    const readable_data = JSON.stringify(data, null, 2);
+    if (data.MessageResponse.Result[recipient.token].DeliveryStatus === 'SUCCESSFUL') {
+      status = 'Message sent! Response information: ' + readable_data;
+      code = 200;
     } else {
-      status = data;
+      status = "The message wasn't sent. Response information: " + readable_data;
       code = 400;
     }
-    return {
-      statusCode: code,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': '*',
-      },
-      body: JSON.stringify(status),
-    };
+  } catch (error) {
+    console.log('ERROR sending email: ' + error);
+    status = 'Error sending message: ' + error;
+    code = 400;
   }
 
-  function SendMessage() {
-    const messageRequest = CreateMessageRequest();
-    // Specify that you're using a shared credentials file, and specify the
-    // IAM profile to use.
-    AWS.config.credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
-    AWS.config.update({region: region});
-
-    const pinpoint = new AWS.Pinpoint();
-    const params = {
-      ApplicationId: applicationId,
-      MessageRequest: messageRequest,
-    };
-
-    // Try to send the message.
-    pinpoint.sendMessages(params, function (err, data) {
-      return getResponse(false, err ? err : data);
-    });
-  }
-
-  return SendMessage();
+  return {
+    statusCode: code,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': '*',
+    },
+    body: JSON.stringify(status),
+  };
 };

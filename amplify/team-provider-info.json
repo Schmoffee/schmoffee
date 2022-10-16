@@ -36,7 +36,7 @@
         },
         "schmoffeeSendNotification": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
-          "s3Key": "amplify-builds/schmoffeeSendNotification-34785934534875337645-build.zip"
+          "s3Key": "amplify-builds/schmoffeeSendNotification-4c772b67454f62794167-build.zip"
         }
       },
       "auth": {

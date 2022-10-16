@@ -162,9 +162,10 @@
               }
             },
             {
+              "Sid": "NotifPerm",
               "Effect": "Allow",
               "Action": "mobiletargeting:SendMessages",
-              "Resource": "arn:aws:mobiletargeting:eu-central-1:1376-8809-7985:apps/3648ce85f9d543e1877c149dccf556b4/*"
+              "Resource": "arn:aws:mobiletargeting:eu-central-1:137688097985:apps/3648ce85f9d543e1877c149dccf556b4/*"
             }
           ]
         }
