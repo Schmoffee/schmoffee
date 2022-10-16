@@ -1,6 +1,6 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import React, {useContext} from 'react';
-import {View, StyleSheet, Pressable, useWindowDimensions, Platform} from 'react-native';
+import {View, Pressable, useWindowDimensions, Platform} from 'react-native';
 import {CONST_SCREEN_WHAT} from '../../../../constants';
 import {PageLayout} from '../../../components/Layouts/PageLayout';
 import {RootRoutes} from '../../../utils/types/navigation.types';
@@ -141,7 +141,6 @@ export const Home = () => {
                         name: user.name,
                         phone: user.phone,
                         device_token: user.device_token,
-                        user_id: global_state.auth_user?.sub,
                         platform: platform,
                       };
                       console.log('sending order');
