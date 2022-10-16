@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, TextInput, Image, Platform, NativeModules } from 'react-native';
+import { View, StyleSheet, TextInput, Image, Platform, NativeModules, Dimensions } from 'react-native';
 import { Colors, Spacings } from '../../../../theme';
 import { CardSection } from '../../../components/WhatComponents/CardSection';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
@@ -9,8 +9,8 @@ import { DATA_ITEMS } from '../../../data/items.data';
 import { Item, OrderItem } from '../../../models';
 import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 import { BasketSection } from '../../../components/Basket/BasketSection';
-import Animated, { Easing, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { HeaderImage } from '../../../components/WhatComponents/HeaderImage';
+import Animated, { Easing, Extrapolate, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { ShopHeader } from '../../../components/WhatComponents/ShopHeader';
 import { Body, Heading } from '../../../../typography';
 import { Footer } from '../../../components/Footer/Footer';
 import { CONST_SCREEN_WHEN } from '../../../../constants/screens.constants';
@@ -18,6 +18,12 @@ import { CONST_SCREEN_WHEN } from '../../../../constants/screens.constants';
 
 const { StatusBarManager } = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
+
+
+const { height: wHeight, width: wWidth } = Dimensions.get("window");
+
+
+export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
     const navigation = useNavigation<CoffeeRoutes>();
@@ -81,43 +87,48 @@ export const ShopPage = () => {
         []
     );
 
-    const rStyleHeader = useAnimatedStyle(() => {
-        return {
+    const rSearchStyle = useAnimatedStyle(
+        () => ({
             transform: [
                 {
-                    translateY: interpolate(translateY.value, [0, 100], [0, -100])
+
+                    translateY: interpolate(translateY.value, [100, 0], [-100, -20], Extrapolate.CLAMP)
                 }
             ]
-        }
-    });
+        }),
+        []
+    );
+
+
 
 
 
     return (
         <View style={styles.root}>
-
             <View style={styles.header}>
-                <HeaderImage y={translateY} source={require('../../../assets/pngs/shop.png')} />
-                <Animated.View style={[styles.searchInputContainer, rStyleHeader]}>
+                <ShopHeader y={translateY} source={require('../../../assets/pngs/shop.png')} />
+                <Animated.View style={[styles.searchInputContainer, rSearchStyle]}>
                     <TextInput
                         autoCapitalize="none"
                         autoCorrect={false}
                         clearButtonMode="always"
                         value={query}
                         onChangeText={queryText => handleSearch(queryText)}
-                        placeholder="Search"
+                        placeholder="Search for an item"
                     />
                 </Animated.View>
             </View>
             <Animated.ScrollView style={pageStyle}
                 onScroll={scrollHandler}
-                pagingEnabled
                 scrollEventThrottle={16}>
 
                 <View style={styles.container}>
                     <CardSection query={query} title="Coffee" items={getCoffees()} />
                     <CardSection title="Juices" items={getJuices()} />
                     <CardSection title="Pastries" items={getPastries()} hideDivider />
+                    <CardSection title="Pastries" items={getPastries()} hideDivider />
+                    <CardSection title="Pastries" items={getPastries()} hideDivider />
+
                 </View>
             </Animated.ScrollView>
 
@@ -145,10 +156,10 @@ const styles = StyleSheet.create({
         paddingTop: STATUSBAR_HEIGHT,
         justifyContent: 'center',
         alignItems: 'center',
+        zIndex: 1,
     },
-
     container: {
-        marginTop: 200,
+        marginTop: 160,
         paddingTop: 70,
         paddingBottom: 70,
     },
@@ -158,8 +169,9 @@ const styles = StyleSheet.create({
         padding: Spacings.s2,
         marginHorizontal: Spacings.s4,
         position: 'absolute',
-        top: 290,
-        right: 10
+        top: 230,
+        right: 5,
+        minWidth: 120,
     },
     shopImage: {
         zIndex: -1,

@@ -159,7 +159,7 @@ export const BasketItem = (props: BasketItemProps) => {
     // });
 
     setExpanded(!expanded)
-    anim.value = withTiming(expanded ? 0 : 1, { duration: 300, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
+    // anim.value = withTiming(expanded ? 0 : 1, { duration: 300, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
   };
 
 
