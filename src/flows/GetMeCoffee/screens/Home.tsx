@@ -1,7 +1,7 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { View, StyleSheet, Pressable, useWindowDimensions } from 'react-native';
-import { CONST_SCREEN_WHAT } from '../../../../constants';
+import { CONST_SCREEN_SHOP } from '../../../../constants';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
 import { RootRoutes } from '../../../utils/types/navigation.types';
 import { Cafe, OrderInfo, OrderItem, OrderStatus, User, UserInfo } from '../../../models';
@@ -102,7 +102,7 @@ export const Home = () => {
 
               footer={{
                 buttonDisabled: false,
-                onPress: () => navigation.navigate(CONST_SCREEN_WHAT),
+                onPress: () => navigation.navigate(CONST_SCREEN_SHOP),
                 buttonText: 'Get me coffee',
               }}>
 

@@ -13,6 +13,7 @@ import HamburgerIcon from '../HamburgerMenu/HamburgerIcon';
 interface PageLayoutProps extends PropsWithChildren {
     style?: any;
     header: string;
+    headerChildren?: React.ReactNode;
     subHeader?: string;
     footer?: FooterType;
     transformContent?: boolean;
@@ -31,10 +32,9 @@ export const PageLayout = (props: PageLayoutProps) => {
 
     const footerStyle = StyleSheet.create({
         root: {
-            height: 100,
+            height: 10,
             justifyContent: 'flex-end',
             paddingHorizontal: Spacings.s4,
-            // backgroundColor: Colors.red,
             position: 'absolute',
             bottom: insets.bottom,
             left: 0,
@@ -46,22 +46,21 @@ export const PageLayout = (props: PageLayoutProps) => {
     return (
         <>
             <Pressable onPress={props.onPress} />
-
             <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
                 {props.showCircle ? <View style={[styles.bigSemiCircle]} /> : null}
                 <View style={styles.header}>
                     {props.hamburger ? (
-
                         <TouchableOpacity onPress={props.hamburgerOnPress}>
                             <View style={styles.hamburgerButton}>
                                 <HamburgerIcon />
                             </View>
                         </TouchableOpacity>
                     ) : null}
-
                     <Heading size="default" weight="Extrabld" color={Colors.black}>
                         {props.header}
                     </Heading>
+                    <View style={styles.headerChildren}>{props.headerChildren}</View>
+
                 </View>
                 {props.subHeader ? (
                     <View style={styles.subHeader}>
@@ -88,7 +87,6 @@ export const PageLayout = (props: PageLayoutProps) => {
 const styles = StyleSheet.create({
 
     root: {
-        // paddingHorizontal: Spacings.s2,
         paddingTop: Spacings.s11,
         paddingBottom: Spacings.s9,
         height: '100%',
@@ -105,6 +103,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 
     },
+    headerChildren: {
+        alignItems: 'center',
+
+        justifyContent: 'center',
+        zIndex: -1,
+        // marginBottom: Spacings.s10,
+
+    },
     hamburgerButton: {
         justifyContent: 'center',
         position: 'absolute',
@@ -112,7 +118,6 @@ const styles = StyleSheet.create({
         top: -14,
 
     },
-
     subHeader: {
         alignSelf: 'center',
         marginTop: Spacings.s2,
@@ -132,4 +137,8 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         // zIndex: 1,
     },
+    childrenContainer: {
+        marginBottom: Spacings.s4,
+    },
+
 });

@@ -10,6 +10,7 @@ import { WhatPage } from './screens/WhatPage';
 import { WhenPage } from './screens/WhenPage';
 import { orderingReducer } from '../../reducers';
 import ItemPage from './screens/ItemPage';
+import { ShopPage } from './screens/ShopPage';
 
 /**
  * Top/Root level component of the "Get me Coffee" flow.
@@ -53,6 +54,7 @@ const Root = () => {
         <CoffeeStack.Screen name="WhenPage" component={WhenPage} />
         <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
         <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
+        <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
       </CoffeeStack.Navigator>
     </OrderingContext.Provider>
   );
