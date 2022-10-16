@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Keyboard, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Keyboard, Pressable, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import FormField from '../../../components/FormField';
 import {
   getCurrentAuthUser,
@@ -169,6 +169,17 @@ export const Signup = () => {
     }
   };
 
+  const handleResendOTP = async () => {
+    setLoading(true);
+    if (trials <= 2) {
+      setTrials(prev => prev + 1);
+    }
+    setOtp('');
+    setLoading(false);
+
+  };
+
+
   const isValidNumber = useCallback(() => {
     return number.length === 13;
   }, [number]);
@@ -192,7 +203,16 @@ export const Signup = () => {
         <>
           <View style={styles.formContainer}>
             {hasLoaded ? (
-              <InputOTP code={otp} setCode={setOtp} maxLength={maximumCodeLength} setIsPinComplete={setIsPinComplete} />
+              <View style={styles.otpContainer}>
+                <InputOTP code={otp} setCode={setOtp} maxLength={maximumCodeLength} setIsPinComplete={setIsPinComplete} />
+                <Pressable onPress={handleResendOTP}>
+                  {trials > 2 ? (
+                    <Body style={styles.otpText} size='small' color={Colors.red}>You have tried more than 3 times, you are blocked for 1 hour.</Body>
+                  ) : (
+                    <Body style={styles.otpText} size='small' color={Colors.blue}>Didn't receive a code? Resend code</Body>
+                  )}
+                </Pressable>
+              </View>
             ) : (
               <>
                 <FormField index={0} title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
@@ -217,7 +237,7 @@ export const Signup = () => {
           ) : (
             <Footer
               buttonVariant="secondary"
-              buttonDisabled={!isPinComplete}
+              buttonDisabled={!isPinComplete || trials > 2}
               onPress={() => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME })}
               // onPress={handleConfirmOTP}
               buttonText="Confirm OTP">
@@ -240,6 +260,13 @@ export default Signup;
 const styles = StyleSheet.create({
   formContainer: {
     marginTop: Spacings.s1,
+  },
+  otpContainer: {
+    marginTop: Spacings.s1,
+    alignItems: 'center',
+  },
+  otpText: {
+    marginTop: Spacings.s8,
   },
   buttonContainer: {
     position: 'absolute',
