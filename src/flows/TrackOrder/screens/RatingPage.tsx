@@ -2,8 +2,8 @@ import React, { useContext, useState } from 'react'
 import { Pressable, StyleSheet, View, Image } from 'react-native'
 import { PageLayout } from '../../../components/Layouts/PageLayout'
 import { useNavigation } from '@react-navigation/native'
-import { OrderingContext } from '../../../contexts'
-import { Cafe, Item } from '../../../models'
+import { TrackOrderContext } from '../../../contexts'
+import { Cafe, OrderItem } from '../../../models'
 import { Body, Heading } from '../../../../typography'
 import { Colors, Spacings } from '../../../../theme'
 import { DATA_SHOPS } from '../../../data/shops.data'
@@ -15,11 +15,12 @@ import { CONST_SCREEN_HOME } from '../../../../constants'
 interface RatingPageProps { }
 
 interface RatingItemProps {
-  item: Item,
+  item: OrderItem,
+  key: number,
 }
 
 const RatingItem = ({ item }: RatingItemProps) => {
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext)
+  const { track_order_state, track_order_dispatch } = useContext(TrackOrderContext)
   const navigation = useNavigation()
   const [rating, setRating] = useState(0)
   const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5])
@@ -54,8 +55,8 @@ const RatingItem = ({ item }: RatingItemProps) => {
 export const RatingPage = (props: RatingPageProps) => {
   const navigation = useNavigation()
   const current_shop = DATA_SHOPS[0] as Cafe;
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext)
-  console.log(ordering_state.common_basket)
+  const { track_order_state, track_order_dispatch } = useContext(TrackOrderContext)
+
   return (
     <PageLayout header={'Rate your order'} footer={{
       buttonDisabled: false,
@@ -66,7 +67,7 @@ export const RatingPage = (props: RatingPageProps) => {
         <View style={styles.headingContainer}>
           <Heading size='default' weight='Bold'>{current_shop.name}</Heading>
         </View>
-        {ordering_state.common_basket.map((item, index) => {
+        {track_order_state.current_order?.items.map((item, index) => {
           return (
             <RatingItem item={item} key={index} />
           )

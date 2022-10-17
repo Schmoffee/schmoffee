@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
-import { Pressable, StyleSheet, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native'
 import Animated, { useAnimatedStyle } from 'react-native-reanimated'
 import { CONST_SCREEN_SETTINGS, CONST_SCREEN_UPDATE_PROFILE, CONST_SCREEN_CHANGE_PAYMENT, CONST_SCREEN_LOGIN } from '../../../constants'
 import { Colors, Spacings } from '../../../theme'
@@ -39,37 +39,37 @@ export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
                     <Heading size="default" weight="Extrabld">
                         Hi, Meyad!
                     </Heading>
-                    <TouchableOpacity onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_SETTINGS })}>
+                    <Pressable onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_SETTINGS })}>
                         <View style={styles.sideDrawerButton}>
                             <Body size="medium" weight="Bold">
                                 Settings
                             </Body>
                         </View>
-                    </TouchableOpacity>
+                    </Pressable>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_UPDATE_PROFILE })}>
+                    <Pressable onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_UPDATE_PROFILE })}>
                         <View style={styles.sideDrawerButton}>
                             <Body size="medium" weight="Bold">
                                 Update profile
                             </Body>
                         </View>
-                    </TouchableOpacity>
+                    </Pressable>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_CHANGE_PAYMENT })}>
+                    <Pressable onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_CHANGE_PAYMENT })}>
                         <View style={styles.sideDrawerButton}>
                             <Body size="medium" weight="Bold">
                                 Change payment
                             </Body>
                         </View>
-                    </TouchableOpacity>
+                    </Pressable>
 
-                    <TouchableOpacity onPress={handleLogOut}>
+                    <Pressable onPress={handleLogOut}>
                         <View style={styles.logOut}>
                             <Body size="medium" weight="Extrabld">
                                 Log Out
                             </Body>
                         </View>
-                    </TouchableOpacity>
+                    </Pressable>
 
                 </View>
             </View>

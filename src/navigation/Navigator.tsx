@@ -30,7 +30,6 @@ function RootNavigator() {
         <RootStack.Screen name="Coffee" component={CoffeeRoot} />
         <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />
         <RootStack.Screen name="TrackOrder" component={TrackOrderRoot} />
-
       </RootStack.Group>
     </RootStack.Navigator>
   );

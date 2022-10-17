@@ -48,6 +48,7 @@ export declare class OrderItem {
   readonly quantity: number;
   readonly name: string;
   readonly price: number;
+  readonly image?: string | null;
   readonly preparation_time: number;
   readonly options?: OrderOption[] | null;
   constructor(init: ModelInit<OrderItem>);

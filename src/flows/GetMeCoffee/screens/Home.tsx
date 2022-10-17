@@ -1,14 +1,14 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import React, {useContext} from 'react';
-import {View, Pressable, useWindowDimensions, Platform} from 'react-native';
-import {CONST_SCREEN_WHAT} from '../../../../constants';
-import {PageLayout} from '../../../components/Layouts/PageLayout';
-import {RootRoutes} from '../../../utils/types/navigation.types';
-import {Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo} from '../../../models';
-import {getBestShop, sendOrder} from '../../../utils/queries/datastore';
-import {GlobalContext, OrderingContext} from '../../../contexts';
-import {LocalUser} from '../../../utils/types/data.types';
-import {PanGestureHandler} from 'react-native-gesture-handler';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useContext } from 'react';
+import { View, Pressable, useWindowDimensions, Platform } from 'react-native';
+import { CONST_SCREEN_SHOP } from '../../../../constants';
+import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { RootRoutes } from '../../../utils/types/navigation.types';
+import { Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo } from '../../../models';
+import { getBestShop, sendOrder } from '../../../utils/queries/datastore';
+import { GlobalContext, OrderingContext } from '../../../contexts';
+import { LocalUser } from '../../../utils/types/data.types';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
   useAnimatedGestureHandler,
@@ -16,11 +16,11 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {SideDrawerContent} from '../../../components/HamburgerMenu/SideDrawerContent';
+import { SideDrawerContent } from '../../../components/HamburgerMenu/SideDrawerContent';
 
 export const Home = () => {
-  const {global_state, global_dispatch} = useContext(GlobalContext);
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { global_state, global_dispatch } = useContext(GlobalContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const navigation = useNavigation<RootRoutes>();
   const HOME_WIDTH = useWindowDimensions().width;
   const anim = useSharedValue(0);
@@ -56,7 +56,7 @@ export const Home = () => {
 
   const rPageStyle = useAnimatedStyle(() => {
     return {
-      transform: [{translateX: anim.value}, {skewY: `${anim.value / 4000}rad`}],
+      transform: [{ translateX: anim.value }, { skewY: `${anim.value / 4000}rad` }],
       opacity: interpolate(anim.value, [0, HOME_WIDTH / 2], [1, 0.7]),
     };
   });
@@ -97,12 +97,12 @@ export const Home = () => {
               header="Schmoffee"
               footer={{
                 buttonDisabled: false,
-                onPress: () => navigation.navigate(CONST_SCREEN_WHAT),
+                onPress: () => navigation.navigate(CONST_SCREEN_SHOP),
                 buttonText: 'Get me coffee',
               }}>
               <View>
                 <Pressable
-                  style={({pressed}) => [
+                  style={({ pressed }) => [
                     {
                       backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
                     },
@@ -114,9 +114,9 @@ export const Home = () => {
                       global_state.current_user as LocalUser,
                       ordering_state.specific_basket,
                       ordering_state.scheduled_time,
-                      {latitude: 40, longitude: 0.11},
+                      { latitude: 40, longitude: 0.11 },
                     );
-                    ordering_dispatch({type: 'SET_CURRENT_SHOP', payload: best_shop});
+                    ordering_dispatch({ type: 'SET_CURRENT_SHOP', payload: best_shop });
                     if (global_state.current_user && best_shop) {
                       const user: User = global_state.current_user;
                       let ordered_items: OrderItem[] = [];

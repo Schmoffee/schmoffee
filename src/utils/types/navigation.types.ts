@@ -21,14 +21,18 @@ export type AuthRoutes = {
 
 export type CoffeeRoutes = {
   navigate(screen: any, navigator?: any): void;
+  push(screen: any, navigator?: any): void;
   Home: undefined;
   WhatPage: undefined;
   WhenPage: undefined;
   PreviewPage: undefined;
   ItemPage: undefined;
+  ShopPage: undefined;
 };
 
 export type TrackOrderRoutes = {
+  navigate(screen: any, navigator?: any): void;
+  push(screen: any, navigator?: any): void;
   OrderPage: undefined;
   RatingPage: undefined;
 };
@@ -36,6 +40,7 @@ export type TrackOrderRoutes = {
 export type RootRoutes = {
   openDrawer(): void;
   navigate(screen: any, navigator?: any): void;
+  push(screen: any, navigator?: any): void;
   Auth: NavigatorScreenParams<AuthRoutes> | undefined;
   Coffee: NavigatorScreenParams<CoffeeRoutes> | undefined;
   SideDrawer: NavigatorScreenParams<SideDrawerRoutes> | undefined;

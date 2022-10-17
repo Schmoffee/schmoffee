@@ -8,19 +8,21 @@ import { initializePaymentSheet, openPaymentSheet } from '../../../utils/helpers
 import { BasketSection } from '../../../components/Basket/BasketSection';
 import { PreviewSection } from '../../../components/PreviewComponents/PreviewSection';
 import { ScheduleSection } from '../../../components/PreviewComponents/ScheduleSection';
-import { GlobalContext, OrderingContext } from '../../../contexts';
+import { GlobalContext, OrderingContext, TrackOrderContext } from '../../../contexts';
 import { Cafe, OrderItem, User } from '../../../models';
 import { Alert } from 'react-native';
 import { DATA_SHOPS } from '../../../data/shops.data';
 import { Body } from '../../../../typography';
 import { Colors } from '../../../../theme';
-import { CONST_SCREEN_RATING_PAGE } from '../../../../constants';
+import { CONST_SCREEN_ORDER, CONST_SCREEN_RATING_PAGE } from '../../../../constants';
 
 interface PreviewPageProps { }
 
 export const PreviewPage = (props: PreviewPageProps) => {
   const { global_state } = useContext(GlobalContext);
   const { ordering_state } = useContext(OrderingContext);
+  const { track_order_state, track_order_dispatch } = useContext(TrackOrderContext);
+
   const navigation = useNavigation<CoffeeRoutes>();
   const { initPaymentSheet, presentPaymentSheet } = useStripe(); // Stripe hook payment methods
   const [loading, setLoading] = React.useState(true);
@@ -109,14 +111,20 @@ export const PreviewPage = (props: PreviewPageProps) => {
     }
   }
 
+  const handleCheckout = () => {
+    navigation.navigate('TrackOrder', { screen: CONST_SCREEN_ORDER })
+    track_order_dispatch({ type: 'SET_CURRENT_ORDER', payload: ordering_state.current_order })
+  }
+
   return (
     <PageLayout
       header="Preview Order"
       subHeader="Make sure everything looks good."
       showCircle
       footer={{
+        type: 'basket',
         buttonDisabled: false,
-        onPress: () => navigation.navigate('TrackOrder', { screen: CONST_SCREEN_RATING_PAGE }),
+        onPress: handleCheckout,
         buttonText: 'Order',
       }}>
       <BasketSection />

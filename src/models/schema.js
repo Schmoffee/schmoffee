@@ -1035,6 +1035,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "image": {
+                    "name": "image",
+                    "isArray": false,
+                    "type": "AWSURL",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "preparation_time": {
                     "name": "preparation_time",
                     "isArray": false,

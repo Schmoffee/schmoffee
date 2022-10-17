@@ -1,21 +1,22 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useContext, useMemo, useRef, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import {Switch} from 'react-native-switch';
-import {CONST_SCREEN_PREVIEW} from '../../../../constants';
-import {Colors, Spacings} from '../../../../theme';
-import {Body} from '../../../../typography';
-import {PageLayout} from '../../../components/Layouts/PageLayout';
-import {OrderingContext} from '../../../contexts';
-import {CoffeeRoutes} from '../../../utils/types/navigation.types';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Switch } from 'react-native-switch';
+import { CONST_SCREEN_PREVIEW } from '../../../../constants';
+import { Colors, Spacings } from '../../../../theme';
+import { Body } from '../../../../typography';
+import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { OrderingContext } from '../../../contexts';
+import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 import BottomSheet from '@gorhom/bottom-sheet';
-import {BlurView} from '@react-native-community/blur';
+import { BlurView } from '@react-native-community/blur';
+import Picker from '@gregfrench/react-native-wheel-picker';
 
-interface WhenPageProps {}
+interface WhenPageProps { }
 
 export const WhenPage = (props: WhenPageProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const [isEnabled, setIsEnabled] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -33,7 +34,7 @@ export const WhenPage = (props: WhenPageProps) => {
   const handleClosePress = useCallback(() => {
     setIsEnabled(false);
     setScheduleTime(data[0]);
-    ordering_dispatch({type: 'SET_SCHEDULED_TIME', payload: scheduledTime});
+    ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime });
     bottomSheetRef.current?.close();
     setFocusedIndex(data[0]);
   }, []);
@@ -51,14 +52,14 @@ export const WhenPage = (props: WhenPageProps) => {
   const handleOnValueChange = useCallback(
     (value: number) => {
       setScheduleTime(data[value]);
-      ordering_dispatch({type: 'SET_SCHEDULED_TIME', payload: data[value]});
+      ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: data[value] });
       setFocusedIndex(value);
     },
     [setFocusedIndex, setScheduleTime, ordering_dispatch],
   );
 
   const handleOnContinue = () => {
-    ordering_dispatch({type: 'SET_SCHEDULED_TIME', payload: scheduledTime});
+    ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime });
     navigation.navigate(CONST_SCREEN_PREVIEW);
   };
   const getDateString = (value: number) => {
@@ -72,9 +73,9 @@ export const WhenPage = (props: WhenPageProps) => {
       hours = hours + 1;
       minutes = minutes - 60;
     }
-    minutes = minutes < 10 ? '0' + minutes : minutes;
+    let minuteString = minutes < 10 ? '0' + minutes.toString : minutes.toString;
 
-    let strTime = hours + ':' + minutes + ' ' + ampm;
+    let strTime = hours + ':' + minuteString + ' ' + ampm;
     return strTime;
   };
 
@@ -94,9 +95,8 @@ export const WhenPage = (props: WhenPageProps) => {
           <Body size="large" weight="Regular" color={Colors.darkBrown2}>
             Schedule for
           </Body>
-          <Body size="medium" weight="Regular" color={Colors.brown2}>{`${ordering_state.scheduled_time}-${
-            ordering_state.scheduled_time + 2
-          } mins`}</Body>
+          <Body size="medium" weight="Regular" color={Colors.brown2}>{`${ordering_state.scheduled_time}-${ordering_state.scheduled_time + 2
+            } mins`}</Body>
         </View>
         <Switch
           barHeight={60}
@@ -104,15 +104,15 @@ export const WhenPage = (props: WhenPageProps) => {
           renderInsideCircle={
             isEnabled
               ? () => (
-                  <Body size="medium" weight="Bold" color={Colors.darkBrown2}>
-                    Schedule
-                  </Body>
-                )
+                <Body size="medium" weight="Bold" color={Colors.darkBrown2}>
+                  Schedule
+                </Body>
+              )
               : () => (
-                  <Body size="medium" weight="Bold" color={Colors.darkBrown2}>
-                    ASAP
-                  </Body>
-                )
+                <Body size="medium" weight="Bold" color={Colors.darkBrown2}>
+                  ASAP
+                </Body>
+              )
           }
           value={isEnabled}
           onValueChange={toggleSwitch}
