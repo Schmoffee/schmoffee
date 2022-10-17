@@ -1,14 +1,14 @@
 import React, {useEffect, useReducer} from 'react';
+import {NativeModules, Pressable, Text} from 'react-native';
 import {globalReducer} from './reducers';
 import {GlobalContext, globalData} from './contexts';
 import {Hub} from 'aws-amplify';
 import {authListener, datastoreListener} from './utils/helpers/listeners';
 import {getCurrentAuthUser} from './utils/queries/auth';
 import {AuthState} from './utils/types/enums';
-import {getUserByPhoneNumber, updateAuthState} from './utils/queries/datastore';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Navigator from './navigation/Navigator';
+import {getUserByPhoneNumber, updateAuthState, updateDeviceToken} from './utils/queries/datastore';
 import {LocalUser} from './utils/types/data.types';
+import {updateEndpoint} from './utils/helpers/notifications';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
@@ -34,8 +34,24 @@ const App = () => {
             payload: AuthState.SIGNED_IN,
           });
         }
-        const currentUser = await getUserByPhoneNumber(user.getUsername());
+        global_dispatch({type: 'SET_AUTH_USER', payload: user});
+        const currentUser = await getUserByPhoneNumber(user.user.getUsername());
         if (currentUser) {
+          await updateAuthState(currentUser.id as string, true);
+          let current_token = currentUser.device_token;
+          NativeModules.RNPushNotification.getToken(
+            async (token: string) => {
+              console.log(token);
+              if (token !== current_token) {
+                current_token = token;
+                await updateEndpoint(token, user.sub);
+                await updateDeviceToken(token, currentUser.id);
+              }
+            },
+            (error: any) => {
+              console.log(error);
+            },
+          );
           const localUser: LocalUser = {
             id: currentUser.id,
             name: currentUser.name,
@@ -44,28 +60,40 @@ const App = () => {
             payment_method: currentUser.payment_method,
             the_usual: currentUser.the_usual,
             customer_id: currentUser.customer_id,
+            device_token: current_token,
           };
           console.log(currentUser);
           global_dispatch({
             type: 'SET_CURRENT_USER',
             payload: localUser,
           });
-          await updateAuthState(currentUser?.id as string, true);
-          global_dispatch({type: 'SET_AUTH_USER', payload: user});
         } else {
-          console.log('We have a problem');
+          console.log('Auth user found but corresponding database user not found');
         }
       }
     };
 
-    refreshAuthState().catch(err => console.log(err));
+    refreshAuthState().catch(error => console.log(error));
   }, [global_state.current_user?.id, global_state.auth_state]);
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>
-      <SafeAreaProvider>
-        <Navigator />
-      </SafeAreaProvider>
+      <Pressable
+        onPress={async () => {
+          NativeModules.RNPushNotification.getToken(
+            async (token: string) => {
+              console.log(token);
+              if (token) {
+                await updateEndpoint(token, 'lol');
+              }
+            },
+            (error: any) => {
+              console.log(error);
+            },
+          );
+        }}>
+        <Text>Get Endpoint</Text>
+      </Pressable>
     </GlobalContext.Provider>
   );
 };

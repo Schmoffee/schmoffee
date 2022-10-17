@@ -81,6 +81,7 @@ async function sendOrder(
       cafeID: cafeID,
       userID: userID,
       user_info: user_info,
+      status: OrderStatus.SENT,
     }),
   );
   console.log(order);
@@ -249,6 +250,17 @@ async function getScore(
   }
 }
 
+async function updateDeviceToken(deviceToken: string, userID: string) {
+  const user = await getUserById(userID);
+  if (user) {
+    await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.device_token = deviceToken;
+      }),
+    );
+  }
+}
+
 export {
   getCommonItems,
   getUserByPhoneNumber,
@@ -261,4 +273,5 @@ export {
   updatePaymentMethod,
   getUserPastOrders,
   updateCustomerId,
+  updateDeviceToken,
 };

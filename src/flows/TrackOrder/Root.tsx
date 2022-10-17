@@ -2,14 +2,12 @@ import React, { useContext, useEffect, useReducer, useRef } from 'react';
 import { GlobalContext, TrackOrderContext, trackOrderData } from '../../contexts';
 import { DataStore } from 'aws-amplify';
 import { CurrentOrder, User } from '../../models';
-import { Text, View } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import { requestLocationPermission, subscribeToLocation } from '../../utils/helpers/location';
 import { getIsLocatable, setIsLocatable } from '../../utils/helpers/storage';
 import { trackOrderReducer } from '../../reducers';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TrackOrderRoutes } from '../../utils/types/navigation.types';
-
 import { RatingPage } from './screens/RatingPage';
 import { OrderPage } from './screens/OrderPage';
 
@@ -74,7 +72,7 @@ const Root = () => {
         initialRouteName='OrderPage'
         screenOptions={{
           headerShown: false,
-          gestureEnabled: true
+          gestureEnabled: true,
         }}>
         <TrackOrderStack.Screen name="OrderPage" component={OrderPage} />
         <TrackOrderStack.Screen name="RatingPage" component={RatingPage} />
@@ -84,4 +82,3 @@ const Root = () => {
 };
 
 export default Root;
-

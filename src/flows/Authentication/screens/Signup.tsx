@@ -1,18 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Keyboard, Pressable, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import FormField from '../../../components/Input/FormField';
-import {
-  getCurrentAuthUser,
-  globalSignOut,
-  sendChallengeAnswer,
-  signIn,
-  signOut,
-  signUp,
-} from '../../../utils/queries/auth';
+import { globalSignOut, sendChallengeAnswer, signIn, signOut, signUp } from '../../../utils/queries/auth';
 import { GlobalContext } from '../../../contexts';
 import { CognitoUser } from 'amazon-cognito-identity-js';
+import { AuthState, ErrorTypes } from '../../../utils/types/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
-import { createSignUpUser, getUserByPhoneNumber, updateAuthState } from '../../../utils/queries/datastore';
+import { createSignUpUser, getUserByPhoneNumber } from '../../../utils/queries/datastore';
 import { Colors, Spacings } from '../../../../theme';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
 import { InputOTP } from '../../../components/Input/InputOTP';
@@ -20,12 +14,9 @@ import { Footer } from '../../../components/Footer/Footer';
 import { useNavigation } from '@react-navigation/native';
 import { RootRoutes } from '../../../utils/types/navigation.types';
 import { CONST_SCREEN_HOME, CONST_SCREEN_LOGIN } from '../../../../constants';
-import { LocalUser } from '../../../utils/types/data.types';
-import { User } from '../../../models';
-import { Body } from '../../../../typography';
 import { getFreeTime, setFreeTime } from '../../../utils/helpers/storage';
-import { ErrorTypes, AuthState } from '../../../utils/types/enums';
-
+import { Body } from '../../../../typography';
+// import {sendNotificationToUser, updateEndpoint} from '../../../utils/helpers/notifications';
 
 export const Signup = () => {
   const { global_state, global_dispatch } = useContext(GlobalContext);
@@ -69,15 +60,13 @@ export const Signup = () => {
         type: 'SET_AUTH_STATE',
         payload: AuthState.SIGNING_UP_FAILED,
       });
-      global_dispatch({ type: 'SET_AUTH_USER', payload: null });
       setSession(null);
-      // TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
+      //TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
     } else {
-      global_dispatch({ type: 'SET_AUTH_USER', payload: result });
       setSession(result);
+      await createSignUpUser(number, name);
+      await handleSignIn();
     }
-    await createSignUpUser(number, name);
-    await handleSignIn();
   };
 
   const handleSignIn = async () => {
@@ -86,7 +75,7 @@ export const Signup = () => {
     }
     const existingUser = await getUserByPhoneNumber(number);
     if (existingUser && existingUser.is_signed_in) {
-      // TODO: Alert the user that they will be signed out of all other devices.
+      //TODO: Alert the user that they will be signed out of all other devices.
       await globalSignOut();
     }
     if (trials <= 2) {
@@ -98,9 +87,8 @@ export const Signup = () => {
           type: 'SET_AUTH_STATE',
           payload: AuthState.CONFIRMING_OTP,
         });
-        global_dispatch({ type: 'SET_AUTH_USER', payload: newSession });
       } else {
-        // TODO: Handle the error appropriately depending on the error type
+        //TODO: Handle the error appropriately depending on the error type
         setSession(null);
       }
       setHasLoaded(true);
@@ -120,41 +108,14 @@ export const Signup = () => {
         type: 'SET_AUTH_STATE',
         payload: AuthState.CONFIRMING_OTP_FAILED,
       });
-      // TODO: Handle the error appropriately depending on the error type
-    } else {
-      // TODO: Make sure the number is available and up to date where this query is called.
-      const finalUser: User | null = await getUserByPhoneNumber(number);
-      if (finalUser) {
-        const localUser: LocalUser = {
-          id: finalUser.id,
-          name: finalUser.name,
-          is_signed_in: finalUser.is_signed_in,
-          phone: finalUser.phone,
-          payment_method: finalUser.payment_method,
-          the_usual: finalUser.the_usual,
-          customer_id: finalUser.customer_id,
-        };
-        global_dispatch({
-          type: 'SET_CURRENT_USER',
-          payload: localUser,
-        });
-        await updateAuthState(number, true);
-        global_dispatch({ type: 'SET_AUTH_USER', payload: result });
-      } else {
-        console.log('We have a problem');
-      }
+      //TODO: Handle the error appropriately depending on the error type
     }
     setLoading(false);
     navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
   };
 
-  const handleAuth = async () => {
-    const auth = await getCurrentAuthUser();
-    console.log('user', auth);
-  };
-
   const handleSignOut = async () => {
-    // TODO: Display appropriate message on the frontend
+    //TODO: Display appropriate message on the frontend
     const is_signed_out = await signOut();
     if (is_signed_out) {
       global_dispatch({
@@ -214,8 +175,8 @@ export const Signup = () => {
               </View>
             ) : (
               <>
-                <FormField index={0} title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
-                <FormField index={1} title={'Phone Number'} placeholder={''} setField={setNumber} type={'phone'} value={number} />
+                <FormField title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
+                <FormField title={'Phone Number'} placeholder={''} setField={setNumber} type={'phone'} value={number} />
               </>
             )}
           </View>
@@ -223,7 +184,7 @@ export const Signup = () => {
           {!hasLoaded ? (
             <Footer
               buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
-              onPress={() => setHasLoaded(true)}
+              onPress={async () => { }}
               // onPress={handleSignUp}
               buttonVariant="secondary"
               buttonText="Sign Up">

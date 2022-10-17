@@ -1,7 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect} from 'react';
-import {Dimensions, Platform, StyleSheet, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Dimensions, Platform, StyleSheet, View, Pressable} from 'react-native';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -15,6 +14,7 @@ import {CONST_SCREEN_SIGNUP} from '../../../constants';
 import {Colors} from '../../../theme';
 import {Body, Heading} from '../../../typography';
 import {RootRoutes} from '../../utils/types/navigation.types';
+import {updateEndpoint} from '../../utils/helpers/notifications';
 
 const {height, width} = Dimensions.get('window');
 const widthDP = Platform.OS === 'android' ? width + 4 : width;
@@ -126,11 +126,17 @@ const IntroPage = (props: IntroPageProps) => {
       </Animated.View>
       {isIndexTwo ? (
         <Animated.View style={[styles.startButton, rBreatheTextStyle]}>
-          <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_SIGNUP)}>
+          <Pressable
+            style={{backgroundColor: 'red'}}
+            onPress={async () => {
+              console.log('hey');
+              await updateEndpoint('+447375901046', 'lol');
+              navigation.navigate(CONST_SCREEN_SIGNUP);
+            }}>
             <Body size="large" weight="Black" color={Colors.blue} style={styles.start}>
               let's go
             </Body>
-          </TouchableOpacity>
+          </Pressable>
         </Animated.View>
       ) : null}
     </Animated.View>

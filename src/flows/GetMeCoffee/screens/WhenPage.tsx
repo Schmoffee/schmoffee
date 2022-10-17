@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, Pressable, TouchableOpacity, Easing } from 'react-native';
+import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Switch } from 'react-native-switch';
-import { CONST_SCREEN_PREVIEW, CONST_SCREEN_WHEN } from '../../../../constants';
+import { CONST_SCREEN_PREVIEW } from '../../../../constants';
 import { Colors, Spacings } from '../../../../theme';
 import { Body } from '../../../../typography';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
@@ -14,10 +14,7 @@ import Picker from '@gregfrench/react-native-wheel-picker';
 
 interface WhenPageProps { }
 
-var PickerItem = Picker.Item;
-
 export const WhenPage = (props: WhenPageProps) => {
-
   const navigation = useNavigation<CoffeeRoutes>();
   const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -68,7 +65,7 @@ export const WhenPage = (props: WhenPageProps) => {
   const getDateString = (value: number) => {
     const date = new Date();
     let hours = date.getHours();
-    let minutes = date.getMinutes() + value;
+    let minutes: string | number = date.getMinutes() + value;
     let ampm = hours >= 12 ? 'pm' : 'am';
     hours = hours % 12;
     hours = hours ? hours : 12;
@@ -141,13 +138,12 @@ export const WhenPage = (props: WhenPageProps) => {
           switchWidthMultiplier={3} // multiplied by the `circleSize` prop to calculate total width of the Switch
           switchBorderRadius={30}
           inActiveText={'in a \nbit'}
-          inactiveTextStyle={styles.counterTextStyle}// Sets the border Radius of the switch slider. If unset, it remains the circleSize.
+          inactiveTextStyle={styles.counterTextStyle} // Sets the border Radius of the switch slider. If unset, it remains the circleSize.
         />
       </View>
       {isEnabled ? (
         <BlurView style={styles.absolute} blurType="dark" blurAmount={2} reducedTransparencyFallbackColor="white" />
       ) : null}
-
 
       <View style={styles.bottomSheetContainer}>
         <BottomSheet
@@ -161,7 +157,6 @@ export const WhenPage = (props: WhenPageProps) => {
               <View style={styles.bottomSheetHandleContainer}>
                 <View style={styles.bottomSheetHandle} />
                 {/* <Icon name="ios-add" size={30} color="#4F8EF7" /> */}
-
               </View>
             </TouchableOpacity>
           )}
@@ -170,15 +165,15 @@ export const WhenPage = (props: WhenPageProps) => {
             Schedule (mins)
           </Body>
 
-          <Picker
-            style={styles.bottomSheetContainer}
-            selectedValue={focusedIndex}
-            itemStyle={styles.itemContainer}
-            onValueChange={index => handleOnValueChange(index)}>
-            {data.map((value, i) => (
-              <PickerItem label={value.toString() + "  |  " + getDateString(value)} value={i} key={i} />
-            ))}
-          </Picker>
+          {/*<Picker*/}
+          {/*  style={styles.bottomSheetContainer}*/}
+          {/*  selectedValue={focusedIndex}*/}
+          {/*  itemStyle={styles.itemContainer}*/}
+          {/*  onValueChange={index => handleOnValueChange(index)}>*/}
+          {/*  {data.map((value, i) => (*/}
+          {/*    <PickerItem label={value.toString() + '  |  ' + getDateString(value)} value={i} key={i} />*/}
+          {/*  ))}*/}
+          {/*</Picker>*/}
         </BottomSheet>
       </View>
     </PageLayout>
@@ -276,5 +271,5 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     position: 'absolute',
     left: 105,
-  }
+  },
 });

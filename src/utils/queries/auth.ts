@@ -1,9 +1,10 @@
 import {CognitoUser} from 'amazon-cognito-identity-js';
 import {ErrorTypes} from '../types/enums';
 import {Auth} from 'aws-amplify';
+import {AuthUser} from '../types/data.types';
 const password = Math.random().toString(10) + 'Abc#';
 
-async function signUp(phoneNumber: string, name: string): Promise<CognitoUser | null | ErrorTypes> {
+async function signUp(phoneNumber: string, name: string): Promise<CognitoUser | ErrorTypes> {
   try {
     const {user} = await Auth.signUp({
       username: phoneNumber,
@@ -46,11 +47,18 @@ async function sendChallengeAnswer(OTP: string, user: CognitoUser): Promise<Cogn
   }
 }
 
-async function getCurrentAuthUser(): Promise<CognitoUser | null> {
+async function getCurrentAuthUser(): Promise<AuthUser | null> {
   try {
-    return await Auth.currentAuthenticatedUser();
+    const user: CognitoUser | null = await Auth.currentAuthenticatedUser();
+    if (user) {
+      const {
+        attributes: {sub},
+      } = await Auth.currentUserInfo();
+      return {user, sub};
+    }
+    return null;
   } catch (error) {
-    console.log('error getting current user: ', error);
+    console.log('error getting current auth user: ', error);
     return null;
   }
 }
