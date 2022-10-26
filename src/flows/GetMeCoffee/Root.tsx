@@ -53,7 +53,9 @@ const Root = () => {
         <CoffeeStack.Screen name="WhatPage" component={WhatPage} />
         <CoffeeStack.Screen name="WhenPage" component={WhenPage} />
         <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
-        <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
+        <CoffeeStack.Group screenOptions={{ presentation: 'modal' }}>
+          <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
+        </CoffeeStack.Group>
         <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
       </CoffeeStack.Navigator>
     </OrderingContext.Provider>

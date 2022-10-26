@@ -83,7 +83,7 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
     const imageContainerStyle = useAnimatedStyle(
         () => ({
             position: 'absolute',
-            top: interpolate(anim.value, [0, 1], [imageSpecs.pageY, 150]),
+            top: interpolate(anim.value, [0, 1], [imageSpecs.pageY - 60, 150]),
             left: interpolate(anim.value, [0, 1], [imageSpecs.pageX, -15]),
             width: interpolate(anim.value, [0, 1], [imageSpecs.width, width * 1.1]),
             height: interpolate(anim.value, [0, 1], [imageSpecs.height, 350]),

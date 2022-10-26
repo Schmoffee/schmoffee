@@ -10,7 +10,7 @@ import { OrderingContext } from '../../../contexts';
 import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { BlurView } from '@react-native-community/blur';
-import Picker from '@gregfrench/react-native-wheel-picker';
+
 
 interface WhenPageProps { }
 
@@ -62,6 +62,7 @@ export const WhenPage = (props: WhenPageProps) => {
     ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime });
     navigation.navigate(CONST_SCREEN_PREVIEW);
   };
+  
   const getDateString = (value: number) => {
     const date = new Date();
     let hours = date.getHours();
@@ -156,7 +157,6 @@ export const WhenPage = (props: WhenPageProps) => {
             <TouchableOpacity onPress={handleClosePress}>
               <View style={styles.bottomSheetHandleContainer}>
                 <View style={styles.bottomSheetHandle} />
-                {/* <Icon name="ios-add" size={30} color="#4F8EF7" /> */}
               </View>
             </TouchableOpacity>
           )}
