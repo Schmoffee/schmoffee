@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flex: 1,
-        marginTop: Spacings.s10,
+        // marginTop: Spacings.s10,
     },
     mainContentContainer: {},
     header: {
