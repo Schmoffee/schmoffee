@@ -1,5 +1,5 @@
 import React, {useEffect, useReducer} from 'react';
-import {NativeModules, Pressable, Text} from 'react-native';
+import {NativeModules} from 'react-native';
 import {globalReducer} from './reducers';
 import {GlobalContext, globalData} from './contexts';
 import {Hub} from 'aws-amplify';
@@ -9,10 +9,10 @@ import {AuthState} from './utils/types/enums';
 import {getUserByPhoneNumber, updateAuthState, updateDeviceToken} from './utils/queries/datastore';
 import {LocalUser} from './utils/types/data.types';
 import {updateEndpoint} from './utils/helpers/notifications';
+import Navigator from './navigation/Navigator';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
-
   useEffect(() => {
     const auth_hub = Hub.listen('auth', data => authListener(data, global_state, global_dispatch));
     const datastore_hub = Hub.listen('datastore', data => datastoreListener(data, global_dispatch));
@@ -26,7 +26,6 @@ const App = () => {
   useEffect(() => {
     const refreshAuthState = async () => {
       const user = await getCurrentAuthUser();
-      console.log(user);
       if (user) {
         if (global_state.auth_state !== AuthState.SIGNED_IN) {
           global_dispatch({
@@ -41,7 +40,6 @@ const App = () => {
           let current_token = currentUser.device_token;
           NativeModules.RNPushNotification.getToken(
             async (token: string) => {
-              console.log(token);
               if (token !== current_token) {
                 current_token = token;
                 await updateEndpoint(token, user.sub);
@@ -78,22 +76,7 @@ const App = () => {
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>
-      <Pressable
-        onPress={async () => {
-          NativeModules.RNPushNotification.getToken(
-            async (token: string) => {
-              console.log(token);
-              if (token) {
-                await updateEndpoint(token, 'lol');
-              }
-            },
-            (error: any) => {
-              console.log(error);
-            },
-          );
-        }}>
-        <Text>Get Endpoint</Text>
-      </Pressable>
+      <Navigator />
     </GlobalContext.Provider>
   );
 };

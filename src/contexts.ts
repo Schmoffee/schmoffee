@@ -13,14 +13,20 @@ export const trackOrderData: TrackOrderState = {
   current_order: null,
   is_locatable: false,
   location: null,
+  ratings: [],
+  manually_centered: false,
+  map_region: undefined,
+  is_user_centered: true,
 };
 
 export const orderingData: OrderingState = {
-  current_shop: null,
+  current_shop_id: null,
   common_basket: [],
   scheduled_time: 5,
   specific_basket: [],
   common_items: [],
+  specific_items: [],
+  payment_id: null,
 };
 
 const GlobalContext = React.createContext<{

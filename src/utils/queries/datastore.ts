@@ -23,12 +23,13 @@ async function getCommonItems(): Promise<Item[] | null> {
   }
 }
 
-async function createSignUpUser(phone: string, name: string): Promise<User> {
+async function createSignUpUser(phone: string, name: string, device_token: string): Promise<User> {
   return await DataStore.save(
     new User({
       phone: phone,
       name: name,
       is_signed_in: false,
+      device_token: device_token,
     }),
   );
 }
@@ -72,6 +73,7 @@ async function sendOrder(
   cafeID: string,
   userID: string,
   user_info: UserInfo,
+  payment_id: string,
 ): Promise<string> {
   const order: CurrentOrder = await DataStore.save(
     new CurrentOrder({
@@ -82,44 +84,46 @@ async function sendOrder(
       userID: userID,
       user_info: user_info,
       status: OrderStatus.SENT,
+      payment_id: payment_id,
+      display: true,
     }),
   );
   console.log(order);
   return order.id;
 }
 
-async function terminateOrder(
-  order_id: string,
-  ratings: PreRating[],
-  items: OrderItem[],
-  order_info: OrderInfo,
-  cafeID: string,
-  userID: string,
-  final_status: OrderStatus,
-  total: number,
-) {
-  const past_order = await DataStore.save(
-    new PastOrder({
-      items: items,
-      userID: userID,
-      order_info: order_info,
-      cafeID: cafeID,
-      final_status: final_status,
-      total: total,
-    }),
-  );
+async function deleteOrder(order_id: string): Promise<CurrentOrder | null> {
+  const deleted_orders: CurrentOrder[] = await DataStore.delete(CurrentOrder, order => order.id('eq', order_id));
+  return deleted_orders[0] ? deleted_orders[0] : null;
+}
 
-  for (const rating of ratings) {
-    await DataStore.save(
-      new Rating({
-        itemID: rating.itemID,
-        rating: rating.rating,
-        userID: past_order.userID,
-        cafeID: past_order.cafeID,
-        ratingOrderId: past_order.id,
-        order: past_order,
+async function terminateOrder(order_id: string, ratings: PreRating[]) {
+  const terminated_order = await deleteOrder(order_id);
+  if (terminated_order) {
+    const past_order = await DataStore.save(
+      new PastOrder({
+        items: terminated_order.items,
+        userID: terminated_order.userID,
+        order_info: terminated_order.order_info,
+        cafeID: terminated_order.cafeID,
+        final_status: terminated_order.status,
+        total: terminated_order.total,
+        payment_id: terminated_order.payment_id,
       }),
     );
+
+    for (const rating of ratings) {
+      await DataStore.save(
+        new Rating({
+          itemID: rating.itemID,
+          rating: rating.rating,
+          userID: past_order.userID,
+          cafeID: past_order.cafeID,
+          ratingOrderId: past_order.id,
+          order: past_order,
+        }),
+      );
+    }
   }
 }
 
@@ -156,7 +160,7 @@ async function getBestShop(
   items: OrderItem[],
   schedule_time: number,
   target: Location,
-): Promise<Cafe | null> {
+): Promise<string | null> {
   // TODO: Only get the shops that are in the vicinity (5 minute walk)
   const cafes = await DataStore.query(Cafe);
   const weights: PreferenceWeights = {distance: -1, personal_taste: 1.5, general_taste: 1, price: -1.5, queue: -2};
@@ -169,7 +173,7 @@ async function getBestShop(
       best_shop = cafe;
     }
   }
-  return best_shop;
+  return best_shop ? best_shop.id : null;
 }
 
 /**
@@ -274,4 +278,5 @@ export {
   getUserPastOrders,
   updateCustomerId,
   updateDeviceToken,
+  deleteOrder,
 };

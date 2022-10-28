@@ -32,11 +32,15 @@
         },
         "schmoffeePayWithStripe": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
-          "s3Key": "amplify-builds/schmoffeePayWithStripe-6a6346314a72716a4b77-build.zip"
+          "s3Key": "amplify-builds/schmoffeePayWithStripe-5977354a784f727a7970-build.zip"
         },
         "schmoffeeSendNotification": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
           "s3Key": "amplify-builds/schmoffeeSendNotification-4c772b67454f62794167-build.zip"
+        },
+        "schmoffeeCancelPayment": {
+          "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
+          "s3Key": "amplify-builds/schmoffeeCancelPayment-726b705538593153432b-build.zip"
         }
       },
       "auth": {

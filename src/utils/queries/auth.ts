@@ -4,9 +4,9 @@ import {Auth} from 'aws-amplify';
 import {AuthUser} from '../types/data.types';
 const password = Math.random().toString(10) + 'Abc#';
 
-async function signUp(phoneNumber: string, name: string): Promise<CognitoUser | ErrorTypes> {
+async function signUp(phoneNumber: string, name: string): Promise<{user: CognitoUser; userSub: string} | ErrorTypes> {
   try {
-    const {user} = await Auth.signUp({
+    const {user, userSub} = await Auth.signUp({
       username: phoneNumber,
       password,
       attributes: {
@@ -14,7 +14,7 @@ async function signUp(phoneNumber: string, name: string): Promise<CognitoUser | 
         name: name,
       },
     });
-    return user;
+    return {user, userSub};
   } catch (error: any) {
     if (error.code === 'UsernameExistsException') {
       return ErrorTypes.USERNAME_EXISTS;

@@ -1,25 +1,27 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Keyboard, Pressable, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {Keyboard, NativeModules, Pressable, StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import FormField from '../../../components/Input/FormField';
-import { globalSignOut, sendChallengeAnswer, signIn, signOut, signUp } from '../../../utils/queries/auth';
-import { GlobalContext } from '../../../contexts';
-import { CognitoUser } from 'amazon-cognito-identity-js';
-import { AuthState, ErrorTypes } from '../../../utils/types/enums';
+import {globalSignOut, sendChallengeAnswer, signIn, signOut, signUp} from '../../../utils/queries/auth';
+import {GlobalContext} from '../../../contexts';
+import {CognitoUser} from 'amazon-cognito-identity-js';
+import {AuthState, ErrorTypes} from '../../../utils/types/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
-import { createSignUpUser, getUserByPhoneNumber } from '../../../utils/queries/datastore';
-import { Colors, Spacings } from '../../../../theme';
-import { PageLayout } from '../../../components/Layouts/PageLayout';
-import { InputOTP } from '../../../components/Input/InputOTP';
-import { Footer } from '../../../components/Footer/Footer';
-import { useNavigation } from '@react-navigation/native';
-import { RootRoutes } from '../../../utils/types/navigation.types';
-import { CONST_SCREEN_HOME, CONST_SCREEN_LOGIN } from '../../../../constants';
-import { getFreeTime, setFreeTime } from '../../../utils/helpers/storage';
-import { Body } from '../../../../typography';
+import {createSignUpUser, getUserByPhoneNumber, updateDeviceToken} from '../../../utils/queries/datastore';
+import {Colors, Spacings} from '../../../../theme';
+import {PageLayout} from '../../../components/Layouts/PageLayout';
+import {InputOTP} from '../../../components/Input/InputOTP';
+import {Footer} from '../../../components/Footer/Footer';
+import {useNavigation} from '@react-navigation/native';
+import {RootRoutes} from '../../../utils/types/navigation.types';
+import {CONST_SCREEN_HOME, CONST_SCREEN_LOGIN} from '../../../../constants';
+import {getFreeTime, setFreeTime} from '../../../utils/helpers/storage';
+import {Body} from '../../../../typography';
+import {updateEndpoint} from '../../../utils/helpers/notifications';
+import {User} from '../../../models';
 // import {sendNotificationToUser, updateEndpoint} from '../../../utils/helpers/notifications';
 
 export const Signup = () => {
-  const { global_state, global_dispatch } = useContext(GlobalContext);
+  const {global_state, global_dispatch} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
 
   const [name, setName] = useState('');
@@ -63,8 +65,15 @@ export const Signup = () => {
       setSession(null);
       //TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
     } else {
-      setSession(result);
-      await createSignUpUser(number, name);
+      setSession(result.user);
+      NativeModules.RNPushNotification.getToken(
+        async (token: string) => {
+          await createSignUpUser(number, name, token);
+        },
+        (error: any) => {
+          console.log(error);
+        },
+      );
       await handleSignIn();
     }
   };
@@ -111,7 +120,7 @@ export const Signup = () => {
       //TODO: Handle the error appropriately depending on the error type
     }
     setLoading(false);
-    navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
+    navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
   };
 
   const handleSignOut = async () => {
@@ -132,13 +141,12 @@ export const Signup = () => {
 
   const handleResendOTP = async () => {
     setLoading(true);
-    if (trials <= 2) {
+    if (trials <= 1) {
       setTrials(prev => prev + 1);
     }
     setOtp('');
     setLoading(false);
   };
-
 
   const isValidNumber = useCallback(() => {
     return number.length === 13;
@@ -164,12 +172,21 @@ export const Signup = () => {
           <View style={styles.formContainer}>
             {hasLoaded ? (
               <View style={styles.otpContainer}>
-                <InputOTP code={otp} setCode={setOtp} maxLength={maximumCodeLength} setIsPinComplete={setIsPinComplete} />
+                <InputOTP
+                  code={otp}
+                  setCode={setOtp}
+                  maxLength={maximumCodeLength}
+                  setIsPinComplete={setIsPinComplete}
+                />
                 <Pressable onPress={handleResendOTP}>
                   {trials > 2 ? (
-                    <Body style={styles.otpText} size='small' color={Colors.red}>You have tried more than 3 times, you are blocked for 1 hour.</Body>
+                    <Body style={styles.otpText} size="small" color={Colors.red}>
+                      You have tried more than 3 times, you are blocked for 1 hour.
+                    </Body>
                   ) : (
-                    <Body style={styles.otpText} size='small' color={Colors.blue}>Didn't receive a code? Resend code</Body>
+                    <Body style={styles.otpText} size="small" color={Colors.blue}>
+                      Didn't receive a code? Resend code
+                    </Body>
                   )}
                 </Pressable>
               </View>
@@ -184,7 +201,7 @@ export const Signup = () => {
           {!hasLoaded ? (
             <Footer
               buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
-              onPress={async () => { }}
+              onPress={async () => {}}
               // onPress={handleSignUp}
               buttonVariant="secondary"
               buttonText="Sign Up">
@@ -198,7 +215,7 @@ export const Signup = () => {
             <Footer
               buttonVariant="secondary"
               buttonDisabled={!isPinComplete || trials > 2}
-              onPress={() => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME })}
+              onPress={() => navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME})}
               // onPress={handleConfirmOTP}
               buttonText="Confirm OTP">
               <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
