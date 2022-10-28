@@ -1,8 +1,8 @@
-import React, { createContext, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { RootRoutes } from '../utils/types/navigation.types';
-import CoffeeRoot from '../flows/GetMeCoffee/Root';
+import React, {createContext, useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {RootRoutes} from '../utils/types/navigation.types';
+import CoffeeRoot from '../flows/GetMeCoffee/Common/Root';
 import AuthRoot from '../flows/Authentication/Root';
 import SideDrawerRoot from '../flows/HamburgerMenu/Root';
 import TrackOrderRoot from '../flows/TrackOrder/Root';

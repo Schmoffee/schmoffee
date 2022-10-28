@@ -1,20 +1,19 @@
-import { useNavigation } from '@react-navigation/native'
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { CONST_SCREEN_HOME, CONST_SCREEN_RATING_PAGE } from '../../../../constants'
-import { Body } from '../../../../typography'
-import { CustomModal } from '../../../components/CustomModal'
-import { PageLayout } from '../../../components/Layouts/PageLayout'
-import { TrackOrderContext } from '../../../contexts'
-import { TrackOrderRoutes } from '../../../utils/types/navigation.types'
-import BottomSheet from '@gorhom/bottom-sheet'
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { CONST_SCREEN_HOME, CONST_SCREEN_RATING_PAGE } from '../../../../constants';
+import { Body } from '../../../../typography';
+import { CustomModal } from '../../../components/CustomModal';
+import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { TrackOrderContext } from '../../../contexts';
+import { TrackOrderRoutes } from '../../../utils/types/navigation.types'; import BottomSheet from '@gorhom/bottom-sheet'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { Spacings } from '../../../../theme'
 
 
 export const OrderPage = () => {
-    const navigation = useNavigation<TrackOrderRoutes>()
-    const { track_order_state } = useContext(TrackOrderContext)
+    const navigation = useNavigation<TrackOrderRoutes>();
+    const { track_order_state } = useContext(TrackOrderContext);
 
     const [showSuccessModal, setShowSuccessModal] = useState(false)
     const [showRejectionModal, setShowRejectionModal] = useState(false)
@@ -31,11 +30,10 @@ export const OrderPage = () => {
 
     const handleCollected = () => {
         if (track_order_state.current_order?.status === 'COLLECTED') {
-            setShowSuccessModal(true)
+            setShowSuccessModal(true);
         }
-        navigation.navigate(CONST_SCREEN_RATING_PAGE)
-
-    }
+        navigation.navigate(CONST_SCREEN_RATING_PAGE);
+    };
 
     const handleRejected = () => {
         if (track_order_state.current_order?.status === 'REJECTED') {

@@ -4,11 +4,7 @@
  * @param total The total amount to pay
  */
 import {SetupParams} from '@stripe/stripe-react-native/lib/typescript/src/types/PaymentSheet';
-import {
-  confirmPaymentSheetPayment,
-  InitPaymentSheetResult,
-  PresentPaymentSheetResult,
-} from '@stripe/stripe-react-native';
+import {InitPaymentSheetResult, PresentPaymentSheetResult} from '@stripe/stripe-react-native';
 import {PaymentParams} from '../types/data.types';
 import {updateCustomerId} from '../queries/datastore';
 
@@ -61,7 +57,7 @@ async function initializePaymentSheet(
   initPaymentSheet: (params: SetupParams) => Promise<InitPaymentSheetResult>,
   paymentParams: PaymentParams,
   userID: string,
-) {
+): string | null {
   const response = await fetchPaymentSheetParams(paymentParams);
   if (response) {
     await updateCustomerId(response.customer, userID);
@@ -83,12 +79,12 @@ async function initializePaymentSheet(
     });
     if (error) {
       console.log(error);
-      return false;
+      return null;
     } else {
-      return true;
+      return response.paymentIntent;
     }
   } else {
-    return false;
+    return null;
   }
 }
 
@@ -111,4 +107,27 @@ async function openPaymentSheet(presentPaymentSheet: () => Promise<PresentPaymen
   }
 }
 
-export {initializePaymentSheet, openPaymentSheet};
+async function cancelPayment(payment_id: string) {
+  const body = {
+    payment_id: payment_id,
+  };
+  const response = await fetch('https://ww6tttf7xjqe5koqhf32x5qzru0xonvy.lambda-url.eu-central-1.on.aws/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  }).catch(error => {
+    if (error.toString() === 'TypeError: Network request failed') {
+      console.log('Network request failed');
+    } else {
+      console.log(error);
+    }
+  });
+  if (response) {
+    const data = await response.json();
+    console.log(data);
+  }
+}
+
+export {initializePaymentSheet, openPaymentSheet, cancelPayment};

@@ -1,6 +1,7 @@
-import {Cafe, CurrentOrder, Item, OrderItem, UsualOrder} from '../../models';
+import {CurrentOrder, Item, Option, OrderItem, UsualOrder} from '../../models';
 import {CognitoUser} from 'amazon-cognito-identity-js';
 import {AuthState} from './enums';
+import {Region} from 'react-native-maps';
 
 export type HubPayload = {
   event: string;
@@ -18,6 +19,12 @@ export type GlobalState = {
   network_status: boolean;
 };
 
+export type CommonBasketItem = {
+  name: string;
+  quantity: number;
+  options: Option[];
+};
+
 export type AuthUser = {
   sub: string;
   user: CognitoUser;
@@ -27,14 +34,20 @@ export type TrackOrderState = {
   current_order: CurrentOrder | null;
   is_locatable: boolean;
   location: Location | null;
+  ratings: PreRating[];
+  map_region: Region | undefined;
+  manually_centered: boolean;
+  is_user_centered: boolean;
 };
 
 export type OrderingState = {
-  current_shop: Cafe | null;
-  common_basket: OrderItem[];
+  current_shop_id: string | null;
+  common_basket: CommonBasketItem[];
   scheduled_time: number;
   specific_basket: OrderItem[];
   common_items: Item[];
+  specific_items: Item[];
+  payment_id: string | null;
 };
 
 export type Location = {latitude: number; longitude: number};
@@ -47,6 +60,14 @@ export type PreferenceWeights = {
   price: number;
 };
 
+export type ShopMarker = {
+  name: string;
+  description: string;
+  coords: Location;
+  image: string;
+  is_open: boolean;
+};
+
 export type GlobalAction =
   | {type: 'SET_CURRENT_USER'; payload: LocalUser | null}
   | {type: 'SET_AUTH_STATE'; payload: AuthState}
@@ -56,13 +77,19 @@ export type GlobalAction =
 export type TrackOrderAction =
   | {type: 'SET_CURRENT_ORDER'; payload: CurrentOrder}
   | {type: 'SET_IS_LOCATABLE'; payload: boolean}
+  | {type: 'SET_IS_USER_CENTERED'; payload: boolean}
+  | {type: 'SET_MAP_REGION'; payload: Region | undefined}
+  | {type: 'SET_IS_MANUALLY_CENTERED'; payload: boolean}
+  | {type: 'SET_RATINGS'; payload: PreRating[]}
   | {type: 'SET_LOCATION'; payload: Location | null};
 
 export type OrderingAction =
-  | {type: 'SET_CURRENT_SHOP'; payload: Cafe | null}
-  | {type: 'SET_COMMON_BASKET'; payload: OrderItem[]}
+  | {type: 'SET_CURRENT_SHOP_ID'; payload: string}
+  | {type: 'SET_COMMON_BASKET'; payload: CommonBasketItem[]}
   | {type: 'SET_SPECIFIC_BASKET'; payload: OrderItem[]}
   | {type: 'SET_SCHEDULED_TIME'; payload: number}
+  | {type: 'SET_SPECIFIC_ITEMS'; payload: Item[]}
+  | {type: 'SET_PAYMENT_ID'; payload: string}
   | {type: 'SET_COMMON_ITEMS'; payload: Item[]};
 
 export type PreRating = {

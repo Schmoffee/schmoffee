@@ -15,6 +15,7 @@ import {Colors} from '../../../theme';
 import {Body, Heading} from '../../../typography';
 import {RootRoutes} from '../../utils/types/navigation.types';
 import {updateEndpoint} from '../../utils/helpers/notifications';
+import {initiateStorage} from '../../utils/helpers/storage';
 
 const {height, width} = Dimensions.get('window');
 const widthDP = Platform.OS === 'android' ? width + 4 : width;
@@ -129,8 +130,7 @@ const IntroPage = (props: IntroPageProps) => {
           <Pressable
             style={{backgroundColor: 'red'}}
             onPress={async () => {
-              console.log('hey');
-              await updateEndpoint('+447375901046', 'lol');
+              await initiateStorage();
               navigation.navigate(CONST_SCREEN_SIGNUP);
             }}>
             <Body size="large" weight="Black" color={Colors.blue} style={styles.start}>

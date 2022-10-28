@@ -42,7 +42,6 @@ export const PageLayout = (props: PageLayoutProps) => {
         },
     });
 
-
     return (
         <>
             <Pressable onPress={props.onPress} />
@@ -60,7 +59,6 @@ export const PageLayout = (props: PageLayoutProps) => {
                         {props.header}
                     </Heading>
                     <View style={styles.headerChildren}>{props.headerChildren}</View>
-
                 </View>
                 {props.subHeader ? (
                     <View style={styles.subHeader}>
@@ -109,14 +107,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         zIndex: -1,
         // marginBottom: Spacings.s10,
-
     },
     hamburgerButton: {
         justifyContent: 'center',
         position: 'absolute',
         left: -100,
         top: -14,
-
     },
     subHeader: {
         alignSelf: 'center',
@@ -124,7 +120,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         width: '80%',
         // zIndex: 2,
-
     },
     bigSemiCircle: {
         position: 'absolute',
@@ -140,5 +135,4 @@ const styles = StyleSheet.create({
     childrenContainer: {
         marginBottom: Spacings.s4,
     },
-
 });

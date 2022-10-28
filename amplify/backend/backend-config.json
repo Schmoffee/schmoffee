@@ -123,6 +123,11 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
       "dependsOn": []
+    },
+    "schmoffeeCancelPayment": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "storage": {
@@ -136,6 +141,7 @@
     "schmoffee": {
       "service": "Pinpoint",
       "channels": [
+        "APNS",
         "FCM"
       ]
     }

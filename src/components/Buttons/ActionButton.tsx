@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Pressable } from 'react-native';
-import { cos } from 'react-native-reanimated';
 import { Colors, Spacings } from '../../../theme';
 import { Body } from '../../../typography';
 
