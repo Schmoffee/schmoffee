@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { AuthRoutes } from '../../utils/types/navigation.types';
-import { Intro } from './screens/Intro';
 import { Login } from './screens/LogIn';
 import { Signup } from './screens/Signup';
+import { VerifyMobile } from './screens/VerifyMobile';
 
 const Root = () => {
   const AuthStack = createNativeStackNavigator<AuthRoutes>();
@@ -17,6 +17,8 @@ const Root = () => {
       {/* <AuthStack.Screen name="Intro" component={Intro} /> */}
       <AuthStack.Screen name="Signup" component={Signup} />
       <AuthStack.Screen name="Login" component={Login} />
+      <AuthStack.Screen name="VerifyMobile" component={VerifyMobile} />
+
     </AuthStack.Navigator>
   );
 };

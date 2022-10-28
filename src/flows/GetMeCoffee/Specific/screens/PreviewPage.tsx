@@ -1,31 +1,30 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useMemo} from 'react';
-import {Platform, View} from 'react-native';
-import {useStripe, initStripe} from '@stripe/stripe-react-native';
-import {PageLayout} from '../../../../components/Layouts/PageLayout';
-import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
-import {initializePaymentSheet, openPaymentSheet} from '../../../../utils/helpers/payment';
-import {BasketSection} from '../../../../components/Basket/BasketSection';
-import {PreviewSection} from '../../../../components/PreviewComponents/PreviewSection';
-import {ScheduleSection} from '../../../../components/PreviewComponents/ScheduleSection';
-import {GlobalContext, OrderingContext} from '../../../../contexts';
-import {Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo} from '../../../../models';
-import {DATA_SHOPS} from '../../../../data/shops.data';
-import {Body} from '../../../../../typography';
-import {Colors} from '../../../../../theme';
-import {CONST_SCREEN_ORDER} from '../../../../../constants';
-import {sendOrder} from '../../../../utils/queries/datastore';
-import {LocalUser} from '../../../../utils/types/data.types';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useMemo } from 'react';
+import { Platform, View } from 'react-native';
+import { useStripe, initStripe } from '@stripe/stripe-react-native';
+import { PageLayout } from '../../../../components/Layouts/PageLayout';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import { initializePaymentSheet, openPaymentSheet } from '../../../../utils/helpers/payment';
+import { BasketSection } from '../../../../components/Basket/BasketSection';
+import { PreviewSection } from '../../../../components/PreviewComponents/PreviewSection';
+import { ScheduleSection } from '../../../../components/PreviewComponents/ScheduleSection';
+import { GlobalContext, OrderingContext } from '../../../../contexts';
+import { Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo } from '../../../../models';
+import { Body } from '../../../../../typography';
+import { Colors } from '../../../../../theme';
+import { CONST_SCREEN_ORDER } from '../../../../../constants';
+import { sendOrder } from '../../../../utils/queries/datastore';
+import { LocalUser } from '../../../../utils/types/data.types';
 import PushNotification from '@aws-amplify/pushnotification';
 
-interface PreviewPageProps {}
+interface PreviewPageProps { }
 
 export const PreviewPage = (props: PreviewPageProps) => {
-  const {global_state} = useContext(GlobalContext);
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { global_state } = useContext(GlobalContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
 
   const navigation = useNavigation<CoffeeRoutes>();
-  const {initPaymentSheet, presentPaymentSheet} = useStripe(); // Stripe hook payment methods
+  const { initPaymentSheet, presentPaymentSheet } = useStripe(); // Stripe hook payment methods
   const [loading, setLoading] = React.useState(true);
   const total: number = useMemo(() => {
     ordering_state.specific_basket.reduce(function (acc, item) {
@@ -33,7 +32,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
     }, 0);
     return 0;
   }, [ordering_state.specific_basket]);
-  const current_shop = DATA_SHOPS[0] as Cafe;
+  // const current_shop = DATA_SHOPS[0] as Cafe;
   // 21007329
   /**
    * Calculate and return the total price of the options of an item
@@ -43,8 +42,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
   function getOptionsPrice(item: OrderItem) {
     return item.options
       ? item.options.reduce(function (acc, option) {
-          return acc + option.price;
-        }, 0)
+        return acc + option.price;
+      }, 0)
       : 0;
   }
 
@@ -85,7 +84,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
       );
     }
     if (payment_id) {
-      ordering_dispatch({type: 'SET_PAYMENT_ID', payload: payment_id});
+      ordering_dispatch({ type: 'SET_PAYMENT_ID', payload: payment_id });
       setLoading(false);
       await proceedToPayment();
     }
@@ -133,7 +132,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   const handleCheckout = async () => {
     await checkout();
-    navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
+    navigation.navigate('TrackOrder', { screen: CONST_SCREEN_ORDER });
   };
 
   return (
@@ -153,7 +152,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
         <View>
           <View>
             <Body size="small" weight="Bold" color={Colors.greyLight2}>
-              {current_shop.name}
+              {/* {current_shop.name} */}
             </Body>
             <Body size="small" weight="Bold" color={Colors.greyLight2}>
               New York, NY 10001

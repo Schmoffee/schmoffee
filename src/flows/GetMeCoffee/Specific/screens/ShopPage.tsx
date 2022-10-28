@@ -1,13 +1,12 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
-import {View, StyleSheet, TextInput, Platform, NativeModules, Dimensions} from 'react-native';
-import {Colors, Spacings} from '../../../../../theme';
-import {CardSection} from '../../../../components/WhatComponents/CardSection';
-import {OrderingContext} from '../../../../contexts';
-import {DATA_ITEMS} from '../../../../data/items.data';
-import {Item} from '../../../../models';
-import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
-import {BasketSection} from '../../../../components/Basket/BasketSection';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, StyleSheet, TextInput, Platform, NativeModules, Dimensions } from 'react-native';
+import { Colors, Spacings } from '../../../../../theme';
+import { CardSection } from '../../../../components/WhatComponents/CardSection';
+import { OrderingContext } from '../../../../contexts';
+import { Item } from '../../../../models';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import { BasketSection } from '../../../../components/Basket/BasketSection';
 import Animated, {
   Easing,
   Extrapolate,
@@ -17,21 +16,21 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {ShopHeader} from '../../../../components/WhatComponents/ShopHeader';
-import {Footer} from '../../../../components/Footer/Footer';
-import {CONST_SCREEN_WHEN} from '../../../../../constants';
+import { ShopHeader } from '../../../../components/WhatComponents/ShopHeader';
+import { Footer } from '../../../../components/Footer/Footer';
+import { CONST_SCREEN_WHEN } from '../../../../../constants';
 
-const {StatusBarManager} = NativeModules;
+const { StatusBarManager } = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const {height: wHeight, width: wWidth} = Dimensions.get('window');
+const { height: wHeight, width: wWidth } = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
   const navigation = useNavigation<CoffeeRoutes>();
-  const [items, setItems] = useState(DATA_ITEMS);
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const [items, setItems] = useState(0);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const translateY = useSharedValue(0);
 
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -59,7 +58,7 @@ export const ShopPage = () => {
     return items.filter(item => item.family === 'Pastry');
   };
 
-  const contains = ({name}: Item, query: string) => {
+  const contains = ({ name }: Item, query: string) => {
     const nameLower = name.toLowerCase();
     if (nameLower.includes(query)) {
       return true;

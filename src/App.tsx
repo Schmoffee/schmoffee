@@ -17,6 +17,8 @@ const App = () => {
     const auth_hub = Hub.listen('auth', data => authListener(data, global_state, global_dispatch));
     const datastore_hub = Hub.listen('datastore', data => datastoreListener(data, global_dispatch));
 
+    console.log(global_state.auth_state)
+
     return () => {
       auth_hub();
       datastore_hub();

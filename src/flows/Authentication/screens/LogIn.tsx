@@ -27,7 +27,7 @@ export const Login = (props: LoginProps) => {
   const [loading, setLoading] = useState(false);
 
   const isValidNumber = useCallback(() => {
-    return number.length === 13;
+    return number.length ===  13;
   }, [number]);
 
   const handleLogIn = () => {

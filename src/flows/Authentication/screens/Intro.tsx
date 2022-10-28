@@ -21,7 +21,7 @@ export const Intro = () => {
         showsVerticalScrollIndicator={false}
         style={styles.container}>
         {WORDS.map((title, index) => {
-          return <IntroPage key={index.toString()} title={title} translateY={translateY} index={index} />;
+        return <IntrPage key={index.toString()} title={title} translateY={translateY} index={index} />;
         })}
       </Animated.ScrollView>
       {/* <View style={styles.image}>

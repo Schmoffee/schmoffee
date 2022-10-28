@@ -1,15 +1,14 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
-import {View, StyleSheet, TextInput} from 'react-native';
-import {CONST_SCREEN_WHEN} from '../../../../../constants';
-import {Colors, Spacings} from '../../../../../theme';
-import {CardSection} from '../../../../components/WhatComponents/CardSection';
-import {PageLayout} from '../../../../components/Layouts/PageLayout';
-import {OrderingContext} from '../../../../contexts';
-import {DATA_ITEMS} from '../../../../data/items.data';
-import {Item} from '../../../../models';
-import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
-import {BasketSection} from '../../../../components/Basket/BasketSection';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, StyleSheet, TextInput } from 'react-native';
+import { CONST_SCREEN_WHEN } from '../../../../../constants';
+import { Colors, Spacings } from '../../../../../theme';
+import { CardSection } from '../../../../components/WhatComponents/CardSection';
+import { PageLayout } from '../../../../components/Layouts/PageLayout';
+import { OrderingContext } from '../../../../contexts';
+import { Item } from '../../../../models';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import { BasketSection } from '../../../../components/Basket/BasketSection';
 import Animated, {
   Easing,
   interpolate,
@@ -19,12 +18,12 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-interface WhatPageProps {}
+interface WhatPageProps { }
 
 export const WhatPage = (props: WhatPageProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
-  const [items, setItems] = useState(DATA_ITEMS);
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const [items, setItems] = useState(0);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
 
   const translateY = useSharedValue(0);
 
@@ -53,7 +52,7 @@ export const WhatPage = (props: WhatPageProps) => {
     return items.filter(item => item.family === 'Pastry');
   };
 
-  const contains = ({name}: Item, query: string) => {
+  const contains = ({ name }: Item, query: string) => {
     const nameLower = name.toLowerCase();
     if (nameLower.includes(query)) {
       return true;
@@ -117,7 +116,7 @@ export const WhatPage = (props: WhatPageProps) => {
 };
 
 const styles = StyleSheet.create({
-  container: {marginTop: Spacings.s4},
+  container: { marginTop: Spacings.s4 },
   basketContainer: {},
   searchInputContainer: {
     backgroundColor: Colors.greyLight1,

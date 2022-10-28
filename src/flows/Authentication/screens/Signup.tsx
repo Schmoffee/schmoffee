@@ -13,46 +13,29 @@ import { InputOTP } from '../../../components/Input/InputOTP';
 import { Footer } from '../../../components/Footer/Footer';
 import { useNavigation } from '@react-navigation/native';
 import { RootRoutes } from '../../../utils/types/navigation.types';
-import { CONST_SCREEN_HOME, CONST_SCREEN_LOGIN } from '../../../../constants';
+import { CONST_SCREEN_HOME, CONST_SCREEN_LOGIN, CONST_SCREEN_VERIFY_MOBILE } from '../../../../constants';
 import { getFreeTime, setFreeTime } from '../../../utils/helpers/storage';
 import { Body } from '../../../../typography';
 import { updateEndpoint } from '../../../utils/helpers/notifications';
 import { User } from '../../../models';
 // import {sendNotificationToUser, updateEndpoint} from '../../../utils/helpers/notifications';
 
+type Mode = 'signup' | 'login'
 export const Signup = () => {
   const { global_state, global_dispatch } = useContext(GlobalContext);
-  const navigation = useNavigation<RootRoutes>();
+  const [mode, setMode] = useState<Mode>('signup')
 
+  const navigation = useNavigation<RootRoutes>();
   const [name, setName] = useState('');
-  const [otp, setOtp] = useState('');
   const [number, setNumber] = useState('');
   const [loading, setLoading] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
   const [session, setSession] = useState<CognitoUser | ErrorTypes | null>(null);
-  const [isPinComplete, setIsPinComplete] = useState<boolean>(false);
   const [trials, setTrials] = useState<number>(0);
-  const [isLocked, setIsLocked] = useState<boolean>(false);
-  const maximumCodeLength = 6;
 
-  useEffect(() => {
-    let timeoutID: string | number | NodeJS.Timeout | undefined;
-    async function unlock() {
-      const target = await getFreeTime();
-      let remaining_time;
-      if (target && (remaining_time = +target - Date.now()) > 1000) {
-        timeoutID = setTimeout(() => {
-          setIsLocked(false);
-        }, remaining_time);
-      }
-    }
-    if (isLocked) {
-      unlock().catch(e => console.log(e));
-    }
-    return () => {
-      if (timeoutID) clearTimeout(timeoutID);
-    };
-  }, [isLocked]);
+
+  function handleModeChange() {
+    setMode(mode === 'signup' ? 'login' : 'signup')
+  }
 
   const handleSignUp = async () => {
     setLoading(true);
@@ -62,10 +45,8 @@ export const Signup = () => {
         type: 'SET_AUTH_STATE',
         payload: AuthState.SIGNING_UP_FAILED,
       });
-      setSession(null);
-      //TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
+      // TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
     } else {
-      setSession(result.user);
       NativeModules.RNPushNotification.getToken(
         async (token: string) => {
           await createSignUpUser(number, name, token);
@@ -87,51 +68,30 @@ export const Signup = () => {
       //TODO: Alert the user that they will be signed out of all other devices.
       await globalSignOut();
     }
-    if (trials <= 2) {
+    if (trials <= 100) {
       const newSession = await signIn(number);
       setTrials(prev => prev + 1);
       if (newSession && newSession instanceof CognitoUser) {
-        setSession(newSession);
         global_dispatch({
           type: 'SET_AUTH_STATE',
           payload: AuthState.CONFIRMING_OTP,
         });
+        global_dispatch({type: 'SET_AUTH_USER', payload: newSession});
       } else {
         //TODO: Handle the error appropriately depending on the error type
-        setSession(null);
       }
-      setHasLoaded(true);
       setLoading(false);
     } else {
       setIsLocked(true);
       await setFreeTime(Date.now() + 60 * 60000);
-      console.log('You tried more than 3 times, you are blocked for 1 hour');
+      console.log('You tried more than 2 times, you are blocked for 1 hour');
     }
-  };
-
-  const handleConfirmOTP = async () => {
-    setLoading(true);
-    const result = await sendChallengeAnswer(otp, session as CognitoUser);
-    if (!result) {
-      global_dispatch({
-        type: 'SET_AUTH_STATE',
-        payload: AuthState.CONFIRMING_OTP_FAILED,
-      });
-      //TODO: Handle the error appropriately depending on the error type
-    }
-    setLoading(false);
-    navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
   };
 
   const handleSignOut = async () => {
     //TODO: Display appropriate message on the frontend
     const is_signed_out = await signOut();
-    if (is_signed_out) {
-      global_dispatch({
-        type: 'SET_AUTH_STATE',
-        payload: AuthState.SIGNED_OUT,
-      });
-    } else {
+    if (!is_signed_out) {
       global_dispatch({
         type: 'SET_AUTH_STATE',
         payload: AuthState.SIGNING_OUT_FAILED,
@@ -139,14 +99,10 @@ export const Signup = () => {
     }
   };
 
-  const handleResendOTP = async () => {
-    setLoading(true);
-    if (trials <= 1) {
-      setTrials(prev => prev + 1);
-    }
-    setOtp('');
-    setLoading(false);
-  };
+  const handleSubmit = async () => {
+      await mode === 'signup' ? handleSignUp(): handleSignIn();
+      navigation.navigate(CONST_SCREEN_VERIFY_MOBILE)
+  }
 
   const isValidNumber = useCallback(() => {
     return number.length === 13;
@@ -156,24 +112,10 @@ export const Signup = () => {
     return name.length > 0;
   }, [name]);
 
-  const page_subheader = hasLoaded
-    ? 'Check your texts for a confirmation code'
-    : 'Enter your name and phone number to sign up';
+  const page_subheader = 'Check your texts for a confirmation code';
 
   return (
-    <PageLayout header="Sign up" subHeader={page_subheader} onPress={Keyboard.dismiss}
-      footer={{
-        buttonDisabled: !(isValidName() && isValidNumber()) || hasLoaded,
-        onPress: () => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME }),
-        buttonText: 'Sign Up',
-        buttonVariant: 'secondary',
-        children:
-          <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
-            <Body size="medium" weight="Bold" color={Colors.blue}>
-              Already have an account? Sign in
-            </Body>
-          </TouchableOpacity>
-      }}>
+    <PageLayout header={mode === 'signup' ? 'Sign Up' : 'Log In'} subHeader={page_subheader} onPress={Keyboard.dismiss}>
       <StatusBar translucent={true} backgroundColor="transparent" />
       {loading ? (
         <View style={styles.loadingContainer}>
@@ -181,62 +123,23 @@ export const Signup = () => {
         </View>
       ) : (
         <>
-          <View style={styles.formContainer}>
-            {hasLoaded ? (
-              <View style={styles.otpContainer}>
-                <InputOTP
-                  code={otp}
-                  setCode={setOtp}
-                  maxLength={maximumCodeLength}
-                  setIsPinComplete={setIsPinComplete}
-                />
-                <Pressable onPress={handleResendOTP}>
-                  {trials > 2 ? (
-                    <Body style={styles.otpText} size="small" color={Colors.red}>
-                      You have tried more than 3 times, you are blocked for 1 hour.
-                    </Body>
-                  ) : (
-                    <Body style={styles.otpText} size="small" color={Colors.blue}>
-                      Didn't receive a code? Resend code
-                    </Body>
-                  )}
-                </Pressable>
-              </View>
-            ) : (
-              <>
-                <FormField title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
-                <FormField title={'Phone Number'} placeholder={''} setField={setNumber} type={'phone'} value={number} />
-              </>
-            )}
-          </View>
-          {/* <View style={styles.buttonContainer}> */}
-          {!hasLoaded ? (
-            <Footer
-              buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
-              onPress={async () => { }}
-              // onPress={handleSignUp}
-              buttonVariant="secondary"
-              buttonText="Sign Up">
-              <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
-                <Body size="medium" weight="Bold" color={Colors.blue}>
-                  Already have an account? Sign in
-                </Body>
-              </TouchableOpacity>
-            </Footer>
-          ) : (
-            <Footer
-              buttonVariant="secondary"
-              buttonDisabled={!isPinComplete || trials > 2}
-              onPress={() => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME })}
-              // onPress={handleConfirmOTP}
-              buttonText="Confirm OTP">
-              <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
-                <Body size="medium" weight="Bold" color={Colors.blue}>
-                  Already have an account? Sign in
-                </Body>
-              </TouchableOpacity>
-            </Footer>
-          )}
+        {mode === 'signup' ? <FormField title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
+        : null }
+        <FormField title={'Phone Number'} placeholder={'Enter your phone'} setField={setNumber} type={'phone'} value={number} />
+
+
+          <Footer
+            buttonDisabled={mode === 'signup' ? !(isValidName() && isValidNumber()) : !isValidNumber()}
+            onPress={handleSubmit}
+            buttonVariant="secondary"
+            buttonText={mode === 'signup' ? "Sign Up" : 'Log In'}>
+              <Pressable onPress={handleModeChange}>
+                  <Body size='medium' weight='Bold' color={Colors.blue}>
+                      Change mode
+                      </Body>
+                  </Pressable>
+          </Footer>
+
         </>
       )}
     </PageLayout>
@@ -249,13 +152,6 @@ export default Signup;
 const styles = StyleSheet.create({
   formContainer: {
     marginTop: Spacings.s1,
-  },
-  otpContainer: {
-    marginTop: Spacings.s1,
-    alignItems: 'center',
-  },
-  otpText: {
-    marginTop: Spacings.s8,
   },
   buttonContainer: {
     position: 'absolute',

@@ -5,6 +5,8 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated'
 import { CONST_SCREEN_SETTINGS, CONST_SCREEN_UPDATE_PROFILE, CONST_SCREEN_CHANGE_PAYMENT, CONST_SCREEN_LOGIN } from '../../../constants'
 import { Colors, Spacings } from '../../../theme'
 import { Heading, Body } from '../../../typography'
+import { signOut } from '../../utils/queries/auth'
+import { AuthState } from '../../utils/types/enums'
 import { RootRoutes } from '../../utils/types/navigation.types'
 
 interface SideDrawerContentProps {
@@ -16,9 +18,15 @@ export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
     const HOME_WIDTH = useWindowDimensions().width;
 
 
-    const handleLogOut = async () => {
-        navigation.navigate(CONST_SCREEN_LOGIN);
-        // await signOut();
+    const handleSignOut = async () => {
+        //TODO: Display appropriate message on the frontend
+        const is_signed_out = await signOut();
+        if (!is_signed_out) {
+            global_dispatch({
+                type: 'SET_AUTH_STATE',
+                payload: AuthState.SIGNING_OUT_FAILED,
+            });
+        }
     };
 
     const rSideDrawerStyle = useAnimatedStyle(() => {
@@ -65,7 +73,7 @@ export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
                         </View>
                     </Pressable>
 
-                    <Pressable onPress={handleLogOut}>
+                    <Pressable onPress={handleSignOut}>
                         <View style={styles.logOut}>
                             <Body size="medium" weight="Extrabld">
                                 Log Out
