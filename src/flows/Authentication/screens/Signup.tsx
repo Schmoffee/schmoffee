@@ -153,64 +153,80 @@ export const Signup = () => {
     : 'Enter your name and phone number to sign up';
 
   return (
-    <PageLayout header="Sign up" subHeader={page_subheader} onPress={Keyboard.dismiss}>
+    <PageLayout header="Sign up" subHeader={page_subheader} onPress={Keyboard.dismiss}
+      footer={{
+        buttonDisabled: !(isValidName() && isValidNumber()) || hasLoaded,
+        onPress: () => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME }),
+        buttonText: 'Sign Up',
+        buttonVariant: 'secondary',
+        children:
+          <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
+            <Body size="medium" weight="Bold" color={Colors.blue}>
+              Already have an account? Sign in
+            </Body>
+          </TouchableOpacity>
+      }}>
       <StatusBar translucent={true} backgroundColor="transparent" />
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <LoadingPage />
-        </View>
-      ) : (
-        <>
-          <View style={styles.formContainer}>
-            {hasLoaded ? (
-              <View style={styles.otpContainer}>
-                <InputOTP code={otp} setCode={setOtp} maxLength={maximumCodeLength} setIsPinComplete={setIsPinComplete} />
-                <Pressable onPress={handleResendOTP}>
-                  {trials > 2 ? (
-                    <Body style={styles.otpText} size='small' color={Colors.red}>You have tried more than 3 times, you are blocked for 1 hour.</Body>
-                  ) : (
-                    <Body style={styles.otpText} size='small' color={Colors.blue}>Didn't receive a code? Resend code</Body>
-                  )}
-                </Pressable>
-              </View>
-            ) : (
-              <>
-                <FormField title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
-                <FormField title={'Phone Number'} placeholder={''} setField={setNumber} type={'phone'} value={number} />
-              </>
-            )}
+      {
+        loading ? (
+          <View style={styles.loadingContainer}>
+            <LoadingPage />
           </View>
-          {/* <View style={styles.buttonContainer}> */}
-          {!hasLoaded ? (
-            <Footer
-              buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
-              onPress={async () => { }}
-              // onPress={handleSignUp}
-              buttonVariant="secondary"
-              buttonText="Sign Up">
-              <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
-                <Body size="medium" weight="Bold" color={Colors.blue}>
-                  Already have an account? Sign in
-                </Body>
-              </TouchableOpacity>
-            </Footer>
-          ) : (
-            <Footer
-              buttonVariant="secondary"
-              buttonDisabled={!isPinComplete || trials > 2}
-              onPress={() => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME })}
-              // onPress={handleConfirmOTP}
-              buttonText="Confirm OTP">
-              <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
-                <Body size="medium" weight="Bold" color={Colors.blue}>
-                  Already have an account? Sign in
-                </Body>
-              </TouchableOpacity>
-            </Footer>
-          )}
-        </>
-      )}
-    </PageLayout>
+        ) : (
+          <>
+            <View style={styles.formContainer}>
+              {hasLoaded ? (
+                <View style={styles.otpContainer}>
+                  <InputOTP code={otp} setCode={setOtp} maxLength={maximumCodeLength} setIsPinComplete={setIsPinComplete} />
+                  <Pressable onPress={handleResendOTP}>
+                    {trials > 2 ? (
+                      <Body style={styles.otpText} size='small' color={Colors.red}>You have tried more than 3 times, you are blocked for 1 hour.</Body>
+                    ) : (
+                      <Body style={styles.otpText} size='small' color={Colors.blue}>Didn't receive a code? Resend code</Body>
+                    )}
+                  </Pressable>
+                </View>
+              ) : (
+                <>
+                  <FormField title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
+                  <FormField title={'Phone Number'} placeholder={''} setField={setNumber} type={'phone'} value={number} />
+                </>
+              )}
+            </View>
+            {/* <View style={styles.buttonContainer}> */}
+            {!hasLoaded ? (
+
+              <></>
+              // <Footer
+              //   buttonDisabled={!(isValidName() && isValidNumber()) || hasLoaded}
+              //   onPress={async () => { }}
+              //   // onPress={handleSignUp}
+              //   buttonVariant="secondary"
+              //   buttonText="Sign Up">
+              // <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
+              //   <Body size="medium" weight="Bold" color={Colors.blue}>
+              //     Already have an account? Sign in
+              //   </Body>
+              // </TouchableOpacity>
+              // </Footer>
+            ) : (
+              <Footer
+                buttonVariant="secondary"
+                buttonDisabled={!isPinComplete || trials > 2}
+                onPress={() => navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME })}
+                // onPress={handleConfirmOTP}
+                buttonText="Confirm OTP">
+                <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_LOGIN)}>
+                  <Body size="medium" weight="Bold" color={Colors.blue}>
+                    Already have an account? Sign in
+                  </Body>
+                </TouchableOpacity>
+              </Footer>
+            )}
+          </>
+        )
+      }
+    </PageLayout >
   );
 };
 

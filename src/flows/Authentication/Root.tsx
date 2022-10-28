@@ -10,11 +10,11 @@ const Root = () => {
 
   return (
     <AuthStack.Navigator
-      initialRouteName="Intro"
+      initialRouteName="Signup"
       screenOptions={{
         headerShown: false,
       }}>
-      <AuthStack.Screen name="Intro" component={Intro} />
+      {/* <AuthStack.Screen name="Intro" component={Intro} /> */}
       <AuthStack.Screen name="Signup" component={Signup} />
       <AuthStack.Screen name="Login" component={Login} />
     </AuthStack.Navigator>

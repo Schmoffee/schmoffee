@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 import { Switch } from 'react-native-switch';
 import { CONST_SCREEN_PREVIEW } from '../../../../constants';
 import { Colors, Spacings } from '../../../../theme';
@@ -62,7 +62,7 @@ export const WhenPage = (props: WhenPageProps) => {
     ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime });
     navigation.navigate(CONST_SCREEN_PREVIEW);
   };
-  
+
   const getDateString = (value: number) => {
     const date = new Date();
     let hours = date.getHours();
@@ -148,19 +148,20 @@ export const WhenPage = (props: WhenPageProps) => {
 
       <View style={styles.bottomSheetContainer}>
         <BottomSheet
+          index={-1}
           ref={bottomSheetRef}
           snapPoints={snapPoints}
           onChange={handleSheetChange}
           backgroundStyle={styles.bottomSheetBackground}
           onClose={handleClosePress}
           handleComponent={() => (
-            <TouchableOpacity onPress={handleClosePress}>
+            <Pressable onPress={handleClosePress}>
               <View style={styles.bottomSheetHandleContainer}>
                 <View style={styles.bottomSheetHandle} />
               </View>
-            </TouchableOpacity>
+            </Pressable>
           )}
-          index={-1}>
+        >
           <Body size="large" weight="Bold" color={Colors.darkBrown2} style={styles.bottomSheetHeader}>
             Schedule (mins)
           </Body>

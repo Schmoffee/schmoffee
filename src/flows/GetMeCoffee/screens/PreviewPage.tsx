@@ -11,7 +11,6 @@ import { ScheduleSection } from '../../../components/PreviewComponents/ScheduleS
 import { GlobalContext, OrderingContext, TrackOrderContext } from '../../../contexts';
 import { Cafe, OrderItem, User } from '../../../models';
 import { Alert } from 'react-native';
-import { DATA_SHOPS } from '../../../data/shops.data';
 import { Body } from '../../../../typography';
 import { Colors } from '../../../../theme';
 import { CONST_SCREEN_ORDER, CONST_SCREEN_RATING_PAGE } from '../../../../constants';
@@ -32,7 +31,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
     }, 0);
     return 0;
   }, [ordering_state.specific_basket]);
-  const current_shop = DATA_SHOPS[0] as Cafe;
+  // const current_shop = DATA_SHOPS[0] as Cafe;
   // 21007329
   /**
    * Calculate and return the total price of the options of an item
@@ -133,7 +132,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
         <View>
           <View>
             <Body size="small" weight="Bold" color={Colors.greyLight2}>
-              {current_shop.name}
+              {/* {current_shop.name} */}
             </Body>
             <Body size="small" weight="Bold" color={Colors.greyLight2}>
               New York, NY 10001

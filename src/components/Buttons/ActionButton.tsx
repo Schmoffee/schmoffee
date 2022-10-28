@@ -1,7 +1,8 @@
 import React from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity} from 'react-native';
-import {Colors, Spacings} from '../../../theme';
-import {Body} from '../../../typography';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Pressable } from 'react-native';
+import { cos } from 'react-native-reanimated';
+import { Colors, Spacings } from '../../../theme';
+import { Body } from '../../../typography';
 
 interface ActionButtonProps {
   label: string;
@@ -15,6 +16,7 @@ export const ActionButton = (props: ActionButtonProps) => {
     if (props.disabled) {
       return;
     }
+    console.log('meyad')
     props.onPress();
   };
 
@@ -45,13 +47,13 @@ export const ActionButton = (props: ActionButtonProps) => {
   };
 
   return (
-    <TouchableOpacity onPress={handlePress}>
+    <Pressable onPress={handlePress}>
       <View style={[styles.container, props.disabled ? styles.disabledColor : styles.activeColor, getButtonStyle()]}>
         <Body size="medium" weight="Bold" style={[styles.text, getLabelStyle()]}>
           {props.label}
         </Body>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

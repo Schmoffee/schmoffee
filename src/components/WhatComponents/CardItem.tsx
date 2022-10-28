@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Pressable } from 'react-native';
 import { Colors, Spacings } from '../../../theme';
 import { Body } from '../../../typography';
 import { Item, OrderItem } from '../../models';
@@ -77,7 +77,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
   );
 
   return (
-    <TouchableOpacity onPress={onItemPress}>
+    <Pressable onPress={onItemPress}>
       <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleDown : cardStyleUp]}>
         <View style={styles.container}>
           <View style={styles.textContainer}>
@@ -97,7 +97,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
           <Image ref={imageRef} source={item.image} />
         </View>
       </Animated.View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

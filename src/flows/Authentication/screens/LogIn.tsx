@@ -10,6 +10,7 @@ import { RootRoutes } from '../../../utils/types/navigation.types';
 import { Footer } from '../../../components/Footer/Footer';
 import LoadingPage from '../../CommonScreens/LoadingPage';
 import { signIn } from '../../../utils/queries/auth';
+import { InputOTP } from '../../../components/Input/InputOTP';
 
 interface LoginProps { }
 

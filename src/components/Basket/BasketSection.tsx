@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
@@ -15,6 +15,7 @@ interface BasketSectionProps {
 export const BasketSection = (props: BasketSectionProps) => {
     const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
     const translateY = props.translateY || useSharedValue(0);
+    const [closed, setClosed] = useState(true);
 
     const total = ordering_state.common_basket.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
 
@@ -23,7 +24,7 @@ export const BasketSection = (props: BasketSectionProps) => {
     }));
 
     const rContainerStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(translateY.value, [0, 100], [1, 0], Extrapolate.CLAMP),
+        opacity: closed ? 0 : interpolate(translateY.value, [0, 100], [1, 0], Extrapolate.CLAMP),
 
         transform: [
             {

@@ -36,7 +36,7 @@ export const PageLayout = (props: PageLayoutProps) => {
             justifyContent: 'flex-end',
             paddingHorizontal: Spacings.s4,
             position: 'absolute',
-            bottom: insets.bottom,
+            bottom: insets.bottom + 10,
             left: 0,
             right: 0,
         },

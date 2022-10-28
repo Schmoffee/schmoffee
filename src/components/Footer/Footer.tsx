@@ -1,13 +1,13 @@
-import React, {useContext, useState} from 'react';
-import {Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View} from 'react-native';
-import {Colors, Spacings} from '../../../theme';
-import {Body} from '../../../typography';
-import {OrderingContext} from '../../contexts';
-import {FooterType} from '../../utils/types/component.types';
-import {ActionButton} from '../Buttons/ActionButton';
+import React, { useContext, useState } from 'react';
+import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { Colors, Spacings } from '../../../theme';
+import { Body } from '../../../typography';
+import { OrderingContext } from '../../contexts';
+import { FooterType } from '../../utils/types/component.types';
+import { ActionButton } from '../Buttons/ActionButton';
 
 export const Footer = (props: FooterType) => {
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -38,7 +38,7 @@ export const Footer = (props: FooterType) => {
       style={[styles.root, props.style]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       enabled
-      keyboardVerticalOffset={210}>
+      keyboardVerticalOffset={100}>
       {/* <View style={styles.root}> */}
       {props.hide ? null : (
         <View style={styles.container}>
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
+    zIndex: 999,
   },
 
   childrenContainer: {

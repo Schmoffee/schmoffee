@@ -1,11 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, TextInput, Image, Platform, NativeModules, Dimensions } from 'react-native';
+import { View, StyleSheet, TextInput, Image, Platform, NativeModules, Dimensions, Pressable } from 'react-native';
 import { Colors, Spacings } from '../../../../theme';
 import { CardSection } from '../../../components/WhatComponents/CardSection';
 import { PageLayout } from '../../../components/Layouts/PageLayout';
 import { OrderingContext } from '../../../contexts';
-import { DATA_ITEMS } from '../../../data/items.data';
 import { Item, OrderItem } from '../../../models';
 import { CoffeeRoutes } from '../../../utils/types/navigation.types';
 import { BasketSection } from '../../../components/Basket/BasketSection';
@@ -27,9 +26,11 @@ export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
     const navigation = useNavigation<CoffeeRoutes>();
-    const [items, setItems] = useState(DATA_ITEMS);
+    const [items, setItems] = useState(0);
     const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
     const translateY = useSharedValue(0);
+    const [query, setQuery] = useState('');
+
 
     const scrollHandler = useAnimatedScrollHandler(event => {
         translateY.value = event.contentOffset.y;
@@ -44,8 +45,6 @@ export const ShopPage = () => {
             easing: Easing.bezier(0.25, 0.1, 0.25, 1),
         })
     }, []);
-
-    const [query, setQuery] = useState('');
 
     const getCoffees = () => {
         return items.filter(item => item.family === 'Coffee');
@@ -75,7 +74,7 @@ export const ShopPage = () => {
 
     };
 
-    const pageStyle = useAnimatedStyle(
+    const rPageStyle = useAnimatedStyle(
         () => ({
             // opacity: anim.value * 0.5,
             transform: [
@@ -99,10 +98,6 @@ export const ShopPage = () => {
         []
     );
 
-
-
-
-
     return (
         <View style={styles.root}>
             <View style={styles.header}>
@@ -118,17 +113,15 @@ export const ShopPage = () => {
                     />
                 </Animated.View>
             </View>
-            <Animated.ScrollView style={pageStyle}
+            <Animated.ScrollView style={rPageStyle}
                 onScroll={scrollHandler}
                 scrollEventThrottle={16}>
-
                 <View style={styles.container}>
                     <CardSection query={query} title="Coffee" items={getCoffees()} />
                     <CardSection title="Juices" items={getJuices()} />
                     <CardSection title="Pastries" items={getPastries()} hideDivider />
                     <CardSection title="Pastries" items={getPastries()} hideDivider />
                     <CardSection title="Pastries" items={getPastries()} hideDivider />
-
                 </View>
             </Animated.ScrollView>
 
@@ -171,7 +164,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 230,
         right: 5,
-        minWidth: 120,
+        minWidth: 100,
+        maxHeight: 60,
     },
     shopImage: {
         zIndex: -1,

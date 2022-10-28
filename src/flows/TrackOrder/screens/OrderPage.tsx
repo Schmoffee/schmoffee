@@ -46,11 +46,11 @@ export const OrderPage = () => {
     }
     return (
         <PageLayout header='Your Order'
-        // footer={{
-        //     buttonDisabled: false,
-        //     onPress: () => navigation.navigate(CONST_SCREEN_RATING_PAGE),
-        //     buttonText: 'Finish Order'
-        // }}
+            footer={{
+                buttonDisabled: false,
+                onPress: () => navigation.navigate(CONST_SCREEN_RATING_PAGE),
+                buttonText: 'Finish Order'
+            }}
         >
             <View style={styles.bottomSheetContainer}>
                 <BottomSheet

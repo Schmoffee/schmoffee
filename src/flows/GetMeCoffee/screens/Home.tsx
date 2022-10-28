@@ -56,7 +56,9 @@ export const Home = () => {
 
   const rPageStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: anim.value }, { skewY: `${anim.value / 4000}rad` }],
+      transform: [{ translateX: anim.value },
+        // { skewY: `${anim.value / 4000}rad` }
+      ],
       opacity: interpolate(anim.value, [0, HOME_WIDTH / 2], [1, 0.7]),
     };
   });

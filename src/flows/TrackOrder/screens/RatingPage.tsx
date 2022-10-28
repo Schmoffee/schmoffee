@@ -6,7 +6,6 @@ import { TrackOrderContext } from '../../../contexts'
 import { Cafe, OrderItem } from '../../../models'
 import { Body, Heading } from '../../../../typography'
 import { Colors, Spacings } from '../../../../theme'
-import { DATA_SHOPS } from '../../../data/shops.data'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { CONST_SCREEN_HOME } from '../../../../constants'
 
@@ -54,7 +53,7 @@ const RatingItem = ({ item }: RatingItemProps) => {
 
 export const RatingPage = (props: RatingPageProps) => {
   const navigation = useNavigation()
-  const current_shop = DATA_SHOPS[0] as Cafe;
+  // const current_shop = DATA_SHOPS[0] as Cafe;
   const { track_order_state, track_order_dispatch } = useContext(TrackOrderContext)
 
   return (
@@ -65,7 +64,9 @@ export const RatingPage = (props: RatingPageProps) => {
     }}>
       <View style={styles.container}>
         <View style={styles.headingContainer}>
-          <Heading size='default' weight='Bold'>{current_shop.name}</Heading>
+          <Heading size='default' weight='Bold'>
+            {/* {current_shop.name} */}
+          </Heading>
         </View>
         {track_order_state.current_order?.items.map((item, index) => {
           return (

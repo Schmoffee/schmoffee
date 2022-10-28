@@ -34,6 +34,11 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
         })
     }, []);
 
+    const rPageStyle = useAnimatedStyle(() => ({
+        opacity: anim.value,
+    }));
+
+
     const bottomContainerStyle = useAnimatedStyle(
         () => ({
             opacity: anim.value
@@ -108,7 +113,7 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
 
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, rPageStyle]}>
             <Animated.View style={[styles.bigSemiCircle, circleStyle]} />
             <Animated.View style={[styles.headerContainer, titleStyle]}>
                 <Heading size='large' weight='Black' color={Colors.darkBrown2}>{item.name}</Heading>
@@ -123,7 +128,7 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
             <Animated.View style={[styles.bottomContainer, bottomContainerStyle]}>
                 <Footer buttonText='ADD' buttonDisabled={false} onPress={() => onAddItem()} />
             </Animated.View>
-        </View>
+        </Animated.View>
         // </PageLayout>
 
     );
