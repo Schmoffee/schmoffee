@@ -27,21 +27,6 @@ interface PageLayoutProps extends PropsWithChildren {
 export const PageLayout = (props: PageLayoutProps) => {
     const backgroundStyle = props.backgroundColor || Colors.goldFaded1;
     const navigation = useNavigation();
-
-    const insets = useSafeAreaInsets();
-
-    const footerStyle = StyleSheet.create({
-        root: {
-            height: 10,
-            justifyContent: 'flex-end',
-            paddingHorizontal: Spacings.s4,
-            position: 'absolute',
-            bottom: insets.bottom + 10,
-            left: 0,
-            right: 0,
-        },
-    });
-
     return (
         <>
             <Pressable onPress={props.onPress} />
@@ -70,10 +55,8 @@ export const PageLayout = (props: PageLayoutProps) => {
 
                 <View style={styles.contentContainer}>{props.children}</View>
                 {props.footer ? (
-                    <View style={footerStyle.root}>
-                        <View>
-                            <Footer {...props.footer} />
-                        </View>
+                    <View>
+                        <Footer {...props.footer} />
                     </View>
                 ) : null}
             </View>

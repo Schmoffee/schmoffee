@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useMemo } from 'react';
-import { Platform, View } from 'react-native';
-import { useStripe, initStripe } from '@stripe/stripe-react-native';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { useStripe, initStripe, initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
 import { PageLayout } from '../../../../components/Layouts/PageLayout';
 import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
 import { initializePaymentSheet, openPaymentSheet } from '../../../../utils/helpers/payment';
@@ -13,9 +13,11 @@ import { Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo } from '../../
 import { Body } from '../../../../../typography';
 import { Colors } from '../../../../../theme';
 import { CONST_SCREEN_ORDER } from '../../../../../constants';
-import { sendOrder } from '../../../../utils/queries/datastore';
-import { LocalUser } from '../../../../utils/types/data.types';
+import { getShopById, sendOrder } from '../../../../utils/queries/datastore';
+import { LocalUser, Location, ShopMarker } from '../../../../utils/types/data.types';
 import PushNotification from '@aws-amplify/pushnotification';
+import Map from '../../../TrackOrder/components/Map';
+import { Region } from 'react-native-maps';
 
 interface PreviewPageProps { }
 
@@ -25,14 +27,34 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   const navigation = useNavigation<CoffeeRoutes>();
   const { initPaymentSheet, presentPaymentSheet } = useStripe(); // Stripe hook payment methods
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = useState(true);
+  const [mapLoading, setMapLoading] = useState(true);
+  const [region, setRegion] = useState<Region>();
   const total: number = useMemo(() => {
-    ordering_state.specific_basket.reduce(function (acc, item) {
-      return acc + item.quantity * (item.price + getOptionsPrice(item));
-    }, 0);
-    return 0;
-  }, [ordering_state.specific_basket]);
-  // const current_shop = DATA_SHOPS[0] as Cafe;
+      let totalTemp = ordering_state.specific_basket.reduce(function (acc, item) {
+          return acc + item.quantity * (item.price + getOptionsPrice(item));
+          }, 0).toFixed(2);
+      return totalTemp*100
+      }, [ordering_state.specific_basket]);
+  console.log(total)
+  const [markers, setMarkers] = useState<ShopMarker[]>([]);
+  useEffect(() => {
+    async function fetchData() {
+      const new_shop: Cafe = await getShopById(ordering_state.current_shop_id as string) as Cafe;
+      setMarkers([{ name: new_shop.name, coords: { latitude: new_shop.latitude, longitude: new_shop.longitude }, description: new_shop.description, is_open: new_shop.is_open, image: new_shop.image }]);
+      setRegion({
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+        latitude: new_shop.latitude,
+        longitude: new_shop.longitude,
+      });
+      setMapLoading(false);
+    }
+
+    fetchData().then(() => console.log('done'));
+
+  }, [ordering_state.current_shop_id]);
+
   // 21007329
   /**
    * Calculate and return the total price of the options of an item
@@ -84,15 +106,19 @@ export const PreviewPage = (props: PreviewPageProps) => {
       );
     }
     if (payment_id) {
-      ordering_dispatch({ type: 'SET_PAYMENT_ID', payload: payment_id });
       setLoading(false);
-      await proceedToPayment();
+      console.log('setting: ', payment_id)
+      await proceedToPayment(payment_id);
     }
     setLoading(false);
   }
 
-  async function handleSendOrder() {
-    if (global_state.current_user && ordering_state.current_shop_id && ordering_state.payment_id) {
+  async function handleSendOrder(paymentId: string) {
+      console.log("1 :", paymentId);
+      console.log("2 :", ordering_state.current_shop_id);
+      console.log("3 :", global_state.current_user);
+    if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
+        console.log('loooool')
       const user: LocalUser = global_state.current_user as LocalUser;
       const order_info: OrderInfo = {
         sent_time: new Date(Date.now()).toISOString(),
@@ -112,7 +138,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
         ordering_state.current_shop_id,
         global_state.current_user.id,
         user_info,
-        ordering_state.payment_id,
+        paymentId,
       );
     } else {
       console.log('User or shop or payment_id is not defined');
@@ -122,11 +148,11 @@ export const PreviewPage = (props: PreviewPageProps) => {
   /**
    * Proceed to payment. Open the payment sheet if no error occurs.
    */
-  async function proceedToPayment() {
+  async function proceedToPayment(paymentId: string) {
     const successful = await openPaymentSheet(presentPaymentSheet);
     if (successful) {
-      PushNotification.requestIOSPermissions();
-      await handleSendOrder();
+      // PushNotification.requestIOSPermissions();
+      await handleSendOrder(paymentId);
     }
   }
 
@@ -146,20 +172,37 @@ export const PreviewPage = (props: PreviewPageProps) => {
         onPress: handleCheckout,
         buttonText: 'Order',
       }}>
-      <BasketSection />
-      <ScheduleSection />
-      <PreviewSection title="Location">
-        <View>
-          <View>
-            <Body size="small" weight="Bold" color={Colors.greyLight2}>
-              {/* {current_shop.name} */}
-            </Body>
-            <Body size="small" weight="Bold" color={Colors.greyLight2}>
-              New York, NY 10001
-            </Body>
-          </View>
-        </View>
-      </PreviewSection>
+      <View style={{ flex: 1 }}>
+        <ScrollView style={styles.previewScrollContainer} >
+          <BasketSection />
+          <ScheduleSection />
+          <PreviewSection title="Location">
+            <View style={styles.mapContainer}>
+              {mapLoading ? <ActivityIndicator size="large" color={Colors.blue} /> : <Map markers={markers} region={region} />}
+            </View>
+          </PreviewSection>
+        </ScrollView>
+      </View>
     </PageLayout>
+
   );
 };
+
+const styles = StyleSheet.create({
+  previewScrollContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+
+  mapContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 200,
+    width: '100%',
+    borderRadius: 10,
+    overflow: 'hidden',
+
+  },
+
+
+});

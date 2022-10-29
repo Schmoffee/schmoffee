@@ -59,7 +59,6 @@ export const VerifyMobile = () => {
         setLoading(true);
         const session = global_state.auth_user;
         const result = await sendChallengeAnswer(otp, session as CognitoUser);
-        console.log(result);
         if (!result) {
             global_dispatch({
                 type: 'SET_AUTH_STATE',

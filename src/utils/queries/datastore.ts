@@ -10,9 +10,9 @@ import {
   User,
   UserInfo,
 } from '../../models';
-import {DataStore} from 'aws-amplify';
-import {DigitalQueue, LocalUser, Location, PreferenceWeights, PreRating} from '../types/data.types';
-import {getDistance} from 'geolib';
+import { DataStore } from 'aws-amplify';
+import { DigitalQueue, LocalUser, Location, PreferenceWeights, PreRating } from '../types/data.types';
+import { getDistance } from 'geolib';
 
 async function getCommonItems(): Promise<Item[] | null> {
   try {
@@ -163,7 +163,7 @@ async function getBestShop(
 ): Promise<string | null> {
   // TODO: Only get the shops that are in the vicinity (5 minute walk)
   const cafes = await DataStore.query(Cafe);
-  const weights: PreferenceWeights = {distance: -1, personal_taste: 1.5, general_taste: 1, price: -1.5, queue: -2};
+  const weights: PreferenceWeights = { distance: -1, personal_taste: 1.5, general_taste: 1, price: -1.5, queue: -2 };
   let best_shop: Cafe | null = null;
   let best_score = -1;
   for (const cafe of cafes) {
@@ -174,6 +174,11 @@ async function getBestShop(
     }
   }
   return best_shop ? best_shop.id : null;
+}
+
+async function getShopById(id: string): Promise<Cafe | null> {
+  const results = await DataStore.query(Cafe, c => c.id('eq', id));
+  return results[0];
 }
 
 /**
@@ -193,7 +198,7 @@ async function getScore(
   weights: PreferenceWeights,
   cafe: Cafe,
 ): Promise<number | null> {
-  let distance_score = weights.distance * getDistance(target, {latitude: cafe.latitude, longitude: cafe.longitude});
+  let distance_score = weights.distance * getDistance(target, { latitude: cafe.latitude, longitude: cafe.longitude });
   let personal_taste_score = 0;
   let general_taste_score = 0;
   let queue_score = 0;
@@ -279,4 +284,5 @@ export {
   updateCustomerId,
   updateDeviceToken,
   deleteOrder,
+    getShopById,
 };

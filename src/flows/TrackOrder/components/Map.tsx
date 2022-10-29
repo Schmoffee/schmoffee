@@ -1,27 +1,28 @@
-import React, {useContext, useRef} from 'react';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
-import {Platform, Text, View, Image, Keyboard, Alert, StyleSheet} from 'react-native';
-import {Location, ShopMarker} from '../../../utils/types/data.types';
-import {TrackOrderContext} from '../../../contexts';
+import React, { useContext, useRef } from 'react';
+import MapView, { PROVIDER_GOOGLE, Marker, Region } from 'react-native-maps';
+import { Platform, Text, View, Image, Keyboard, Alert, StyleSheet } from 'react-native';
+import { Location, ShopMarker } from '../../../utils/types/data.types';
+import { TrackOrderContext } from '../../../contexts';
 
 interface MapProps {
   markers: ShopMarker[];
+  region: Region | undefined;
 }
 
 const Map = (props: MapProps) => {
   const mapRef = useRef<MapView | null>(null);
-  const {track_order_state, track_order_dispatch} = useContext(TrackOrderContext);
+  const { track_order_state, track_order_dispatch } = useContext(TrackOrderContext);
   /**
    * Dismiss the keyboard and search results when the map is clicked
    */
   const mapPressed = () => {
-    track_order_dispatch({type: 'SET_IS_MANUALLY_CENTERED', payload: false});
+    track_order_dispatch({ type: 'SET_IS_MANUALLY_CENTERED', payload: false });
     Keyboard.dismiss();
   };
 
   const mapDragged = () => {
     mapPressed();
-    track_order_dispatch({type: 'SET_IS_USER_CENTERED', payload: false});
+    track_order_dispatch({ type: 'SET_IS_USER_CENTERED', payload: false });
   };
 
   return (
@@ -37,7 +38,8 @@ const Map = (props: MapProps) => {
           ) {
             track_order_dispatch({
               type: 'SET_MAP_REGION',
-              location: {
+              payload: {
+                ...region,
                 latitude: parseFloat(region.latitude.toPrecision(6)),
                 longitude: parseFloat(region.longitude.toPrecision(6)),
               },
@@ -45,7 +47,8 @@ const Map = (props: MapProps) => {
           } else {
             track_order_dispatch({
               type: 'SET_MAP_REGION',
-              location: {
+              payload: {
+                ...region,
                 latitude: parseFloat(region.latitude.toPrecision(6)),
                 longitude: parseFloat(region.longitude.toPrecision(6)),
               },
@@ -53,7 +56,7 @@ const Map = (props: MapProps) => {
           }
         }
       }}
-      region={track_order_state.manually_centered ? track_order_state.map_region : undefined}
+      region={props.region ? props.region : track_order_state.manually_centered ? track_order_state.map_region: undefined}
       //focus only on map when map pressed
       onPress={() => mapPressed()}
       onPanDrag={() => mapDragged()}
@@ -101,9 +104,9 @@ const Map = (props: MapProps) => {
 };
 
 const styles = StyleSheet.create({
-  map: {...StyleSheet.absoluteFillObject, flex: 1},
-  closed: {color: 'coral', fontWeight: 'bold', top: 0},
-  userMarker: {height: 70, width: 70},
+  map: { ...StyleSheet.absoluteFillObject, flex: 1 },
+  closed: { color: 'coral', fontWeight: 'bold', top: 0 },
+  userMarker: { height: 70, width: 70 },
   markerPointInfo: {
     // This is ONLY used for Detox: hiding the x/y coordinate details.
     opacity: 0, // Hiding it...

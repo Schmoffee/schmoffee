@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, TextInput, Platform, NativeModules, Dimensions } from 'react-native';
 import { Colors, Spacings } from '../../../../../theme';
 import { CardSection } from '../../../../components/WhatComponents/CardSection';
@@ -29,9 +29,24 @@ export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
   const navigation = useNavigation<CoffeeRoutes>();
-  const [items, setItems] = useState(0);
   const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const translateY = useSharedValue(0);
+  const [query, setQuery] = useState('');
+
+  const contains = ({ name }: Item, query: string) => {
+    const nameLower = name.toLowerCase();
+    if (nameLower.includes(query)) {
+      return true;
+    }
+    return false;
+  };
+  const filtered_items = useMemo(() => {
+    const formattedQuery = query.toLowerCase();
+    const filteredData = ordering_state.specific_items.filter(item => {
+      return contains(item, formattedQuery);
+    });
+    return filteredData;
+  }, [ordering_state.specific_items, query])
 
   const scrollHandler = useAnimatedScrollHandler(event => {
     translateY.value = event.contentOffset.y;
@@ -46,34 +61,18 @@ export const ShopPage = () => {
     });
   }, []);
 
-  const [query, setQuery] = useState('');
 
   const getCoffees = () => {
-    return items.filter(item => item.family === 'Coffee');
+    return filtered_items.filter(item => item.type === 'COFFEE');
   };
   const getJuices = () => {
-    return items.filter(item => item.family === 'Juice');
+    return filtered_items.filter(item => item.type === 'COLD_DRINKS');
   };
   const getPastries = () => {
-    return items.filter(item => item.family === 'Pastry');
+    return filtered_items.filter(item => item.type === 'SNACKS');
   };
 
-  const contains = ({ name }: Item, query: string) => {
-    const nameLower = name.toLowerCase();
-    if (nameLower.includes(query)) {
-      return true;
-    }
-    return false;
-  };
 
-  const handleSearch = (text: string) => {
-    const formattedQuery = text.toLowerCase();
-    const filteredData = DATA_ITEMS.filter(item => {
-      return contains(item, formattedQuery);
-    });
-    setItems(filteredData);
-    setQuery(text);
-  };
 
   const pageStyle = useAnimatedStyle(
     () => ({
@@ -108,7 +107,7 @@ export const ShopPage = () => {
             autoCorrect={false}
             clearButtonMode="always"
             value={query}
-            onChangeText={queryText => handleSearch(queryText)}
+            onChangeText={queryText => setQuery(queryText)}
             placeholder="Search for an item"
           />
         </Animated.View>
@@ -118,15 +117,13 @@ export const ShopPage = () => {
           <CardSection query={query} title="Coffee" items={getCoffees()} />
           <CardSection title="Juices" items={getJuices()} />
           <CardSection title="Pastries" items={getPastries()} hideDivider />
-          <CardSection title="Pastries" items={getPastries()} hideDivider />
-          <CardSection title="Pastries" items={getPastries()} hideDivider />
         </View>
       </Animated.ScrollView>
 
       <View style={styles.footerContainer}>
         <View style={styles.footer}>
           <Footer
-            buttonDisabled={ordering_state.common_basket.length === 0}
+            buttonDisabled={ordering_state.specific_basket.length === 0}
             onPress={() => navigation.navigate(CONST_SCREEN_WHEN)}
             buttonText="Continue"
             type="basket"
@@ -161,7 +158,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 230,
     right: 5,
-    minWidth: 120,
+    width: 150,
+    height: 50,
+
   },
   shopImage: {
     zIndex: -1,

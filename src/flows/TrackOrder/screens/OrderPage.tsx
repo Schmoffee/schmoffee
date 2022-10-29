@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { CONST_SCREEN_HOME, CONST_SCREEN_RATING_PAGE } from '../../../../constants';
 import { Body } from '../../../../typography';
@@ -9,6 +9,7 @@ import { TrackOrderContext } from '../../../contexts';
 import { TrackOrderRoutes } from '../../../utils/types/navigation.types'; import BottomSheet from '@gorhom/bottom-sheet'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { Spacings } from '../../../../theme'
+import { OrderStatus } from '../../../models';
 
 
 export const OrderPage = () => {
@@ -28,20 +29,22 @@ export const OrderPage = () => {
         // console.log("handleSheetChange", index);
     }, []);
 
-    const handleCollected = () => {
-        if (track_order_state.current_order?.status === 'COLLECTED') {
+    useEffect(() => {
+        if (track_order_state.current_order?.status === OrderStatus.ACCEPTED) {
             setShowSuccessModal(true);
+            console.log('accepted')
+//            navigation.navigate(CONST_SCREEN_RATING_PAGE);
         }
-        navigation.navigate(CONST_SCREEN_RATING_PAGE);
-    };
+    }, [track_order_state.current_order?.status]);
 
-    const handleRejected = () => {
-        if (track_order_state.current_order?.status === 'REJECTED') {
+
+   useEffect(() => {
+        if (track_order_state.current_order?.status === OrderStatus.REJECTED) {
             setShowRejectionModal(true)
+//            navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME })
         }
-        navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME })
+    }, [track_order_state.current_order?.status]);
 
-    }
     return (
         <PageLayout header='Your Order'
             footer={{
@@ -98,11 +101,11 @@ export const OrderPage = () => {
                 </BottomSheet>
             </View>
             <CustomModal
-                onDismiss={handleCollected}
-                visible={showSuccessModal} setVisible={setShowSuccessModal} type='success' title='Order Collected' message='Your order has been collected' />
+
+                visible={showSuccessModal} setVisible={setShowSuccessModal} type='success' title='Order Accepted' message='Your order has been accepted pussy' />
             <CustomModal
-                onDismiss={handleRejected}
-                visible={showRejectionModal} setVisible={setShowRejectionModal} type='error' title='Order Rejected' message='Your order has been rejected' />
+
+                visible={showRejectionModal} setVisible={setShowRejectionModal} type='error' title='Order Rejected' message='Your order has been rejected pussy' />
         </PageLayout>
 
     )
@@ -143,7 +146,7 @@ const styles = StyleSheet.create({
         zIndex: 100,
         position: 'absolute',
         width: '100%',
-        bottom: -35,
+        bottom: 35,
 
     },
     bottomSheetHeaderContainer: {

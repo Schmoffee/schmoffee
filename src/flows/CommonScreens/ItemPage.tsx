@@ -1,5 +1,5 @@
-import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useCallback, useContext, useEffect} from 'react';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useContext, useEffect } from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,22 +8,22 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {OrderItem} from '../../models';
-import {Footer} from '../../components/Footer/Footer';
-import {OrderingContext} from '../../contexts';
-import {Colors, Spacings} from '../../../theme';
-import {Body, Heading} from '../../../typography';
-const {width} = Dimensions.get('window');
+import { OrderItem } from '../../models';
+import { Footer } from '../../components/Footer/Footer';
+import { OrderingContext } from '../../contexts';
+import { Colors, Spacings } from '../../../theme';
+import { Body, Heading } from '../../../typography';
+const { width } = Dimensions.get('window');
 
 interface ItemPageProps {
   route?: any;
   navigation: any;
 }
 
-const ItemPage = ({route, navigation}: ItemPageProps) => {
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+const ItemPage = ({ route, navigation }: ItemPageProps) => {
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
 
-  const {item, imageSpecs} = route?.params;
+  const { item, imageSpecs } = route?.params;
 
   const anim = useSharedValue(0);
   useEffect(() => {
@@ -76,6 +76,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     }),
     [],
   );
+
   const onClosePress = () => {
     const callback = () => navigation.goBack();
     anim.value = withTiming(0, {}, isFinished => isFinished && runOnJS(callback)());
@@ -94,17 +95,28 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
   );
 
   const onAddItem = useCallback(() => {
-    if (ordering_state.common_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
-      const index = ordering_state.common_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
-      const currentBasket: OrderItem[] = ordering_state.common_basket;
-      const newOrderItem: OrderItem = {...currentBasket[index], quantity: currentBasket[index].quantity + 1};
-      const newBasket = [...currentBasket, newOrderItem];
-      ordering_dispatch({type: 'SET_COMMON_BASKET', payload: newBasket});
+    if (ordering_state.specific_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
+      const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+      const newBasket: OrderItem[] = ordering_state.specific_basket;
+      const newOrderItem: OrderItem = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+      newBasket[index] = newOrderItem;
+      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
     } else {
-      ordering_dispatch({type: 'SET_COMMON_BASKET', payload: [...ordering_state.common_basket, item]});
+      const new_order_item: OrderItem = {
+        quantity: 1,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        preparation_time: item.preparation_time,
+        options: item.options,
+        id: item.id,
+      }
+      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: [...ordering_state.specific_basket, new_order_item] });
+
     }
     onClosePress();
   }, [ordering_state, ordering_dispatch, item]);
+
 
   return (
     <View style={styles.container}>

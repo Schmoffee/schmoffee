@@ -24,7 +24,7 @@ export const BasketItem = (props: BasketItemProps) => {
 
   const getQuantity = () => {
     let quantity = 0;
-    ordering_state.common_basket.forEach(basketItem => {
+    ordering_state.specific_basket.forEach(basketItem => {
       if (basketItem.name === item.name) {
         quantity = basketItem.quantity;
       }
@@ -33,15 +33,18 @@ export const BasketItem = (props: BasketItemProps) => {
   };
 
   const onIncreaseQuantity = () => {
-    const index = ordering_state.common_basket.findIndex((basketItem: any) => basketItem.name === item.name);
+    const index = ordering_state.specific_basket.findIndex((basketItem: any) => basketItem.name === item.name);
     if (index > -1) {
-      const newBasket = [...ordering_state.common_basket];
-      newBasket[index].quantity = newBasket[index].quantity + 1;
-      ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
+      const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+      const newBasket: OrderItem[] = ordering_state.specific_basket;
+      const newOrderItem: OrderItem = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+      newBasket[index] = newOrderItem;
+      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
+
     }
   };
   const onRemoveItem = () => {
-    const index = ordering_state.common_basket.findIndex((basketItem: any) => basketItem.name === item.name);
+    const index = ordering_state.specific_basket.findIndex((basketItem: any) => basketItem.name === item.name);
     Alert.alert(
       'Remove Item',
       'Are you sure you want to remove this item from your basket?',
@@ -58,14 +61,15 @@ export const BasketItem = (props: BasketItemProps) => {
           text: 'OK', onPress: () => {
 
             if (index > -1) {
-              const newBasket = [...ordering_state.common_basket];
+              const newBasket = ordering_state.specific_basket;
+              const new_item = {...newBasket[index], quantity: newBasket[index] - 1}
 
               if (newBasket[index].quantity === 1) {
                 newBasket.splice(index, 1);
               } else {
-                newBasket[index].quantity = newBasket[index].quantity - 1;
+                newBasket[index] = new_item;
               }
-              ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
+              ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
             }
           }
         }
@@ -76,14 +80,18 @@ export const BasketItem = (props: BasketItemProps) => {
 
 
   const onReduceQuantity = () => {
-    const index = ordering_state.common_basket.findIndex((basketItem: any) => basketItem.name === item.name);
+    const index = ordering_state.specific_basket.findIndex((basketItem: any) => basketItem.name === item.name);
     if (index > -1) {
-      const newBasket = [...ordering_state.common_basket];
+      const newBasket = [...ordering_state.specific_basket];
       if (newBasket[index].quantity === 1) {
         onRemoveItem();
       } else {
-        newBasket[index].quantity = newBasket[index].quantity - 1;
-        ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
+        const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+        const newBasket: OrderItem[] = ordering_state.specific_basket;
+        const newOrderItem: OrderItem = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
+        newBasket[index] = newOrderItem;
+        ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
+
       }
     }
   };

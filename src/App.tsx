@@ -16,9 +16,6 @@ const App = () => {
   useEffect(() => {
     const auth_hub = Hub.listen('auth', data => authListener(data, global_state, global_dispatch));
     const datastore_hub = Hub.listen('datastore', data => datastoreListener(data, global_dispatch));
-
-    console.log(global_state.auth_state)
-
     return () => {
       auth_hub();
       datastore_hub();
@@ -62,7 +59,6 @@ const App = () => {
             customer_id: currentUser.customer_id,
             device_token: current_token,
           };
-          console.log(currentUser);
           global_dispatch({
             type: 'SET_CURRENT_USER',
             payload: localUser,

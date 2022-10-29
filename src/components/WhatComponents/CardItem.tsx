@@ -16,10 +16,12 @@ interface CardItemProps {
 }
 
 export const CardItem = ({ item, index, query }: CardItemProps) => {
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
+
+  console.log(item.image)
+
   useEffect(() => {
     anim.value = -1;
     anim.value = withTiming(1, {
@@ -41,16 +43,16 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
 
   };
 
-  const onAddItem = useCallback(() => {
-    if (ordering_state.common_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
-      const index = ordering_state.common_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
-      const newBasket = [...ordering_state.common_basket];
-      // newBasket[index].quantity = newBasket[index].quantity + 1;
-      ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
-    } else {
-      ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: [...ordering_state.common_basket, item] });
-    }
-  }, [ordering_state, ordering_dispatch, item]);
+  // const onAddItem = useCallback(() => {
+  //   if (ordering_state.common_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
+  //     const index = ordering_state.common_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+  //     const newBasket = [...ordering_state.common_basket];
+  //     // newBasket[index].quantity = newBasket[index].quantity + 1;
+  //     ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
+  //   } else {
+  //     ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: [...ordering_state.common_basket, item] });
+  //   }
+  // }, [ordering_state, ordering_dispatch, item]);
 
   const cardStyleDown = useAnimatedStyle(
     () => ({
@@ -94,7 +96,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
         </View>
 
         <View style={styles.imageContainer}>
-          <Image ref={imageRef} source={item.image} />
+          <Image ref={imageRef} source={{ uri: `${item.image}` }} />
         </View>
       </Animated.View>
     </Pressable>

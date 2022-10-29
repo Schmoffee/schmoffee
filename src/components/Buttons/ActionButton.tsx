@@ -15,7 +15,6 @@ export const ActionButton = (props: ActionButtonProps) => {
     if (props.disabled) {
       return;
     }
-    console.log('meyad')
     props.onPress();
   };
 

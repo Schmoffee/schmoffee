@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { Switch } from 'react-native-switch';
 import { CONST_SCREEN_PREVIEW } from '../../../../../constants';
 import { Colors, Spacings } from '../../../../../theme';
@@ -26,41 +26,41 @@ export const WhenPage = (props: WhenPageProps) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['90%'], []);
 
-  const data = [5, 10, 15, 20, 25, 30, 35, 40, 45];
+  const data = [8, 10, 15, 20, 25, 30, 35, 40, 45];
   const [scheduledTime, setScheduleTime] = useState(data[0]);
   const [focusedIndex, setFocusedIndex] = useState(0);
 
-  useEffect(() => {
-    async function recomputeBestShop() {
-      const best_shop: string | null = await getBestShop(
-        global_state.current_user as LocalUser,
-        ordering_state.specific_basket,
-        ordering_state.scheduled_time,
-        { latitude: 51.5131, longitude: 0.1174 }, // Bush House
-      );
-      ordering_dispatch({ type: 'SET_CURRENT_SHOP_ID', payload: best_shop });
-      const spec_basket: OrderItem[] = ordering_state.common_basket
-        .map(common_item => {
-          const corresponding_item: Item | undefined = ordering_state.specific_items.find(
-            item => item.name === common_item.name,
-          );
-          return corresponding_item
-            ? {
-              quantity: common_item.quantity,
-              name: common_item.name,
-              price: corresponding_item.price,
-              image: corresponding_item.image,
-              preparation_time: corresponding_item.preparation_time,
-              options: common_item.options,
-              id: corresponding_item.id,
-            }
-            : null;
-        })
-        .filter(item => item !== null) as OrderItem[];
-      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: spec_basket });
-    }
-    recomputeBestShop().then(() => console.log('Best shop refreshed'));
-  }, [scheduledTime]);
+  // useEffect(() => {
+  //   async function recomputeBestShop() {
+  //     const best_shop: string | null = await getBestShop(
+  //       global_state.current_user as LocalUser,
+  //       ordering_state.specific_basket,
+  //       ordering_state.scheduled_time,
+  //       { latitude: 51.5131, longitude: 0.1174 }, // Bush House
+  //     );
+  //     ordering_dispatch({ type: 'SET_CURRENT_SHOP_ID', payload: best_shop });
+  //     const spec_basket: OrderItem[] = ordering_state.specific_basket
+  //       .map(common_item => {
+  //         const corresponding_item: Item | undefined = ordering_state.specific_items.find(
+  //           item => item.name === common_item.name,
+  //         );
+  //         return corresponding_item
+  //           ? {
+  //             quantity: common_item.quantity,
+  //             name: common_item.name,
+  //             price: corresponding_item.price,
+  //             image: corresponding_item.image,
+  //             preparation_time: corresponding_item.preparation_time,
+  //             options: common_item.options,
+  //             id: corresponding_item.id,
+  //           }
+  //           : null;
+  //       })
+  //       .filter(item => item !== null) as OrderItem[];
+  //     ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: spec_basket });
+  //   }
+  //   recomputeBestShop().then(() => console.log('Best shop refreshed'));
+  // }, [scheduledTime]);
 
   const handleClosePress = useCallback(() => {
     setIsEnabled(false);
@@ -81,6 +81,11 @@ export const WhenPage = (props: WhenPageProps) => {
     }
   };
 
+  const handleSheetChange = useCallback((index: any) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+  // on changing wheel picker value
   const handleOnValueChange = useCallback(
     (value: number) => {
       setScheduleTime(data[value]);

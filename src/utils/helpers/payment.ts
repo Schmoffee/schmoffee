@@ -13,8 +13,9 @@ async function fetchPaymentSheetParams(paymentParams: PaymentParams) {
   if (paymentParams.customer_id) {
     body = {amount: paymentParams.amount, customerID: paymentParams.customer_id, currency: paymentParams.currency};
   } else {
+      console.log('new');
     body = {
-      amount: 50,
+      amount: paymentParams.amount,
       name: paymentParams.name,
       phone: paymentParams.phone,
       currency: paymentParams.currency,

@@ -30,6 +30,7 @@ export type CoffeeRoutes = {
   PreviewPage: undefined;
   ItemPage: undefined;
   ShopPage: undefined;
+  ChangeShopPage: undefined;
 };
 
 export type TrackOrderRoutes = {
