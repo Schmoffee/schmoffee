@@ -1,14 +1,14 @@
-import React, { useEffect, useReducer } from 'react';
-import { NativeModules } from 'react-native';
-import { globalReducer } from './reducers';
-import { GlobalContext, globalData } from './contexts';
-import { Hub } from 'aws-amplify';
-import { authListener, datastoreListener } from './utils/helpers/listeners';
-import { getCurrentAuthUser } from './utils/queries/auth';
-import { AuthState } from './utils/types/enums';
-import { getUserByPhoneNumber, updateAuthState, updateDeviceToken } from './utils/queries/datastore';
-import { LocalUser } from './utils/types/data.types';
-import { updateEndpoint } from './utils/helpers/notifications';
+import React, {useEffect, useReducer} from 'react';
+import {NativeModules} from 'react-native';
+import {globalReducer} from './reducers';
+import {GlobalContext, globalData} from './contexts';
+import {Hub} from 'aws-amplify';
+import {authListener, datastoreListener} from './utils/helpers/listeners';
+import {getCurrentAuthUser} from './utils/queries/auth';
+import {AuthState} from './utils/types/enums';
+import {getUserByPhoneNumber, updateAuthState, updateDeviceToken} from './utils/queries/datastore';
+import {LocalUser} from './utils/types/data.types';
+import {updateEndpoint} from './utils/helpers/notifications';
 import Navigator from './navigation/Navigator';
 
 const App = () => {
@@ -32,7 +32,7 @@ const App = () => {
             payload: AuthState.SIGNED_IN,
           });
         }
-        global_dispatch({ type: 'SET_AUTH_USER', payload: user });
+        global_dispatch({type: 'SET_AUTH_USER', payload: user});
         const currentUser = await getUserByPhoneNumber(user.user.getUsername());
         if (currentUser) {
           await updateAuthState(currentUser.id as string, true);
@@ -73,7 +73,7 @@ const App = () => {
   }, [global_state.current_user?.id, global_state.auth_state]);
 
   return (
-    <GlobalContext.Provider value={{ global_state, global_dispatch }}>
+    <GlobalContext.Provider value={{global_state, global_dispatch}}>
       <Navigator />
     </GlobalContext.Provider>
   );

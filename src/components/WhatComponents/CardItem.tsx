@@ -1,13 +1,12 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
-import { View, StyleSheet, Image, Pressable } from 'react-native';
-import { Colors, Spacings } from '../../../theme';
-import { Body } from '../../../typography';
-import { Item, OrderItem } from '../../models';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { OrderingContext } from '../../contexts';
-import { useNavigation } from '@react-navigation/native';
-import { CoffeeRoutes } from '../../utils/types/navigation.types';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import React, {useEffect, useRef} from 'react';
+import {View, StyleSheet, Image, Pressable} from 'react-native';
+import {Colors, Spacings} from '../../../theme';
+import {Body} from '../../../typography';
+import {Item} from '../../models';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
+import {CoffeeRoutes} from '../../utils/types/navigation.types';
+import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 
 interface CardItemProps {
   item: Item;
@@ -15,12 +14,12 @@ interface CardItemProps {
   query?: string;
 }
 
-export const CardItem = ({ item, index, query }: CardItemProps) => {
+export const CardItem = ({item, index, query}: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
 
-  console.log(item.image)
+  console.log(item.image);
 
   useEffect(() => {
     anim.value = -1;
@@ -34,25 +33,13 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
     'worklet';
     //measure image position & size
     imageRef.current?.measure?.((x, y, width, height, pageX, pageY) => {
-      let imageSpecs = { width, height, pageX, pageY, borderRadius: 10 };
+      let imageSpecs = {width, height, pageX, pageY, borderRadius: 10};
       navigation.navigate('ItemPage', {
         item,
         imageSpecs,
       });
     });
-
   };
-
-  // const onAddItem = useCallback(() => {
-  //   if (ordering_state.common_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
-  //     const index = ordering_state.common_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
-  //     const newBasket = [...ordering_state.common_basket];
-  //     // newBasket[index].quantity = newBasket[index].quantity + 1;
-  //     ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: newBasket });
-  //   } else {
-  //     ordering_dispatch({ type: 'SET_COMMON_BASKET', payload: [...ordering_state.common_basket, item] });
-  //   }
-  // }, [ordering_state, ordering_dispatch, item]);
 
   const cardStyleDown = useAnimatedStyle(
     () => ({
@@ -96,7 +83,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
         </View>
 
         <View style={styles.imageContainer}>
-          <Image ref={imageRef} source={{ uri: `${item.image}` }} />
+          <Image ref={imageRef} source={{uri: `${item.image}`}} />
         </View>
       </Animated.View>
     </Pressable>
@@ -128,7 +115,7 @@ const styles = StyleSheet.create({
     top: -20,
     left: 0,
     right: 0,
-    transform: [{ scale: 0.9 }],
+    transform: [{scale: 0.9}],
   },
   textContainer: {
     marginTop: 50,

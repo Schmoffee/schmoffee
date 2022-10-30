@@ -1,12 +1,12 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { View, StyleSheet, TextInput, Platform, NativeModules, Dimensions } from 'react-native';
-import { Colors, Spacings } from '../../../../../theme';
-import { CardSection } from '../../../../components/WhatComponents/CardSection';
-import { OrderingContext } from '../../../../contexts';
-import { Item } from '../../../../models';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
-import { BasketSection } from '../../../../components/Basket/BasketSection';
+import {useNavigation} from '@react-navigation/native';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import {View, StyleSheet, TextInput, Platform, NativeModules, Dimensions} from 'react-native';
+import {Colors, Spacings} from '../../../../../theme';
+import {CardSection} from '../../../../components/WhatComponents/CardSection';
+import {OrderingContext} from '../../../../contexts';
+import {Item} from '../../../../models';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import {BasketSection} from '../../../../components/Basket/BasketSection';
 import Animated, {
   Easing,
   Extrapolate,
@@ -16,24 +16,24 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { ShopHeader } from '../../../../components/WhatComponents/ShopHeader';
-import { Footer } from '../../../../components/Footer/Footer';
-import { CONST_SCREEN_WHEN } from '../../../../../constants';
+import {ShopHeader} from '../../../../components/WhatComponents/ShopHeader';
+import {Footer} from '../../../../components/Footer/Footer';
+import {CONST_SCREEN_WHEN} from '../../../../../constants';
 
-const { StatusBarManager } = NativeModules;
+const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const { height: wHeight, width: wWidth } = Dimensions.get('window');
+const {height: wHeight, width: wWidth} = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
   const navigation = useNavigation<CoffeeRoutes>();
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
   const translateY = useSharedValue(0);
   const [query, setQuery] = useState('');
 
-  const contains = ({ name }: Item, query: string) => {
+  const contains = ({name}: Item, query: string) => {
     const nameLower = name.toLowerCase();
     if (nameLower.includes(query)) {
       return true;
@@ -46,7 +46,7 @@ export const ShopPage = () => {
       return contains(item, formattedQuery);
     });
     return filteredData;
-  }, [ordering_state.specific_items, query])
+  }, [ordering_state.specific_items, query]);
 
   const scrollHandler = useAnimatedScrollHandler(event => {
     translateY.value = event.contentOffset.y;
@@ -61,7 +61,6 @@ export const ShopPage = () => {
     });
   }, []);
 
-
   const getCoffees = () => {
     return filtered_items.filter(item => item.type === 'COFFEE');
   };
@@ -71,8 +70,6 @@ export const ShopPage = () => {
   const getPastries = () => {
     return filtered_items.filter(item => item.type === 'SNACKS');
   };
-
-
 
   const pageStyle = useAnimatedStyle(
     () => ({
@@ -160,7 +157,6 @@ const styles = StyleSheet.create({
     right: 5,
     width: 150,
     height: 50,
-
   },
   shopImage: {
     zIndex: -1,

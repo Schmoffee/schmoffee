@@ -3,6 +3,8 @@ import {
   GlobalState,
   OrderingAction,
   OrderingState,
+  SignInAction,
+  SignInState,
   TrackOrderAction,
   TrackOrderState,
 } from './utils/types/data.types';
@@ -10,7 +12,6 @@ export const globalReducer = (state: GlobalState, action: GlobalAction): GlobalS
   switch (action.type) {
     case 'SET_CURRENT_USER':
       return {...state, current_user: action.payload};
-
     case 'SET_AUTH_STATE':
       return {...state, auth_state: action.payload};
     case 'SET_AUTH_USER':
@@ -59,6 +60,19 @@ export const orderingReducer = (state: OrderingState, action: OrderingAction): O
       return {...state, specific_basket: action.payload};
     case 'SET_CURRENT_SHOP_ID':
       return {...state, current_shop_id: action.payload};
+    default:
+      return state;
+  }
+};
+
+export const signInReducer = (state: SignInState, action: SignInAction): SignInState => {
+  switch (action.type) {
+    case 'SET_TRIALS':
+      return {...state, trials: action.payload};
+    case 'SET_BLOCKED_TIME':
+      return {...state, blocked_time: action.payload};
+    case 'SET_PHONE':
+      return {...state, phone_number: action.payload};
     default:
       return state;
   }

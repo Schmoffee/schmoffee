@@ -1,47 +1,55 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { useStripe, initStripe, initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
-import { PageLayout } from '../../../../components/Layouts/PageLayout';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
-import { initializePaymentSheet, openPaymentSheet } from '../../../../utils/helpers/payment';
-import { BasketSection } from '../../../../components/Basket/BasketSection';
-import { PreviewSection } from '../../../../components/PreviewComponents/PreviewSection';
-import { ScheduleSection } from '../../../../components/PreviewComponents/ScheduleSection';
-import { GlobalContext, OrderingContext } from '../../../../contexts';
-import { Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo } from '../../../../models';
-import { Body } from '../../../../../typography';
-import { Colors } from '../../../../../theme';
-import { CONST_SCREEN_ORDER } from '../../../../../constants';
-import { getShopById, sendOrder } from '../../../../utils/queries/datastore';
-import { LocalUser, Location, ShopMarker } from '../../../../utils/types/data.types';
-import PushNotification from '@aws-amplify/pushnotification';
-import Map from '../../../TrackOrder/components/Map';
-import { Region } from 'react-native-maps';
+import {useNavigation} from '@react-navigation/native';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import {ActivityIndicator, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {useStripe, initStripe} from '@stripe/stripe-react-native';
+import {PageLayout} from '../../../../components/Layouts/PageLayout';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import {initializePaymentSheet, openPaymentSheet} from '../../../../utils/helpers/payment';
+import {BasketSection} from '../../../../components/Basket/BasketSection';
+import {PreviewSection} from '../../../../components/PreviewComponents/PreviewSection';
+import {ScheduleSection} from '../../../../components/PreviewComponents/ScheduleSection';
+import {GlobalContext, OrderingContext} from '../../../../contexts';
+import {Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo} from '../../../../models';
+import {Colors} from '../../../../../theme';
+import {CONST_SCREEN_ORDER} from '../../../../../constants';
+import {getShopById, sendOrder} from '../../../../utils/queries/datastore';
+import {LocalUser, ShopMarker} from '../../../../utils/types/data.types';
 
-interface PreviewPageProps { }
+import Map from '../../../TrackOrder/components/Map';
+import {Region} from 'react-native-maps';
+
+interface PreviewPageProps {}
 
 export const PreviewPage = (props: PreviewPageProps) => {
-  const { global_state } = useContext(GlobalContext);
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
+  const {global_state} = useContext(GlobalContext);
+  const {ordering_state} = useContext(OrderingContext);
 
   const navigation = useNavigation<CoffeeRoutes>();
-  const { initPaymentSheet, presentPaymentSheet } = useStripe(); // Stripe hook payment methods
+  const {initPaymentSheet, presentPaymentSheet} = useStripe(); // Stripe hook payment methods
   const [loading, setLoading] = useState(true);
   const [mapLoading, setMapLoading] = useState(true);
   const [region, setRegion] = useState<Region>();
   const total: number = useMemo(() => {
-      let totalTemp = ordering_state.specific_basket.reduce(function (acc, item) {
-          return acc + item.quantity * (item.price + getOptionsPrice(item));
-          }, 0).toFixed(2);
-      return totalTemp*100
-      }, [ordering_state.specific_basket]);
-  console.log(total)
+    let totalTemp: string = ordering_state.specific_basket
+      .reduce(function (acc, item) {
+        return acc + item.quantity * (item.price + getOptionsPrice(item));
+      }, 0)
+      .toFixed(2);
+    return +totalTemp * 100;
+  }, [ordering_state.specific_basket]);
   const [markers, setMarkers] = useState<ShopMarker[]>([]);
   useEffect(() => {
     async function fetchData() {
-      const new_shop: Cafe = await getShopById(ordering_state.current_shop_id as string) as Cafe;
-      setMarkers([{ name: new_shop.name, coords: { latitude: new_shop.latitude, longitude: new_shop.longitude }, description: new_shop.description, is_open: new_shop.is_open, image: new_shop.image }]);
+      const new_shop: Cafe = (await getShopById(ordering_state.current_shop_id as string)) as Cafe;
+      setMarkers([
+        {
+          name: new_shop.name,
+          coords: {latitude: new_shop.latitude, longitude: new_shop.longitude},
+          description: new_shop.description,
+          is_open: new_shop.is_open,
+          image: new_shop.image ? new_shop.image : '',
+        },
+      ]);
       setRegion({
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
@@ -52,7 +60,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
     }
 
     fetchData().then(() => console.log('done'));
-
   }, [ordering_state.current_shop_id]);
 
   // 21007329
@@ -64,8 +71,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
   function getOptionsPrice(item: OrderItem) {
     return item.options
       ? item.options.reduce(function (acc, option) {
-        return acc + option.price;
-      }, 0)
+          return acc + option.price;
+        }, 0)
       : 0;
   }
 
@@ -107,18 +114,13 @@ export const PreviewPage = (props: PreviewPageProps) => {
     }
     if (payment_id) {
       setLoading(false);
-      console.log('setting: ', payment_id)
       await proceedToPayment(payment_id);
     }
     setLoading(false);
   }
 
   async function handleSendOrder(paymentId: string) {
-      console.log("1 :", paymentId);
-      console.log("2 :", ordering_state.current_shop_id);
-      console.log("3 :", global_state.current_user);
     if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
-        console.log('loooool')
       const user: LocalUser = global_state.current_user as LocalUser;
       const order_info: OrderInfo = {
         sent_time: new Date(Date.now()).toISOString(),
@@ -158,7 +160,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   const handleCheckout = async () => {
     await checkout();
-    navigation.navigate('TrackOrder', { screen: CONST_SCREEN_ORDER });
+    navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
   };
 
   return (
@@ -172,19 +174,22 @@ export const PreviewPage = (props: PreviewPageProps) => {
         onPress: handleCheckout,
         buttonText: 'Order',
       }}>
-      <View style={{ flex: 1 }}>
-        <ScrollView style={styles.previewScrollContainer} >
+      <View style={{flex: 1}}>
+        <ScrollView style={styles.previewScrollContainer}>
           <BasketSection />
           <ScheduleSection />
           <PreviewSection title="Location">
             <View style={styles.mapContainer}>
-              {mapLoading ? <ActivityIndicator size="large" color={Colors.blue} /> : <Map markers={markers} region={region} />}
+              {mapLoading ? (
+                <ActivityIndicator size="large" color={Colors.blue} />
+              ) : (
+                <Map markers={markers} region={region} />
+              )}
             </View>
           </PreviewSection>
         </ScrollView>
       </View>
     </PageLayout>
-
   );
 };
 
@@ -201,8 +206,5 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
     overflow: 'hidden',
-
   },
-
-
 });

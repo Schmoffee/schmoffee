@@ -50,6 +50,12 @@ export type OrderingState = {
   payment_id: string | null;
 };
 
+export type SignInState = {
+  trials: number;
+  blocked_time: number;
+  phone_number: string;
+};
+
 export type Location = {latitude: number; longitude: number};
 
 export type PreferenceWeights = {
@@ -91,6 +97,11 @@ export type OrderingAction =
   | {type: 'SET_SPECIFIC_ITEMS'; payload: Item[]}
   | {type: 'SET_PAYMENT_ID'; payload: string}
   | {type: 'SET_COMMON_ITEMS'; payload: Item[]};
+
+export type SignInAction =
+  | {type: 'SET_TRIALS'; payload: number}
+  | {type: 'SET_BLOCKED_TIME'; payload: number}
+  | {type: 'SET_PHONE'; payload: string};
 
 export type PreRating = {
   rating: number;

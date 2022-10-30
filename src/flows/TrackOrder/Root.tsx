@@ -62,7 +62,7 @@ const Root = () => {
     let currWatch: number | undefined = watchID.current;
     async function trackLocation() {
       if (track_order_state.is_locatable) {
-        subscribeToLocation(watchID, global_dispatch);
+        subscribeToLocation(watchID, track_order_dispatch);
       } else {
         const authorized = await getIsLocatable();
         if (authorized) track_order_dispatch({type: 'SET_IS_LOCATABLE', payload: true});
