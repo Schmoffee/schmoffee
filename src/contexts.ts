@@ -41,6 +41,7 @@ export const orderingData: OrderingState = {
 export const signInData: SignInState = {
   blocked_time: 0,
   trials: 0,
+  session: null,
   phone_number: '',
 };
 

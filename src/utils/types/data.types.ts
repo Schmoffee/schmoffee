@@ -54,6 +54,7 @@ export type SignInState = {
   trials: number;
   blocked_time: number;
   phone_number: string;
+  session: CognitoUser | null;
 };
 
 export type Location = {latitude: number; longitude: number};
@@ -101,6 +102,7 @@ export type OrderingAction =
 export type SignInAction =
   | {type: 'SET_TRIALS'; payload: number}
   | {type: 'SET_BLOCKED_TIME'; payload: number}
+  | {type: 'SET_SESSION'; payload: CognitoUser}
   | {type: 'SET_PHONE'; payload: string};
 
 export type PreRating = {

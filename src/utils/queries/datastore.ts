@@ -274,8 +274,8 @@ async function updateDeviceToken(deviceToken: string, userID: string) {
 async function checkMultiSignIn(number: string): Promise<boolean> {
   const existingUser = await getUserByPhoneNumber(number);
   if (existingUser && existingUser.is_signed_in) {
-    //TODO: Alert the user that they will be signed out of all other devices.
     await globalSignOut();
+    await updateAuthState(existingUser.id, false);
     return true;
   }
   return false;
