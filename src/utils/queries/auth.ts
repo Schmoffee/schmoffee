@@ -73,14 +73,4 @@ async function signOut(): Promise<boolean> {
   }
 }
 
-async function globalSignOut(): Promise<boolean> {
-  try {
-    await Auth.signOut({global: true});
-    return true;
-  } catch (error) {
-    console.log('error globally signing out: ', error);
-    return false;
-  }
-}
-
-export {signUp, signIn, sendChallengeAnswer, getCurrentAuthUser, signOut, globalSignOut};
+export {signUp, signIn, sendChallengeAnswer, getCurrentAuthUser, signOut};

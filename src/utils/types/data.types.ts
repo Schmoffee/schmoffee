@@ -17,6 +17,8 @@ export type GlobalState = {
   current_user: LocalUser | null;
   auth_user: AuthUser | null;
   network_status: boolean;
+  synced: boolean;
+  device_token: string;
 };
 
 export type CommonBasketItem = {
@@ -79,6 +81,8 @@ export type GlobalAction =
   | {type: 'SET_CURRENT_USER'; payload: LocalUser | null}
   | {type: 'SET_AUTH_STATE'; payload: AuthState}
   | {type: 'SET_AUTH_USER'; payload: AuthUser | null}
+  | {type: 'SET_SYNCED'; payload: boolean}
+  | {type: 'SET_DEVICE_TOKEN'; payload: string}
   | {type: 'SET_NETWORK_STATUS'; payload: boolean};
 
 export type TrackOrderAction =
@@ -171,7 +175,6 @@ export type GenericNotifSpec = {
 
 export type LocalUser = {
   id: string;
-  is_signed_in: boolean;
   phone: string;
   name: string;
   payment_method: string | null | undefined;

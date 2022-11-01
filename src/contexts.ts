@@ -16,6 +16,8 @@ export const globalData: GlobalState = {
   current_user: null,
   auth_user: null,
   network_status: false,
+  synced: false,
+  device_token: '',
 };
 
 export const trackOrderData: TrackOrderState = {

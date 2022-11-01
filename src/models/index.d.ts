@@ -213,7 +213,6 @@ export declare class Cafe {
 
 export declare class User {
   readonly id: string;
-  readonly is_signed_in: boolean;
   readonly phone: string;
   readonly name: string;
   readonly payment_method?: string | null;

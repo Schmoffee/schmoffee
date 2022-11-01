@@ -153,7 +153,6 @@ type Rating @model @auth(rules: [{allow: public}]) {
 
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
-  is_signed_in: Boolean!
   phone: AWSPhone!
   name: String!
   payment_method: String
@@ -163,4 +162,3 @@ type User @model @auth(rules: [{allow: public}]) {
   customer_id: String
   device_token: String!
 }
- 

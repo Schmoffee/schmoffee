@@ -831,13 +831,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "is_signed_in": {
-                    "name": "is_signed_in",
-                    "isArray": false,
-                    "type": "Boolean",
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "phone": {
                     "name": "phone",
                     "isArray": false,
@@ -1222,5 +1215,5 @@ export const schema = {
             }
         }
     },
-    "version": "f254c8abcaaf33c89e18a2c3f69d6fce"
+    "version": "9d1a3faa6bd6d9df17b5fcd8fbbeb3c2"
 };

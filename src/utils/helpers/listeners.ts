@@ -1,7 +1,6 @@
 import {GlobalAction, GlobalState, HubPayload} from '../types/data.types';
 import {AuthState} from '../types/enums';
 import {Dispatch} from 'react';
-import {updateAuthState} from '../queries/datastore';
 import {DataStore} from 'aws-amplify';
 
 const authListener = async (data: {payload: HubPayload}, state: GlobalState, dispatch: Dispatch<GlobalAction>) => {
@@ -15,11 +14,10 @@ const authListener = async (data: {payload: HubPayload}, state: GlobalState, dis
       console.log('user signed up');
       break;
     case 'signOut':
-      await updateAuthState(state.current_user?.id as string, false);
+      await DataStore.clear();
       dispatch({type: 'SET_AUTH_STATE', payload: AuthState.SIGNED_OUT});
       dispatch({type: 'SET_CURRENT_USER', payload: null});
       dispatch({type: 'SET_AUTH_USER', payload: null});
-      await DataStore.clear();
       console.log('user signed out');
       break;
     case 'signIn_failure':
@@ -51,6 +49,7 @@ const datastoreListener = async (hubData: {payload: HubPayload}, dispatch: Dispa
       break;
     case 'ready':
       console.log('data completely synced from the cloud');
+      dispatch({type: 'SET_SYNCED', payload: true});
       break;
   }
 };

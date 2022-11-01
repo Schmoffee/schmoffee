@@ -13,7 +13,6 @@ import {
 import {DataStore} from 'aws-amplify';
 import {DigitalQueue, LocalUser, Location, PreferenceWeights, PreRating} from '../types/data.types';
 import {getDistance} from 'geolib';
-import {globalSignOut} from './auth';
 
 async function getCommonItems(): Promise<Item[] | null> {
   try {
@@ -36,24 +35,19 @@ async function createSignUpUser(phone: string, name: string, device_token: strin
 }
 
 async function getUserByPhoneNumber(phone_number: string): Promise<User | null> {
-  const result = await DataStore.query(User, c => c.phone('eq', phone_number));
-  return result[0];
+  try {
+    const result = await DataStore.query(User, c => c.phone('eq', phone_number));
+    console.log(result);
+    return result[0];
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
 
 async function getUserById(id: string): Promise<User | null> {
   const result = await DataStore.query(User, c => c.id('eq', id));
   return result[0];
-}
-
-async function updateAuthState(id: string, is_signed_in: boolean) {
-  const user = await getUserById(id);
-  if (user) {
-    await DataStore.save(
-      User.copyOf(user, updated => {
-        updated.is_signed_in = is_signed_in;
-      }),
-    );
-  }
 }
 
 async function updatePaymentMethod(id: string, payment_method: string) {
@@ -64,6 +58,29 @@ async function updatePaymentMethod(id: string, payment_method: string) {
         updated.payment_method = payment_method;
       }),
     );
+  }
+}
+
+async function updateDeviceToken(id: string, token: string) {
+  const user = await getUserById(id);
+  if (user) {
+    await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.device_token = token;
+      }),
+    );
+  }
+}
+
+async function newSignIn(id: string) {
+  const user = await getUserById(id);
+  if (user) {
+    const new_user = await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.device_token = '';
+      }),
+    );
+    console.log('updated user', new_user);
   }
 }
 
@@ -260,31 +277,17 @@ async function getScore(
   }
 }
 
-async function updateDeviceToken(deviceToken: string, userID: string) {
-  const user = await getUserById(userID);
-  if (user) {
-    await DataStore.save(
-      User.copyOf(user, updated => {
-        updated.device_token = deviceToken;
-      }),
-    );
-  }
-}
-
-async function checkMultiSignIn(number: string): Promise<boolean> {
+async function checkMultiSignIn(number: string, token: string): Promise<string | null> {
   const existingUser = await getUserByPhoneNumber(number);
-  if (existingUser && existingUser.is_signed_in) {
-    await globalSignOut();
-    await updateAuthState(existingUser.id, false);
-    return true;
+  if (existingUser && existingUser.device_token !== token) {
+    return existingUser.id;
   }
-  return false;
+  return null;
 }
 
 export {
   getCommonItems,
   getUserByPhoneNumber,
-  updateAuthState,
   createSignUpUser,
   getUserById,
   sendOrder,
@@ -293,8 +296,9 @@ export {
   updatePaymentMethod,
   getUserPastOrders,
   updateCustomerId,
-  updateDeviceToken,
   deleteOrder,
   getShopById,
   checkMultiSignIn,
+  newSignIn,
+  updateDeviceToken,
 };
