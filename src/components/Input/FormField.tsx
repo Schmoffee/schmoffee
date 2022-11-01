@@ -126,14 +126,16 @@ const styles = StyleSheet.create({
   root: {
     width: '100%',
     marginBottom: Spacings.s4,
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    marginHorizontal: Spacings.s6,
   },
   input: {
-    backgroundColor: Colors.greyLight1,
     height: Spacings.s13,
-    borderRadius: 13,
-    paddingHorizontal: Spacings.s3,
     width: '80%',
+    borderBottomColor: Colors.black,
+    borderBottomWidth: 1,
+    fontSize: 16,
+    fontFamily: 'Helvetica',
   },
   titleContainer: {
     marginBottom: Spacings.s1,

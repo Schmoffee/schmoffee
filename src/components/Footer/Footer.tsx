@@ -44,8 +44,7 @@ export const Footer = (props: FooterType) => {
       left: 0,
       right: 0,
     },
-  });
-
+  })
   return (
     <KeyboardAvoidingView
       style={[styles.root, props.style]}
@@ -55,13 +54,14 @@ export const Footer = (props: FooterType) => {
       {/* <View style={styles.root}> */}
       {props.hide ? null : (
         <View style={styles.container}>
-          {props.children ? <View style={styles.childrenContainer}>{props.children}</View> : null}
           <ActionButton
             label={props.buttonText ? props.buttonText : 'Continue'}
             disabled={props.buttonDisabled}
             onPress={() => props.onPress()}
             variant={props.buttonVariant ? props.buttonVariant : 'primary'}
           />
+          {props.children ? <View style={styles.childrenContainer}>{props.children}</View> : null}
+
           {props.type === 'basket' ? (
             <>
               <View style={styles.basketLengthContainer}>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   root: {
     justifyContent: 'flex-end',
     position: 'absolute',
-    bottom: 0,
+    bottom: Spacings.s3,
     width: '100%',
     zIndex: 999,
     paddingHorizontal: Spacings.s1,
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
 
   childrenContainer: {
     alignSelf: 'center',
+    marginTop: Spacings.s4,
   },
   container: {
     justifyContent: 'center',

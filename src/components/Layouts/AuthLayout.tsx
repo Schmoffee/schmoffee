@@ -9,6 +9,7 @@ import { FooterType } from '../../utils/types/component.types';
 import { Footer } from '../Footer/Footer';
 import HamburgerButton from '../HamburgerMenu/HamburgerButton';
 import HamburgerIcon from '../HamburgerMenu/HamburgerIcon';
+import { MotiView } from 'moti';
 
 interface AuthLayoutProps extends PropsWithChildren {
     style?: any;
@@ -25,7 +26,7 @@ interface AuthLayoutProps extends PropsWithChildren {
 }
 
 export const AuthLayout = (props: AuthLayoutProps) => {
-    const backgroundStyle = props.backgroundColor || Colors.goldFaded1;
+    const backgroundStyle = props.backgroundColor || Colors.white;
     const navigation = useNavigation();
     return (
         <>
@@ -41,14 +42,14 @@ export const AuthLayout = (props: AuthLayoutProps) => {
                                 </View>
                             </TouchableOpacity>
                         ) : null}
-                        <Heading size="large" weight="Bold" color={Colors.white}>
+                        <Heading size="large" weight="Bold" color={Colors.black}>
                             {props.header}
                         </Heading>
                         <View style={styles.headerChildren}>{props.headerChildren}</View>
                     </View>
                     {props.subHeader ? (
                         <View style={styles.subHeader}>
-                            <Body size="small" weight="Bold" color={Colors.greyLight2} style={styles.subHeader}>
+                            <Body size="medium" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
                                 {props.subHeader}
                             </Body>
                         </View>

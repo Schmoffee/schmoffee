@@ -15,6 +15,8 @@ import { CONST_SCREEN_VERIFY_MOBILE } from '../../../../constants';
 import { Body } from '../../../../typography';
 import { setPhone } from '../../../utils/helpers/storage';
 import { AuthLayout } from '../../../components/Layouts/AuthLayout';
+import Reanimated from 'react-native-reanimated';
+import { MotiView, AnimatePresence, useAnimationState } from 'moti'
 
 type Mode = 'signup' | 'login';
 export const AuthPage = () => {
@@ -78,43 +80,67 @@ export const AuthPage = () => {
   const signup_subheader = 'Enter your name and phone number to sign up.';
   const login_subheader = 'Enter your phone number to sign in.';
 
-  return (
-    <AuthLayout backgroundColor={Colors.darkBlue} header={mode === 'signup' ? 'Sign up' : 'Login'} subHeader={mode === 'signup' ? signup_subheader : login_subheader} onPress={Keyboard.dismiss}>
-      <StatusBar translucent={true} backgroundColor="transparent" />
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <LoadingPage />
-        </View>
-      ) : (
-        <>
-          {mode === 'signup' ? (
-            <FormField title={'Enter Name'} placeholder={'Jane'} setField={setName} type={'name'} value={name} />
-          ) : null}
-          <FormField
-            title={'Phone Number'}
-            placeholder={'Enter your phone'}
-            setField={(value: React.SetStateAction<string>) => {
-              setNumber(value);
-              sign_in_dispatch({ type: 'SET_PHONE', payload: number });
-            }}
-            type={'phone'}
-            value={number}
-          />
 
-          <Footer
-            buttonDisabled={mode === 'signup' ? !(isValidName() && isValidNumber()) : !isValidNumber()}
-            onPress={handleSubmit}
-            buttonVariant="secondary"
-            buttonText={mode === 'signup' ? 'Sign Up' : 'Log In'}>
-            <Pressable onPress={handleModeChange}>
-              <Body size="medium" weight="Bold" color={Colors.blue}>
-                Change mode
-              </Body>
-            </Pressable>
-          </Footer>
-        </>
-      )}
-    </AuthLayout>
+
+
+  return (
+    <AuthLayout header={mode === 'signup' ? 'Sign up' : 'Login'} subHeader={mode === 'signup' ? signup_subheader : login_subheader} onPress={Keyboard.dismiss} >
+      <StatusBar translucent={true} backgroundColor="transparent" />
+      {
+        loading ? (
+          <View style={styles.loadingContainer}>
+            <LoadingPage />
+          </View>
+        ) : (
+          <>
+            <View style={styles.formContainer}>
+              {mode === 'signup' ? (
+                <FormField title='' placeholder={'Enter name...'} setField={setName} type={'name'} value={name} />
+              ) : null}
+              <FormField
+                title=''
+                placeholder={'Enter phone number...'}
+                setField={(value: React.SetStateAction<string>) => {
+                  setNumber(value);
+                  sign_in_dispatch({ type: 'SET_PHONE', payload: number });
+                }}
+                type={'phone'}
+                value={number}
+              />
+            </View>
+
+            <AnimatePresence exitBeforeEnter>
+
+              {mode === 'signup' ? (
+                <Footer
+                  buttonDisabled={!(isValidName() && isValidNumber())}
+                  onPress={handleSubmit}
+                  buttonVariant="secondary"
+                  buttonText={'Sign Up'}>
+                  <Pressable onPress={handleModeChange}>
+                    <Body size="medium" weight="Bold" color={Colors.blue}>
+                      Already have an account? Log in
+                    </Body>
+                  </Pressable>
+                </Footer>) : (
+                <Footer
+                  buttonDisabled={!isValidNumber()}
+                  onPress={handleSubmit}
+                  buttonVariant="secondary"
+                  buttonText={'Log In'}>
+                  <Pressable onPress={handleModeChange}>
+                    <Body size="medium" weight="Bold" color={Colors.blue}>
+                      Don\'t have an account? Sign up
+                    </Body>
+                  </Pressable>
+                </Footer>)}
+
+
+            </AnimatePresence>
+          </>
+        )
+      }
+    </AuthLayout >
   );
 };
 
@@ -123,7 +149,11 @@ export default AuthPage;
 // @ts-ignore
 const styles = StyleSheet.create({
   formContainer: {
-    marginTop: Spacings.s1,
+    position: 'absolute',
+    bottom: 120,
+    width: '100%',
+
+
   },
   buttonContainer: {
     position: 'absolute',
