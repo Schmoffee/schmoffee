@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, Alert } from 'react-native';
 import { Colors, Spacings } from '../../../theme';
 import { Body } from '../../../typography';
-import PhoneInput from 'react-native-phone-number-input';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 // @ts-ignore
@@ -63,26 +62,28 @@ const FormField = ({
   }, []);
 
 
-  const handleAlphaChange = (value: string) => {
-    const re = /^[A-Za-z]+$/;
-    if (value === "" || re.test(value)) {
-      setField(value);
-    }
-    else {
-      setField(value.slice(0, -1));
-      Alert.alert("Please enter alphabet characters only");
-    }
-  };
+  //  const handleAlphaChange = (value: string) => {
+  //    const re = /^[A-Za-z]+$/;
+  //    if (value === "" || re.test(value)) {
+  //      setField(value);
+  //    }
+  //    else {
+  //      setField(value.slice(0, -1));
+  //      Alert.alert("Please enter alphabet characters only");
+  //    }
+  //  };
+  //
+  //  const handleNumericChange = (value: string) => {
+  //    const re = /^[0-9]+$/;
+  //    if (value === "" || re.test(value)) {
+  //      setField(value);
+  //    }
+  //    else {
+  //        setField('')
+  ////      Alert.alert("Please enter numeric characters only");
+  //    }
+  //  };
 
-  const handleNumericChange = (value: string) => {
-    const re = /^[0-9]+$/;
-    if (value === "" || re.test(value)) {
-      setField(value);
-    }
-    else {
-      Alert.alert("Please enter numeric characters only");
-    }
-  };
   return (
     <Animated.View style={[styles.root, index === 0 ? rFormLeftStyle : rFormRightStyle]} >
       <View style={styles.titleContainer}>
@@ -92,20 +93,16 @@ const FormField = ({
       </View>
       {
         type === 'phone' ? (
-          <PhoneInput
-            defaultCode="GB"
-            layout="first"
-            onChangeText={text => {
-              handleNumericChange(text);
-            }}
-            onChangeFormattedText={text => {
-              setField(text);
-            }}
-            // withShadow
-            autoFocus
-            containerStyle={styles.phoneInputContainer}
-            placeholder={' '}
+          <TextInput
+            style={styles.input}
+            secureTextEntry={secureTextEntry}
+            placeholder={placeholder}
+            placeholderTextColor={Colors.greyLight3}
+            onChangeText={(text) => setField(text)}
             value={value}
+            autoCorrect={autoCorrect}
+            maxLength={maxLength}
+            keyboardType={'default'}
           />
         ) : (
           <TextInput
@@ -113,7 +110,7 @@ const FormField = ({
             secureTextEntry={secureTextEntry}
             placeholder={placeholder}
             placeholderTextColor={Colors.greyLight3}
-            onChangeText={(text) => handleAlphaChange(text)}
+            onChangeText={(text) => setField(text)}
             value={value}
             autoCorrect={autoCorrect}
             maxLength={maxLength}
@@ -147,7 +144,7 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     paddingHorizontal: Spacings.s3,
     width: '80%',
-    height: 60,
+    height: 80,
     alignSelf: 'center',
   },
 });

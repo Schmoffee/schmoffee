@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-import { rotateTranslation } from 'react-native-redash';
 import { Colors, Spacings } from '../../../theme';
 import { Body } from '../../../typography';
 import { OrderingContext } from '../../contexts';
@@ -15,15 +14,16 @@ interface BasketSectionProps {
 export const BasketSection = (props: BasketSectionProps) => {
     const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
     const translateY = props.translateY || useSharedValue(0);
+    const [closed, setClosed] = useState(false);
 
-    const total = ordering_state.common_basket.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
+    const total = ordering_state.specific_basket.reduce((acc: number, item: any) => acc + item.price * item.quantity, 0);
 
     const rHeaderStyle = useAnimatedStyle(() => ({
         // opacity: interpolate(translateY.value, [0, 100], [1, 0], Extrapolate.CLAMP),
     }));
 
     const rContainerStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(translateY.value, [0, 100], [1, 0], Extrapolate.CLAMP),
+        opacity: closed ? 0 : interpolate(translateY.value, [0, 100], [1, 0], Extrapolate.CLAMP),
 
         transform: [
             {
@@ -45,14 +45,14 @@ export const BasketSection = (props: BasketSectionProps) => {
             </Animated.View>
 
             {
-                ordering_state.common_basket.length === 0 &&
+                ordering_state.specific_basket.length === 0 &&
                 <View style={styles.emptyContainer}>
                     <Body size="medium" weight="Bold" color={Colors.brown2}>Add some items to your basket!</Body>
                 </View>
             }
             < View style={styles.itemRow} >
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {ordering_state.common_basket.map((item, index) => {
+                    {ordering_state.specific_basket.map((item, index) => {
                         return <BasketItem key={index} item={item} />;
                     })}
                     {/* <View style={styles.addItemButton}>

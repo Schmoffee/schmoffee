@@ -27,22 +27,6 @@ interface PageLayoutProps extends PropsWithChildren {
 export const PageLayout = (props: PageLayoutProps) => {
     const backgroundStyle = props.backgroundColor || Colors.goldFaded1;
     const navigation = useNavigation();
-
-    const insets = useSafeAreaInsets();
-
-    const footerStyle = StyleSheet.create({
-        root: {
-            height: 10,
-            justifyContent: 'flex-end',
-            paddingHorizontal: Spacings.s4,
-            position: 'absolute',
-            bottom: insets.bottom,
-            left: 0,
-            right: 0,
-        },
-    });
-
-
     return (
         <>
             <Pressable onPress={props.onPress} />
@@ -60,7 +44,6 @@ export const PageLayout = (props: PageLayoutProps) => {
                         {props.header}
                     </Heading>
                     <View style={styles.headerChildren}>{props.headerChildren}</View>
-
                 </View>
                 {props.subHeader ? (
                     <View style={styles.subHeader}>
@@ -72,10 +55,8 @@ export const PageLayout = (props: PageLayoutProps) => {
 
                 <View style={styles.contentContainer}>{props.children}</View>
                 {props.footer ? (
-                    <View style={footerStyle.root}>
-                        <View>
-                            <Footer {...props.footer} />
-                        </View>
+                    <View>
+                        <Footer {...props.footer} />
                     </View>
                 ) : null}
             </View>
@@ -93,7 +74,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flex: 1,
-        marginTop: Spacings.s10,
+        // marginTop: Spacings.s10,
     },
     mainContentContainer: {},
     header: {
@@ -109,14 +90,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         zIndex: -1,
         // marginBottom: Spacings.s10,
-
     },
     hamburgerButton: {
         justifyContent: 'center',
         position: 'absolute',
         left: -100,
         top: -14,
-
     },
     subHeader: {
         alignSelf: 'center',
@@ -124,7 +103,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         width: '80%',
         // zIndex: 2,
-
     },
     bigSemiCircle: {
         position: 'absolute',
@@ -140,5 +118,4 @@ const styles = StyleSheet.create({
     childrenContainer: {
         marginBottom: Spacings.s4,
     },
-
 });

@@ -1,4 +1,4 @@
-import { ModelInit, MutableModel } from "@aws-amplify/datastore";
+import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplify/datastore";
 
 export enum OptionType {
   BEAN = "BEAN",
@@ -46,6 +46,7 @@ export declare class UsualOrder {
 
 export declare class OrderItem {
   readonly quantity: number;
+  readonly id: string;
   readonly name: string;
   readonly price: number;
   readonly image?: string | null;
@@ -78,6 +79,7 @@ export declare class OrderInfo {
   readonly scheduled_times: string[];
   readonly preparing_time?: string | null;
   readonly sent_time: string;
+  readonly rejection_justification?: string | null;
   constructor(init: ModelInit<OrderInfo>);
 }
 
@@ -131,6 +133,7 @@ export declare class PastOrder {
   readonly userID: string;
   readonly final_status: OrderStatus | keyof typeof OrderStatus;
   readonly total: number;
+  readonly payment_id: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<PastOrder, PastOrderMetaData>);
@@ -144,8 +147,10 @@ export declare class CurrentOrder {
   readonly order_info: OrderInfo;
   readonly cafeID: string;
   readonly user_info: UserInfo;
-  readonly userID: string;
   readonly status: OrderStatus | keyof typeof OrderStatus;
+  readonly payment_id: string;
+  readonly display: boolean;
+  readonly userID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   constructor(init: ModelInit<CurrentOrder, CurrentOrderMetaData>);
@@ -208,7 +213,6 @@ export declare class Cafe {
 
 export declare class User {
   readonly id: string;
-  readonly is_signed_in: boolean;
   readonly phone: string;
   readonly name: string;
   readonly payment_method?: string | null;

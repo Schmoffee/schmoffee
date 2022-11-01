@@ -1,13 +1,16 @@
-import React, {useContext, useState} from 'react';
-import {Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View} from 'react-native';
-import {Colors, Spacings} from '../../../theme';
-import {Body} from '../../../typography';
-import {OrderingContext} from '../../contexts';
-import {FooterType} from '../../utils/types/component.types';
-import {ActionButton} from '../Buttons/ActionButton';
+import React, { useContext, useState } from 'react';
+import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Colors, Spacings } from '../../../theme';
+import { Body } from '../../../typography';
+import { OrderingContext } from '../../contexts';
+import { FooterType } from '../../utils/types/component.types';
+import { ActionButton } from '../Buttons/ActionButton';
 
 export const Footer = (props: FooterType) => {
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
+  const insets = useSafeAreaInsets();
+
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -19,7 +22,7 @@ export const Footer = (props: FooterType) => {
 
   const getBasketPrice = () => {
     let price = 0;
-    ordering_state.common_basket.forEach(item => {
+    ordering_state.specific_basket.forEach(item => {
       price += item.price * item.quantity;
     });
     return price;
@@ -27,18 +30,28 @@ export const Footer = (props: FooterType) => {
 
   const getBasketQuantity = () => {
     let quantity = 0;
-    ordering_state.common_basket.forEach(item => {
+    ordering_state.specific_basket.forEach(item => {
       quantity += item.quantity;
     });
     return quantity;
   };
+  const footerStyle = StyleSheet.create({
+    inset: {
+      height: 80,
+      // paddingHorizontal: Spacings.s4,
+      position: 'absolute',
+      bottom: insets.bottom + 10,
+      left: 0,
+      right: 0,
+    },
+  });
 
   return (
     <KeyboardAvoidingView
       style={[styles.root, props.style]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       enabled
-      keyboardVerticalOffset={210}>
+      keyboardVerticalOffset={100}>
       {/* <View style={styles.root}> */}
       {props.hide ? null : (
         <View style={styles.container}>
@@ -73,6 +86,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
+    zIndex: 999,
+    paddingHorizontal: Spacings.s1,
   },
 
   childrenContainer: {

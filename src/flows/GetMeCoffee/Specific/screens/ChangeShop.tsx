@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {PageLayout} from '../../../components/Layouts/PageLayout';
+import {PageLayout} from '../../../../components/Layouts/PageLayout';
 
 interface ChangeShopProps {}
 

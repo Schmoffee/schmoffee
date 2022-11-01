@@ -23,35 +23,31 @@ async function getCommonItems(): Promise<Item[] | null> {
   }
 }
 
-async function createSignUpUser(phone: string, name: string): Promise<User> {
+async function createSignUpUser(phone: string, name: string, device_token: string): Promise<User> {
   return await DataStore.save(
     new User({
       phone: phone,
       name: name,
       is_signed_in: false,
+      device_token: device_token,
     }),
   );
 }
 
 async function getUserByPhoneNumber(phone_number: string): Promise<User | null> {
-  const result = await DataStore.query(User, c => c.phone('eq', phone_number));
-  return result[0];
+  try {
+    const result = await DataStore.query(User, c => c.phone('eq', phone_number));
+    console.log(result);
+    return result[0];
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
 
 async function getUserById(id: string): Promise<User | null> {
   const result = await DataStore.query(User, c => c.id('eq', id));
   return result[0];
-}
-
-async function updateAuthState(id: string, is_signed_in: boolean) {
-  const user = await getUserById(id);
-  if (user) {
-    await DataStore.save(
-      User.copyOf(user, updated => {
-        updated.is_signed_in = is_signed_in;
-      }),
-    );
-  }
 }
 
 async function updatePaymentMethod(id: string, payment_method: string) {
@@ -65,6 +61,29 @@ async function updatePaymentMethod(id: string, payment_method: string) {
   }
 }
 
+async function updateDeviceToken(id: string, token: string) {
+  const user = await getUserById(id);
+  if (user) {
+    await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.device_token = token;
+      }),
+    );
+  }
+}
+
+async function newSignIn(id: string) {
+  const user = await getUserById(id);
+  if (user) {
+    const new_user = await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.device_token = '';
+      }),
+    );
+    console.log('updated user', new_user);
+  }
+}
+
 async function sendOrder(
   items: OrderItem[],
   total: number,
@@ -72,6 +91,7 @@ async function sendOrder(
   cafeID: string,
   userID: string,
   user_info: UserInfo,
+  payment_id: string,
 ): Promise<string> {
   const order: CurrentOrder = await DataStore.save(
     new CurrentOrder({
@@ -82,44 +102,46 @@ async function sendOrder(
       userID: userID,
       user_info: user_info,
       status: OrderStatus.SENT,
+      payment_id: payment_id,
+      display: true,
     }),
   );
   console.log(order);
   return order.id;
 }
 
-async function terminateOrder(
-  order_id: string,
-  ratings: PreRating[],
-  items: OrderItem[],
-  order_info: OrderInfo,
-  cafeID: string,
-  userID: string,
-  final_status: OrderStatus,
-  total: number,
-) {
-  const past_order = await DataStore.save(
-    new PastOrder({
-      items: items,
-      userID: userID,
-      order_info: order_info,
-      cafeID: cafeID,
-      final_status: final_status,
-      total: total,
-    }),
-  );
+async function deleteOrder(order_id: string): Promise<CurrentOrder | null> {
+  const deleted_orders: CurrentOrder[] = await DataStore.delete(CurrentOrder, order => order.id('eq', order_id));
+  return deleted_orders[0] ? deleted_orders[0] : null;
+}
 
-  for (const rating of ratings) {
-    await DataStore.save(
-      new Rating({
-        itemID: rating.itemID,
-        rating: rating.rating,
-        userID: past_order.userID,
-        cafeID: past_order.cafeID,
-        ratingOrderId: past_order.id,
-        order: past_order,
+async function terminateOrder(order_id: string, ratings: PreRating[]) {
+  const terminated_order = await deleteOrder(order_id);
+  if (terminated_order) {
+    const past_order = await DataStore.save(
+      new PastOrder({
+        items: terminated_order.items,
+        userID: terminated_order.userID,
+        order_info: terminated_order.order_info,
+        cafeID: terminated_order.cafeID,
+        final_status: terminated_order.status,
+        total: terminated_order.total,
+        payment_id: terminated_order.payment_id,
       }),
     );
+
+    for (const rating of ratings) {
+      await DataStore.save(
+        new Rating({
+          itemID: rating.itemID,
+          rating: rating.rating,
+          userID: past_order.userID,
+          cafeID: past_order.cafeID,
+          ratingOrderId: past_order.id,
+          order: past_order,
+        }),
+      );
+    }
   }
 }
 
@@ -156,7 +178,7 @@ async function getBestShop(
   items: OrderItem[],
   schedule_time: number,
   target: Location,
-): Promise<Cafe | null> {
+): Promise<string | null> {
   // TODO: Only get the shops that are in the vicinity (5 minute walk)
   const cafes = await DataStore.query(Cafe);
   const weights: PreferenceWeights = {distance: -1, personal_taste: 1.5, general_taste: 1, price: -1.5, queue: -2};
@@ -169,7 +191,12 @@ async function getBestShop(
       best_shop = cafe;
     }
   }
-  return best_shop;
+  return best_shop ? best_shop.id : null;
+}
+
+async function getShopById(id: string): Promise<Cafe | null> {
+  const results = await DataStore.query(Cafe, c => c.id('eq', id));
+  return results[0];
 }
 
 /**
@@ -250,21 +277,17 @@ async function getScore(
   }
 }
 
-async function updateDeviceToken(deviceToken: string, userID: string) {
-  const user = await getUserById(userID);
-  if (user) {
-    await DataStore.save(
-      User.copyOf(user, updated => {
-        updated.device_token = deviceToken;
-      }),
-    );
+async function checkMultiSignIn(number: string, token: string): Promise<string | null> {
+  const existingUser = await getUserByPhoneNumber(number);
+  if (existingUser && existingUser.device_token !== token) {
+    return existingUser.id;
   }
+  return null;
 }
 
 export {
   getCommonItems,
   getUserByPhoneNumber,
-  updateAuthState,
   createSignUpUser,
   getUserById,
   sendOrder,
@@ -273,5 +296,9 @@ export {
   updatePaymentMethod,
   getUserPastOrders,
   updateCustomerId,
+  deleteOrder,
+  getShopById,
+  checkMultiSignIn,
+  newSignIn,
   updateDeviceToken,
 };

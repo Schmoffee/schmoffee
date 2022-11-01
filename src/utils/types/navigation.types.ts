@@ -14,9 +14,11 @@ export type SideDrawerRoutes = {
 };
 
 export type AuthRoutes = {
+  navigate(arg0: string, arg1: { screen: string; }): unknown;
   Intro: undefined;
   Signup: undefined;
   Login: undefined;
+  VerifyMobile: undefined;
 };
 
 export type CoffeeRoutes = {
@@ -28,6 +30,7 @@ export type CoffeeRoutes = {
   PreviewPage: undefined;
   ItemPage: undefined;
   ShopPage: undefined;
+  ChangeShopPage: undefined;
 };
 
 export type TrackOrderRoutes = {

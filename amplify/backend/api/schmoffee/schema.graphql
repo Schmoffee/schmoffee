@@ -40,6 +40,7 @@ type PastOrder @model @auth(rules: [{allow: public}]) {
   userID: ID! @index(name: "byUser")
   final_status: OrderStatus!
   total: Float!
+  payment_id: String!
 }
 
 type OrderOption {
@@ -50,6 +51,7 @@ type OrderOption {
 
 type OrderItem {
   quantity: Int!
+  id: String!
   name: String!
   price: Float!
   image: AWSURL
@@ -76,6 +78,7 @@ type OrderInfo {
   scheduled_times: [AWSDateTime!]!
   preparing_time: AWSDateTime
   sent_time: AWSDateTime!
+  rejection_justification: String
 }
 
 type CurrentOrder @model @auth(rules: [{allow: public}]) {
@@ -85,8 +88,10 @@ type CurrentOrder @model @auth(rules: [{allow: public}]) {
   order_info: OrderInfo!
   cafeID: ID! @index(name: "byCafe")
   user_info: UserInfo!
-  userID: ID!
   status: OrderStatus!
+  payment_id: String!
+  display: Boolean!
+  userID: String!
 }
 
 enum OptionType {
@@ -148,7 +153,6 @@ type Rating @model @auth(rules: [{allow: public}]) {
 
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
-  is_signed_in: Boolean!
   phone: AWSPhone!
   name: String!
   payment_method: String

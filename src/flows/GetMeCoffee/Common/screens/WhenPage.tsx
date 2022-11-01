@@ -1,35 +1,66 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { View, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { Switch } from 'react-native-switch';
-import { CONST_SCREEN_PREVIEW } from '../../../../constants';
-import { Colors, Spacings } from '../../../../theme';
-import { Body } from '../../../../typography';
-import { PageLayout } from '../../../components/Layouts/PageLayout';
-import { OrderingContext } from '../../../contexts';
-import { CoffeeRoutes } from '../../../utils/types/navigation.types';
+import { CONST_SCREEN_PREVIEW } from '../../../../../constants';
+import { Colors, Spacings } from '../../../../../theme';
+import { Body } from '../../../../../typography';
+import { PageLayout } from '../../../../components/Layouts/PageLayout';
+import { GlobalContext, OrderingContext } from '../../../../contexts';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { BlurView } from '@react-native-community/blur';
-import Picker from '@gregfrench/react-native-wheel-picker';
+import { Item, OrderItem } from '../../../../models';
+import { getBestShop } from '../../../../utils/queries/datastore';
+import { LocalUser } from '../../../../utils/types/data.types';
 
 interface WhenPageProps { }
 
 export const WhenPage = (props: WhenPageProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
+  const { global_state, global_dispatch } = useContext(GlobalContext);
   const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const [isEnabled, setIsEnabled] = useState(false);
+  const [isSearchingShop, setISSearchingShop] = useState<boolean>(false);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['90%'], []);
 
-  const data = [5, 10, 15, 20, 25, 30, 35, 40, 45];
+  const data = [8, 10, 15, 20, 25, 30, 35, 40, 45];
   const [scheduledTime, setScheduleTime] = useState(data[0]);
   const [focusedIndex, setFocusedIndex] = useState(0);
 
-  // callbacks
-  const handleSheetChange = useCallback((index: number) => {
-    // console.log("handleSheetChange", index);
-  }, []);
+  // useEffect(() => {
+  //   async function recomputeBestShop() {
+  //     const best_shop: string | null = await getBestShop(
+  //       global_state.current_user as LocalUser,
+  //       ordering_state.specific_basket,
+  //       ordering_state.scheduled_time,
+  //       { latitude: 51.5131, longitude: 0.1174 }, // Bush House
+  //     );
+  //     ordering_dispatch({ type: 'SET_CURRENT_SHOP_ID', payload: best_shop });
+  //     const spec_basket: OrderItem[] = ordering_state.specific_basket
+  //       .map(common_item => {
+  //         const corresponding_item: Item | undefined = ordering_state.specific_items.find(
+  //           item => item.name === common_item.name,
+  //         );
+  //         return corresponding_item
+  //           ? {
+  //             quantity: common_item.quantity,
+  //             name: common_item.name,
+  //             price: corresponding_item.price,
+  //             image: corresponding_item.image,
+  //             preparation_time: corresponding_item.preparation_time,
+  //             options: common_item.options,
+  //             id: corresponding_item.id,
+  //           }
+  //           : null;
+  //       })
+  //       .filter(item => item !== null) as OrderItem[];
+  //     ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: spec_basket });
+  //   }
+  //   recomputeBestShop().then(() => console.log('Best shop refreshed'));
+  // }, [scheduledTime]);
 
   const handleClosePress = useCallback(() => {
     setIsEnabled(false);
@@ -49,6 +80,12 @@ export const WhenPage = (props: WhenPageProps) => {
       bottomSheetRef.current?.snapToIndex(0);
     }
   };
+
+  const handleSheetChange = useCallback((index: any) => {
+    console.log('handleSheetChanges', index);
+  }, []);
+
+  // on changing wheel picker value
   const handleOnValueChange = useCallback(
     (value: number) => {
       setScheduleTime(data[value]);
@@ -62,6 +99,7 @@ export const WhenPage = (props: WhenPageProps) => {
     ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: scheduledTime });
     navigation.navigate(CONST_SCREEN_PREVIEW);
   };
+
   const getDateString = (value: number) => {
     const date = new Date();
     let hours = date.getHours();
@@ -147,33 +185,23 @@ export const WhenPage = (props: WhenPageProps) => {
 
       <View style={styles.bottomSheetContainer}>
         <BottomSheet
+          index={-1}
           ref={bottomSheetRef}
           snapPoints={snapPoints}
           onChange={handleSheetChange}
           backgroundStyle={styles.bottomSheetBackground}
           onClose={handleClosePress}
           handleComponent={() => (
-            <TouchableOpacity onPress={handleClosePress}>
+            <Pressable onPress={handleClosePress}>
               <View style={styles.bottomSheetHandleContainer}>
                 <View style={styles.bottomSheetHandle} />
-                {/* <Icon name="ios-add" size={30} color="#4F8EF7" /> */}
               </View>
-            </TouchableOpacity>
+            </Pressable>
           )}
-          index={-1}>
+        >
           <Body size="large" weight="Bold" color={Colors.darkBrown2} style={styles.bottomSheetHeader}>
             Schedule (mins)
           </Body>
-
-          {/*<Picker*/}
-          {/*  style={styles.bottomSheetContainer}*/}
-          {/*  selectedValue={focusedIndex}*/}
-          {/*  itemStyle={styles.itemContainer}*/}
-          {/*  onValueChange={index => handleOnValueChange(index)}>*/}
-          {/*  {data.map((value, i) => (*/}
-          {/*    <PickerItem label={value.toString() + '  |  ' + getDateString(value)} value={i} key={i} />*/}
-          {/*  ))}*/}
-          {/*</Picker>*/}
         </BottomSheet>
       </View>
     </PageLayout>

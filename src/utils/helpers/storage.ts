@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Item} from '../../models';
+import {Item, OrderItem} from '../../models';
+import {CommonBasketItem} from '../types/data.types';
 
 /**
  * Load initial values in the async storage.
@@ -11,6 +12,9 @@ async function initiateStorage(): Promise<void> {
     await AsyncStorage.setItem('@CurrentShopId', '');
     await AsyncStorage.setItem('@CommonBasket', emptyBasket);
     await AsyncStorage.setItem('@SpecificBasket', emptyBasket);
+    await AsyncStorage.setItem('@FreeTime', '0');
+    await AsyncStorage.setItem('@Trials', '0');
+    await AsyncStorage.setItem('@Phone', '');
   } catch (err) {
     console.log('Error initiating storage', err);
   }
@@ -44,10 +48,9 @@ async function setFreeTime(time: number) {
 /**
  * Set the time when the app can be used again.
  */
-async function getFreeTime() {
+async function getFreeTime(): Promise<string | void> {
   try {
-    const jsonValue = await AsyncStorage.getItem('@FreeTime');
-    return jsonValue ? jsonValue : '';
+    return (await AsyncStorage.getItem('@FreeTime')) as string;
   } catch (err) {
     console.log('Error getting free time', err);
   }
@@ -71,6 +74,50 @@ async function getIsLocatable() {
   try {
     const jsonValue = await AsyncStorage.getItem('@IsLocatable');
     return jsonValue === 'true';
+  } catch (err) {
+    console.log('Error getting isLocatable', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function setTrials(trials: number) {
+  try {
+    await AsyncStorage.setItem('@Trials', String(trials));
+  } catch (err) {
+    console.log('Error setting isLocatable ', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function getTrials(): Promise<string | void> {
+  try {
+    return (await AsyncStorage.getItem('@Trials')) as string;
+  } catch (err) {
+    console.log('Error getting isLocatable', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function setPhone(phone: string) {
+  try {
+    await AsyncStorage.setItem('@Phone', phone);
+  } catch (err) {
+    console.log('Error setting isLocatable ', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function getPhone(): Promise<string | void> {
+  try {
+    return (await AsyncStorage.getItem('@Phone')) as string;
   } catch (err) {
     console.log('Error getting isLocatable', err);
   }
@@ -106,7 +153,7 @@ async function setCurrentShopId(shopId: string): Promise<void> {
  * Retrieve the basket from the storage.
  * @return Array if the basket exists, return it, otherwise return empty array
  */
-async function getCommonBasket(): Promise<Array<Item>> {
+async function getCommonBasket(): Promise<Array<CommonBasketItem>> {
   try {
     const jsonValue = await AsyncStorage.getItem('@CommonBasket');
     return jsonValue ? JSON.parse(jsonValue) : [];
@@ -140,7 +187,7 @@ async function clearStorageCommonBasket() {
  * Retrieve the basket from the storage.
  * @return Array if the basket exists, return it, otherwise return empty array
  */
-async function getSpecificBasket(): Promise<Array<Item>> {
+async function getSpecificBasket(): Promise<Array<OrderItem>> {
   try {
     const jsonValue = await AsyncStorage.getItem('@SpecificBasket');
     return jsonValue ? JSON.parse(jsonValue) : [];
@@ -154,7 +201,7 @@ async function getSpecificBasket(): Promise<Array<Item>> {
  * Set the storage basket to the given new basket.
  * @param newBasket The new basket
  */
-async function setSpecificBasket(newBasket: Array<Item>): Promise<void> {
+async function setSpecificBasket(newBasket: Array<OrderItem>): Promise<void> {
   try {
     const jsonValue = JSON.stringify(newBasket);
     await AsyncStorage.setItem('@SpecificBasket', jsonValue);
@@ -185,4 +232,8 @@ export {
   getFreeTime,
   getIsLocatable,
   setIsLocatable,
+  getTrials,
+  setTrials,
+  setPhone,
+  getPhone,
 };
