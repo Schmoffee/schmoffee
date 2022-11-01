@@ -1,24 +1,25 @@
-import React, {useCallback, useContext, useState} from 'react';
-import {Keyboard, NativeModules, Pressable, StatusBar, StyleSheet, View} from 'react-native';
+import React, { useCallback, useContext, useState } from 'react';
+import { Keyboard, NativeModules, Pressable, StatusBar, StyleSheet, View } from 'react-native';
 import FormField from '../../../components/Input/FormField';
-import {signUp} from '../../../utils/queries/auth';
-import {GlobalContext, SignInContext} from '../../../contexts';
-import {AuthState} from '../../../utils/types/enums';
+import { signUp } from '../../../utils/queries/auth';
+import { GlobalContext, SignInContext } from '../../../contexts';
+import { AuthState } from '../../../utils/types/enums';
 import LoadingPage from '../../CommonScreens/LoadingPage';
-import {createSignUpUser} from '../../../utils/queries/datastore';
-import {Colors, Spacings} from '../../../../theme';
-import {PageLayout} from '../../../components/Layouts/PageLayout';
-import {Footer} from '../../../components/Footer/Footer';
-import {useNavigation} from '@react-navigation/native';
-import {RootRoutes} from '../../../utils/types/navigation.types';
-import {CONST_SCREEN_VERIFY_MOBILE} from '../../../../constants';
-import {Body} from '../../../../typography';
-import {setPhone} from '../../../utils/helpers/storage';
+import { createSignUpUser } from '../../../utils/queries/datastore';
+import { Colors, Spacings } from '../../../../theme';
+import { PageLayout } from '../../../components/Layouts/PageLayout';
+import { Footer } from '../../../components/Footer/Footer';
+import { useNavigation } from '@react-navigation/native';
+import { RootRoutes } from '../../../utils/types/navigation.types';
+import { CONST_SCREEN_VERIFY_MOBILE } from '../../../../constants';
+import { Body } from '../../../../typography';
+import { setPhone } from '../../../utils/helpers/storage';
+import { AuthLayout } from '../../../components/Layouts/AuthLayout';
 
 type Mode = 'signup' | 'login';
-export const Signup = () => {
-  const {global_dispatch} = useContext(GlobalContext);
-  const {sign_in_dispatch, sendOTP} = useContext(SignInContext);
+export const AuthPage = () => {
+  const { global_dispatch } = useContext(GlobalContext);
+  const { sign_in_dispatch, sendOTP } = useContext(SignInContext);
   const [mode, setMode] = useState<Mode>('signup');
   const navigation = useNavigation<RootRoutes>();
   const [name, setName] = useState('');
@@ -74,10 +75,11 @@ export const Signup = () => {
     return name.length > 0;
   }, [name]);
 
-  const page_subheader = 'Check your texts for a confirmation code';
+  const signup_subheader = 'Enter your name and phone number to sign up.';
+  const login_subheader = 'Enter your phone number to sign in.';
 
   return (
-    <PageLayout header={mode === 'signup' ? 'Sign Up' : 'Log In'} subHeader={page_subheader} onPress={Keyboard.dismiss}>
+    <AuthLayout backgroundColor={Colors.darkBlue} header={mode === 'signup' ? 'Sign up' : 'Login'} subHeader={mode === 'signup' ? signup_subheader : login_subheader} onPress={Keyboard.dismiss}>
       <StatusBar translucent={true} backgroundColor="transparent" />
       {loading ? (
         <View style={styles.loadingContainer}>
@@ -93,7 +95,7 @@ export const Signup = () => {
             placeholder={'Enter your phone'}
             setField={(value: React.SetStateAction<string>) => {
               setNumber(value);
-              sign_in_dispatch({type: 'SET_PHONE', payload: number});
+              sign_in_dispatch({ type: 'SET_PHONE', payload: number });
             }}
             type={'phone'}
             value={number}
@@ -112,11 +114,11 @@ export const Signup = () => {
           </Footer>
         </>
       )}
-    </PageLayout>
+    </AuthLayout>
   );
 };
 
-export default Signup;
+export default AuthPage;
 
 // @ts-ignore
 const styles = StyleSheet.create({

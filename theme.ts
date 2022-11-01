@@ -12,6 +12,7 @@ export const Colors = {
   greenFaded3: '#8E9994',
   red: '#CE3F59',
   redFaded: '#FCBCC7',
+  darkBlue: '#000619',
   blue: '#5c86ca',
   blueFaded: '#8baadb',
   brown: '#A67D56',

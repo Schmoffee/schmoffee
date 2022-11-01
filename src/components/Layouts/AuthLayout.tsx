@@ -10,7 +10,7 @@ import { Footer } from '../Footer/Footer';
 import HamburgerButton from '../HamburgerMenu/HamburgerButton';
 import HamburgerIcon from '../HamburgerMenu/HamburgerIcon';
 
-interface PageLayoutProps extends PropsWithChildren {
+interface AuthLayoutProps extends PropsWithChildren {
     style?: any;
     header: string;
     headerChildren?: React.ReactNode;
@@ -24,7 +24,7 @@ interface PageLayoutProps extends PropsWithChildren {
     hamburgerOnPress?: () => void;
 }
 
-export const PageLayout = (props: PageLayoutProps) => {
+export const AuthLayout = (props: AuthLayoutProps) => {
     const backgroundStyle = props.backgroundColor || Colors.goldFaded1;
     const navigation = useNavigation();
     return (
@@ -32,26 +32,28 @@ export const PageLayout = (props: PageLayoutProps) => {
             <Pressable onPress={props.onPress} />
             <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
                 {props.showCircle ? <View style={[styles.bigSemiCircle]} /> : null}
-                <View style={styles.header}>
-                    {props.hamburger ? (
-                        <TouchableOpacity onPress={props.hamburgerOnPress}>
-                            <View style={styles.hamburgerButton}>
-                                <HamburgerIcon />
-                            </View>
-                        </TouchableOpacity>
-                    ) : null}
-                    <Heading size="default" weight="Extrabld" color={Colors.white}>
-                        {props.header}
-                    </Heading>
-                    <View style={styles.headerChildren}>{props.headerChildren}</View>
-                </View>
-                {props.subHeader ? (
-                    <View style={styles.subHeader}>
-                        <Body size="small" weight="Bold" color={Colors.greyLight2} style={styles.subHeader}>
-                            {props.subHeader}
-                        </Body>
+                <View style={styles.headingContainer}>
+                    <View style={styles.header}>
+                        {props.hamburger ? (
+                            <TouchableOpacity onPress={props.hamburgerOnPress}>
+                                <View style={styles.hamburgerButton}>
+                                    <HamburgerIcon />
+                                </View>
+                            </TouchableOpacity>
+                        ) : null}
+                        <Heading size="large" weight="Bold" color={Colors.white}>
+                            {props.header}
+                        </Heading>
+                        <View style={styles.headerChildren}>{props.headerChildren}</View>
                     </View>
-                ) : null}
+                    {props.subHeader ? (
+                        <View style={styles.subHeader}>
+                            <Body size="small" weight="Bold" color={Colors.greyLight2} style={styles.subHeader}>
+                                {props.subHeader}
+                            </Body>
+                        </View>
+                    ) : null}
+                </View>
 
                 <View style={styles.contentContainer}>{props.children}</View>
                 {props.footer ? (
@@ -77,16 +79,20 @@ const styles = StyleSheet.create({
         // marginTop: Spacings.s10,
     },
     mainContentContainer: {},
+    headingContainer: {
+        paddingHorizontal: Spacings.s6,
+        marginVertical: Spacings.s7,
+
+    },
     header: {
-        alignItems: 'center',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
         marginTop: Spacings.s7,
         flexDirection: 'row',
-        justifyContent: 'center',
 
     },
     headerChildren: {
         alignItems: 'center',
-
         justifyContent: 'center',
         zIndex: -1,
         // marginBottom: Spacings.s10,
@@ -98,10 +104,11 @@ const styles = StyleSheet.create({
         top: -14,
     },
     subHeader: {
-        alignSelf: 'center',
-        marginTop: Spacings.s2,
-        textAlign: 'center',
-        width: '80%',
+        alignSelf: 'flex-start',
+        marginTop: Spacings.s1,
+        textAlign: 'left',
+        width: '60%',
+
         // zIndex: 2,
     },
     bigSemiCircle: {

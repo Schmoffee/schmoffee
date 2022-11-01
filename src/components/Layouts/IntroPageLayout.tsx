@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
-import {Dimensions, Platform, StyleSheet, View, Pressable} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { Dimensions, Platform, StyleSheet, View, Pressable } from 'react-native';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -10,14 +10,13 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import {CONST_SCREEN_SIGNUP} from '../../../constants';
-import {Colors} from '../../../theme';
-import {Body, Heading} from '../../../typography';
-import {RootRoutes} from '../../utils/types/navigation.types';
-import {updateEndpoint} from '../../utils/helpers/notifications';
-import {initiateStorage} from '../../utils/helpers/storage';
+import { Colors } from '../../../theme';
+import { Body, Heading } from '../../../typography';
+import { RootRoutes } from '../../utils/types/navigation.types';
+import { updateEndpoint } from '../../utils/helpers/notifications';
+import { initiateStorage } from '../../utils/helpers/storage';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 const widthDP = Platform.OS === 'android' ? width + 4 : width;
 const heightDP = Platform.OS === 'android' ? height - 24 : height;
 
@@ -57,7 +56,7 @@ const IntroPage = (props: IntroPageProps) => {
 
     return {
       borderRadius,
-      transform: [{scale}, {rotate: `${rotate}deg`}],
+      transform: [{ scale }, { rotate: `${rotate}deg` }],
       opacity,
       width: isIndexOne ? SIZE * 2 : SIZE,
       height: isIndexOne ? SIZE * 0.45 : SIZE,
@@ -77,14 +76,14 @@ const IntroPage = (props: IntroPageProps) => {
 
     return {
       opacity,
-      transform: [{translateX: translateX}],
+      transform: [{ translateX: translateX }],
     };
   });
   const rBreatheTextStyle = useAnimatedStyle(() => {
     return {
       transform: [
         {
-          scale: withDelay(0, withRepeat(withTiming(textBreathe.value, {duration: 700}), 0, true)),
+          scale: withDelay(0, withRepeat(withTiming(textBreathe.value, { duration: 700 }), 0, true)),
         },
       ],
     };
@@ -99,7 +98,7 @@ const IntroPage = (props: IntroPageProps) => {
     );
     const scale = interpolate(props.translateY.value, inputRange, [1, 1, 2], Extrapolate.CLAMP);
     return {
-      transform: [{translateX: translateX}, {scale}],
+      transform: [{ translateX: translateX }, { scale }],
     };
   });
 
@@ -111,7 +110,7 @@ const IntroPage = (props: IntroPageProps) => {
     <Animated.View
       style={[
         styles.container,
-        {backgroundColor: isIndexZero ? Colors.goldFaded1 : isIndexOne ? Colors.goldFaded2 : Colors.goldFaded3},
+        { backgroundColor: isIndexZero ? Colors.goldFaded1 : isIndexOne ? Colors.goldFaded2 : Colors.goldFaded3 },
         rPageStyle,
       ]}>
       <Animated.View style={[styles.square, rStyle]} />
@@ -128,7 +127,7 @@ const IntroPage = (props: IntroPageProps) => {
       {isIndexTwo ? (
         <Animated.View style={[styles.startButton, rBreatheTextStyle]}>
           <Pressable
-            style={{backgroundColor: 'red'}}
+            style={{ backgroundColor: 'red' }}
             onPress={async () => {
               await initiateStorage();
               navigation.navigate(CONST_SCREEN_SIGNUP);
@@ -157,7 +156,7 @@ const styles = StyleSheet.create({
   text: {
     textTransform: 'uppercase',
   },
-  textContainer: {position: 'absolute'},
+  textContainer: { position: 'absolute' },
   startButton: {
     position: 'absolute',
     bottom: 250,
@@ -178,8 +177,8 @@ const styles = StyleSheet.create({
     width: SIZE / 4,
     height: SIZE * 3,
     borderRadius: 10,
-    transform: [{rotate: '180deg'}],
+    transform: [{ rotate: '180deg' }],
   },
 });
 
-export {IntroPage};
+export { IntroPage };
