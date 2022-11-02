@@ -46,12 +46,8 @@ export const Footer = (props: FooterType) => {
     },
   })
   return (
-    <KeyboardAvoidingView
-      style={[styles.root, props.style]}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      enabled
-      keyboardVerticalOffset={100}>
-      {/* <View style={styles.root}> */}
+
+    <View style={styles.root}>
       {props.hide ? null : (
         <View style={styles.container}>
           <ActionButton
@@ -76,16 +72,17 @@ export const Footer = (props: FooterType) => {
           ) : null}
         </View>
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   root: {
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     position: 'absolute',
     bottom: Spacings.s3,
     width: '100%',
+    height: 100,
     zIndex: 999,
     paddingHorizontal: Spacings.s1,
   },
