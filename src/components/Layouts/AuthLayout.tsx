@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Pressable, TouchableOpacity, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
-import Animated, { FadeOutLeft, FadeInRight, FadeInDown, FadeOut, FadeInLeft, SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import Animated, { FadeOutLeft, FadeInRight, FadeInDown, FadeOut, FadeInLeft, SlideInDown, SlideOutDown, useAnimatedStyle, useSharedValue, interpolate } from 'react-native-reanimated';
 import { Colors, Spacings } from '../../../theme';
 import { Body, Heading } from '../../../typography';
 import { Mode } from '../../flows/Authentication/screens/AuthPage';
@@ -22,7 +22,15 @@ interface AuthLayoutProps extends PropsWithChildren {
     hamburger?: boolean;
     hamburgerOnPress?: () => void;
     mode: Mode
+    planetAnim: Animated.SharedValue<number>
+    asteroidAnim: Animated.SharedValue<number>
+    asteroidAnimFinal: Animated.SharedValue<number>
+
+
 }
+
+const COORDS = { x: 0, y: 0 };
+
 
 export const AuthLayout = (props: AuthLayoutProps) => {
     const backgroundStyle = props.backgroundColor || Colors.white;
@@ -48,32 +56,76 @@ export const AuthLayout = (props: AuthLayoutProps) => {
         };
     }, []);
 
+
+
+    const animatePlanet = useAnimatedStyle(() => {
+        return {
+            transform: [
+                {
+                    translateY: interpolate(props.planetAnim.value, [0, 0.9], [0, -200])
+                },
+                {
+                    translateX: interpolate(props.planetAnim.value, [0, 0.9], [0, -300])
+                },
+                {
+                    // rotate: interpolate(props.planetAnim.value, [0, 1], [0, 1])
+                    rotate: interpolate(props.planetAnim.value, [0, 1], ['0deg', '360deg'])
+
+                }
+            ],
+        };
+    });
+
+    const animateAsteroid = useAnimatedStyle(() => {
+        return {
+            transform: [
+                { scale: 0.2 },
+                { translateY: interpolate(props.asteroidAnim.value, [0, 1], [0, -700]) },
+                { translateX: interpolate(props.asteroidAnim.value, [0, 1], [0, 1000]) },
+                {
+                    rotate: interpolate(props.asteroidAnim.value, [0, 1], [-1.6, -3.3])
+                    // rotate: interpolate(props.asteroidAnim.value, [0, 1], [`${-14}rad`, `${-12.3}`])
+                }
+            ],
+        };
+    });
+
+    // const animateAsteroidFinal = useAnimatedStyle(() => {
+    //     return {
+    //         transform: [
+    //             { scale: 0.2 },
+    //             { translateY: interpolate(props.asteroidAnimFinal.value, [0, 1], [-700, -3000]) },
+    //             { translateX: interpolate(props.asteroidAnimFinal.value, [0, 1], [1000, 3000]) },
+    //             { rotate: `${-12.3}deg` }
+    //         ],
+    //         opacity: interpolate(props.asteroidAnimFinal.value, [0, 1], [1, 0])
+    //     };
+    // });
+
+
+
+
+
     return (
         <KeyboardAvoidingView
             enabled
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={0}>
+            keyboardVerticalOffset={0} >
             <Pressable onPress={props.onPress} />
             <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
-                <Animated.Image source={require('../../assets/pngs/planet.png')} style={[styles.planet]} />
-                <Animated.Image source={require('../../assets/pngs/asteroid.png')} style={[styles.asteroid]} />
+                <Animated.Image source={require('../../assets/pngs/planet.png')} style={[styles.planet, animatePlanet]} />
+                <Animated.Image source={require('../../assets/pngs/asteroid.png')} style={[styles.asteroid, animateAsteroid]} />
                 <View
                     style={[styles.headingContainer]}>
                     <View style={styles.header}>
-                        {props.hamburger ? (
-                            <TouchableOpacity onPress={props.hamburgerOnPress}>
-                                <View style={styles.hamburgerButton}>
-                                    <HamburgerIcon />
-                                </View>
-                            </TouchableOpacity>
-                        ) : null}
+
                         {props.mode === 'login' && (
                             <>
                                 <Animated.View
                                     entering={FadeInRight.damping(1000).duration(1000)}
                                     exiting={FadeOutLeft.damping(500).duration(700)}>
                                     <Heading size="large" weight="Bold" color={Colors.black}>
-                                        Login
+                                        Log in
                                     </Heading>
                                 </Animated.View>
 
@@ -110,6 +162,28 @@ export const AuthLayout = (props: AuthLayoutProps) => {
                             </>
 
                         )}
+
+                        {props.mode === 'verify' && (
+                            <View style={styles.verificationContainer}>
+                                <Animated.View
+                                    entering={FadeInRight.damping(1000).duration(1000)}
+                                    exiting={FadeOutLeft.damping(1000).duration(700)}>
+                                    <Heading size="large" weight="Bold" color={Colors.black}>
+                                        Verification
+                                    </Heading>
+                                </Animated.View>
+
+                                <Animated.View
+                                    entering={FadeInLeft.damping(1000).duration(1000)}
+                                    exiting={FadeOut.damping(1000)}
+                                    style={styles.subHeader}>
+                                    <Body size="medium" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
+                                        Please check your texts for a confirmation code
+                                    </Body>
+                                </Animated.View>
+                            </View>
+
+                        )}
                     </View>
                 </View>
 
@@ -118,7 +192,7 @@ export const AuthLayout = (props: AuthLayoutProps) => {
                         entering={SlideInDown}
                         exiting={SlideOutDown}
                         style={styles.blurView}>
-                        <BlurView style={styles.absolute} blurType="dark" blurAmount={2} reducedTransparencyFallbackColor="white" />
+                        <BlurView style={styles.absolute} blurType="light" blurAmount={10} reducedTransparencyFallbackColor="white" />
                     </Animated.View>
                 ) : null}
 
@@ -147,7 +221,7 @@ const styles = StyleSheet.create({
     planet: {
         position: 'absolute',
         top: 50,
-        right: 0,
+        right: -230,
         zIndex: -1,
     },
     asteroid: {
@@ -155,7 +229,6 @@ const styles = StyleSheet.create({
         top: -80,
         left: -400,
         zIndex: -1,
-        transform: [{ scale: 0.2 }, { rotate: '-80deg' }],
         // backgroundColor: Colors.red,
     },
     headingContainer: {
@@ -173,6 +246,9 @@ const styles = StyleSheet.create({
         marginTop: Spacings.s1,
         textAlign: 'left',
         width: '60%',
+    },
+    verificationContainer: {
+        marginTop: '70%',
     },
     childrenContainer: {
         marginBottom: Spacings.s4,

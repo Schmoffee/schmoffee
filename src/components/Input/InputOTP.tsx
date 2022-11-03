@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   splitBoxesFocused: {
     borderColor: Colors.greyLight1,
-    backgroundColor: Colors.goldFaded3,
+    backgroundColor: Colors.greyLight2,
   },
   splitBoxText: {
     textAlign: 'center',

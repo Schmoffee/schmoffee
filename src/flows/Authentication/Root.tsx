@@ -107,6 +107,7 @@ const Root = () => {
         initialRouteName="AuthPage"
         screenOptions={{
           headerShown: false,
+          animation: 'none'
         }}>
         {/* <AuthStack.Screen name="Intro" component={Intro} /> */}
         <AuthStack.Screen name="AuthPage" component={AuthPage} />
