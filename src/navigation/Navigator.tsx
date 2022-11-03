@@ -30,15 +30,15 @@ function RootNavigator() {
         animation: 'none'
       }}>
       <RootStack.Group>
-        {/* {global_state.auth_state === AuthState.SIGNED_IN ? ( */}
-        <>
-          <RootStack.Screen name="Coffee" component={CoffeeRoot} />
-          <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />
-          <RootStack.Screen name="TrackOrder" component={TrackOrderRoot} />
-        </>
-        {/* ) : ( */}
-        <RootStack.Screen name="Auth" component={AuthRoot} />
-        {/* )} */}
+        {global_state.auth_state === AuthState.SIGNED_IN ? (
+          <>
+            <RootStack.Screen name="Coffee" component={CoffeeRoot} />
+            <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />
+            <RootStack.Screen name="TrackOrder" component={TrackOrderRoot} />
+          </>
+        ) : (
+          <RootStack.Screen name="Auth" component={AuthRoot} />
+        )}
       </RootStack.Group>
     </RootStack.Navigator>
   );

@@ -89,14 +89,14 @@ export const AuthPage = () => {
     // asteroidAnimFinal.value = withTiming(1, { duration: 5000 });
     // planetAnimFinal.value = withTiming(1, { duration: 5000 });
 
-    // const session = sign_in_state.session;
-    // const result = await sendChallengeAnswer(otp, session as CognitoUser);
-    // if (!result) {
-    //   global_dispatch({
-    //     type: 'SET_AUTH_STATE',
-    //     payload: AuthState.CONFIRMING_OTP_FAILED,
-    //   });
-    // }
+    const session = sign_in_state.session;
+    const result = await sendChallengeAnswer(otp, session as CognitoUser);
+    if (!result) {
+      global_dispatch({
+        type: 'SET_AUTH_STATE',
+        payload: AuthState.CONFIRMING_OTP_FAILED,
+      });
+    }
     //TODO: Handle the error appropriately depending on the error type
     setLoading(false);
     navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });

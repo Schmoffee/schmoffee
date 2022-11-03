@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Pressable, TouchableOpacity, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
-import Animated, { FadeOutLeft, FadeInRight, FadeInDown, FadeOut, FadeInLeft, SlideInDown, SlideOutDown, useAnimatedStyle, useSharedValue, interpolate } from 'react-native-reanimated';
+import Animated, { FadeOutLeft, FadeInRight, FadeInDown, FadeOut, FadeInLeft, SlideInDown, SlideOutDown, useAnimatedStyle, useSharedValue, interpolate, concat, Extrapolate } from 'react-native-reanimated';
 import { Colors, Spacings } from '../../../theme';
 import { Body, Heading } from '../../../typography';
 import { Mode } from '../../flows/Authentication/screens/AuthPage';
@@ -59,6 +59,8 @@ export const AuthLayout = (props: AuthLayoutProps) => {
 
 
     const animatePlanet = useAnimatedStyle(() => {
+        let rotate = interpolate(props.asteroidAnim.value, [0, 1], [0, 90], Extrapolate.CLAMP);
+
         return {
             transform: [
                 {
@@ -69,7 +71,7 @@ export const AuthLayout = (props: AuthLayoutProps) => {
                 },
                 {
                     // rotate: interpolate(props.planetAnim.value, [0, 1], [0, 1])
-                    rotate: interpolate(props.planetAnim.value, [0, 1], ['0deg', '360deg'])
+                    rotate: `${rotate}deg`
 
                 }
             ],
@@ -77,14 +79,17 @@ export const AuthLayout = (props: AuthLayoutProps) => {
     });
 
     const animateAsteroid = useAnimatedStyle(() => {
+
+        let rotate = interpolate(props.asteroidAnim.value, [0, 1], [-90, -200], Extrapolate.CLAMP);
+
         return {
             transform: [
                 { scale: 0.2 },
                 { translateY: interpolate(props.asteroidAnim.value, [0, 1], [0, -700]) },
                 { translateX: interpolate(props.asteroidAnim.value, [0, 1], [0, 1000]) },
                 {
-                    rotate: interpolate(props.asteroidAnim.value, [0, 1], [-1.6, -3.3])
-                    // rotate: interpolate(props.asteroidAnim.value, [0, 1], [`${-14}rad`, `${-12.3}`])
+                    // rotate: interpolate(props.asteroidAnim.value, [0, 1], [-1.6, -3.3])
+                    rotate: `${rotate}deg`
                 }
             ],
         };
