@@ -1,20 +1,20 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useContext, useEffect, useReducer} from 'react';
-import {AuthRoutes} from '../../utils/types/navigation.types';
-import {Signup} from './screens/Signup';
-import {VerifyMobile} from './screens/VerifyMobile';
-import {getFreeTime, getPhone, getTrials, setFreeTime, setTrials} from '../../utils/helpers/storage';
-import {signIn} from '../../utils/queries/auth';
-import {CognitoUser} from 'amazon-cognito-identity-js';
-import {AuthState} from '../../utils/types/enums';
-import {GlobalContext, SignInContext, signInData} from '../../contexts';
-import {signInReducer} from '../../reducers';
-import {Alert} from 'react-native';
-import {checkMultiSignIn, getUserById, newSignIn} from '../../utils/queries/datastore';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useContext, useEffect, useReducer } from 'react';
+import { AuthRoutes } from '../../utils/types/navigation.types';
+import { AuthPage } from './screens/AuthPage';
+import { VerifyMobile } from './screens/VerifyMobile';
+import { getFreeTime, getPhone, getTrials, setFreeTime, setTrials } from '../../utils/helpers/storage';
+import { signIn } from '../../utils/queries/auth';
+import { CognitoUser } from 'amazon-cognito-identity-js';
+import { AuthState } from '../../utils/types/enums';
+import { GlobalContext, SignInContext, signInData } from '../../contexts';
+import { signInReducer } from '../../reducers';
+import { Alert } from 'react-native';
+import { checkMultiSignIn, getUserById, newSignIn } from '../../utils/queries/datastore';
 
 const Root = () => {
   const AuthStack = createNativeStackNavigator<AuthRoutes>();
-  const {global_state, global_dispatch} = useContext(GlobalContext);
+  const { global_state, global_dispatch } = useContext(GlobalContext);
   const [sign_in_state, sign_in_dispatch] = useReducer(signInReducer, signInData);
 
   useEffect(() => {
@@ -28,15 +28,15 @@ const Root = () => {
     async function refreshState() {
       const trials = await getTrials();
       if (trials) {
-        sign_in_dispatch({type: 'SET_TRIALS', payload: +trials});
+        sign_in_dispatch({ type: 'SET_TRIALS', payload: +trials });
       }
       const blocked_time = await getFreeTime();
       if (blocked_time) {
-        sign_in_dispatch({type: 'SET_BLOCKED_TIME', payload: +blocked_time});
+        sign_in_dispatch({ type: 'SET_BLOCKED_TIME', payload: +blocked_time });
       }
       const phone = await getPhone();
       if (phone) {
-        sign_in_dispatch({type: 'SET_PHONE', payload: phone});
+        sign_in_dispatch({ type: 'SET_PHONE', payload: phone });
       }
     }
 
@@ -73,7 +73,7 @@ const Root = () => {
     } else {
       if (sign_in_state.blocked_time === 0) {
         const free_time = Date.now() + 60 * 60000;
-        sign_in_dispatch({type: 'SET_BLOCKED_TIME', payload: free_time});
+        sign_in_dispatch({ type: 'SET_BLOCKED_TIME', payload: free_time });
         await setFreeTime(free_time);
       }
       const remaining_time: number = new Date(sign_in_state.blocked_time - Date.now()).getSeconds();
@@ -87,13 +87,13 @@ const Root = () => {
   async function initiateSignIn(phoneNumber: string, trials: number) {
     const newSession = await signIn(phoneNumber);
     if (newSession && newSession instanceof CognitoUser) {
-      sign_in_dispatch({type: 'SET_TRIALS', payload: +trials + 1});
+      sign_in_dispatch({ type: 'SET_TRIALS', payload: +trials + 1 });
       await setTrials(+trials + 1);
       global_dispatch({
         type: 'SET_AUTH_STATE',
         payload: AuthState.CONFIRMING_OTP,
       });
-      sign_in_dispatch({type: 'SET_SESSION', payload: newSession});
+      sign_in_dispatch({ type: 'SET_SESSION', payload: newSession });
       return true;
     } else {
       //TODO: Handle the error appropriately depending on the error type
@@ -102,14 +102,15 @@ const Root = () => {
   }
 
   return (
-    <SignInContext.Provider value={{sign_in_state, sign_in_dispatch, sendOTP}}>
+    <SignInContext.Provider value={{ sign_in_state, sign_in_dispatch, sendOTP }}>
       <AuthStack.Navigator
-        initialRouteName="Signup"
+        initialRouteName="AuthPage"
         screenOptions={{
           headerShown: false,
+          animation: 'none'
         }}>
         {/* <AuthStack.Screen name="Intro" component={Intro} /> */}
-        <AuthStack.Screen name="Signup" component={Signup} />
+        <AuthStack.Screen name="AuthPage" component={AuthPage} />
         <AuthStack.Screen name="VerifyMobile" component={VerifyMobile} />
       </AuthStack.Navigator>
     </SignInContext.Provider>

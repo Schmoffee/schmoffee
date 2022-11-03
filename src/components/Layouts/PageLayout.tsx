@@ -25,7 +25,7 @@ interface PageLayoutProps extends PropsWithChildren {
 }
 
 export const PageLayout = (props: PageLayoutProps) => {
-    const backgroundStyle = props.backgroundColor || Colors.goldFaded1;
+    const backgroundStyle = props.backgroundColor || Colors.white;
     const navigation = useNavigation();
     return (
         <>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     hamburgerButton: {
         justifyContent: 'center',
         position: 'absolute',
-        left: -100,
+        left: -90,
         top: -14,
     },
     subHeader: {
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: '45%',
         borderRadius: 300,
-        backgroundColor: Colors.brown,
+        backgroundColor: Colors.darkBlue,
         overflow: 'hidden',
         // zIndex: 1,
     },
