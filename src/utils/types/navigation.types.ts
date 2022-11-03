@@ -16,7 +16,7 @@ export type SideDrawerRoutes = {
 export type AuthRoutes = {
   navigate(arg0: string, arg1: { screen: string; }): unknown;
   Intro: undefined;
-  Signup: undefined;
+  AuthPage: undefined;
   Login: undefined;
   VerifyMobile: undefined;
 };

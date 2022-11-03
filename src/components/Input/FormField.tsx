@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, Alert } from 'react-native';
 import { Colors, Spacings } from '../../../theme';
 import { Body } from '../../../typography';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { combineTransition, Easing, FadeIn, FadeInDown, FadeInLeft, FadeOut, FadeOutLeft, FadeOutUp, interpolate, Layout, SlideInLeft, SlideInRight, SlideOutDown, SlideOutLeft, SlideOutUp, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 // @ts-ignore
 
@@ -39,7 +39,6 @@ const FormField = ({
 
   const anim = useSharedValue(0);
   useEffect(() => {
-    anim.value = 0;
     anim.value = withTiming(1, {
       duration: 650,
       easing: Easing.bezier(0.15, 0.1, 0.25, 1),
@@ -84,8 +83,13 @@ const FormField = ({
   //    }
   //  };
 
+
+
+
   return (
-    <Animated.View style={[styles.root, index === 0 ? rFormLeftStyle : rFormRightStyle]} >
+    <Animated.View entering={FadeInLeft.duration(400).easing(Easing.ease)}
+      exiting={FadeOutLeft.easing(Easing.ease)}
+      style={[styles.root]} >
       <View style={styles.titleContainer}>
         <Body size="medium" weight="Bold">
           {title}
@@ -126,14 +130,17 @@ const styles = StyleSheet.create({
   root: {
     width: '100%',
     marginBottom: Spacings.s4,
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    paddingHorizontal: Spacings.s7,
+    // backgroundColor: Colors.white,
   },
   input: {
-    backgroundColor: Colors.greyLight1,
     height: Spacings.s13,
-    borderRadius: 13,
-    paddingHorizontal: Spacings.s3,
     width: '80%',
+    borderBottomColor: Colors.black,
+    borderBottomWidth: 1,
+    fontSize: 16,
+    fontFamily: 'Helvetica',
   },
   titleContainer: {
     marginBottom: Spacings.s1,

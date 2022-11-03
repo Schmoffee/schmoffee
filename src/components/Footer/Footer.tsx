@@ -44,24 +44,20 @@ export const Footer = (props: FooterType) => {
       left: 0,
       right: 0,
     },
-  });
-
+  })
   return (
-    <KeyboardAvoidingView
-      style={[styles.root, props.style]}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      enabled
-      keyboardVerticalOffset={100}>
-      {/* <View style={styles.root}> */}
+
+    <View style={styles.root}>
       {props.hide ? null : (
         <View style={styles.container}>
-          {props.children ? <View style={styles.childrenContainer}>{props.children}</View> : null}
           <ActionButton
             label={props.buttonText ? props.buttonText : 'Continue'}
             disabled={props.buttonDisabled}
             onPress={() => props.onPress()}
             variant={props.buttonVariant ? props.buttonVariant : 'primary'}
           />
+          {props.children ? <View style={styles.childrenContainer}>{props.children}</View> : null}
+
           {props.type === 'basket' ? (
             <>
               <View style={styles.basketLengthContainer}>
@@ -76,22 +72,24 @@ export const Footer = (props: FooterType) => {
           ) : null}
         </View>
       )}
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   root: {
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     position: 'absolute',
-    bottom: 0,
+    bottom: Spacings.s3,
     width: '100%',
+    height: 100,
     zIndex: 999,
     paddingHorizontal: Spacings.s1,
   },
 
   childrenContainer: {
     alignSelf: 'center',
+    marginTop: Spacings.s4,
   },
   container: {
     justifyContent: 'center',
