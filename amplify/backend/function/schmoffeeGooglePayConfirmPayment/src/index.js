@@ -1,23 +1,21 @@
 const stripe = require('stripe')(
   'sk_test_51LpXnPHooJo3N51bI8csPCrV7HNR3bHYSaO1tOhO60allyrVeEFmoXqf5sVhtEEhu40IzSwsXtT2OKoQsDJh6Az900zfxgBpvs',
 );
-
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 exports.handler = async event => {
   const body = JSON.parse(event.body);
-  const payment_intent_id = body.payment_id;
+  const paymentId = body.payment_id;
   let retval;
   let stat_code;
   try {
-    retval = await stripe.paymentIntents.cancel(payment_intent_id);
+    retval = await stripe.paymentIntents.confirm(paymentId, {return_url: 'https://schmoffee.com'});
     stat_code = 200;
-  } catch (error) {
-    stat_code = 400;
-    retval = error;
+  } catch (err) {
+    retval = err;
+    stat_code = 500;
   }
-
   return {
     statusCode: stat_code,
     headers: {

@@ -17,23 +17,40 @@ exports.handler = async event => {
     });
   }
 
+  let paymentIntentParams;
+
+  if (body.payment_method) {
+    paymentIntentParams = {
+      amount: body.amount,
+      currency: body.currency,
+      customer: customer.id,
+      setup_future_usage: 'off_session',
+      payment_method: body.payment_method,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    };
+  } else {
+    paymentIntentParams = {
+      amount: body.amount,
+      currency: body.currency,
+      customer: customer.id,
+      setup_future_usage: 'off_session',
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    };
+  }
+
   const ephemeralKey = await stripe.ephemeralKeys.create({customer: customer.id}, {apiVersion: '2022-08-01'});
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: body.amount,
-    currency: body.currency,
-    customer: customer.id,
-    setup_future_usage: 'off_session',
-    payment_method_types: ['card'],
-    automatic_payment_methods: {
-      enabled: true,
-    },
-  });
+  const paymentIntent = await stripe.paymentIntents.create(paymentIntentParams);
   const response = {
-    paymentIntent: paymentIntent.client_secret,
+    client_secret: paymentIntent.client_secret,
     ephemeralKey: ephemeralKey.secret,
     customer: customer.id,
     publishableKey:
       'pk_test_51LpXnPHooJo3N51b7Z3VtEqrSdqqibloS52hthuoujRyJMo7cRUnVVXY8HUApFgsmk9MctXNbcLFLftl9qv9QpVL00ynhr4KLf',
+    paymentIntentId: paymentIntent.id,
   };
   return {
     statusCode: 200,

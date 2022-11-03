@@ -4,16 +4,17 @@ import {DataStore} from 'aws-amplify';
 import {CurrentOrder, OrderStatus, User} from '../../models';
 import Geolocation from 'react-native-geolocation-service';
 import {requestLocationPermission, subscribeToLocation} from '../../utils/helpers/location';
-import {getIsLocatable, setIsLocatable} from '../../utils/helpers/storage';
+import {getClientSecret} from '../../utils/helpers/storage';
 import {trackOrderReducer} from '../../reducers';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {TrackOrderRoutes} from '../../utils/types/navigation.types';
 import {RatingPage} from './screens/RatingPage';
 import {OrderPage} from './screens/OrderPage';
-import {confirmPaymentSheetPayment} from '@stripe/stripe-react-native';
+import {confirmApplePayPayment, confirmPaymentSheetPayment} from '@stripe/stripe-react-native';
 import {Alert} from 'react-native';
-import {cancelPayment} from '../../utils/helpers/payment';
+import {cancelPayment, confirmGooglePayPayment} from '../../utils/helpers/payment';
 import {deleteOrder} from '../../utils/queries/datastore';
+import {Payment} from '../../utils/types/data.types';
 
 const Root = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
@@ -38,10 +39,9 @@ const Root = () => {
             if (new_order.status !== prevStatus) {
               switch (new_order.status) {
                 case OrderStatus.ACCEPTED:
-                  await confirmPayment();
+                  await confirmPayment(user.payment_method as Payment, new_order.payment_id);
                   break;
                 case OrderStatus.REJECTED:
-                  console.log(new_order.order_info.rejection_justification);
                   await cancelPayment(new_order.payment_id);
                   await deleteOrder(new_order.id);
               }
@@ -56,42 +56,43 @@ const Root = () => {
       });
       return () => subscription.unsubscribe();
     }
-  }, [global_dispatch, global_state.auth_user, global_state.current_user]);
+  }, [global_dispatch, global_state.auth_user, global_state.current_user, track_order_state.current_order?.status]);
 
   useEffect(() => {
     let currWatch: number | undefined = watchID.current;
     async function trackLocation() {
-      if (track_order_state.is_locatable) {
-        subscribeToLocation(watchID, track_order_dispatch);
-      } else {
-        const authorized = await getIsLocatable();
-        if (authorized) track_order_dispatch({type: 'SET_IS_LOCATABLE', payload: true});
-        else await handleLocationRequest();
-      }
+      const locatable = await handleLocationRequest();
+      if (locatable) subscribeToLocation(watchID, track_order_dispatch);
     }
-
-    trackLocation().catch(e => console.log(e));
+    trackLocation()
+      .then(() => console.log('tracking'))
+      .catch(e => console.log(e));
     return () => {
       if (currWatch) {
         Geolocation.clearWatch(currWatch);
       }
-      Geolocation.stopObserving();
     };
   }, [global_dispatch, track_order_state.is_locatable]);
 
   async function handleLocationRequest() {
-    const authorized = await requestLocationPermission();
-    track_order_dispatch({type: 'SET_IS_LOCATABLE', payload: authorized});
-    await setIsLocatable(true);
+    return await requestLocationPermission();
   }
 
-  async function confirmPayment() {
-    const {error} = await confirmPaymentSheetPayment();
-
-    if (error) {
-      Alert.alert(`Error code: ${error.code}`, error.message);
-    } else {
-      Alert.alert('Success', 'Your order is confirmed!');
+  async function confirmPayment(mode: Payment, payment_id: string) {
+    if (mode === 'card') {
+      const {error} = await confirmPaymentSheetPayment();
+      if (error) {
+        Alert.alert(`Error confirming card payment: ${error.code}`, error.message);
+      }
+    } else if (mode === 'google') {
+      await confirmGooglePayPayment(payment_id);
+    } else if (mode === 'apple') {
+      const secret = await getClientSecret();
+      if (secret != null) {
+        await confirmApplePayPayment(secret);
+      } else {
+        Alert.alert('Error', 'Unable to confirm apple pay payment');
+      }
     }
   }
 

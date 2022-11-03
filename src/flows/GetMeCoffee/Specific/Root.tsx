@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect} from 'react';
 import {OrderingContext} from '../../../contexts';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {CoffeeRoutes} from '../../../utils/types/navigation.types';
@@ -14,6 +14,25 @@ import {WhenPage} from '../Common/screens/WhenPage';
 const Root = () => {
   const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
   const CoffeeStack = createNativeStackNavigator<CoffeeRoutes>();
+
+  const filterSpecificBasket = useCallback(
+    (items: Item[]) => {
+      const item_names: string[] = items.map(item => item.name);
+      const removed_items: string[] = ordering_state.specific_items
+        .filter(item => !item_names.includes(item.name))
+        .map(item => item.name);
+      const spec_basket: OrderItem[] = ordering_state.specific_basket;
+      if (removed_items.length > 0 && spec_basket.length > 0) {
+        const new_spec_basket = spec_basket.filter(item => !removed_items.includes(item.name));
+        const changes = spec_basket.length - new_spec_basket.length;
+        if (changes > 0) {
+          ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: new_spec_basket});
+          // TODO: Alert the user that certain items have been removed from their basket.
+        }
+      }
+    },
+    [ordering_dispatch, ordering_state.specific_basket, ordering_state.specific_items],
+  );
 
   /**
    * Get all the specific items from the database and subscribe to any changes to them. Update the common and specific basket accordingly.
@@ -31,26 +50,12 @@ const Root = () => {
         const {items, isSynced} = snapshot;
         ordering_dispatch({type: 'SET_SPECIFIC_ITEMS', payload: items});
         if (isSynced) {
-          ordering_dispatch({type: 'SET_SPECIFIC_ITEMS', payload: items});
-          const item_names: string[] = items.map(item => item.name);
-          const removed_items: string[] = ordering_state.specific_items
-            .filter(item => !item_names.includes(item.name))
-            .map(item => item.name);
-          const spec_basket: OrderItem[] = ordering_state.specific_basket;
-          if (removed_items.length > 0 && spec_basket.length > 0) {
-            const new_spec_basket = spec_basket.filter(item => !removed_items.includes(item.name));
-            const changes = spec_basket.length - new_spec_basket.length;
-            if (changes > 0) {
-              ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: new_spec_basket});
-              // TODO: Alert the user that certain items have been removed from their basket.
-            }
-          }
-          console.log('Synced');
+          filterSpecificBasket(items);
         }
       });
       return () => subscription.unsubscribe();
     }
-  }, [ordering_dispatch, ordering_state.current_shop_id, ordering_state.specific_basket]);
+  }, [filterSpecificBasket, ordering_dispatch, ordering_state.current_shop_id]);
 
   return (
     <CoffeeStack.Navigator

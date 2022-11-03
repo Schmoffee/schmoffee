@@ -1,47 +1,70 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { useStripe, initStripe, initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
-import { PageLayout } from '../../../../components/Layouts/PageLayout';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
-import { initializePaymentSheet, openPaymentSheet } from '../../../../utils/helpers/payment';
-import { BasketSection } from '../../../../components/Basket/BasketSection';
-import { PreviewSection } from '../../../../components/PreviewComponents/PreviewSection';
-import { ScheduleSection } from '../../../../components/PreviewComponents/ScheduleSection';
-import { GlobalContext, OrderingContext } from '../../../../contexts';
-import { Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo } from '../../../../models';
-import { Body } from '../../../../../typography';
-import { Colors } from '../../../../../theme';
-import { CONST_SCREEN_ORDER } from '../../../../../constants';
-import { getShopById, sendOrder } from '../../../../utils/queries/datastore';
-import { LocalUser, Location, ShopMarker } from '../../../../utils/types/data.types';
-import PushNotification from '@aws-amplify/pushnotification';
+import {useNavigation} from '@react-navigation/native';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import {ActivityIndicator, Alert, PermissionsAndroid, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  useStripe,
+  initStripe,
+  useGooglePay,
+  GooglePayButton,
+  useApplePay,
+  ApplePayButton,
+} from '@stripe/stripe-react-native';
+import {PageLayout} from '../../../../components/Layouts/PageLayout';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import {
+  createGooglePaymentMethod,
+  initializeGooglePay,
+  initializePaymentSheet,
+  openPaymentSheet,
+  payWithApplePay,
+} from '../../../../utils/helpers/payment';
+import {BasketSection} from '../../../../components/Basket/BasketSection';
+import {PreviewSection} from '../../../../components/PreviewComponents/PreviewSection';
+import {ScheduleSection} from '../../../../components/PreviewComponents/ScheduleSection';
+import {GlobalContext, OrderingContext} from '../../../../contexts';
+import {Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo} from '../../../../models';
+import {Colors} from '../../../../../theme';
+import {CONST_SCREEN_ORDER} from '../../../../../constants';
+import {getShopById, sendOrder, updatePaymentMethod} from '../../../../utils/queries/datastore';
+import {LocalUser, Payment, PaymentParams, ShopMarker} from '../../../../utils/types/data.types';
 import Map from '../../../TrackOrder/components/Map';
-import { Region } from 'react-native-maps';
+import {Region} from 'react-native-maps';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {clearStorageSpecificBasket} from '../../../../utils/helpers/storage';
 
-interface PreviewPageProps { }
-
+interface PreviewPageProps {}
 export const PreviewPage = (props: PreviewPageProps) => {
-  const { global_state } = useContext(GlobalContext);
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
-
+  const {global_state} = useContext(GlobalContext);
+  const {ordering_state} = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
-  const { initPaymentSheet, presentPaymentSheet } = useStripe(); // Stripe hook payment methods
+  const {initPaymentSheet, presentPaymentSheet} = useStripe(); // Stripe hook payment methods
+  const {isGooglePaySupported} = useGooglePay();
+  const {isApplePaySupported} = useApplePay();
   const [loading, setLoading] = useState(true);
+  const [payment, setPayment] = useState<Payment>('card');
   const [mapLoading, setMapLoading] = useState(true);
   const [region, setRegion] = useState<Region>();
   const total: number = useMemo(() => {
-      let totalTemp = ordering_state.specific_basket.reduce(function (acc, item) {
-          return acc + item.quantity * (item.price + getOptionsPrice(item));
-          }, 0).toFixed(2);
-      return totalTemp*100
-      }, [ordering_state.specific_basket]);
-  console.log(total)
+    let totalTemp = ordering_state.specific_basket
+      .reduce(function (acc, item) {
+        return acc + item.quantity * (item.price + getOptionsPrice(item));
+      }, 0)
+      .toFixed(2);
+    return +totalTemp * 100;
+  }, [ordering_state.specific_basket]);
   const [markers, setMarkers] = useState<ShopMarker[]>([]);
   useEffect(() => {
     async function fetchData() {
-      const new_shop: Cafe = await getShopById(ordering_state.current_shop_id as string) as Cafe;
-      setMarkers([{ name: new_shop.name, coords: { latitude: new_shop.latitude, longitude: new_shop.longitude }, description: new_shop.description, is_open: new_shop.is_open, image: new_shop.image }]);
+      const new_shop: Cafe = (await getShopById(ordering_state.current_shop_id as string)) as Cafe;
+      setMarkers([
+        {
+          name: new_shop.name,
+          coords: {latitude: new_shop.latitude, longitude: new_shop.longitude},
+          description: new_shop.description,
+          is_open: new_shop.is_open,
+          image: new_shop.image ? new_shop.image : '',
+        },
+      ]);
       setRegion({
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
@@ -52,7 +75,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
     }
 
     fetchData().then(() => console.log('done'));
-
   }, [ordering_state.current_shop_id]);
 
   // 21007329
@@ -64,8 +86,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
   function getOptionsPrice(item: OrderItem) {
     return item.options
       ? item.options.reduce(function (acc, option) {
-        return acc + option.price;
-      }, 0)
+          return acc + option.price;
+        }, 0)
       : 0;
   }
 
@@ -73,52 +95,76 @@ export const PreviewPage = (props: PreviewPageProps) => {
     initStripe({
       publishableKey:
         'pk_test_51LpXnPHooJo3N51b7Z3VtEqrSdqqibloS52hthuoujRyJMo7cRUnVVXY8HUApFgsmk9MctXNbcLFLftl9qv9QpVL00ynhr4KLf',
+      merchantIdentifier: 'merchant.co.uk.schmoffee',
     }).then(r => 'Stripe initialized');
   }, []);
 
   /**
    * Checkout. If the server is ready and the basket is not empty, proceed to payment.
    */
-  async function checkout() {
-    const user: User = global_state.current_user as User;
+  async function checkout(mode: Payment) {
+    const user: User = global_state.current_user as LocalUser;
+    let paymentParams: PaymentParams;
     setLoading(true);
+    await updatePaymentMethod(user.id, mode);
     let payment_id;
-    if (user && user.customer_id) {
-      payment_id = await initializePaymentSheet(
-        initPaymentSheet,
-        {
+    if (user) {
+      if (user.customer_id) {
+        paymentParams = {
           amount: total,
           currency: 'gbp',
           customer_id: user.customer_id,
-        },
-        user.id,
-      );
-    } else {
-      payment_id = await initializePaymentSheet(
-        initPaymentSheet,
-        {
+        };
+      } else {
+        paymentParams = {
           amount: total,
           name: global_state.current_user?.name,
           phone: global_state.current_user?.phone,
           currency: 'gbp',
-        },
-        user.id,
-      );
-    }
-    if (payment_id) {
-      setLoading(false);
-      console.log('setting: ', payment_id)
-      await proceedToPayment(payment_id);
+        };
+      }
+      if (mode === 'google') {
+        payment_id = await googlePayCheckout(user.id, paymentParams);
+      } else if (mode === 'card') {
+        payment_id = await cardCheckout(user.id, paymentParams);
+        const successful = await openPaymentSheet(presentPaymentSheet);
+        if (!successful) payment_id = null;
+      } else if (mode === 'apple') {
+        payment_id = await applePayCheckout(user.id, paymentParams);
+      }
+
+      if (payment_id) {
+        setLoading(false);
+        if (Platform.OS === 'ios') await PushNotificationIOS.requestPermissions();
+        await handleSendOrder(payment_id);
+      }
     }
     setLoading(false);
   }
 
+  async function googlePayCheckout(user_id: string, paymentParams: PaymentParams) {
+    if (!(await isGooglePaySupported({testEnv: true}))) {
+      Alert.alert('Google Pay is not supported.');
+      return;
+    }
+    await initializeGooglePay();
+    return await createGooglePaymentMethod(user_id, paymentParams);
+  }
+
+  async function cardCheckout(user_id: string, paymentParams: PaymentParams) {
+    return await initializePaymentSheet(initPaymentSheet, paymentParams, user_id);
+  }
+
+  async function applePayCheckout(user_id: string, paymentParams: PaymentParams) {
+    if (!isApplePaySupported) {
+      Alert.alert('Apple Pay is not supported.');
+      return;
+    }
+    return await payWithApplePay(user_id, paymentParams);
+  }
+
   async function handleSendOrder(paymentId: string) {
-      console.log("1 :", paymentId);
-      console.log("2 :", ordering_state.current_shop_id);
-      console.log("3 :", global_state.current_user);
     if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
-        console.log('loooool')
       const user: LocalUser = global_state.current_user as LocalUser;
       const order_info: OrderInfo = {
         sent_time: new Date(Date.now()).toISOString(),
@@ -131,6 +177,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
         device_token: user.device_token,
         platform: platform,
       };
+      console.log('sending order');
       await sendOrder(
         ordering_state.specific_basket,
         total,
@@ -140,25 +187,15 @@ export const PreviewPage = (props: PreviewPageProps) => {
         user_info,
         paymentId,
       );
+      await clearStorageSpecificBasket();
     } else {
       console.log('User or shop or payment_id is not defined');
     }
   }
 
-  /**
-   * Proceed to payment. Open the payment sheet if no error occurs.
-   */
-  async function proceedToPayment(paymentId: string) {
-    const successful = await openPaymentSheet(presentPaymentSheet);
-    if (successful) {
-      // PushNotification.requestIOSPermissions();
-      await handleSendOrder(paymentId);
-    }
-  }
-
   const handleCheckout = async () => {
-    await checkout();
-    navigation.navigate('TrackOrder', { screen: CONST_SCREEN_ORDER });
+    await checkout(payment);
+    navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
   };
 
   return (
@@ -172,19 +209,44 @@ export const PreviewPage = (props: PreviewPageProps) => {
         onPress: handleCheckout,
         buttonText: 'Order',
       }}>
-      <View style={{ flex: 1 }}>
-        <ScrollView style={styles.previewScrollContainer} >
+      <View style={{flex: 1}}>
+        <ScrollView style={styles.previewScrollContainer}>
           <BasketSection />
           <ScheduleSection />
           <PreviewSection title="Location">
             <View style={styles.mapContainer}>
-              {mapLoading ? <ActivityIndicator size="large" color={Colors.blue} /> : <Map markers={markers} region={region} />}
+              {mapLoading ? (
+                <ActivityIndicator size="large" color={Colors.blue} />
+              ) : (
+                <Map markers={markers} region={region} />
+              )}
             </View>
           </PreviewSection>
         </ScrollView>
+        {payment === 'google' && (
+          <GooglePayButton
+            type="standard"
+            onPress={handleCheckout}
+            style={{
+              width: '100%',
+              height: 50,
+            }}
+          />
+        )}
+        {payment === 'apple' && (
+          <ApplePayButton
+            onPress={handleCheckout}
+            type="plain"
+            buttonStyle="black"
+            borderRadius={4}
+            style={{
+              width: '100%',
+              height: 50,
+            }}
+          />
+        )}
       </View>
     </PageLayout>
-
   );
 };
 
@@ -201,8 +263,5 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
     overflow: 'hidden',
-
   },
-
-
 });

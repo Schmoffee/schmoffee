@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useReducer} from 'react';
 import {AuthRoutes} from '../../utils/types/navigation.types';
 import {Signup} from './screens/Signup';
 import {VerifyMobile} from './screens/VerifyMobile';
-import {getFreeTime, getPhone, getTrials, setFreeTime, setTrials} from '../../utils/helpers/storage';
+import {getFreeTime, getIsFirstTime, getPhone, getTrials, setFreeTime, setTrials} from '../../utils/helpers/storage';
 import {signIn} from '../../utils/queries/auth';
 import {CognitoUser} from 'amazon-cognito-identity-js';
 import {AuthState} from '../../utils/types/enums';
@@ -11,15 +11,20 @@ import {GlobalContext, SignInContext, signInData} from '../../contexts';
 import {signInReducer} from '../../reducers';
 import {Alert} from 'react-native';
 import {checkMultiSignIn, getUserById, newSignIn} from '../../utils/queries/datastore';
+import {Intro} from './screens/Intro';
 
 const Root = () => {
   const AuthStack = createNativeStackNavigator<AuthRoutes>();
   const {global_state, global_dispatch} = useContext(GlobalContext);
   const [sign_in_state, sign_in_dispatch] = useReducer(signInReducer, signInData);
+  const [isFirstTime, setIsFirstTime] = React.useState<boolean>(true);
 
   useEffect(() => {
     const init = async () => {
-      await getUserById('me');
+      // Instead of using Datastore.start().
+      await getUserById('init');
+      const is_first: boolean = await getIsFirstTime();
+      setIsFirstTime(is_first);
     };
     init().catch(e => console.log(e));
   }, []);
@@ -47,7 +52,6 @@ const Root = () => {
     const trials = await getTrials();
     if (+trials <= 10000) {
       const user_id = await checkMultiSignIn(phoneNumber, global_state.device_token);
-      console.log('user_id', user_id);
       if (user_id) {
         Alert.alert(
           'Already signed in',
@@ -108,7 +112,7 @@ const Root = () => {
         screenOptions={{
           headerShown: false,
         }}>
-        {/* <AuthStack.Screen name="Intro" component={Intro} /> */}
+        {isFirstTime && <AuthStack.Screen name="Intro" component={Intro} />}
         <AuthStack.Screen name="Signup" component={Signup} />
         <AuthStack.Screen name="VerifyMobile" component={VerifyMobile} />
       </AuthStack.Navigator>

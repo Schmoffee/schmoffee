@@ -4,24 +4,36 @@
  * @param total The total amount to pay
  */
 import {SetupParams} from '@stripe/stripe-react-native/lib/typescript/src/types/PaymentSheet';
-import {InitPaymentSheetResult, PresentPaymentSheetResult} from '@stripe/stripe-react-native';
+import {
+  createGooglePayPaymentMethod,
+  initGooglePay,
+  InitPaymentSheetResult,
+  presentApplePay,
+  PresentPaymentSheetResult,
+} from '@stripe/stripe-react-native';
 import {PaymentParams} from '../types/data.types';
 import {updateCustomerId} from '../queries/datastore';
+import {Alert} from 'react-native';
+import {setClientSecret} from './storage';
 
-async function fetchPaymentSheetParams(paymentParams: PaymentParams) {
+async function createPaymentIntent(paymentParams: PaymentParams, paymentMethod?: string) {
   let body;
   if (paymentParams.customer_id) {
-    body = {amount: paymentParams.amount, customerID: paymentParams.customer_id, currency: paymentParams.currency};
+    body = {
+      amount: paymentParams.amount,
+      customerID: paymentParams.customer_id,
+      currency: paymentParams.currency,
+      payment_method: paymentMethod,
+    };
   } else {
-      console.log('new');
     body = {
       amount: paymentParams.amount,
       name: paymentParams.name,
       phone: paymentParams.phone,
       currency: paymentParams.currency,
+      payment_method: paymentMethod,
     };
   }
-  console.log(body);
 
   const response = await fetch('https://myxpomnspkvsnn4i2kb6uuonta0cjdap.lambda-url.eu-central-1.on.aws/', {
     method: 'POST',
@@ -38,12 +50,12 @@ async function fetchPaymentSheetParams(paymentParams: PaymentParams) {
   });
   if (response) {
     const data = await response.json();
-    console.log(data);
-    const {paymentIntent, ephemeralKey, customer} = data;
+    const {client_secret, ephemeralKey, customer, paymentIntentId} = data;
     return {
-      paymentIntent,
+      client_secret,
       ephemeralKey,
       customer,
+      paymentIntentId,
     };
   }
 }
@@ -58,31 +70,28 @@ async function initializePaymentSheet(
   initPaymentSheet: (params: SetupParams) => Promise<InitPaymentSheetResult>,
   paymentParams: PaymentParams,
   userID: string,
-): string | null {
-  const response = await fetchPaymentSheetParams(paymentParams);
+): Promise<string | null> {
+  const response = await createPaymentIntent(paymentParams);
   if (response) {
     await updateCustomerId(response.customer, userID);
     const {error} = await initPaymentSheet({
       customerId: response.customer,
       customerEphemeralKeySecret: response.ephemeralKey,
-      paymentIntentClientSecret: response.paymentIntent,
+      paymentIntentClientSecret: response.client_secret,
       merchantDisplayName: 'Schmoffee',
       customFlow: true,
       defaultBillingDetails: {
         address: {
           country: 'UK',
+          city: 'London',
         },
-      },
-      googlePay: {
-        merchantCountryCode: 'UK',
-        testEnv: true, // use test environment
       },
     });
     if (error) {
       console.log(error);
       return null;
     } else {
-      return response.paymentIntent;
+      return response.paymentIntentId;
     }
   } else {
     return null;
@@ -103,7 +112,6 @@ async function openPaymentSheet(presentPaymentSheet: () => Promise<PresentPaymen
     console.log(error);
     return false;
   } else {
-    console.log(paymentOption);
     return true;
   }
 }
@@ -127,8 +135,98 @@ async function cancelPayment(payment_id: string) {
   });
   if (response) {
     const data = await response.json();
-    console.log(data);
   }
 }
 
-export {initializePaymentSheet, openPaymentSheet, cancelPayment};
+async function confirmGooglePayPayment(payment_id: string) {
+  const body = {
+    payment_id: payment_id,
+  };
+  const response = await fetch('https://cisd7652yszt7dme7yl2wlblny0wlrxz.lambda-url.eu-central-1.on.aws/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  }).catch(error => {
+    if (error.toString() === 'TypeError: Network request failed') {
+      console.log('Network request failed');
+    } else {
+      console.log(error);
+    }
+  });
+  if (response) {
+    const data = await response.json();
+  }
+}
+
+const createGooglePaymentMethod = async (userID: string, paymentParams: PaymentParams) => {
+  const {error, paymentMethod} = await createGooglePayPaymentMethod({
+    amount: paymentParams.amount,
+    currencyCode: 'GBP',
+  });
+
+  if (error) {
+    Alert.alert(error.code, error.message);
+    return;
+  } else if (paymentMethod) {
+    const paymentResponse = await createPaymentIntent(paymentParams, paymentMethod.id);
+    if (paymentResponse) {
+      await updateCustomerId(paymentResponse.customer, userID);
+      return paymentResponse.paymentIntentId;
+    } else {
+      return null;
+    }
+  }
+};
+
+async function initializeGooglePay() {
+  const {error} = await initGooglePay({
+    testEnv: true,
+    merchantName: 'Schmoffee',
+    countryCode: 'UK',
+    billingAddressConfig: {
+      format: 'FULL',
+      isPhoneNumberRequired: true,
+      isRequired: false,
+    },
+    existingPaymentMethodRequired: false,
+    isEmailRequired: true,
+  });
+
+  if (error) {
+    Alert.alert(error.code, error.message);
+    return;
+  }
+}
+
+async function payWithApplePay(userID: string, paymentParams: PaymentParams) {
+  const {error} = await presentApplePay({
+    cartItems: [{label: 'Your Order', amount: paymentParams.amount.toString(), paymentType: 'Immediate'}],
+    country: 'UK',
+    currency: 'GBP',
+    requiredBillingContactFields: ['phoneNumber', 'name'],
+  });
+  if (error) {
+    Alert.alert('Apple Pay payment sheet error occurred.');
+  } else {
+    const paymentResponse = await createPaymentIntent(paymentParams);
+    if (paymentResponse) {
+      await setClientSecret(paymentResponse.client_secret);
+      await updateCustomerId(paymentResponse.customer, userID);
+      return paymentResponse.paymentIntentId;
+    } else {
+      return null;
+    }
+  }
+}
+
+export {
+  initializePaymentSheet,
+  openPaymentSheet,
+  cancelPayment,
+  initializeGooglePay,
+  createGooglePaymentMethod,
+  confirmGooglePayPayment,
+  payWithApplePay,
+};

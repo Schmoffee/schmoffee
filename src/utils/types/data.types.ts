@@ -12,6 +12,8 @@ export type HubPayload = {
 // Dictionary from the minute of the day to the list of orders currently running at that minute.
 export type DigitalQueue = {[minute: number]: string[]};
 
+export type Payment = 'card' | 'google' | 'apple';
+
 export type GlobalState = {
   auth_state: AuthState;
   current_user: LocalUser | null;

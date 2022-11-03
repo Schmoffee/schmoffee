@@ -24,7 +24,6 @@ export const Signup = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [loading, setLoading] = useState(false);
-  console.log(mode);
 
   function handleModeChange() {
     setMode(mode === 'signup' ? 'login' : 'signup');
