@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   root: {
     justifyContent: 'flex-start',
     position: 'absolute',
-    bottom: Spacings.s3,
+    bottom: Spacings.s1,
     width: '100%',
     height: 100,
     zIndex: 999,

@@ -13,6 +13,7 @@ import HamburgerIcon from '../HamburgerMenu/HamburgerIcon';
 interface PageLayoutProps extends PropsWithChildren {
     style?: any;
     header: string;
+    headerColor?: string;
     headerChildren?: React.ReactNode;
     subHeader?: string;
     footer?: FooterType;
@@ -40,7 +41,7 @@ export const PageLayout = (props: PageLayoutProps) => {
                             </View>
                         </TouchableOpacity>
                     ) : null}
-                    <Heading size="default" weight="Extrabld" color={Colors.black}>
+                    <Heading size="default" weight="Bold" color={props.headerColor}>
                         {props.header}
                     </Heading>
                     <View style={styles.headerChildren}>{props.headerChildren}</View>
@@ -55,7 +56,7 @@ export const PageLayout = (props: PageLayoutProps) => {
 
                 <View style={styles.contentContainer}>{props.children}</View>
                 {props.footer ? (
-                    <View>
+                    <View style={styles.footer}>
                         <Footer {...props.footer} />
                     </View>
                 ) : null}
@@ -68,9 +69,10 @@ export const PageLayout = (props: PageLayoutProps) => {
 const styles = StyleSheet.create({
 
     root: {
-        paddingTop: Spacings.s11,
-        paddingBottom: Spacings.s9,
+        paddingTop: Spacings.s10,
+        paddingBottom: Spacings.s7,
         height: '100%',
+        borderRadius: 15,
     },
     contentContainer: {
         flex: 1,
@@ -118,4 +120,8 @@ const styles = StyleSheet.create({
     childrenContainer: {
         marginBottom: Spacings.s4,
     },
+    footer: {
+        marginBottom: Spacings.s10,
+    },
+
 });

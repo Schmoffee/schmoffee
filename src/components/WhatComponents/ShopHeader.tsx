@@ -8,7 +8,7 @@ import { Heading } from "../../../typography";
 const { height: wHeight, width: wWidth } = Dimensions.get("window");
 
 
-export const HEADER_IMAGE_HEIGHT = wHeight / 3;
+export const HEADER_IMAGE_HEIGHT = wHeight / 4;
 
 interface ShopHeaderProps {
     y: Animated.SharedValue<number>;

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Platform, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useStripe, initStripe, initPaymentSheet, presentPaymentSheet } from '@stripe/stripe-react-native';
 import { PageLayout } from '../../../../components/Layouts/PageLayout';
 import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
@@ -18,26 +18,33 @@ import { LocalUser, Location, ShopMarker } from '../../../../utils/types/data.ty
 import PushNotification from '@aws-amplify/pushnotification';
 import Map from '../../../TrackOrder/components/Map';
 import { Region } from 'react-native-maps';
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-interface PreviewPageProps { }
+interface PreviewPageProps {
+  anim: Animated.SharedValue<number>;
+}
 
 export const PreviewPage = (props: PreviewPageProps) => {
   const { global_state } = useContext(GlobalContext);
   const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
-
+  const HOME_HEIGHT = useWindowDimensions().height;
   const navigation = useNavigation<CoffeeRoutes>();
   const { initPaymentSheet, presentPaymentSheet } = useStripe(); // Stripe hook payment methods
   const [loading, setLoading] = useState(true);
   const [mapLoading, setMapLoading] = useState(true);
   const [region, setRegion] = useState<Region>();
+
+
   const total: number = useMemo(() => {
-      let totalTemp = ordering_state.specific_basket.reduce(function (acc, item) {
-          return acc + item.quantity * (item.price + getOptionsPrice(item));
-          }, 0).toFixed(2);
-      return totalTemp*100
-      }, [ordering_state.specific_basket]);
+    let totalTemp = ordering_state.specific_basket.reduce(function (acc, item) {
+      return acc + item.quantity * (item.price + getOptionsPrice(item));
+    }, 0).toFixed(2);
+    return totalTemp * 100
+  }, [ordering_state.specific_basket]);
   console.log(total)
+
   const [markers, setMarkers] = useState<ShopMarker[]>([]);
+
   useEffect(() => {
     async function fetchData() {
       const new_shop: Cafe = await getShopById(ordering_state.current_shop_id as string) as Cafe;
@@ -114,11 +121,11 @@ export const PreviewPage = (props: PreviewPageProps) => {
   }
 
   async function handleSendOrder(paymentId: string) {
-      console.log("1 :", paymentId);
-      console.log("2 :", ordering_state.current_shop_id);
-      console.log("3 :", global_state.current_user);
+    console.log("1 :", paymentId);
+    console.log("2 :", ordering_state.current_shop_id);
+    console.log("3 :", global_state.current_user);
     if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
-        console.log('loooool')
+      console.log('loooool')
       const user: LocalUser = global_state.current_user as LocalUser;
       const order_info: OrderInfo = {
         sent_time: new Date(Date.now()).toISOString(),
@@ -161,34 +168,56 @@ export const PreviewPage = (props: PreviewPageProps) => {
     navigation.navigate('TrackOrder', { screen: CONST_SCREEN_ORDER });
   };
 
+
+  const rPreviewStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: ordering_state.specific_basket.length > 0 ? props.anim.value + (HOME_HEIGHT + 420) : props.anim.value + (HOME_HEIGHT + 500),
+        },
+
+      ],
+      // opacity: (props.anim.value / HOME_HEIGHT) * 10,
+    };
+  });
+
   return (
-    <PageLayout
-      header="Preview Order"
-      subHeader="Make sure everything looks good."
-      showCircle
-      footer={{
-        type: 'basket',
-        buttonDisabled: false,
-        onPress: handleCheckout,
-        buttonText: 'Order',
-      }}>
-      <View style={{ flex: 1 }}>
-        <ScrollView style={styles.previewScrollContainer} >
-          <BasketSection />
-          <ScheduleSection />
-          <PreviewSection title="Location">
-            <View style={styles.mapContainer}>
-              {mapLoading ? <ActivityIndicator size="large" color={Colors.blue} /> : <Map markers={markers} region={region} />}
-            </View>
-          </PreviewSection>
-        </ScrollView>
-      </View>
-    </PageLayout>
+    <Animated.View style={[styles.root, rPreviewStyle]}>
+      <PageLayout
+        // header="Finish your order"
+        // headerColor='white'
+        // subHeader="Make sure everything looks good."
+        footer={{
+          type: 'basket',
+          buttonDisabled: false,
+          onPress: handleCheckout,
+          buttonText: 'Order',
+        }}
+        backgroundColor={'#1c1414'}
+
+      >
+        <View style={{ flex: 1 }}>
+          <ScrollView style={styles.previewScrollContainer} >
+            <BasketSection />
+            <ScheduleSection />
+            <PreviewSection title="Location">
+              <View style={styles.mapContainer}>
+                {mapLoading ? <ActivityIndicator size="large" color={Colors.blue} /> : <Map markers={markers} region={region} />}
+              </View>
+            </PreviewSection>
+          </ScrollView>
+        </View>
+      </PageLayout>
+    </Animated.View >
 
   );
 };
 
 const styles = StyleSheet.create({
+  root: {
+    borderRadius: 2,
+    zIndex: 1,
+  },
   previewScrollContainer: {
     flex: 1,
     backgroundColor: '#fff',

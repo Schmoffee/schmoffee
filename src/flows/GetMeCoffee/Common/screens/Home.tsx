@@ -128,7 +128,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -270,
     left: -90,
-
-
   },
 });

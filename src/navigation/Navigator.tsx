@@ -30,7 +30,7 @@ function RootNavigator() {
         animation: 'none'
       }}>
       <RootStack.Group>
-        {global_state.auth_state === AuthState.SIGNED_IN ? (
+        {global_state.auth_state !== AuthState.SIGNED_IN ? (
           <>
             <RootStack.Screen name="Coffee" component={CoffeeRoot} />
             <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />
