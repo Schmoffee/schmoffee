@@ -12,7 +12,7 @@ export const PreviewSection = (props: PreviewSectionProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Body size="medium" weight="Bold">
+        <Body size="medium" weight="Bold" color={Colors.white}>
           {props.title}
         </Body>
       </View>
@@ -23,7 +23,7 @@ export const PreviewSection = (props: PreviewSectionProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.greyLight1,
+    backgroundColor: Colors.darkBrown,
     marginVertical: Spacings.s2,
     height: 250,
     shadowColor: '#000000',

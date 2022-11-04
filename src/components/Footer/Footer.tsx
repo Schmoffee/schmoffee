@@ -61,7 +61,7 @@ export const Footer = (props: FooterType) => {
           {props.type === 'basket' ? (
             <>
               <View style={styles.basketLengthContainer}>
-                <Body size="large" weight="Bold" color={props.buttonDisabled ? 'transparent' : Colors.darkBrown2}>
+                <Body size="large" weight="Bold" color={props.buttonDisabled ? 'transparent' : Colors.darkBrown}>
                   {getBasketQuantity()}
                 </Body>
               </View>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     // height: 100,
   },
   basketLengthContainer: {
-    backgroundColor: Colors.goldFaded4,
+    backgroundColor: Colors.white,
     borderRadius: 10,
     width: 30,
     height: 25,

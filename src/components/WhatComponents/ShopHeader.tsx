@@ -54,7 +54,6 @@ export const ShopHeader = (props: ShopHeaderProps) => {
 
 
     return (
-
         <Animated.View style={[styles.headerContainer]}>
             <Animated.Image
                 source={props.source}
@@ -74,9 +73,8 @@ export const ShopHeader = (props: ShopHeaderProps) => {
 const styles = StyleSheet.create({
     headerContainer: {
         position: "absolute",
-        top: 0,
+        top: 20,
         left: 0,
-
         width: wWidth,
         height: HEADER_IMAGE_HEIGHT,
         overflow: "hidden",

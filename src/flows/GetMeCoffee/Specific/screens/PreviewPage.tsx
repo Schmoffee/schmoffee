@@ -11,7 +11,7 @@ import { ScheduleSection } from '../../../../components/PreviewComponents/Schedu
 import { GlobalContext, OrderingContext } from '../../../../contexts';
 import { Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo } from '../../../../models';
 import { Body } from '../../../../../typography';
-import { Colors } from '../../../../../theme';
+import { Colors, Spacings } from '../../../../../theme';
 import { CONST_SCREEN_ORDER } from '../../../../../constants';
 import { getShopById, sendOrder } from '../../../../utils/queries/datastore';
 import { LocalUser, Location, ShopMarker } from '../../../../utils/types/data.types';
@@ -19,9 +19,9 @@ import PushNotification from '@aws-amplify/pushnotification';
 import Map from '../../../TrackOrder/components/Map';
 import { Region } from 'react-native-maps';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { Footer } from '../../../../components/Footer/Footer';
 
 interface PreviewPageProps {
-  anim: Animated.SharedValue<number>;
 }
 
 export const PreviewPage = (props: PreviewPageProps) => {
@@ -168,59 +168,50 @@ export const PreviewPage = (props: PreviewPageProps) => {
     navigation.navigate('TrackOrder', { screen: CONST_SCREEN_ORDER });
   };
 
-
-  const rPreviewStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateY: ordering_state.specific_basket.length > 0 ? props.anim.value + (HOME_HEIGHT + 420) : props.anim.value + (HOME_HEIGHT + 500),
-        },
-
-      ],
-      // opacity: (props.anim.value / HOME_HEIGHT) * 10,
-    };
-  });
-
   return (
-    <Animated.View style={[styles.root, rPreviewStyle]}>
-      <PageLayout
-        // header="Finish your order"
-        // headerColor='white'
-        // subHeader="Make sure everything looks good."
-        footer={{
-          type: 'basket',
-          buttonDisabled: false,
-          onPress: handleCheckout,
-          buttonText: 'Order',
-        }}
-        backgroundColor={'#1c1414'}
+    // <PageLayout
+    //   // header="Finish your order"
+    //   // headerColor='white'
+    //   // subHeader="Make sure everything looks good."
+    //   footer={{
+    //     type: 'basket',
+    //     buttonDisabled: false,
+    //     onPress: handleCheckout,
+    //     buttonText: 'Order',
+    //   }}
+    //   backgroundColor={'#1c1414'}
 
-      >
-        <View style={{ flex: 1 }}>
-          <ScrollView style={styles.previewScrollContainer} >
-            <BasketSection />
-            <ScheduleSection />
-            <PreviewSection title="Location">
-              <View style={styles.mapContainer}>
-                {mapLoading ? <ActivityIndicator size="large" color={Colors.blue} /> : <Map markers={markers} region={region} />}
-              </View>
-            </PreviewSection>
-          </ScrollView>
-        </View>
-      </PageLayout>
-    </Animated.View >
+    // >
+    <View style={styles.root}>
+      <ScrollView style={styles.previewScrollContainer} >
+        <BasketSection />
+        <ScheduleSection />
+        <PreviewSection title="Location">
+          <View style={styles.mapContainer}>
+            {mapLoading ? <ActivityIndicator size="large" color={Colors.blue} /> : <Map markers={markers} region={region} />}
+          </View>
+        </PreviewSection>
+      </ScrollView>
+      <View style={styles.footer}>
+        <Footer type="basket" buttonDisabled={false} onPress={handleCheckout} buttonText="Order" />
+      </View>
+    </View>
 
   );
 };
 
 const styles = StyleSheet.create({
   root: {
-    borderRadius: 2,
-    zIndex: 1,
+    flex: 1,
+    // zIndex: 1,
+    paddingTop: Spacings.s10,
+    backgroundColor: Colors.darkBrown,
+    height: '100%',
   },
   previewScrollContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    // backgroundColor: 'red',
+    height: '100%',
   },
 
   mapContainer: {
@@ -232,6 +223,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
 
   },
+
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    zIndex: 1,
+  },
+
 
 
 });

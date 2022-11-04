@@ -38,11 +38,6 @@ export const BasketSection = (props: BasketSectionProps) => {
     }));
     return (
         <Animated.View style={[styles.container, rContainerStyle]} >
-            <Animated.View style={[styles.header, rHeaderStyle]}>
-                <Body size="medium" weight="Bold">
-                    Basket
-                </Body>
-            </Animated.View>
 
             {
                 ordering_state.specific_basket.length === 0 &&
@@ -68,7 +63,7 @@ export const BasketSection = (props: BasketSectionProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.greyLight1,
+        backgroundColor: Colors.darkBrown,
         marginVertical: Spacings.s2,
         height: 120,
         shadowColor: '#000000',
@@ -93,7 +88,6 @@ const styles = StyleSheet.create({
     },
 
     itemRow: {
-        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
     },

@@ -15,7 +15,7 @@ export const ScheduleSection = (props: ScheduleSectionProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Body size="medium" weight="Bold">
+        <Body size="medium" weight="Bold" color={Colors.white}>
           Pick up time
         </Body>
       </View>
@@ -36,7 +36,7 @@ export const ScheduleSection = (props: ScheduleSectionProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.greyLight1,
+    backgroundColor: Colors.darkBrown,
     marginVertical: Spacings.s2,
     height: 100,
     shadowColor: '#000000',

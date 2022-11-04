@@ -1,24 +1,24 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Alert, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
-import {Colors, Spacings} from '../../../theme';
-import {Body} from '../../../typography';
-import {OrderingContext} from '../../contexts';
-import {OrderItem} from '../../models';
-import {CoffeeRoutes} from '../../utils/types/navigation.types';
-import {setSpecificBasket} from '../../utils/helpers/storage';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Colors, Spacings } from '../../../theme';
+import { Body } from '../../../typography';
+import { OrderingContext } from '../../contexts';
+import { OrderItem } from '../../models';
+import { CoffeeRoutes } from '../../utils/types/navigation.types';
+import { setSpecificBasket } from '../../utils/helpers/storage';
 
 interface BasketItemProps {
   item: OrderItem;
 }
 
 export const BasketItem = (props: BasketItemProps) => {
-  const {item} = props;
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { item } = props;
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
   const imageRef = useRef<Image>();
-  const anim = useSharedValue(1);
+  const anim = useSharedValue(0);
   const [expanded, setExpanded] = useState(false);
 
   const getQuantity = () => {
@@ -35,8 +35,8 @@ export const BasketItem = (props: BasketItemProps) => {
     const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
     if (index > -1) {
       const newBasket: OrderItem[] = ordering_state.specific_basket;
-      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-      ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
       await setSpecificBasket(newBasket);
     }
   };
@@ -58,20 +58,20 @@ export const BasketItem = (props: BasketItemProps) => {
           onPress: async () => {
             if (index > -1) {
               const newBasket = ordering_state.specific_basket;
-              const new_item = {...newBasket[index], quantity: newBasket[index].quantity - 1};
+              const new_item = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
 
               if (newBasket[index].quantity === 1) {
                 newBasket.splice(index, 1);
               } else {
                 newBasket[index] = new_item;
               }
-              ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+              ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
               await setSpecificBasket(newBasket);
             }
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -82,8 +82,8 @@ export const BasketItem = (props: BasketItemProps) => {
       if (newBasket[index].quantity === 1) {
         onRemoveItem();
       } else {
-        newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity - 1};
-        ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+        newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
+        ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
         await setSpecificBasket(newBasket);
       }
     }
@@ -92,52 +92,57 @@ export const BasketItem = (props: BasketItemProps) => {
   const rItemStyle = useAnimatedStyle(
     () => ({
       marginHorizontal: interpolate(anim.value, [0, 1], [-4, 15]),
-      transform: [{scale: interpolate(anim.value, [0, 1], [1, 1.15])}],
+      transform: [{ scale: interpolate(anim.value, [0, 1], [1, 1.15]) }],
     }),
     [],
   );
 
   const rQuantityStyle = useAnimatedStyle(() => {
     return {
-      transform: [{translateX: 40 * -anim.value}, {translateY: 4 * -anim.value}],
+      transform: [{ translateX: 39 * -anim.value }, { translateY: 4 * -anim.value }],
     };
   }, []);
 
   const rQuantityLabelStyle = useAnimatedStyle(() => {
     return {
       // opacity: anim.value,
-      transform: [{translateX: 24.5 * anim.value}],
+      transform: [{ translateX: 24.5 * anim.value }],
     };
   }, []);
 
   const rIncrQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateX: 24 * anim.value}],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [50, 80]) }],
     };
   }, []);
 
   const rRedQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateX: 114 * -anim.value}],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [-80, -52]) }],
     };
   }, []);
 
   const rItemNameStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateY: 2 * anim.value}],
+      transform: [{ translateY: 8 * anim.value }],
     };
   }, []);
 
   useEffect(() => {
     if (!expanded) {
       anim.value = withTiming(0);
-    } else {
+    } else if (expanded) {
       anim.value = withTiming(1);
     }
-  }, [expanded, anim]);
+    else {
+      anim.value = withTiming(0);
+    }
+  }, [expanded]);
+
+
 
   const onItemPress = () => {
     // 'worklet';
@@ -163,7 +168,7 @@ export const BasketItem = (props: BasketItemProps) => {
             <Image ref={imageRef} source={props.item.image} style={styles.image} />
             <Animated.View style={[styles.quantityContainer, rQuantityStyle]}>
               <Animated.View style={[styles.quantityLabel, rQuantityLabelStyle]}>
-                <Body size="small" weight="Regular" color={Colors.darkBrown2}>
+                <Body size="medium" weight="Bold" color={Colors.darkBrown}>
                   {getQuantity()}
                 </Body>
               </Animated.View>
@@ -181,11 +186,11 @@ export const BasketItem = (props: BasketItemProps) => {
           </View>
         </Animated.View>
 
-        <Animated.View style={[styles.itemName]}>
+        {/* <Animated.View style={[styles.itemName]}>
           <Body size="small" weight="Regular" color={Colors.darkBrown2}>
             {props.item.name}
           </Body>
-        </Animated.View>
+        </Animated.View> */}
       </View>
     </TouchableOpacity>
   );
@@ -193,52 +198,62 @@ export const BasketItem = (props: BasketItemProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.greyLight1,
-    marginVertical: Spacings.s2,
-    flex: 1,
+    width: 90,
+    height: 70,
+    justifyContent: 'center',
+    // backgroundColor: Colors.greenFaded1,
+
   },
 
   item: {
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: Spacings.s2,
-    // backgroundColor: 'red',
+
+
   },
   itemImage: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 30,
-    // backgroundColor: Colors.red,
+    borderWidth: 3.5,
+    borderColor: Colors.white,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
+    backgroundColor: Colors.red,
+
+
   },
   image: {
-    width: 45,
+    width: 50,
     height: 50,
+    borderRadius: 30,
   },
 
   quantityContainer: {
-    flexDirection: 'row',
-    width: 60,
-    height: 20,
-    // backgroundColor: Colors.blue,
-    position: 'absolute',
-    top: 0,
-    right: -60,
-    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    position: 'relative',
+    top: -40,
+    right: -15,
   },
   quantityLabel: {
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: Colors.goldFaded2,
+    backgroundColor: Colors.white,
+    position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
   },
   quantityPlusButton: {
-    width: 30,
+    zIndex: -6,
+    width: 22,
     height: 20,
     borderRadius: 10,
     backgroundColor: Colors.white,

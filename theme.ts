@@ -29,7 +29,7 @@ export const Colors = {
   goldLight1: '#D5B57A',
   goldLight2: '#DDC393',
   goldLight3: '#f3fbff',
-  darkBrown: '#3B1A0B',
+  darkBrown: '#1c1414',
   darkBrown2: '#3B2C1E',
 };
 
