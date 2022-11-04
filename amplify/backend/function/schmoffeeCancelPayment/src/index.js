@@ -6,7 +6,8 @@ const stripe = require('stripe')(
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
 exports.handler = async event => {
-  const payment_intent_id = event.body.payment_id;
+  const body = JSON.parse(event.body);
+  const payment_intent_id = body.payment_id;
   let retval;
   let stat_code;
   try {

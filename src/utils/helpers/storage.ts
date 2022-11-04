@@ -59,29 +59,6 @@ async function getFreeTime(): Promise<string | void> {
 /**
  * Set the time when the app can be used again.
  */
-async function setIsLocatable(isLocatable: boolean) {
-  try {
-    await AsyncStorage.setItem('@IsLocatable', String(isLocatable));
-  } catch (err) {
-    console.log('Error setting isLocatable ', err);
-  }
-}
-
-/**
- * Set the time when the app can be used again.
- */
-async function getIsLocatable() {
-  try {
-    const jsonValue = await AsyncStorage.getItem('@IsLocatable');
-    return jsonValue === 'true';
-  } catch (err) {
-    console.log('Error getting isLocatable', err);
-  }
-}
-
-/**
- * Set the time when the app can be used again.
- */
 async function setTrials(trials: number) {
   try {
     await AsyncStorage.setItem('@Trials', String(trials));
@@ -217,6 +194,33 @@ async function clearStorageSpecificBasket() {
   await setSpecificBasket([]);
 }
 
+/**
+ * Retrieve the basket from the storage.
+ * @return Array if the basket exists, return it, otherwise return empty array
+ */
+async function getClientSecret(): Promise<string | null> {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@ClientSecret');
+    return jsonValue ? JSON.parse(jsonValue) : null;
+  } catch (err) {
+    console.log('Error getting client secret', err);
+    return null;
+  }
+}
+
+/**
+ * Set the storage basket to the given new basket.
+ * @param secret
+ */
+async function setClientSecret(secret: string): Promise<void> {
+  try {
+    const jsonValue = JSON.stringify(secret);
+    await AsyncStorage.setItem('@ClientSecret', jsonValue);
+  } catch (err) {
+    console.log('Error setting client secret', err);
+  }
+}
+
 export {
   initiateStorage,
   getIsFirstTime,
@@ -230,10 +234,10 @@ export {
   getCurrentShopId,
   setFreeTime,
   getFreeTime,
-  getIsLocatable,
-  setIsLocatable,
   getTrials,
   setTrials,
   setPhone,
   getPhone,
+  setClientSecret,
+  getClientSecret,
 };

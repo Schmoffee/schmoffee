@@ -19,8 +19,6 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
 
-  console.log(item.image);
-
   useEffect(() => {
     anim.value = -1;
     anim.value = withTiming(1, {

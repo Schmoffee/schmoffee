@@ -11,6 +11,7 @@ import {TrackOrderAction} from '../types/data.types';
 const subscribeToLocation = (watchID: {current: any}, dispatch: Dispatch<TrackOrderAction>) => {
   watchID.current = Geolocation.watchPosition(
     async (position: {coords: {longitude: any; latitude: any}}) => {
+      console.log(position);
       dispatch({type: 'SET_LOCATION', payload: position.coords});
     },
     (error: any) => {
@@ -35,11 +36,11 @@ const requestLocationPermission = async (): Promise<boolean> => {
   } else {
     try {
       const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
-        buttonNegative: undefined,
-        buttonNeutral: undefined,
-        buttonPositive: '',
+        buttonNegative: 'No',
+        buttonNeutral: 'Neutral',
+        buttonPositive: 'Yes',
         title: 'Location Access Required',
-        message: 'This app needs to access your location',
+        message: 'This App needs to Access your location',
       });
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } catch (err) {

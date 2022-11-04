@@ -28,7 +28,6 @@ async function createSignUpUser(phone: string, name: string, device_token: strin
     new User({
       phone: phone,
       name: name,
-      is_signed_in: false,
       device_token: device_token,
     }),
   );
@@ -37,7 +36,6 @@ async function createSignUpUser(phone: string, name: string, device_token: strin
 async function getUserByPhoneNumber(phone_number: string): Promise<User | null> {
   try {
     const result = await DataStore.query(User, c => c.phone('eq', phone_number));
-    console.log(result);
     return result[0];
   } catch (error) {
     console.log(error);
@@ -106,7 +104,6 @@ async function sendOrder(
       display: true,
     }),
   );
-  console.log(order);
   return order.id;
 }
 
