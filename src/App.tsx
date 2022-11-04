@@ -12,7 +12,7 @@ import {updateEndpoint} from './utils/helpers/notifications';
 import Navigator from './navigation/Navigator';
 import {User} from './models';
 import {firebase} from '@react-native-firebase/messaging';
-
+signOut();
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
 

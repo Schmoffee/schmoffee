@@ -1,8 +1,6 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useContext, useEffect, useReducer} from 'react';
 import {AuthRoutes} from '../../utils/types/navigation.types';
-import {Signup} from './screens/Signup';
-import {VerifyMobile} from './screens/VerifyMobile';
 import {getFreeTime, getIsFirstTime, getPhone, getTrials, setFreeTime, setTrials} from '../../utils/helpers/storage';
 import {signIn} from '../../utils/queries/auth';
 import {CognitoUser} from 'amazon-cognito-identity-js';
@@ -12,6 +10,7 @@ import {signInReducer} from '../../reducers';
 import {Alert} from 'react-native';
 import {checkMultiSignIn, getUserById, newSignIn} from '../../utils/queries/datastore';
 import {Intro} from './screens/Intro';
+import AuthPage from './screens/AuthPage';
 
 const Root = () => {
   const AuthStack = createNativeStackNavigator<AuthRoutes>();
@@ -108,13 +107,12 @@ const Root = () => {
   return (
     <SignInContext.Provider value={{sign_in_state, sign_in_dispatch, sendOTP}}>
       <AuthStack.Navigator
-        initialRouteName="Signup"
+        initialRouteName="AuthPage"
         screenOptions={{
           headerShown: false,
         }}>
         {isFirstTime && <AuthStack.Screen name="Intro" component={Intro} />}
-        <AuthStack.Screen name="Signup" component={Signup} />
-        <AuthStack.Screen name="VerifyMobile" component={VerifyMobile} />
+        <AuthStack.Screen name="AuthPage" component={AuthPage} />
       </AuthStack.Navigator>
     </SignInContext.Provider>
   );
