@@ -12,18 +12,25 @@ import {updateEndpoint} from './utils/helpers/notifications';
 import Navigator from './navigation/Navigator';
 import {User} from './models';
 import {firebase} from '@react-native-firebase/messaging';
+import {Alerts} from './utils/helpers/alerts';
 signOut();
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
 
+  /**
+   * This effect runs a dummy database query to manually initiate the synchronisation with the cloud.
+   */
   useEffect(() => {
     const init = async () => {
       // Instead of using Datastore.start().
       await getUserById('init');
     };
-    init().catch(e => console.log(e));
+    init().catch(e => Alerts.databaseAlert());
   }, []);
 
+  /**
+   * This effect attachs a listener to the back button events on Android to create a custome behaviour.
+   */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       console.log('back pressed');
@@ -32,6 +39,9 @@ const App = () => {
     return () => backHandler.remove();
   }, []);
 
+  /**
+   * Get the unique device token for the current device and update he endpoint.
+   */
   useEffect(() => {
     async function getDeviceToken() {
       if (Platform.OS === 'ios') {
@@ -40,7 +50,7 @@ const App = () => {
           global_dispatch({type: 'SET_DEVICE_TOKEN', payload: fcmToken});
           await updateEndpoint(fcmToken);
         } else {
-          Alert.alert('Failed', 'No token received');
+          Alerts.tokenAlert();
         }
       } else {
         NativeModules.RNPushNotification.getToken(
@@ -49,7 +59,7 @@ const App = () => {
             await updateEndpoint(token);
           },
           (error: any) => {
-            Alert.alert('Failed', 'No token received');
+            Alerts.tokenAlert();
             console.log(error);
           },
         );
@@ -59,6 +69,9 @@ const App = () => {
     getDeviceToken().then(() => console.log('device token refreshed'));
   }, []);
 
+  /**
+   * This effect attachs 2 listeners respectively to the auth and datastore hub events.
+   */
   useEffect(() => {
     const auth_hub = Hub.listen('auth', data => authListener(data, global_state, global_dispatch));
     const datastore_hub = Hub.listen('datastore', data => datastoreListener(data, global_dispatch));
@@ -100,7 +113,7 @@ const App = () => {
       }
     };
     if (global_state.device_token !== '') {
-      refreshAuthState().catch(error => console.log(error));
+      refreshAuthState().catch(error => Alerts.elseAlert());
     }
   }, [global_state.current_user?.id, global_state.auth_state, global_state.device_token]);
 

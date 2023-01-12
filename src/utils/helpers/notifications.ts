@@ -11,7 +11,7 @@ async function updateEndpoint(token: string): Promise<void> {
     attributes: {
       // Custom attributes that your app reports to Amazon Pinpoint. You can use these attributes as selection criteria when you create a segment.
     },
-    channelType: Platform.OS === 'ios' ? 'APNS' : 'GCM',
+    channelType: 'GCM',
     userId: token,
     optOut: 'NONE',
   })

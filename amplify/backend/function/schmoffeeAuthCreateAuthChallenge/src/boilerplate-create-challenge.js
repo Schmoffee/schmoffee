@@ -16,13 +16,13 @@ exports.handler = (event, context, callback) => {
   const sns = new AWS.SNS({region: 'eu-central-1'});
   sns.publish(
     {
-      Message: 'your otp: ' + challengeAnswer,
+      Message: 'To sign in, enter the following code: ' + challengeAnswer,
       PhoneNumber: phoneNumber,
       MessageStructure: 'string',
       MessageAttributes: {
         'AWS.SNS.SMS.SenderID': {
           DataType: 'String',
-          StringValue: 'AMPLIFY',
+          StringValue: 'Schmoffee',
         },
         'AWS.SNS.SMS.SMSType': {
           DataType: 'String',

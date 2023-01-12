@@ -207,6 +207,7 @@ async function payWithApplePay(userID: string, paymentParams: PaymentParams) {
     currency: 'GBP',
     requiredBillingContactFields: ['phoneNumber', 'name'],
   });
+  console.log(error);
   if (error) {
     Alert.alert('Apple Pay payment sheet error occurred.');
   } else {

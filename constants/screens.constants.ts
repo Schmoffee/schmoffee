@@ -1,7 +1,5 @@
 // auth screens
 export const CONST_SCREEN_AUTH = 'AuthPage';
-export const CONST_SCREEN_LOGIN = 'Login';
-export const CONST_SCREEN_VERIFY_MOBILE = 'VerifyMobile';
 
 // coffee screens
 export const CONST_SCREEN_HOME = 'Home';
