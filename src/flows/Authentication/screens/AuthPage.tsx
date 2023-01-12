@@ -89,14 +89,14 @@ export const AuthPage = () => {
     // asteroidAnimFinal.value = withTiming(1, { duration: 5000 });
     // planetAnimFinal.value = withTiming(1, { duration: 5000 });
 
-    const session = sign_in_state.session;
-    const result = await sendChallengeAnswer(otp, session as CognitoUser);
-    if (!result) {
-      global_dispatch({
-        type: 'SET_AUTH_STATE',
-        payload: AuthState.CONFIRMING_OTP_FAILED,
-      });
-    }
+    // const session = sign_in_state.session;
+    // const result = await sendChallengeAnswer(otp, session as CognitoUser);
+    // if (!result) {
+    //   global_dispatch({
+    //     type: 'SET_AUTH_STATE',
+    //     payload: AuthState.CONFIRMING_OTP_FAILED,
+    //   });
+    // }
     //TODO: Handle the error appropriately depending on the error type
     setLoading(false);
     navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
@@ -128,8 +128,8 @@ export const AuthPage = () => {
     if (!loading) {
       setLoading(true);
     }
-    await setPhone(number);
-    await sendOTP(number);
+    // await setPhone(number);
+    // await sendOTP(number);
     setMode('verify');
     setLoading(false);
     planetAnim.value === 0 && mode !== 'verify' ? planetAnim.value = withTiming(1, { duration: 1000 }) : planetAnim.value = withTiming(0, { duration: 1000 })
@@ -213,7 +213,7 @@ export const AuthPage = () => {
               buttonText={mode === 'signup' ? 'Sign Up' : mode === 'login' ? 'Log In' : 'Confirm OTP'}>
               <Pressable onPress={handleModeChange}>
                 <Body size="medium" weight="Bold" color={Colors.blue}>
-                  Change mode
+                  {mode === 'signup' ? 'Already have an account? Log in' : mode === 'login' ? 'Don’t have an account? Sign up' : 'Back to Sign In'}
                 </Body>
               </Pressable>
             </Footer>
@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
   },
   otpContainer: {
     marginBottom: Spacings.s2,
+    marginHorizontal: Spacings.s6,
     alignItems: 'center',
   },
   otpText: {

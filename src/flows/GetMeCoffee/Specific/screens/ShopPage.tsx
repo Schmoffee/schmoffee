@@ -1,18 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, TextInput, Platform, NativeModules, Dimensions, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, TextInput, Platform, NativeModules, Dimensions, useWindowDimensions, Image } from 'react-native';
 import { Colors, Spacings } from '../../../../../theme';
 import { CardSection } from '../../../../components/WhatComponents/CardSection';
 import { OrderingContext } from '../../../../contexts';
 import { Item } from '../../../../models';
 import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
-import { BasketSection } from '../../../../components/Basket/BasketSection';
 import Animated, {
   Easing,
   Extrapolate,
   interpolate,
-  runOnJS,
-  useAnimatedGestureHandler,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -20,7 +17,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { ShopHeader } from '../../../../components/WhatComponents/ShopHeader';
 import { PreviewPage } from './PreviewPage';
-import BottomSheet, { BottomSheetBackdrop, BottomSheetHandle, BottomSheetHandleProps, useBottomSheetSpringConfigs } from '@gorhom/bottom-sheet';
+import BottomSheet from '@gorhom/bottom-sheet';
 import CustomHandle from '../../../../components/BottomSheet/CustomHandle';
 import { Body, Heading } from '../../../../../typography';
 import CustomBackdrop from '../../../../components/BottomSheet/CustomBackdrop';
@@ -38,6 +35,15 @@ export const ShopPage = () => {
   const translateY = useSharedValue(0);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
+  const anim = useSharedValue(0);
+
+  useEffect(() => {
+    anim.value = 0;
+    anim.value = withTiming(1, {
+      duration: 600,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+  }, []);
 
   const contains = ({ name }: Item, query: string) => {
     const nameLower = name.toLowerCase();
@@ -116,31 +122,43 @@ export const ShopPage = () => {
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
-  const animationConfigs = useBottomSheetSpringConfigs({
-    damping: 80,
-    overshootClamping: true,
-    restDisplacementThreshold: 0.1,
-    restSpeedThreshold: 0.1,
-    stiffness: 500,
-  })
+  // const animationConfigs = useBottomSheetSpringConfigs({
+  //   damping: 80,
+  //   overshootClamping: true,
+  //   restDisplacementThreshold: 0.1,
+  //   restSpeedThreshold: 0.1,
+  //   stiffness: 500,
+  // })
 
+  const rCircleStyle = useAnimatedStyle(
+    () => ({
+      // opacity: anim.value,
+      transform: [
+        {
+          scale: interpolate(anim.value, [0, 1], [0, 1]),
+        },
+      ],
+    }),
+    [],
+  );
 
   return (
     <View style={styles.root}>
       <View style={[styles.itemsContainer]}>
         <View style={styles.header}>
-          <ShopHeader y={translateY} source={require('../../../../assets/pngs/shop.png')} />
-
-          {/* <Animated.View style={[styles.searchInputContainer, rSearchStyle]}>
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                clearButtonMode="always"
-                value={query}
-                onChangeText={queryText => setQuery(queryText)}
-                placeholder="Search for an item"
-              />
-            </Animated.View> */}
+          <Animated.Image source={require('../../../../assets/pngs/semi-circle.png')} style={[styles.semiCircle, rCircleStyle]} />
+          <Animated.View style={[styles.searchInputContainer]}>
+            <TextInput
+              autoCapitalize="none"
+              autoCorrect={false}
+              clearButtonMode="always"
+              value={query}
+              onChangeText={queryText => setQuery(queryText)}
+              placeholder="What do you crave?"
+            />
+          </Animated.View>
+          <Heading size='default' weight='Extrabld' color={Colors.white}>COFFEE</Heading>
+          {/* <ShopHeader y={translateY} source={require('../../../../assets/pngs/shop.png')} /> */}
 
         </View>
         <Animated.ScrollView style={[styles.itemsContainer, rListStyle]} onScroll={scrollHandler} scrollEventThrottle={16}>
@@ -161,7 +179,6 @@ export const ShopPage = () => {
           onClose={() => {
             bottomSheetRef.current?.close();
           }}
-          animationConfigs={animationConfigs}
           backdropComponent={props => <CustomBackdrop {...props} />}
           handleComponent={props => <CustomHandle {...props} />}
 
@@ -191,6 +208,8 @@ const styles = StyleSheet.create({
     marginTop: 160,
     paddingTop: 70,
     paddingBottom: 70,
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
   itemsContainer: {
     // flex: 1,
@@ -199,17 +218,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    backgroundColor: Colors.greyLight1,
   },
   searchInputContainer: {
     backgroundColor: Colors.greyLight1,
     borderRadius: Spacings.s5,
     padding: Spacings.s2,
-    marginHorizontal: Spacings.s4,
-    position: 'absolute',
-    top: 230,
-    right: 5,
-    width: 150,
-    height: 50,
+    marginBottom: Spacings.s4,
+    minWidth: '50%',
   },
   shopImage: {
     zIndex: -1,
@@ -219,9 +235,15 @@ const styles = StyleSheet.create({
   },
   bottomSheetContainer: {
     flex: 1,
-    zIndex: 0,
-    // backgroundColor: Colors.white,
+    zIndex: -10,
+    backgroundColor: Colors.white,
   },
+  semiCircle: {
+    zIndex: -1,
+    position: 'absolute',
+    top: -450,
+  },
+
 
 
   footerContainer: {

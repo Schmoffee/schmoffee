@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.grey,
   },
   activeColor: {
-    backgroundColor: Colors.darkBrown2,
+    backgroundColor: Colors.darkBrown,
   },
   text: {
     color: Colors.white,

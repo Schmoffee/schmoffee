@@ -6,24 +6,20 @@ import { Item } from '../../models';
 import { Colors, Spacings } from '../../../theme';
 
 interface CardSectionProps {
-  title: string;
   items: Item[];
   hideDivider?: boolean;
   query?: string;
 }
 
 export const CardSection = (props: CardSectionProps) => {
-  const { title, items } = props;
+  const { items } = props;
   return (
     <View style={[styles.container, { borderBottomColor: props.hideDivider ? 'transparent' : Colors.brownFaded2 }]}>
-      <Body size="large" weight="Bold" color={Colors.darkBrown2}>
-        {title}
-      </Body>
       {items && items.length > 0 ? (
         <FlatList
-          horizontal
           data={items}
-          contentContainerStyle={{ paddingVertical: 16 }}
+          numColumns={2}
+          // contentContainerStyle={{ paddingVertical: 16 }}
           contentInsetAdjustmentBehavior="never"
           snapToAlignment="center"
           decelerationRate="fast"
@@ -47,10 +43,7 @@ export const CardSection = (props: CardSectionProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.goldFaded4,
     marginVertical: Spacings.s2,
-    borderBottomWidth: 2,
-    marginHorizontal: Spacings.s2,
   },
   cardContainer: {
     flexDirection: 'row',
