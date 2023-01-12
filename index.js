@@ -13,6 +13,7 @@ import RemotePushNotification from '@aws-amplify/pushnotification';
 import LocalPushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {SendLocalNotification} from './src/utils/helpers/notifications';
+
 RemotePushNotification.onNotification(async notification => {
   // Note that the notification object structure is different from Android and IOS
   console.log('Remote notification received', notification);
@@ -22,7 +23,6 @@ RemotePushNotification.onNotification(async notification => {
     SendLocalNotification(genericSpec, specs);
   } else {
     LocalPushNotification.getChannels(function (channel_ids) {
-      console.log('channel_ids', channel_ids);
       if (channel_ids.length > 0) {
         const specs = {};
         specs.channelId = channel_ids[0];
@@ -49,6 +49,10 @@ LocalPushNotification.configure({
   onNotification: function (notification) {
     // Do nothing. This is already handled by the RemotePushNotification.onNotification handler
   },
+
+  senderID: '954779945360',
+
+  requestPermissions: Platform.OS !== 'ios',
 });
 
 Amplify.configure({

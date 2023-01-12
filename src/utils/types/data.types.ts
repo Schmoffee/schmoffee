@@ -12,6 +12,8 @@ export type HubPayload = {
 // Dictionary from the minute of the day to the list of orders currently running at that minute.
 export type DigitalQueue = {[minute: number]: string[]};
 
+export type Payment = 'card' | 'google' | 'apple';
+
 export type GlobalState = {
   auth_state: AuthState;
   current_user: LocalUser | null;
@@ -34,8 +36,6 @@ export type AuthUser = {
 
 export type TrackOrderState = {
   current_order: CurrentOrder | null;
-  is_locatable: boolean;
-  location: Location | null;
   ratings: PreRating[];
   map_region: Region | undefined;
   manually_centered: boolean;
@@ -87,12 +87,10 @@ export type GlobalAction =
 
 export type TrackOrderAction =
   | {type: 'SET_CURRENT_ORDER'; payload: CurrentOrder}
-  | {type: 'SET_IS_LOCATABLE'; payload: boolean}
   | {type: 'SET_IS_USER_CENTERED'; payload: boolean}
   | {type: 'SET_MAP_REGION'; payload: Region | undefined}
   | {type: 'SET_IS_MANUALLY_CENTERED'; payload: boolean}
-  | {type: 'SET_RATINGS'; payload: PreRating[]}
-  | {type: 'SET_LOCATION'; payload: Location | null};
+  | {type: 'SET_RATINGS'; payload: PreRating[]};
 
 export type OrderingAction =
   | {type: 'SET_CURRENT_SHOP_ID'; payload: string}

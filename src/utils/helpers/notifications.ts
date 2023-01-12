@@ -4,14 +4,15 @@ import {Platform} from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import {AndroidNotifSpec, GenericNotifSpec, iosNotifSpec} from '../types/data.types';
 
-async function updateEndpoint(token: string, userId: string): Promise<void> {
+async function updateEndpoint(token: string): Promise<void> {
+  console.log('Updating endpoint with token: ', token);
   await Analytics.updateEndpoint({
-    address: token, // The unique identifier for the recipient. For example, an address could be a device token, email address, or mobile phone number.
+    address: token,
     attributes: {
       // Custom attributes that your app reports to Amazon Pinpoint. You can use these attributes as selection criteria when you create a segment.
     },
-    channelType: Platform.OS === 'ios' ? 'APNS' : 'GCM',
-    userId: userId,
+    channelType: 'GCM',
+    userId: token,
     optOut: 'NONE',
   })
     .then(data => {
