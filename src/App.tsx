@@ -1,5 +1,5 @@
 import React, {useEffect, useReducer} from 'react';
-import {Alert, BackHandler, NativeModules, Platform} from 'react-native';
+import {BackHandler, NativeModules, Platform} from 'react-native';
 import {globalReducer} from './reducers';
 import {GlobalContext, globalData} from './contexts';
 import {DataStore, Hub} from 'aws-amplify';
@@ -13,7 +13,6 @@ import Navigator from './navigation/Navigator';
 import {User} from './models';
 import {firebase} from '@react-native-firebase/messaging';
 import {Alerts} from './utils/helpers/alerts';
-signOut();
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
 
@@ -29,7 +28,7 @@ const App = () => {
   }, []);
 
   /**
-   * This effect attachs a listener to the back button events on Android to create a custome behaviour.
+   * This effect attachs a listener to the back button events on Android to create a custom behaviour.
    */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {

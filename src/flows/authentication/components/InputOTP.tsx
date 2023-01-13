@@ -40,7 +40,7 @@ export const InputOTP = (props: InputOTPProps) => {
     props.setCode(text.replace(/[^0-9]/g, ''));
   };
 
-  const boxDigit = (_: number, index: number) => {
+  const BoxDigit = (_: number, index: number) => {
     const emptyInput = '';
     const digit = props.code[index] || emptyInput;
 
@@ -49,11 +49,13 @@ export const InputOTP = (props: InputOTPProps) => {
     const isCodeComplete = props.code.length === props.maxLength;
     const isValueFocused = isCurrentValue || (isLastValue && isCodeComplete);
 
-    (isLastValue && isCodeComplete) || !pressed
-      ? setIsInputBoxFocused(false)
-      : isCurrentValue
-      ? setIsInputBoxFocused(true)
-      : null;
+    useEffect(() => {
+      (isLastValue && isCodeComplete) || !pressed
+        ? setIsInputBoxFocused(false)
+        : isCurrentValue
+        ? setIsInputBoxFocused(true)
+        : null;
+    }, [isCodeComplete, isCurrentValue, isLastValue]);
 
     const StyledSplitBoxes =
       isInputBoxFocused && isValueFocused ? [styles.splitBoxesFocused, styles.splitBoxes] : styles.splitBoxes;
@@ -70,7 +72,7 @@ export const InputOTP = (props: InputOTPProps) => {
   return (
     <View style={styles.inputContainer}>
       <Pressable style={styles.splitOTPContainer} onPress={handleOnPress}>
-        {boxArray.map(boxDigit)}
+        {boxArray.map(BoxDigit)}
       </Pressable>
       <TextInput
         style={styles.textInputHidden}

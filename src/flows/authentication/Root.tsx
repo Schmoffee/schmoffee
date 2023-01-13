@@ -10,7 +10,7 @@ import {signInReducer} from '../../reducers';
 import {Alert} from 'react-native';
 import {checkMultiSignIn, getUserById, newSignIn} from '../../utils/queries/datastore';
 import {Intro} from './screens/Intro';
-import AuthPage from './screens/AuthPage';
+import {AuthPage} from './screens/AuthPage';
 
 const Root = () => {
   const AuthStack = createNativeStackNavigator<AuthRoutes>();

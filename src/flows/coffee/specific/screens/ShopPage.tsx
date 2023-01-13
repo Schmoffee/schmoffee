@@ -1,11 +1,7 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { View, StyleSheet, TextInput, Platform, NativeModules, Dimensions, useWindowDimensions, Image } from 'react-native';
-import { Colors, Spacings } from '../../../../../theme';
-import { CardSection } from '../../../../components/WhatComponents/CardSection';
-import { OrderingContext } from '../../../../contexts';
-import { Item } from '../../../../models';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import {Dimensions, NativeModules, Platform, StyleSheet, TextInput, View} from 'react-native';
+import {OrderingContext} from '../../../../contexts';
+import {Item} from '../../../../models';
 import Animated, {
   Easing,
   Extrapolate,
@@ -15,23 +11,23 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { ShopHeader } from '../../../../components/WhatComponents/ShopHeader';
-import { PreviewPage } from './PreviewPage';
+import {PreviewPage} from './PreviewPage';
 import BottomSheet from '@gorhom/bottom-sheet';
-import CustomHandle from '../../../../components/BottomSheet/CustomHandle';
-import { Body, Heading } from '../../../../../typography';
-import CustomBackdrop from '../../../../components/BottomSheet/CustomBackdrop';
+import {CardSection} from '../../components/menu/CardSection';
+import {Heading} from '../../../common/typography';
+import CustomBackdrop from '../../components/preview/CustomBackdrop';
+import {Colors, Spacings} from '../../../common/theme';
+import CustomHandle from '../../components/preview/CustomHandle';
 
-const { StatusBarManager } = NativeModules;
+const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const { height: wHeight, width: wWidth } = Dimensions.get('window');
+const {height: wHeight, width: wWidth} = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
-  const navigation = useNavigation<CoffeeRoutes>();
-  const { ordering_state } = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
   const translateY = useSharedValue(0);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
@@ -45,7 +41,7 @@ export const ShopPage = () => {
     });
   }, []);
 
-  const contains = ({ name }: Item, query: string) => {
+  const contains = ({name}: Item, query: string) => {
     const nameLower = name.toLowerCase();
     if (nameLower.includes(query)) {
       return true;
@@ -54,10 +50,9 @@ export const ShopPage = () => {
   };
   const filtered_items = useMemo(() => {
     const formattedQuery = query.toLowerCase();
-    const filteredData = ordering_state.specific_items.filter(item => {
+    return ordering_state.specific_items.filter(item => {
       return contains(item, formattedQuery);
     });
-    return filteredData;
   }, [ordering_state.specific_items, query]);
 
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -68,9 +63,7 @@ export const ShopPage = () => {
     landing_anim.value = withTiming(1, {
       duration: 600,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-
     });
-
   }, []);
 
   useEffect(() => {
@@ -112,7 +105,6 @@ export const ShopPage = () => {
     [],
   );
 
-
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   // variables
@@ -146,7 +138,10 @@ export const ShopPage = () => {
     <View style={styles.root}>
       <View style={[styles.itemsContainer]}>
         <View style={styles.header}>
-          <Animated.Image source={require('../../../../assets/pngs/semi-circle.png')} style={[styles.semiCircle, rCircleStyle]} />
+          <Animated.Image
+            source={require('../../../../assets/pngs/semi-circle.png')}
+            style={[styles.semiCircle, rCircleStyle]}
+          />
           <Animated.View style={[styles.searchInputContainer]}>
             <TextInput
               autoCapitalize="none"
@@ -157,15 +152,19 @@ export const ShopPage = () => {
               placeholder="What do you crave?"
             />
           </Animated.View>
-          <Heading size='default' weight='Extrabld' color={Colors.white}>COFFEE</Heading>
+          <Heading size="default" weight="Extrabld" color={Colors.white}>
+            COFFEE
+          </Heading>
           {/* <ShopHeader y={translateY} source={require('../../../../assets/pngs/shop.png')} /> */}
-
         </View>
-        <Animated.ScrollView style={[styles.itemsContainer, rListStyle]} onScroll={scrollHandler} scrollEventThrottle={16}>
+        <Animated.ScrollView
+          style={[styles.itemsContainer, rListStyle]}
+          onScroll={scrollHandler}
+          scrollEventThrottle={16}>
           <View style={styles.container}>
-            <CardSection query={query} title="Coffee" items={getCoffees()} />
-            <CardSection title="Juices" items={getJuices()} />
-            <CardSection title="Pastries" items={getPastries()} hideDivider />
+            <CardSection query={query} items={getCoffees()} />
+            <CardSection items={getJuices()} />
+            <CardSection items={getPastries()} hideDivider />
           </View>
         </Animated.ScrollView>
       </View>
@@ -180,16 +179,13 @@ export const ShopPage = () => {
             bottomSheetRef.current?.close();
           }}
           backdropComponent={props => <CustomBackdrop {...props} />}
-          handleComponent={props => <CustomHandle {...props} />}
-
-        >
+          handleComponent={props => <CustomHandle {...props} />}>
           <View style={styles.previewContainer}>
             <PreviewPage />
           </View>
         </BottomSheet>
       </View>
-    </View >
-
+    </View>
   );
 };
 
@@ -243,8 +239,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -450,
   },
-
-
 
   footerContainer: {
     position: 'absolute',

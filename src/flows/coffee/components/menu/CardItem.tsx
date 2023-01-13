@@ -1,12 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Image, Pressable } from 'react-native';
-import { Colors, Spacings } from '../../../theme';
-import { Body } from '../../../typography';
-import { Item } from '../../models';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import { CoffeeRoutes } from '../../utils/types/navigation.types';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import React, {useEffect, useRef} from 'react';
+import {View, StyleSheet, Image, Pressable} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
+import {Colors, Spacings} from '../../../common/theme';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import {Body} from '../../../common/typography';
+import {Item} from '../../../../models';
 
 interface CardItemProps {
   item: Item;
@@ -14,7 +13,7 @@ interface CardItemProps {
   query?: string;
 }
 
-export const CardItem = ({ item, index, query }: CardItemProps) => {
+export const CardItem = ({item, index, query}: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
@@ -33,7 +32,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
     'worklet';
     //measure image position & size
     imageRef.current?.measure?.((x, y, width, height, pageX, pageY) => {
-      let imageSpecs = { width, height, pageX, pageY, borderRadius: 10 };
+      let imageSpecs = {width, height, pageX, pageY, borderRadius: 10};
       navigation.navigate('ItemPage', {
         item,
         imageSpecs,
@@ -75,26 +74,23 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
             </Body>
           </View>
           <View style={styles.priceContainer}>
-
-            <Body size="medium" weight="Bold" color={Colors.white} style={styles.priceText}>{`£${item.price.toFixed(2)}`}</Body>
+            <Body size="medium" weight="Bold" color={Colors.white} style={styles.priceText}>{`£${item.price.toFixed(
+              2,
+            )}`}</Body>
             <View style={styles.iconContainer}>
-              <Image source={require('../../assets/pngs/plus.png')} style={styles.plusButton} />
-
+              <Image source={require('../../../../assets/pngs/plus.png')} style={styles.plusButton} />
             </View>
           </View>
           <View style={styles.imageContainer}>
             {/* <Image ref={imageRef} source={{ uri: `${item.image}` }} /> */}
             <View style={styles.ratingContainer}>
-              <Image source={require('../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
+              <Image source={require('../../../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
               <Body size="small" weight="Regular" color={Colors.black} style={styles.ratingText}>
                 3.9
               </Body>
-
             </View>
           </View>
         </View>
-
-
       </Animated.View>
     </Pressable>
   );
