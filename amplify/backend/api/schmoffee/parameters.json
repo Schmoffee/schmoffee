@@ -2,5 +2,5 @@
   "AppSyncApiName": "schmoffee",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
-  "AuthModeLastUpdated": "2022-09-16T10:39:38.017Z"
+  "AuthModeLastUpdated": "2023-01-13T17:25:04.268Z"
 }

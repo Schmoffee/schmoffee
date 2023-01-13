@@ -29,48 +29,56 @@ export type AmplifyDependentResourcesAttributes = {
     "schmoffeeAuthCreateAuthChallenge": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "schmoffeeAuthDefineAuthChallenge": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "schmoffeeAuthPreSignup": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "schmoffeeAuthVerifyAuthChallengeResponse": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "schmoffeeCancelPayment": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "schmoffeeGooglePayConfirmPayment": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "schmoffeePayWithStripe": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
     "schmoffeeSendNotification": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     }
