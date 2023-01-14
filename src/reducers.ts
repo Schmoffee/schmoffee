@@ -31,12 +31,8 @@ export const trackOrderReducer = (state: TrackOrderState, action: TrackOrderActi
   switch (action.type) {
     case 'SET_CURRENT_ORDER':
       return {...state, current_order: action.payload};
-    case 'SET_LOCATION':
-      return {...state, location: action.payload};
     case 'SET_RATINGS':
       return {...state, ratings: action.payload};
-    case 'SET_IS_LOCATABLE':
-      return {...state, is_locatable: action.payload};
     case 'SET_IS_USER_CENTERED':
       return {...state, is_user_centered: action.payload};
     case 'SET_IS_MANUALLY_CENTERED':

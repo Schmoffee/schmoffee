@@ -16,7 +16,7 @@
       "function": {
         "schmoffeeAuthCreateAuthChallenge": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
-          "s3Key": "amplify-builds/schmoffeeAuthCreateAuthChallenge-615a58796a4f6e6f526e-build.zip"
+          "s3Key": "amplify-builds/schmoffeeAuthCreateAuthChallenge-78455a3555704a545335-build.zip"
         },
         "schmoffeeAuthDefineAuthChallenge": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
@@ -57,6 +57,20 @@
           "Id": "3648ce85f9d543e1877c149dccf556b4",
           "Region": "eu-central-1"
         }
+      },
+      "analytics": {
+        "Pinpoint": {
+          "Name": "schmoffee-dev",
+          "Id": "3648ce85f9d543e1877c149dccf556b4",
+          "Region": "eu-central-1"
+        },
+        "schmoffee": {}
+      },
+      "storage": {
+        "storage": {}
+      },
+      "api": {
+        "schmoffee": {}
       }
     }
   }

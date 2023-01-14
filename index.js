@@ -1,6 +1,7 @@
 /**
  * @format
  */
+import '@azure/core-asynciterator-polyfill';
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill';
 import {AppRegistry, Platform} from 'react-native';

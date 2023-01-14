@@ -10,6 +10,7 @@ import {
   TrackOrderState,
 } from './utils/types/data.types';
 import {AuthState} from './utils/types/enums';
+import {GeoLocationSensorState} from 'react-use/lib/useGeolocation';
 
 export const globalData: GlobalState = {
   auth_state: AuthState.SIGNED_OUT,
@@ -22,8 +23,6 @@ export const globalData: GlobalState = {
 
 export const trackOrderData: TrackOrderState = {
   current_order: null,
-  is_locatable: false,
-  location: null,
   ratings: [],
   manually_centered: false,
   map_region: undefined,
@@ -58,9 +57,11 @@ const GlobalContext = React.createContext<{
 const TrackOrderContext = React.createContext<{
   track_order_state: TrackOrderState;
   track_order_dispatch: React.Dispatch<TrackOrderAction>;
+  location: GeoLocationSensorState | null;
 }>({
   track_order_state: trackOrderData,
   track_order_dispatch: () => null,
+  location: null,
 });
 
 const OrderingContext = React.createContext<{
