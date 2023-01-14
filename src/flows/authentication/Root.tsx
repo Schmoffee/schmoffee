@@ -99,6 +99,7 @@ const Root = () => {
       sign_in_dispatch({type: 'SET_SESSION', payload: newSession});
       return true;
     } else {
+      console.log('error signing in');
       //TODO: Handle the error appropriately depending on the error type
       return false;
     }

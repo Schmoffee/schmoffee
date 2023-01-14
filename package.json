@@ -24,6 +24,7 @@
     "@aws-amplify/auth": "^4.6.8",
     "@aws-amplify/cache": "^4.0.57",
     "@aws-amplify/pushnotification": "^4.3.35",
+    "@azure/core-asynciterator-polyfill": "^1.0.2",
     "@gorhom/bottom-sheet": "^4.4.5",
     "@react-native-async-storage/async-storage": "^1.17.10",
     "@react-native-community/blur": "^4.2.0",
