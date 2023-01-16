@@ -1,10 +1,11 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Colors, Spacings} from '../../../common/theme';
-import {Body} from '../../../common/typography';
+import { StyleSheet, View } from 'react-native';
+import { Colors, Spacings } from '../../../common/theme';
+import { Body } from '../../../common/typography';
 
 interface PreviewSectionProps {
   title: string;
+  description?: string;
   children?: React.ReactNode;
 }
 
@@ -14,6 +15,9 @@ const PreviewSection = (props: PreviewSectionProps) => {
       <View style={styles.header}>
         <Body size="medium" weight="Bold" color={Colors.white}>
           {props.title}
+        </Body>
+        <Body size="medium" weight="Bold" color={Colors.greyLight3}>
+          {props.description}
         </Body>
       </View>
       <View style={styles.content}>{props.children}</View>
@@ -26,8 +30,8 @@ export default PreviewSection;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.darkBrown,
-    marginVertical: Spacings.s2,
-    height: 250,
+    marginTop: Spacings.s7,
+    height: 260,
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
@@ -35,6 +39,8 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 5,
     shadowOpacity: 0.2,
+    marginHorizontal: 20,
+
   },
   header: {
     height: 30,

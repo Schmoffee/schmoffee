@@ -1,17 +1,33 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext} from 'react';
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import {Colors, Spacings} from '../../../common/theme';
-import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
-import {CONST_SCREEN_WHEN} from '../../../../../constants';
-import {OrderingContext} from '../../../../contexts';
-import {Body} from '../../../common/typography';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext } from 'react';
+import { StyleSheet, View, TouchableOpacity, Pressable } from 'react-native';
+import { Colors, Spacings } from '../../../common/theme';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import { CONST_SCREEN_WHEN } from '../../../../../constants';
+import { OrderingContext } from '../../../../contexts';
+import { Body, Heading } from '../../../common/typography';
 
-interface ScheduleSectionProps {}
+interface ScheduleSectionProps { }
 
 const ScheduleSection = (props: ScheduleSectionProps) => {
-  const {ordering_state} = useContext(OrderingContext);
+  const { ordering_state } = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
+
+
+  const getScheduleTime = (minutes: number) => {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + minutes);
+    const hours = date.getHours();
+    const minutes2 = date.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    const hours2 = hours % 12;
+    const hours3 = hours2 ? hours2 : 12; // the hour '0' should be '12'
+    const minutes3 = minutes2 < 10 ? '0' + minutes2 : minutes2;
+    const strTime = hours3 + ':' + minutes3 + ' ' + ampm;
+    return strTime;
+  };
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -20,17 +36,15 @@ const ScheduleSection = (props: ScheduleSectionProps) => {
         </Body>
       </View>
       <View style={styles.timeContainer}>
-        <Body size="large" weight="Extrabld" color={Colors.brown2}>{`${ordering_state.scheduled_time}-${
-          ordering_state.scheduled_time + 2
-        } mins`}</Body>
+
+        <Pressable onPress={() => navigation.navigate(CONST_SCREEN_WHEN)}>
+          <View style={styles.rescheduleButton}>
+            <Heading size="default" weight="Regular" color={Colors.white}>
+              {getScheduleTime(ordering_state.scheduled_time)}
+            </Heading>
+          </View>
+        </Pressable>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate(CONST_SCREEN_WHEN)}>
-        <View style={styles.rescheduleButton}>
-          <Body size="medium" weight="Bold" color={Colors.darkBrown2}>
-            Reschedule
-          </Body>
-        </View>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -49,6 +63,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 5,
     shadowOpacity: 0.2,
+    marginHorizontal: Spacings.s5,
   },
   header: {
     height: 30,
@@ -56,16 +71,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacings.s2,
   },
   timeContainer: {
-    height: 30,
+    marginTop: Spacings.s3,
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   rescheduleButton: {
-    backgroundColor: Colors.brownLight2,
+    // backgroundColor: Colors.brownLight2,
     borderRadius: Spacings.s30,
-    height: 30,
+    height: 50,
+    width: 180,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: Spacings.s30,
+    marginHorizontal: Spacings.s28,
+    borderColor: Colors.white,
+    borderWidth: 3,
   },
 });

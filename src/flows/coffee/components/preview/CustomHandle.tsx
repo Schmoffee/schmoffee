@@ -1,15 +1,15 @@
-import React, {useMemo} from 'react';
-import {Dimensions, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import {BottomSheetHandleProps} from '@gorhom/bottom-sheet';
-import Animated, {Extrapolate, interpolate, useAnimatedStyle, useDerivedValue} from 'react-native-reanimated';
-import {Colors, Spacings} from '../../../common/theme';
-import {Body} from '../../../common/typography';
-import {BasketPreview} from '../basket/BasketPreview';
+import React, { useMemo } from 'react';
+import { Dimensions, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { BottomSheetHandleProps } from '@gorhom/bottom-sheet';
+import Animated, { Extrapolate, interpolate, useAnimatedStyle, useDerivedValue } from 'react-native-reanimated';
+import { Colors, Spacings } from '../../../common/theme';
+import { Body } from '../../../common/typography';
+import { BasketPreview } from '../basket/BasketPreview';
 
 // @ts-ignore
-export const transformOrigin = ({x, y}, ...transformations) => {
+export const transformOrigin = ({ x, y }, ...transformations) => {
   'worklet';
-  return [{translateX: x}, {translateY: y}, ...transformations, {translateX: x * -1}, {translateY: y * -1}];
+  return [{ translateX: x }, { translateY: y }, ...transformations, { translateX: x * -1 }, { translateY: y * -1 }];
 };
 
 interface CustomHandleProps extends BottomSheetHandleProps {
@@ -18,7 +18,7 @@ interface CustomHandleProps extends BottomSheetHandleProps {
 
 const HOME_WIDTH = Dimensions.get('window').width;
 
-const CustomHandle: React.FC<CustomHandleProps> = ({style, animatedIndex}) => {
+const CustomHandle: React.FC<CustomHandleProps> = ({ style, animatedIndex }) => {
   //#region animations
   const indicatorTransformOriginY = useDerivedValue(() =>
     interpolate(animatedIndex.value, [0, 1, 2], [-1, 0, 1], Extrapolate.CLAMP),
@@ -67,7 +67,7 @@ const CustomHandle: React.FC<CustomHandleProps> = ({style, animatedIndex}) => {
   return (
     <Animated.View
       style={[containerStyle]}
-      // renderToHardwareTexureAndroid={true}
+    // renderToHardwareTexureAndroid={true}
     >
       <Animated.Image
         source={require('../../../../assets/pngs/cart_continue.png')}
