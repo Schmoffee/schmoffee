@@ -1,19 +1,22 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Alert, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
-import {setSpecificBasket} from '../../../../utils/helpers/storage';
-import {Colors, Spacings} from '../../../common/theme';
-import {OrderItem} from '../../../../models';
-import {Body} from '../../../common/typography';
-import {OrderingContext} from '../../../../contexts';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { setSpecificBasket } from '../../../../utils/helpers/storage';
+import { Colors, Spacings } from '../../../common/theme';
+import { OrderItem } from '../../../../models';
+import { Body } from '../../../common/typography';
+import { OrderingContext } from '../../../../contexts';
+
+type Size = 'small' | 'medium' | 'large';
 
 interface BasketItemProps {
   item: OrderItem;
+  size?: Size;
 }
 
 export const BasketItem = (props: BasketItemProps) => {
-  const {item} = props;
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { item } = props;
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
   const [expanded, setExpanded] = useState(false);
@@ -32,8 +35,8 @@ export const BasketItem = (props: BasketItemProps) => {
     const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
     if (index > -1) {
       const newBasket: OrderItem[] = ordering_state.specific_basket;
-      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-      ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
       await setSpecificBasket(newBasket);
     }
   };
@@ -55,20 +58,20 @@ export const BasketItem = (props: BasketItemProps) => {
           onPress: async () => {
             if (index > -1) {
               const newBasket = ordering_state.specific_basket;
-              const new_item = {...newBasket[index], quantity: newBasket[index].quantity - 1};
+              const new_item = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
 
               if (newBasket[index].quantity === 1) {
                 newBasket.splice(index, 1);
               } else {
                 newBasket[index] = new_item;
               }
-              ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+              ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
               await setSpecificBasket(newBasket);
             }
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -79,8 +82,8 @@ export const BasketItem = (props: BasketItemProps) => {
       if (newBasket[index].quantity === 1) {
         onRemoveItem();
       } else {
-        newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity - 1};
-        ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+        newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
+        ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
         await setSpecificBasket(newBasket);
       }
     }
@@ -89,42 +92,42 @@ export const BasketItem = (props: BasketItemProps) => {
   const rItemStyle = useAnimatedStyle(
     () => ({
       marginHorizontal: interpolate(anim.value, [0, 1], [-4, 15]),
-      transform: [{scale: interpolate(anim.value, [0, 1], [1, 1.15])}],
+      transform: [{ scale: interpolate(anim.value, [0, 1], [1, 1.15]) }],
     }),
     [],
   );
 
   const rQuantityStyle = useAnimatedStyle(() => {
     return {
-      transform: [{translateX: 39 * -anim.value}, {translateY: 4 * -anim.value}],
+      transform: [{ translateX: 39 * -anim.value }, { translateY: 4 * -anim.value }],
     };
   }, []);
 
   const rQuantityLabelStyle = useAnimatedStyle(() => {
     return {
       // opacity: anim.value,
-      transform: [{translateX: 24.5 * anim.value}],
+      transform: [{ translateX: 24.5 * anim.value }],
     };
   }, []);
 
   const rIncrQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateX: interpolate(anim.value, [0, 1], [50, 80])}],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [50, 80]) }],
     };
   }, []);
 
   const rRedQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateX: interpolate(anim.value, [0, 1], [-80, -52])}],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [-80, -52]) }],
     };
   }, []);
 
   const rItemNameStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateY: 8 * anim.value}],
+      transform: [{ translateY: 8 * anim.value }],
     };
   }, []);
 

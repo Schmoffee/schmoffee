@@ -1,5 +1,5 @@
-import {Dimensions, Image, StyleSheet, View} from 'react-native';
-import React, {useContext, useEffect} from 'react';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import React, { useContext, useEffect } from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,24 +8,26 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {Body, Heading} from '../typography';
-import {setSpecificBasket} from '../../../utils/helpers/storage';
-import {Colors, Spacings} from '../theme';
-import {OrderItem} from '../../../models';
-import {Footer} from '../components/Footer';
-import {OrderingContext} from '../../../contexts';
+import { Body, Heading } from '../typography';
+import { setSpecificBasket } from '../../../utils/helpers/storage';
+import { Colors, Spacings } from '../theme';
+import { OrderItem } from '../../../models';
+import { Footer } from '../components/Footer';
+import { OrderingContext } from '../../../contexts';
+import LeftChevronBackButton from '../components/LeftChevronBackButton';
+import SwipeableModal from '../components/SwipeableModal';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 interface ItemPageProps {
   route?: any;
   navigation: any;
 }
 
-const ItemPage = ({route, navigation}: ItemPageProps) => {
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+const ItemPage = ({ route, navigation }: ItemPageProps) => {
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
 
-  const {item, imageSpecs} = route?.params;
+  const { item, imageSpecs } = route?.params;
 
   const anim = useSharedValue(0);
   useEffect(() => {
@@ -43,12 +45,12 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     [],
   );
 
-  const circleStyle = useAnimatedStyle(
+  const rCircleStyle = useAnimatedStyle(
     () => ({
       // opacity: anim.value,
       transform: [
         {
-          scale: interpolate(anim.value, [0, 1], [0, 2]),
+          scale: interpolate(anim.value, [0, 1], [0, 1.2]),
         },
       ],
     }),
@@ -92,12 +94,23 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     [],
   );
 
+  const rImageStyle = useAnimatedStyle(
+    () => ({
+      transform: [
+        {
+          scale: interpolate(anim.value, [0, 1], [0, 1.1]),
+        },
+      ],
+    }),
+    [],
+  );
+
   async function addItem() {
     if (ordering_state.specific_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
       const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
       const newBasket: OrderItem[] = ordering_state.specific_basket;
-      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-      ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
       await setSpecificBasket(newBasket);
     } else {
       const new_order_item: OrderItem = {
@@ -110,7 +123,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         id: item.id,
       };
       const newBasket: OrderItem[] = [...ordering_state.specific_basket, new_order_item];
-      ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
       await setSpecificBasket(newBasket);
     }
     const callback = () => navigation.goBack();
@@ -119,15 +132,21 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.bigSemiCircle, circleStyle]} />
+      <LeftChevronBackButton />
+
+      <Animated.Image
+        source={require('../../../assets/pngs/semi-circle.png')}
+        style={[styles.semiCircle, rCircleStyle]}
+      />
       <Animated.View style={[styles.headerContainer, titleStyle]}>
-        <Heading size="large" weight="Black" color={Colors.darkBrown2}>
+        <Heading size="large" weight="Bold" color={Colors.white}>
           {item.name}
         </Heading>
       </Animated.View>
-      <Animated.View style={[styles.imageContainer, imageContainerStyle]}>
-        <Image style={styles.image} source={item.image} />
-      </Animated.View>
+      <Animated.View style={[styles.imageContainer, rImageStyle]} />
+
+
+
       <Animated.View style={[styles.descriptionContainer, descriptionStyle]}>
         <Body size="large" weight="Bold" color={Colors.darkBrown2}>
           {item.description}
@@ -137,6 +156,8 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       <Animated.View style={[styles.bottomContainer, bottomContainerStyle]}>
         <Footer buttonText="ADD" buttonDisabled={false} onPress={addItem} />
       </Animated.View>
+
+
     </View>
   );
 };
@@ -145,29 +166,34 @@ export default ItemPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 250,
+    // paddingTop: 250,
+    // zIndex: 99999999,
+
   },
-  bigSemiCircle: {
+  semiCircle: {
+    zIndex: -1,
     position: 'absolute',
-    top: -250,
-    width: '105%',
-    justifyContent: 'center',
-    height: '65%',
-    borderRadius: 300,
-    backgroundColor: Colors.brown,
-    overflow: 'hidden',
+    top: -450,
+    left: -100,
   },
   headerContainer: {
     position: 'absolute',
-    top: 30,
-    left: 0,
+    top: 40,
+    left: Spacings.s9,
     right: 0,
-    height: 150,
-
+    // height: 150,
+    // backgroundColor: Colors.red,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     zIndex: 1,
   },
+  leftChevron: {
+    position: 'absolute',
+    top: 40,
+    left: Spacings.s5,
+    zIndex: 1,
+  },
+
   descriptionContainer: {
     paddingHorizontal: Spacings.s7,
     position: 'absolute',
@@ -176,10 +202,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    width: '100%',
-    height: '100%',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Colors.red,
+    position: 'absolute',
+    top: 170,
+    left: '24%',
+    zIndex: 1,
+    borderWidth: 5,
+    borderColor: Colors.white,
+
   },
   image: {
     width: '80%',
