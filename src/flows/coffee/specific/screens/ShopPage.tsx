@@ -58,7 +58,7 @@ export const ShopPage = () => {
       });
     }
     if (ordering_state.specific_basket.length > 0) {
-      basketAnim.value = 0;
+      basketAnim.value = 1;
       basketAnim.value = withTiming(1, {
         duration: 2000,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),

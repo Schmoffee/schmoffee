@@ -30,10 +30,11 @@ import { clearStorageSpecificBasket } from '../../../../utils/helpers/storage';
 import ScheduleSection from '../../components/preview/ScheduleSection';
 import { PageLayout } from '../../../common/components/PageLayout';
 import PreviewSection from '../../components/preview/PreviewSection';
-import { Colors } from '../../../common/theme';
+import { Colors, Spacings } from '../../../common/theme';
 import { useDeepCompareEffect } from 'react-use';
 import { Body, Heading } from '../../../common/typography';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
+import { ActionButton } from '../../../common/components/ActionButton';
 
 interface PreviewPageProps { }
 export const PreviewPage = (props: PreviewPageProps) => {
@@ -217,10 +218,12 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
           <View style={styles.heading}>
             <Heading size='default' weight='Bold' color={Colors.white} >
-              Cart
+              Summary
             </Heading>
           </View>
-          <BasketSection />
+          <View style={styles.basketContainer}>
+            <BasketSection />
+          </View>
           <ScheduleSection />
           <PreviewSection title="Pick up location" description='23-25 Leather Ln, London EC1N 7TE'>
             <View style={styles.mapContainer}>
@@ -232,66 +235,75 @@ export const PreviewPage = (props: PreviewPageProps) => {
             </View>
           </PreviewSection>
 
+          <View style={styles.paymentRoot}>
+            <PreviewSection title="Payment method">
+              <View style={styles.paymentContainer}>
+                <TouchableOpacity
 
-          <PreviewSection title="Payment method">
-            <View style={styles.paymentContainer}>
-              <TouchableOpacity
+                  onPress={() => setPayment('card')}
+                  style={styles.paymentButton}
+                >
+                  <Text style={styles.paymentText}>Card</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
 
-                onPress={() => setPayment('card')}
-                style={styles.paymentButton}
-              >
-                <Text style={styles.paymentText}>Card</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+                  onPress={() => setPayment('google')}
+                  style={styles.paymentButton}
+                >
+                  <Text style={styles.paymentText}>Google Pay</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
 
-                onPress={() => setPayment('google')}
-                style={styles.paymentButton}
-              >
-                <Text style={styles.paymentText}>Google Pay</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-
-                onPress={() => setPayment('apple')}
-                style={styles.paymentButton}
-              >
-                <Text style={styles.paymentText}>Apple Pay</Text>
-              </TouchableOpacity>
-            </View>
-          </PreviewSection>
+                  onPress={() => setPayment('apple')}
+                  style={styles.paymentButton}
+                >
+                  <Text style={styles.paymentText}>Apple Pay</Text>
+                </TouchableOpacity>
+              </View>
+            </PreviewSection>
+          </View>
           <View style={styles.totalContainer}>
-            <Text style={styles.totalText}>Total</Text>
-            <Text style={styles.totalText}>£{total}</Text>
+            <Body size='large' weight='Bold' color={Colors.white} >
+              Total
+            </Body>
+            <Body size='large' weight='Bold' color={Colors.white} >
+              £{total}
+            </Body>
+
           </View>
 
         </View>
 
+        {
+          payment === 'google' && (
+            <GooglePayButton
+              type="standard"
+              onPress={handleCheckout}
+              style={{
+                width: '100%',
+                height: 50,
+              }}
+            />
+          )
+        }
+        {
+          payment === 'apple' && (
+            <ApplePayButton
+              onPress={handleCheckout}
+              type="plain"
+              buttonStyle="black"
+              borderRadius={4}
+              style={{
+                width: '100%',
+                height: 50,
+              }}
+            />
+          )
+        }
+        <ActionButton label="Checkout" onPress={handleCheckout} />
+
       </ScrollView>
-      {
-        payment === 'google' && (
-          <GooglePayButton
-            type="standard"
-            onPress={handleCheckout}
-            style={{
-              width: '100%',
-              height: 50,
-            }}
-          />
-        )
-      }
-      {
-        payment === 'apple' && (
-          <ApplePayButton
-            onPress={handleCheckout}
-            type="plain"
-            buttonStyle="black"
-            borderRadius={4}
-            style={{
-              width: '100%',
-              height: 50,
-            }}
-          />
-        )
-      }
+
     </View >
 
   );
@@ -319,8 +331,8 @@ const styles = StyleSheet.create({
   heading: {
     flexDirection: 'row',
     marginTop: 50,
+    paddingBottom: 20,
     marginHorizontal: 20,
-    // backgroundColor: Colors.red,
     justifyContent: 'center',
     borderBottomColor: Colors.greyLight2,
     borderBottomWidth: 1,
@@ -329,6 +341,12 @@ const styles = StyleSheet.create({
 
   },
 
+  basketContainer: {
+    borderBottomColor: Colors.greyLight3,
+    borderBottomWidth: 1,
+    borderBottomLeftRadius: 100,
+    borderBottomRightRadius: 100,
+  },
 
   mapContainer: {
     justifyContent: 'center',
@@ -338,41 +356,37 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
   },
-
+  paymentRoot: {
+    // marginTop: 20,
+    height: 150,
+  },
   paymentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: -160,
   },
-
   paymentButton: {
     backgroundColor: Colors.white,
     borderRadius: 10,
     padding: 10,
-
   },
-
   paymentText: {
     color: Colors.black,
     fontSize: 16,
     fontWeight: 'bold',
   },
-
   totalContainer: {
-
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 20,
+    marginHorizontal: Spacings.s7,
 
   },
-
   totalText: {
     color: Colors.white,
     fontSize: 16,
     fontWeight: 'bold',
   },
-
-
 });

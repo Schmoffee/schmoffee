@@ -20,69 +20,66 @@ export const BasketSection = (props: BasketSectionProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const [closed, setClosed] = useState(false);
 
-  const rHeaderStyle = useAnimatedStyle(() => ({
-    // opacity: interpolate(translateY.value, [0, 100], [1, 0], Extrapolate.CLAMP),
-  }));
+  const height = 100;
+  const maxHeight = 350;
+  const getHeight = () => {
+    if (ordering_state.specific_basket.length <= 1) {
+      return height;
+    } else if (ordering_state.specific_basket.length <= 2) {
+      return height + 100;
+    } else if (ordering_state.specific_basket.length <= 3) {
+      return height + 200;
+    }
+  };
 
-  const rContainerStyle = useAnimatedStyle(() => ({
-    opacity: closed ? 0 : interpolate(translateY.value, [0, 100], [1, 0], Extrapolate.CLAMP),
 
-    transform: [
-      {
-        translateY: interpolate(translateY.value, [0, 155], [0, 55], Extrapolate.CLAMP),
-      },
-      {
-        scale: interpolate(translateY.value, [0, 100], [1, 0.9], Extrapolate.CLAMP),
-      },
-    ],
-    shadowOpacity: interpolate(translateY.value, [0, 30], [0.15, 0], Extrapolate.CLAMP),
-  }));
+
   return (
-    <Animated.View style={[styles.container, rContainerStyle]}>
-      {ordering_state.specific_basket.length === 0 && (
-        <View style={styles.emptyContainer}>
-          <Pressable onPress={() => navigation.navigate('ShopPage')}>
-            <Body size="medium" weight="Bold" color={Colors.white}>
-              Click here to add some items to your basket!
-            </Body>
-          </Pressable>
-        </View>
-      )}
-      <View style={styles.basketColumn}>
-        <View style={styles.headerRow}>
+    <ScrollView style={styles.container}>
+      <View style={{ height: getHeight(), maxHeight }}>
+        {ordering_state.specific_basket.length === 0 && (
+          <View style={styles.emptyContainer}>
+            <Pressable onPress={() => navigation.navigate('ShopPage')}>
+              <Body size="medium" weight="Bold" color={Colors.white}>
+                Click here to add some items to your basket!
+              </Body>
+            </Pressable>
+          </View>
+        )}
+        <View style={styles.basketColumn}>
+          <View style={styles.headerRow}>
 
-          {ordering_state.specific_basket.map((item, index) => {
-            return (
-              <View style={styles.itemRow} key={item.id}>
-                <View style={styles.itemImage}>
-                  <BasketItem key={index} item={item} />
-                </View>
-                <View style={styles.detailsColumn}>
-                  <Body size="medium" weight="Bold" color={Colors.white}>
-                    {item.name}
+            {ordering_state.specific_basket.map((item, index) => {
+              return (
+                <View style={styles.itemRow} key={item.id}>
+                  <View style={styles.itemImage}>
+                    <BasketItem key={index} item={item} />
+                  </View>
+                  <View style={styles.detailsColumn}>
+                    <Body size="medium" weight="Bold" color={Colors.white}>
+                      {item.name}
+                    </Body>
+                    <Body size="small" weight="Bold" color={Colors.greyLight2}>
+                      {/* {item.description} */}
+                    </Body>
+                  </View>
+                  <Body size="small" weight="Bold" color={Colors.greyLight2} style={{ position: 'absolute', right: 0 }}>
+                    £{(item.price * item.quantity).toFixed(2)}
                   </Body>
-                  <Body size="small" weight="Bold" color={Colors.greyLight2}>
-                    {/* {item.description} */}
-                  </Body>
                 </View>
-                <Body size="small" weight="Bold" color={Colors.greyLight2} style={{ position: 'absolute', right: 0 }}>
-                  £{(item.price * item.quantity).toFixed(2)}
-                </Body>
-              </View>
 
-            )
-          })}
+              )
+            })}
+          </View>
         </View>
       </View>
-    </Animated.View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.darkBrown,
-    marginVertical: Spacings.s2,
-    height: '23%',
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
@@ -90,11 +87,6 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 5,
     shadowOpacity: 0.2,
-    borderBottomColor: Colors.greyLight3,
-    borderBottomWidth: 1,
-    borderBottomLeftRadius: 100,
-    borderBottomRightRadius: 100,
-
   },
   header: {
     height: 24,

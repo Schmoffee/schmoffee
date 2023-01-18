@@ -1,20 +1,49 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
-import { StyleSheet, View, TouchableOpacity, Pressable } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, View, TouchableOpacity, Pressable, Platform } from 'react-native';
 import { Colors, Spacings } from '../../../common/theme';
 import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
 import { CONST_SCREEN_WHEN } from '../../../../../constants';
 import { OrderingContext } from '../../../../contexts';
 import { Body, Heading } from '../../../common/typography';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 
 interface ScheduleSectionProps { }
 
 const ScheduleSection = (props: ScheduleSectionProps) => {
-  const { ordering_state } = useContext(OrderingContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [scheduled_time, setScheduledTime] = useState(5);
 
 
-  const getScheduleTime = (minutes: number) => {
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirmDate = (date: Date) => {
+    // get time difference in minutes
+    const diff = Math.round((date.getTime() - new Date().getTime()) / 60000);
+    console.log('diff', diff);
+    if (diff < 5) {
+      // show error
+      return;
+    }
+    setScheduledTime(diff);
+    ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: diff });
+
+    hideDatePicker();
+  };
+  function getDateNow() {
+    return new Date()
+  }
+
+  function getScheduleTime(minutes: number) {
     const date = new Date();
     date.setMinutes(date.getMinutes() + minutes);
     const hours = date.getHours();
@@ -32,18 +61,33 @@ const ScheduleSection = (props: ScheduleSectionProps) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Body size="medium" weight="Bold" color={Colors.white}>
-          Pick up time
+          Pick up time ({scheduled_time} mins)
         </Body>
+        <TouchableOpacity onPress={showDatePicker}>
+          <Body size="medium" weight="Bold" color={Colors.greyLight3}>
+            Change
+          </Body>
+        </TouchableOpacity>
+
       </View>
       <View style={styles.timeContainer}>
 
-        <Pressable onPress={() => navigation.navigate(CONST_SCREEN_WHEN)}>
+        <Pressable onPress={showDatePicker}>
           <View style={styles.rescheduleButton}>
             <Heading size="default" weight="Regular" color={Colors.white}>
-              {getScheduleTime(ordering_state.scheduled_time)}
+              {getScheduleTime(scheduled_time)}
             </Heading>
           </View>
         </Pressable>
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="time"
+          onConfirm={handleConfirmDate}
+          onCancel={hideDatePicker}
+          minimumDate={getDateNow()}
+          minuteInterval={5}
+
+        />
       </View>
     </View>
   );
@@ -54,7 +98,6 @@ export default ScheduleSection;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.darkBrown,
-    marginVertical: Spacings.s2,
     height: 100,
     shadowColor: '#000000',
     shadowOffset: {
@@ -64,11 +107,23 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.2,
     marginHorizontal: Spacings.s5,
+    marginBottom: Spacings.s5,
+    borderBottomColor: Colors.greyLight3,
+    borderBottomWidth: 2,
+    borderBottomLeftRadius: 100,
+    borderBottomRightRadius: 100,
+    paddingBottom: Spacings.s30,
+    paddingTop: Spacings.s6,
+
+
   },
   header: {
     height: 30,
-    justifyContent: 'center',
-    paddingHorizontal: Spacings.s2,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: Spacings.s2,
+    flexDirection: 'row',
+
   },
   timeContainer: {
     marginTop: Spacings.s3,
