@@ -65,11 +65,11 @@ export const ShopPage = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (ordering_state.specific_basket.length === 0) {
-      bottomSheetRef.current?.snapToPosition(0);
-    }
-  }, [ordering_state]);
+  // useEffect(() => {
+  //   if (ordering_state.specific_basket.length === 0) {
+  //     bottomSheetRef.current?.snapToPosition(0);
+  //   }
+  // }, [ordering_state]);
 
   const getCoffees = () => {
     return filtered_items.filter(item => item.type === 'COFFEE');
@@ -104,7 +104,7 @@ export const ShopPage = () => {
     [],
   );
 
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  // const bottomSheetRef = useRef<BottomSheet>(null);
 
   // variables
   const snapPoints = useMemo(() => ['14%', '90%'], []);
@@ -169,20 +169,20 @@ export const ShopPage = () => {
       </View>
 
       <View style={styles.bottomSheetContainer}>
-        <BottomSheet
-          index={ordering_state.specific_basket.length > 0 ? 0 : -1}
-          ref={bottomSheetRef}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}
-          onClose={() => {
-            bottomSheetRef.current?.close();
-          }}
-          backdropComponent={props => <CustomBackdrop {...props} />}
-          handleComponent={props => <CustomHandle {...props} />}>
-          <View style={styles.previewContainer}>
-            <PreviewPage />
-          </View>
-        </BottomSheet>
+        {/*<BottomSheet*/}
+        {/*  index={ordering_state.specific_basket.length > 0 ? 0 : -1}*/}
+        {/*  ref={bottomSheetRef}*/}
+        {/*  snapPoints={snapPoints}*/}
+        {/*  onChange={handleSheetChanges}*/}
+        {/*  onClose={() => {*/}
+        {/*    bottomSheetRef.current?.close();*/}
+        {/*  }}*/}
+        {/*  backdropComponent={props => <CustomBackdrop {...props} />}*/}
+        {/*  handleComponent={props => <CustomHandle {...props} />}>*/}
+        {/*  <View style={styles.previewContainer}>*/}
+        {/*    <PreviewPage />*/}
+        {/*  </View>*/}
+        {/*</BottomSheet>*/}
       </View>
     </View>
   );
