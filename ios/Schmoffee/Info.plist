@@ -36,7 +36,9 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>We need your location to recommend the best nearby shops</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need your location to recommend the best nearby shops</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow Access to Scan Credit Cards</string>
 	<key>UIAppFonts</key>

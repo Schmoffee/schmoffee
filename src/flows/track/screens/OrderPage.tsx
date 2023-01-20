@@ -4,7 +4,6 @@ import {StyleSheet, View} from 'react-native';
 import {CONST_SCREEN_RATING_PAGE} from '../../../../constants';
 import {TrackOrderContext} from '../../../contexts';
 import {TrackOrderRoutes} from '../../../utils/types/navigation.types';
-import BottomSheet from '@gorhom/bottom-sheet';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {OrderStatus} from '../../../models';
 import {Body} from '../../common/typography';

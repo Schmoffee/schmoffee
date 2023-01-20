@@ -14,6 +14,7 @@ import {Colors, Spacings} from '../theme';
 import {OrderItem} from '../../../models';
 import {Footer} from '../components/Footer';
 import {OrderingContext} from '../../../contexts';
+import {OrderingActionName} from '../../../utils/types/enums';
 
 const {width} = Dimensions.get('window');
 
@@ -97,7 +98,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
       const newBasket: OrderItem[] = ordering_state.specific_basket;
       newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-      ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     } else {
       const new_order_item: OrderItem = {
@@ -110,7 +111,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         id: item.id,
       };
       const newBasket: OrderItem[] = [...ordering_state.specific_basket, new_order_item];
-      ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     }
     const callback = () => navigation.goBack();

@@ -5,7 +5,7 @@ import {GlobalContext, globalData} from './contexts';
 import {DataStore, Hub} from 'aws-amplify';
 import {authListener, datastoreListener} from './utils/helpers/listeners';
 import {getCurrentAuthUser, signOut} from './utils/queries/auth';
-import {AuthState} from './utils/types/enums';
+import {AuthState, GlobalActionName} from './utils/types/enums';
 import {getUserById, getUserByPhoneNumber, updateDeviceToken} from './utils/queries/datastore';
 import {LocalUser} from './utils/types/data.types';
 import {updateEndpoint} from './utils/helpers/notifications';
@@ -15,6 +15,7 @@ import {firebase} from '@react-native-firebase/messaging';
 import {Alerts} from './utils/helpers/alerts';
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
+  console.log('global_state', global_state.auth_state);
 
   /**
    * This effect runs a dummy database query to manually initiate the synchronisation with the cloud.
@@ -28,7 +29,7 @@ const App = () => {
   }, []);
 
   /**
-   * This effect attachs a listener to the back button events on Android to create a custom behaviour.
+   * This effect attaches a listener to the back button events on Android to create a custom behaviour.
    */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -46,7 +47,7 @@ const App = () => {
       if (Platform.OS === 'ios') {
         const fcmToken = await firebase.messaging().getToken();
         if (fcmToken) {
-          global_dispatch({type: 'SET_DEVICE_TOKEN', payload: fcmToken});
+          global_dispatch({type: GlobalActionName.SET_DEVICE_TOKEN, payload: fcmToken});
           await updateEndpoint(fcmToken);
         } else {
           Alerts.tokenAlert();
@@ -54,7 +55,7 @@ const App = () => {
       } else {
         NativeModules.RNPushNotification.getToken(
           async (token: string) => {
-            global_dispatch({type: 'SET_DEVICE_TOKEN', payload: token});
+            global_dispatch({type: GlobalActionName.SET_DEVICE_TOKEN, payload: token});
             await updateEndpoint(token);
           },
           (error: any) => {
@@ -95,18 +96,18 @@ const App = () => {
           }
           if (global_state.auth_state !== AuthState.SIGNED_IN) {
             global_dispatch({
-              type: 'SET_AUTH_STATE',
+              type: GlobalActionName.SET_AUTH_STATE,
               payload: AuthState.SIGNED_IN,
             });
           }
-          global_dispatch({type: 'SET_AUTH_USER', payload: user});
+          global_dispatch({type: GlobalActionName.SET_AUTH_USER, payload: user});
         } else {
           await signOut();
           console.log('Auth user found but corresponding database user not found');
         }
       } else {
         global_dispatch({
-          type: 'SET_AUTH_STATE',
+          type: GlobalActionName.SET_AUTH_STATE,
           payload: AuthState.SIGNED_OUT,
         });
       }
@@ -132,7 +133,7 @@ const App = () => {
           customer_id: currentUser.customer_id,
           device_token: global_state.device_token,
         };
-        global_dispatch({type: 'SET_CURRENT_USER', payload: localUser});
+        global_dispatch({type: GlobalActionName.SET_CURRENT_USER, payload: localUser});
       }
     });
     return () => subscription.unsubscribe();

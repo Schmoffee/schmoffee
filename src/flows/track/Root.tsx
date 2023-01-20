@@ -13,13 +13,12 @@ import {Alert} from 'react-native';
 import {cancelPayment, confirmGooglePayPayment} from '../../utils/helpers/payment';
 import {deleteOrder} from '../../utils/queries/datastore';
 import {LocalUser, Payment} from '../../utils/types/data.types';
-import {useDeepCompareEffect, useGeolocation} from 'react-use';
-import {GeoLocationSensorState} from 'react-use/lib/useGeolocation';
+import {useDeepCompareEffect} from 'react-use';
+import {TrackOrderActionName} from '../../utils/types/enums';
 
 const Root = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
   const [track_order_state, track_order_dispatch] = useReducer(trackOrderReducer, trackOrderData);
-  const location: GeoLocationSensorState = useGeolocation({enableHighAccuracy: true});
   const TrackOrderStack = createNativeStackNavigator<TrackOrderRoutes>();
 
   /**
@@ -47,7 +46,7 @@ const Root = () => {
                   break;
               }
             }
-            track_order_dispatch({type: 'SET_CURRENT_ORDER', payload: items[0]});
+            track_order_dispatch({type: TrackOrderActionName.SET_CURRENT_ORDER, payload: items[0]});
           } else {
             items.length === 0
               ? console.log('No current order found')
@@ -98,7 +97,7 @@ const Root = () => {
   }
 
   return (
-    <TrackOrderContext.Provider value={{track_order_state, track_order_dispatch, location}}>
+    <TrackOrderContext.Provider value={{track_order_state, track_order_dispatch}}>
       <TrackOrderStack.Navigator
         initialRouteName="OrderPage"
         screenOptions={{

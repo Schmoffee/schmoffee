@@ -12,7 +12,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {PreviewPage} from './PreviewPage';
-import BottomSheet from '@gorhom/bottom-sheet';
 import {CardSection} from '../../components/menu/CardSection';
 import {Heading} from '../../../common/typography';
 import CustomBackdrop from '../../components/preview/CustomBackdrop';

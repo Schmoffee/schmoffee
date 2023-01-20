@@ -19,18 +19,16 @@ import {
 } from '../../../../utils/helpers/payment';
 import {BasketSection} from '../../components/basket/BasketSection';
 import {GlobalContext, OrderingContext} from '../../../../contexts';
-import {Cafe, OrderInfo, OrderItem, PlatformType, User, UserInfo} from '../../../../models';
+import {OrderInfo, OrderItem, PlatformType, User, UserInfo} from '../../../../models';
 import {CONST_SCREEN_ORDER} from '../../../../../constants';
-import {getShopById, sendOrder, updatePaymentMethod} from '../../../../utils/queries/datastore';
-import {LocalUser, Payment, PaymentParams, ShopMarker} from '../../../../utils/types/data.types';
-import Map from '../../../track/components/Map';
-import {Region} from 'react-native-maps';
+import {sendOrder, updatePaymentMethod} from '../../../../utils/queries/datastore';
+import {LocalUser, Payment, PaymentParams} from '../../../../utils/types/data.types';
+import Map from '../../../common/components/Map';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {clearStorageSpecificBasket} from '../../../../utils/helpers/storage';
 import ScheduleSection from '../../components/preview/ScheduleSection';
 import {PageLayout} from '../../../common/components/PageLayout';
 import PreviewSection from '../../components/preview/PreviewSection';
-import {Colors} from '../../../common/theme';
 import {useDeepCompareEffect} from 'react-use';
 
 interface PreviewPageProps {}
@@ -43,9 +41,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
   const {isApplePaySupported} = useApplePay();
   const [loading, setLoading] = useState(true);
   const [payment, setPayment] = useState<Payment>('card');
-  const [mapLoading, setMapLoading] = useState(true);
-  const [region, setRegion] = useState<Region>();
-  const [markers, setMarkers] = useState<ShopMarker[]>([]);
   const [total, setTotal] = useState(0);
 
   useDeepCompareEffect(() => {
@@ -56,30 +51,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
       .toFixed(2);
     setTotal(+totalTemp * 100);
   }, [ordering_state.specific_basket]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const new_shop: Cafe = (await getShopById(ordering_state.current_shop_id as string)) as Cafe;
-      setMarkers([
-        {
-          name: new_shop.name,
-          coords: {latitude: new_shop.latitude, longitude: new_shop.longitude},
-          description: new_shop.description,
-          is_open: new_shop.is_open,
-          image: new_shop.image ? new_shop.image : '',
-        },
-      ]);
-      setRegion({
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-        latitude: new_shop.latitude,
-        longitude: new_shop.longitude,
-      });
-      setMapLoading(false);
-    }
-
-    fetchData().then(() => console.log('done'));
-  }, [ordering_state.current_shop_id]);
 
   /**
    * Calculate and return the total price of the options of an item
@@ -165,7 +136,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
       Alert.alert('Apple Pay is not supported.');
       return;
     }
-    console.log('Apple Pay is supported.');
     return await payWithApplePay(user_id, paymentParams);
   }
 
@@ -220,11 +190,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
           <ScheduleSection />
           <PreviewSection title="Location">
             <View style={styles.mapContainer}>
-              {mapLoading ? (
-                <ActivityIndicator size="large" color={Colors.blue} />
-              ) : (
-                <Map markers={markers} region={region} />
-              )}
+              <Map cafeIdFilter={ordering_state.current_shop_id} />
             </View>
           </PreviewSection>
         </ScrollView>

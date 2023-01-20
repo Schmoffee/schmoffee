@@ -2,14 +2,15 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useContext} from 'react';
 import {Pressable, StyleSheet, useWindowDimensions, View} from 'react-native';
 import Animated, {useAnimatedStyle} from 'react-native-reanimated';
-import {CONST_SCREEN_SETTINGS, CONST_SCREEN_UPDATE_PROFILE, CONST_SCREEN_CHANGE_PAYMENT} from '../../../../constants';
+import {CONST_SCREEN_CHANGE_PAYMENT, CONST_SCREEN_SETTINGS, CONST_SCREEN_UPDATE_PROFILE} from '../../../../constants';
 import {signOut} from '../../../utils/queries/auth';
-import {AuthState} from '../../../utils/types/enums';
+import {AuthState, GlobalActionName} from '../../../utils/types/enums';
 import {RootRoutes} from '../../../utils/types/navigation.types';
 import {updateDeviceToken} from '../../../utils/queries/datastore';
 import {GlobalContext} from '../../../contexts';
 import {Body, Heading} from '../../common/typography';
 import {Colors, Spacings} from '../../common/theme';
+import {Alerts} from '../../../utils/helpers/alerts';
 
 interface SideDrawerContentProps {
   anim: Animated.SharedValue<number>;
@@ -21,12 +22,11 @@ export const SideDrawerContent = ({anim}: SideDrawerContentProps) => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
 
   const handleSignOut = async () => {
-    //TODO: Display appropriate message on the frontend
     const id = global_state.current_user?.id as string;
-    const is_signed_out = await signOut();
+    const is_signed_out = await Alerts.logoutAlert(signOut);
     if (!is_signed_out) {
       global_dispatch({
-        type: 'SET_AUTH_STATE',
+        type: GlobalActionName.SET_AUTH_STATE,
         payload: AuthState.SIGNING_OUT_FAILED,
       });
     } else {

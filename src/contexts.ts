@@ -2,6 +2,7 @@ import React from 'react';
 import {
   GlobalAction,
   GlobalState,
+  MapLocation,
   OrderingAction,
   OrderingState,
   SignInAction,
@@ -10,7 +11,6 @@ import {
   TrackOrderState,
 } from './utils/types/data.types';
 import {AuthState} from './utils/types/enums';
-import {GeoLocationSensorState} from 'react-use/lib/useGeolocation';
 
 export const globalData: GlobalState = {
   auth_state: AuthState.SIGNED_OUT,
@@ -24,19 +24,15 @@ export const globalData: GlobalState = {
 export const trackOrderData: TrackOrderState = {
   current_order: null,
   ratings: [],
-  manually_centered: false,
-  map_region: undefined,
-  is_user_centered: true,
 };
 
 export const orderingData: OrderingState = {
   current_shop_id: '51563da2-3287-466a-9b3b-cb3f93f29db4',
-  common_basket: [],
   scheduled_time: 5,
   specific_basket: [],
-  common_items: [],
   specific_items: [],
   payment_id: null,
+  cafes: [],
 };
 
 export const signInData: SignInState = {
@@ -54,14 +50,18 @@ const GlobalContext = React.createContext<{
   global_dispatch: () => null,
 });
 
+const MapContext = React.createContext<{
+  location: MapLocation | null;
+}>({
+  location: null,
+});
+
 const TrackOrderContext = React.createContext<{
   track_order_state: TrackOrderState;
   track_order_dispatch: React.Dispatch<TrackOrderAction>;
-  location: GeoLocationSensorState | null;
 }>({
   track_order_state: trackOrderData,
   track_order_dispatch: () => null,
-  location: null,
 });
 
 const OrderingContext = React.createContext<{
@@ -82,4 +82,4 @@ const SignInContext = React.createContext<{
   sendOTP: () => null,
 });
 
-export {TrackOrderContext, GlobalContext, OrderingContext, SignInContext};
+export {TrackOrderContext, GlobalContext, OrderingContext, SignInContext, MapContext};

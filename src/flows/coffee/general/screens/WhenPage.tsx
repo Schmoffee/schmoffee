@@ -10,6 +10,7 @@ import {BlurView} from '@react-native-community/blur';
 import {PageLayout} from '../../../common/components/PageLayout';
 import {Colors, Spacings} from '../../../common/theme';
 import {Body} from '../../../common/typography';
+import {OrderingActionName} from '../../../../utils/types/enums';
 
 interface WhenPageProps {}
 
@@ -28,7 +29,7 @@ export const WhenPage = (props: WhenPageProps) => {
   const handleClosePress = useCallback(() => {
     setIsEnabled(false);
     setScheduleTime(data[0]);
-    ordering_dispatch({type: 'SET_SCHEDULED_TIME', payload: scheduledTime});
+    ordering_dispatch({type: OrderingActionName.SET_SCHEDULED_TIME, payload: scheduledTime});
     bottomSheetRef.current?.close();
     setFocusedIndex(data[0]);
   }, [data, ordering_dispatch, scheduledTime]);
@@ -52,14 +53,14 @@ export const WhenPage = (props: WhenPageProps) => {
   const handleOnValueChange = useCallback(
     (value: number) => {
       setScheduleTime(data[value]);
-      ordering_dispatch({type: 'SET_SCHEDULED_TIME', payload: data[value]});
+      ordering_dispatch({type: OrderingActionName.SET_SCHEDULED_TIME, payload: data[value]});
       setFocusedIndex(value);
     },
     [setFocusedIndex, setScheduleTime, ordering_dispatch],
   );
 
   const handleOnContinue = () => {
-    ordering_dispatch({type: 'SET_SCHEDULED_TIME', payload: scheduledTime});
+    ordering_dispatch({type: OrderingActionName.SET_SCHEDULED_TIME, payload: scheduledTime});
     navigation.navigate(CONST_SCREEN_PREVIEW);
   };
 

@@ -1,3 +1,11 @@
+type Error @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  user_phone: AWSPhone
+  time: AWSDateTime
+  description: String
+  type: String
+}
+
 type UsualOrder {
   items: [OrderItem!]!
   schedule: Int!
@@ -162,3 +170,4 @@ type User @model @auth(rules: [{allow: public}]) {
   customer_id: String
   device_token: String!
 }
+ 

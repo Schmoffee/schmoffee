@@ -15,7 +15,7 @@ export enum AuthState {
   SIGNING_OUT_FAILED = 'SIGNING_OUT_FAILED',
 }
 
-export enum GlobalAction {
+export enum GlobalActionName {
   SET_CURRENT_USER,
   SET_AUTH_STATE,
   SET_AUTH_USER,
@@ -24,24 +24,20 @@ export enum GlobalAction {
   SET_NETWORK_STATUS,
 }
 
-export enum TrackOrderAction {
+export enum TrackOrderActionName {
   SET_CURRENT_ORDER,
-  SET_IS_USER_CENTERED,
-  SET_MAP_REGION,
-  SET_IS_MANUALLY_CENTERED,
   SET_RATINGS,
 }
-export enum OrderingAction {
+export enum OrderingActionName {
   SET_CURRENT_SHOP_ID,
-  SET_COMMON_BASKET,
   SET_SPECIFIC_BASKET,
   SET_SCHEDULED_TIME,
   SET_SPECIFIC_ITEMS,
   SET_PAYMENT_ID,
-  SET_COMMON_ITEMS,
+  SET_CAFES,
 }
 
-export enum SignInAction {
+export enum SignInActionName {
   SET_TRIALS,
   SET_BLOCKED_TIME,
   SET_SESSION,

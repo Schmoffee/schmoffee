@@ -141,6 +141,10 @@ export declare type OrderInfo = LazyLoading extends LazyLoadingDisabled ? EagerO
 
 export declare const OrderInfo: (new (init: ModelInit<OrderInfo>) => OrderInfo)
 
+type ErrorMetaData = {
+  readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
 type OptionMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
@@ -167,6 +171,32 @@ type CafeMetaData = {
 
 type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
+}
+
+type EagerError = {
+  readonly id: string;
+  readonly user_phone?: string | null;
+  readonly time?: string | null;
+  readonly description?: string | null;
+  readonly type?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyError = {
+  readonly id: string;
+  readonly user_phone?: string | null;
+  readonly time?: string | null;
+  readonly description?: string | null;
+  readonly type?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Error = LazyLoading extends LazyLoadingDisabled ? EagerError : LazyError
+
+export declare const Error: (new (init: ModelInit<Error, ErrorMetaData>) => Error) & {
+  copyOf(source: Error, mutator: (draft: MutableModel<Error, ErrorMetaData>) => MutableModel<Error, ErrorMetaData> | void): Error;
 }
 
 type EagerOption = {

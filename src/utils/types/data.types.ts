@@ -1,7 +1,6 @@
-import {CurrentOrder, Item, Option, OrderItem, UsualOrder} from '../../models';
+import {Cafe, CurrentOrder, Item, Option, OrderItem, UsualOrder} from '../../models';
 import {CognitoUser} from 'amazon-cognito-identity-js';
-import {AuthState} from './enums';
-import {Region} from 'react-native-maps';
+import {AuthState, GlobalActionName, OrderingActionName, SignInActionName, TrackOrderActionName} from './enums';
 
 export type HubPayload = {
   event: string;
@@ -37,18 +36,14 @@ export type AuthUser = {
 export type TrackOrderState = {
   current_order: CurrentOrder | null;
   ratings: PreRating[];
-  map_region: Region | undefined;
-  manually_centered: boolean;
-  is_user_centered: boolean;
 };
 
 export type OrderingState = {
   current_shop_id: string | null;
-  common_basket: CommonBasketItem[];
   scheduled_time: number;
   specific_basket: OrderItem[];
-  common_items: Item[];
   specific_items: Item[];
+  cafes: Cafe[];
   payment_id: string | null;
 };
 
@@ -60,6 +55,16 @@ export type SignInState = {
 };
 
 export type Location = {latitude: number; longitude: number};
+
+export type MapLocation = {
+  latitude: number;
+  longitude: number;
+  altitude: number | null;
+  accuracy: number;
+  altitudeAccuracy: number | null;
+  heading: number | null;
+  speed: number | null;
+};
 
 export type PreferenceWeights = {
   queue: number;
@@ -78,34 +83,30 @@ export type ShopMarker = {
 };
 
 export type GlobalAction =
-  | {type: 'SET_CURRENT_USER'; payload: LocalUser | null}
-  | {type: 'SET_AUTH_STATE'; payload: AuthState}
-  | {type: 'SET_AUTH_USER'; payload: AuthUser | null}
-  | {type: 'SET_SYNCED'; payload: boolean}
-  | {type: 'SET_DEVICE_TOKEN'; payload: string}
-  | {type: 'SET_NETWORK_STATUS'; payload: boolean};
+  | {type: GlobalActionName.SET_CURRENT_USER; payload: LocalUser | null}
+  | {type: GlobalActionName.SET_AUTH_STATE; payload: AuthState}
+  | {type: GlobalActionName.SET_AUTH_USER; payload: AuthUser | null}
+  | {type: GlobalActionName.SET_SYNCED; payload: boolean}
+  | {type: GlobalActionName.SET_DEVICE_TOKEN; payload: string}
+  | {type: GlobalActionName.SET_NETWORK_STATUS; payload: boolean};
 
 export type TrackOrderAction =
-  | {type: 'SET_CURRENT_ORDER'; payload: CurrentOrder}
-  | {type: 'SET_IS_USER_CENTERED'; payload: boolean}
-  | {type: 'SET_MAP_REGION'; payload: Region | undefined}
-  | {type: 'SET_IS_MANUALLY_CENTERED'; payload: boolean}
-  | {type: 'SET_RATINGS'; payload: PreRating[]};
+  | {type: TrackOrderActionName.SET_CURRENT_ORDER; payload: CurrentOrder}
+  | {type: TrackOrderActionName.SET_RATINGS; payload: PreRating[]};
 
 export type OrderingAction =
-  | {type: 'SET_CURRENT_SHOP_ID'; payload: string}
-  | {type: 'SET_COMMON_BASKET'; payload: CommonBasketItem[]}
-  | {type: 'SET_SPECIFIC_BASKET'; payload: OrderItem[]}
-  | {type: 'SET_SCHEDULED_TIME'; payload: number}
-  | {type: 'SET_SPECIFIC_ITEMS'; payload: Item[]}
-  | {type: 'SET_PAYMENT_ID'; payload: string}
-  | {type: 'SET_COMMON_ITEMS'; payload: Item[]};
+  | {type: OrderingActionName.SET_CURRENT_SHOP_ID; payload: string}
+  | {type: OrderingActionName.SET_SPECIFIC_BASKET; payload: OrderItem[]}
+  | {type: OrderingActionName.SET_SCHEDULED_TIME; payload: number}
+  | {type: OrderingActionName.SET_SPECIFIC_ITEMS; payload: Item[]}
+  | {type: OrderingActionName.SET_PAYMENT_ID; payload: string}
+  | {type: OrderingActionName.SET_CAFES; payload: Cafe[]};
 
 export type SignInAction =
-  | {type: 'SET_TRIALS'; payload: number}
-  | {type: 'SET_BLOCKED_TIME'; payload: number}
-  | {type: 'SET_SESSION'; payload: CognitoUser}
-  | {type: 'SET_PHONE'; payload: string};
+  | {type: SignInActionName.SET_TRIALS; payload: number}
+  | {type: SignInActionName.SET_BLOCKED_TIME; payload: number}
+  | {type: SignInActionName.SET_SESSION; payload: CognitoUser}
+  | {type: SignInActionName.SET_PHONE; payload: string};
 
 export type PreRating = {
   rating: number;

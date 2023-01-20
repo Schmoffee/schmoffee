@@ -1,7 +1,7 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Pressable, StyleSheet, useWindowDimensions} from 'react-native';
-import {CONST_SCREEN_SHOP} from '../../../../../constants';
+import {CONST_SCREEN_CAFES, CONST_SCREEN_SHOP} from '../../../../../constants';
 import {RootRoutes} from '../../../../utils/types/navigation.types';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
@@ -96,7 +96,7 @@ export const Home = () => {
               header="SCHMOFFEE"
               footer={{
                 buttonDisabled: false,
-                onPress: () => navigation.navigate(CONST_SCREEN_SHOP),
+                onPress: () => navigation.navigate(CONST_SCREEN_CAFES),
                 buttonText: 'Get me coffee',
               }}>
               <Video

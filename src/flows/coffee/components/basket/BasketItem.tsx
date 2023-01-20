@@ -6,6 +6,7 @@ import {Colors, Spacings} from '../../../common/theme';
 import {OrderItem} from '../../../../models';
 import {Body} from '../../../common/typography';
 import {OrderingContext} from '../../../../contexts';
+import {OrderingActionName} from '../../../../utils/types/enums';
 
 interface BasketItemProps {
   item: OrderItem;
@@ -33,7 +34,7 @@ export const BasketItem = (props: BasketItemProps) => {
     if (index > -1) {
       const newBasket: OrderItem[] = ordering_state.specific_basket;
       newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-      ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     }
   };
@@ -62,7 +63,7 @@ export const BasketItem = (props: BasketItemProps) => {
               } else {
                 newBasket[index] = new_item;
               }
-              ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+              ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
               await setSpecificBasket(newBasket);
             }
           },
@@ -80,7 +81,7 @@ export const BasketItem = (props: BasketItemProps) => {
         onRemoveItem();
       } else {
         newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity - 1};
-        ordering_dispatch({type: 'SET_SPECIFIC_BASKET', payload: newBasket});
+        ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
         await setSpecificBasket(newBasket);
       }
     }
