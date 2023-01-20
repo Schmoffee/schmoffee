@@ -38,6 +38,7 @@ const Root = () => {
    */
   useDeepCompareEffect(() => {
     if (ordering_state.current_shop_id) {
+      console.log(ordering_state.current_shop_id);
       const subscription = DataStore.observeQuery(
         Item,
         //@ts-ignore
@@ -47,6 +48,7 @@ const Root = () => {
         },
       ).subscribe(snapshot => {
         const {items, isSynced} = snapshot;
+        console.log('Items: ', items);
         if (isSynced) {
           const basket = ordering_state.specific_basket;
           const old_items = ordering_state.specific_items;
@@ -73,12 +75,12 @@ const Root = () => {
       }}>
       <CoffeeStack.Group>
         <CoffeeStack.Screen name="Home" component={Home} />
+        <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
         <CoffeeStack.Screen name="Cafes" component={CafeBrowsingPage} />
         <CoffeeStack.Group screenOptions={{presentation: 'modal', headerShown: false}}>
           <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
           <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
         </CoffeeStack.Group>
-        <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
       </CoffeeStack.Group>
     </CoffeeStack.Navigator>
   );

@@ -96,7 +96,7 @@ export const Home = () => {
               header="SCHMOFFEE"
               footer={{
                 buttonDisabled: false,
-                onPress: () => navigation.navigate(CONST_SCREEN_CAFES),
+                onPress: () => navigation.navigate(CONST_SCREEN_SHOP),
                 buttonText: 'Get me coffee',
               }}>
               <Video
