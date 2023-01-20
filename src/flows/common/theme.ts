@@ -31,6 +31,7 @@ export const Colors = {
   goldLight3: '#f3fbff',
   darkBrown: '#1c1414',
   darkBrown2: '#3B2C1E',
+  darkBrownFaded: '#62483C'
 };
 
 export const Spacings = {

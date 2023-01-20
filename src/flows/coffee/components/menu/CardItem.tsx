@@ -1,11 +1,11 @@
-import React, {useEffect, useRef} from 'react';
-import {View, StyleSheet, Image, Pressable} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
-import {Colors, Spacings} from '../../../common/theme';
-import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
-import {Body} from '../../../common/typography';
-import {Item} from '../../../../models';
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet, Image, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Colors, Spacings } from '../../../common/theme';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import { Body } from '../../../common/typography';
+import { Item } from '../../../../models';
 
 interface CardItemProps {
   item: Item;
@@ -13,12 +13,11 @@ interface CardItemProps {
   query?: string;
 }
 
-export const CardItem = ({item, index, query}: CardItemProps) => {
+export const CardItem = ({ item, index, query }: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
 
-  console.log(item.image);
 
   useEffect(() => {
     anim.value = -1;
@@ -30,14 +29,18 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
 
   const onItemPress = () => {
     'worklet';
-    //measure image position & size
+    // measure image position & size
     imageRef.current?.measure?.((x, y, width, height, pageX, pageY) => {
-      let imageSpecs = {width, height, pageX, pageY, borderRadius: 10};
+      let imageSpecs = { width, height, pageX, pageY, borderRadius: 10 };
       navigation.navigate('ItemPage', {
         item,
         imageSpecs,
       });
     });
+    // navigation.navigate('ItemPage', {
+    //   item,
+    //   // imageSpecs,
+    // });
   };
 
   const cardStyleDown = useAnimatedStyle(
@@ -82,7 +85,7 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
             </View>
           </View>
           <View style={styles.imageContainer}>
-            {/* <Image ref={imageRef} source={{ uri: `${item.image}` }} /> */}
+            <Image ref={imageRef} source={{ uri: `${item.image}` }} />
             <View style={styles.ratingContainer}>
               <Image source={require('../../../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
               <Body size="small" weight="Regular" color={Colors.black} style={styles.ratingText}>
@@ -98,8 +101,9 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
 
 const styles = StyleSheet.create({
   root: {
-    // width: '100%',
-    // flex: 1
+    width: '100%',
+    flex: 1,
+    // zIndex: 99999999,
   },
   container: {
     position: 'relative',
@@ -171,7 +175,7 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     position: 'absolute',
-    right: 6.5,
+    right: 7,
     top: 2,
   },
 
@@ -188,6 +192,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 3,
     top: 3,
+    tintColor: Colors.white,
   },
   iconContainer: {
     backgroundColor: Colors.darkBrown,

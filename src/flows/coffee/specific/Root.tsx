@@ -74,9 +74,15 @@ const Root = () => {
       <CoffeeStack.Group>
         <CoffeeStack.Screen name="Home" component={Home} />
         <CoffeeStack.Screen name="Cafes" component={CafeBrowsingPage} />
-        <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
+        <CoffeeStack.Group screenOptions={{ presentation: "modal", headerShown: false }} >
+          <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
+          <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
+        </CoffeeStack.Group>
         <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
-        <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
+        <CoffeeStack.Screen name="WhenPage" component={WhenPage} />
+      </CoffeeStack.Group>
+      <CoffeeStack.Group screenOptions={{ presentation: 'modal' }}>
+        <CoffeeStack.Screen name="ChangeShopPage" component={ChangeShop} />
       </CoffeeStack.Group>
     </CoffeeStack.Navigator>
   );

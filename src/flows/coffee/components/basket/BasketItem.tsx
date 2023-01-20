@@ -8,13 +8,16 @@ import {Body} from '../../../common/typography';
 import {OrderingContext} from '../../../../contexts';
 import {OrderingActionName} from '../../../../utils/types/enums';
 
+type Size = 'small' | 'medium' | 'large';
+
 interface BasketItemProps {
   item: OrderItem;
+  size?: Size;
 }
 
 export const BasketItem = (props: BasketItemProps) => {
-  const {item} = props;
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { item } = props;
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
   const [expanded, setExpanded] = useState(false);
@@ -56,7 +59,7 @@ export const BasketItem = (props: BasketItemProps) => {
           onPress: async () => {
             if (index > -1) {
               const newBasket = ordering_state.specific_basket;
-              const new_item = {...newBasket[index], quantity: newBasket[index].quantity - 1};
+              const new_item = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
 
               if (newBasket[index].quantity === 1) {
                 newBasket.splice(index, 1);
@@ -69,7 +72,7 @@ export const BasketItem = (props: BasketItemProps) => {
           },
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
