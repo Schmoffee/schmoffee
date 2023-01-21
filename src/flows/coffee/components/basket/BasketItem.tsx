@@ -1,12 +1,12 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Alert, Image, Pressable, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
-import {setSpecificBasket} from '../../../../utils/helpers/storage';
-import {Colors, Spacings} from '../../../common/theme';
-import {OrderItem} from '../../../../models';
-import {Body} from '../../../common/typography';
-import {OrderingContext} from '../../../../contexts';
-import {OrderingActionName} from '../../../../utils/types/enums';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Alert, Image, StyleSheet, Text, Pressable, View } from 'react-native';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { setSpecificBasket } from '../../../../utils/helpers/storage';
+import { Colors, Spacings } from '../../../common/theme';
+import { OrderItem } from '../../../../models';
+import { Body } from '../../../common/typography';
+import { OrderingContext } from '../../../../contexts';
+import { OrderingActionName } from '../../../../utils/types/enums';
 
 type Size = 'small' | 'medium' | 'large';
 
@@ -16,8 +16,8 @@ interface BasketItemProps {
 }
 
 export const BasketItem = (props: BasketItemProps) => {
-  const {item} = props;
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { item } = props;
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
   const [expanded, setExpanded] = useState(false);
@@ -33,62 +33,75 @@ export const BasketItem = (props: BasketItemProps) => {
   };
 
   const onIncreaseQuantity = async () => {
-    let newBasket: OrderItem[] = ordering_state.specific_basket;
-    const index = newBasket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
-    if (index > -1) {
-      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
-      await setSpecificBasket(newBasket);
+    if (anim.value === 0) {
+      // do nothing
     }
+    else {
+      const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+      if (index > -1) {
+        const newBasket: OrderItem[] = ordering_state.specific_basket;
+        newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+        ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+        await setSpecificBasket(newBasket);
+      }
+    }
+
   };
   const onRemoveItem = () => {
-    const index = ordering_state.specific_basket.findIndex((basketItem: any) => basketItem.name === item.name);
-    Alert.alert(
-      'Remove Item',
-      'Are you sure you want to remove this item from your basket?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => {
-            setExpanded(false);
+    if (anim.value === 0) {
+      // do nothing
+    }
+    else {
+      const index = ordering_state.specific_basket.findIndex((basketItem: any) => basketItem.name === item.name);
+      Alert.alert(
+        'Remove Item',
+        'Are you sure you want to remove this item from your basket?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => {
+              setExpanded(false);
+            },
+            style: 'cancel',
           },
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: async () => {
-            if (index > -1) {
-              let newBasket = ordering_state.specific_basket;
-              const new_item = {...newBasket[index], quantity: newBasket[index].quantity - 1};
+          {
+            text: 'OK',
+            onPress: async () => {
+              if (index > -1) {
+                const newBasket = ordering_state.specific_basket;
+                const new_item = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
 
-              if (newBasket[index].quantity === 1) {
-                newBasket.splice(index, 1);
-              } else {
-                newBasket[index] = new_item;
+                if (newBasket[index].quantity === 1) {
+                  newBasket.splice(index, 1);
+                } else {
+                  newBasket[index] = new_item;
+                }
+                ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+                await setSpecificBasket(newBasket);
               }
-              ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
-              // await setSpecificBasket(newBasket);
-            }
+            },
           },
-        },
-      ],
-      {cancelable: false},
-    );
+        ],
+        { cancelable: false },
+      );
+    }
   };
 
   const onReduceQuantity = async () => {
-    console.log('reduce');
-    let newBasket = ordering_state.specific_basket;
-    console.log('newBasket', newBasket);
-    const index = newBasket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
-    console.log(index);
-    if (index > -1) {
-      if (newBasket[index].quantity === 1) {
-        onRemoveItem();
-      } else {
-        newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity - 1};
-        ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
-        // await setSpecificBasket(newBasket);
+    if (anim.value === 0) {
+      anim.value = withTiming(1);
+    }
+    else {
+      const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+      if (index > -1) {
+        const newBasket = ordering_state.specific_basket;
+        if (newBasket[index].quantity === 1) {
+          onRemoveItem();
+        } else {
+          newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
+          ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+          await setSpecificBasket(newBasket);
+        }
       }
     }
   };
@@ -96,42 +109,42 @@ export const BasketItem = (props: BasketItemProps) => {
   const rItemStyle = useAnimatedStyle(
     () => ({
       marginHorizontal: interpolate(anim.value, [0, 1], [-4, 15]),
-      transform: [{scale: interpolate(anim.value, [0, 1], [1, 1.15])}],
+      transform: [{ scale: interpolate(anim.value, [0, 1], [1, 1.15]) }],
     }),
     [],
   );
 
   const rQuantityStyle = useAnimatedStyle(() => {
     return {
-      transform: [{translateX: 39 * -anim.value}, {translateY: 4 * -anim.value}],
+      transform: [{ translateX: 39 * -anim.value }, { translateY: 4 * -anim.value }],
     };
   }, []);
 
   const rQuantityLabelStyle = useAnimatedStyle(() => {
     return {
       // opacity: anim.value,
-      transform: [{translateX: 24.5 * anim.value}],
+      transform: [{ translateX: 24.5 * anim.value }],
     };
   }, []);
 
   const rIncrQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateX: interpolate(anim.value, [0, 1], [50, 80])}],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [50, 60]) }],
     };
   }, []);
 
   const rRedQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateX: interpolate(anim.value, [0, 1], [-80, -52])}],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [-30, -12]) }],
     };
   }, []);
 
   const rItemNameStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateY: 8 * anim.value}],
+      transform: [{ translateY: 8 * anim.value }],
     };
   }, []);
 
@@ -162,7 +175,7 @@ export const BasketItem = (props: BasketItemProps) => {
   };
 
   return (
-    <TouchableOpacity onPress={onItemPress} style={styles.container}>
+    <Pressable onPress={onItemPress} style={styles.container}>
       <View style={styles.item}>
         <Animated.View style={[rItemStyle]}>
           <View style={styles.itemImage}>
@@ -173,21 +186,29 @@ export const BasketItem = (props: BasketItemProps) => {
                   {getQuantity()}
                 </Body>
               </Animated.View>
-              <Pressable onPress={() => console.log('lol')}>
-                <Animated.View style={[styles.quantityPlusButton, rIncrQuantStyle]}>
-                  <Text style={styles.quantityPlusText}>+</Text>
-                </Animated.View>
-              </Pressable>
-              <TouchableOpacity onPress={onReduceQuantity} style={styles.random}>
-                <Animated.View style={[styles.quantityPlusButton, rRedQuantStyle]}>
-                  <Text style={styles.quantityPlusText}>-</Text>
-                </Animated.View>
-              </TouchableOpacity>
+              <Animated.View style={[styles.quantityPlusButton, rIncrQuantStyle]}>
+                <Pressable onPress={onIncreaseQuantity} style={styles.quantityPlusButton2}>
+                  <Body size='large' weight='Bold' style={styles.quantityPlusText}>+</Body>
+                </Pressable>
+
+              </Animated.View>
+              <Animated.View style={[styles.quantityPlusButton, rRedQuantStyle]}>
+                <Pressable onPress={onReduceQuantity} style={styles.quantityPlusButton2}>
+                  <Body size='large' weight='Bold' style={styles.quantityPlusText}>-</Body>
+                </Pressable>
+
+              </Animated.View>
             </Animated.View>
           </View>
         </Animated.View>
+
+        {/* <Animated.View style={[styles.itemName]}>
+          <Body size="small" weight="Regular" color={Colors.darkBrown2}>
+            {props.item.name}
+          </Body>
+        </Animated.View> */}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -196,6 +217,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 70,
     justifyContent: 'center',
+    // backgroundColor: Colors.greenFaded1,
   },
 
   item: {
@@ -224,10 +246,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    width: 30,
+    height: 30,
+    borderRadius: 30,
     position: 'relative',
+    top: -40,
+    right: -15,
   },
   quantityLabel: {
-    width: 20,
+    width: 25,
+    height: 20,
     borderRadius: 10,
     backgroundColor: Colors.white,
     position: 'absolute',
@@ -235,7 +263,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quantityPlusButton: {
-    width: 20,
+    width: 22,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: Colors.red,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quantityPlusButton2: {
+    width: 22,
+    height: 20,
     borderRadius: 10,
     backgroundColor: Colors.white,
     justifyContent: 'center',
