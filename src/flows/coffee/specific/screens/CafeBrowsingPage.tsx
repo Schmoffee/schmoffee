@@ -16,28 +16,25 @@ const CafeBrowsingPage = () => {
         <Map cafeIdFilter={null} />
       </View>
       <View style={styles.scrollViewContainer} >
-        <Animated.ScrollView horizontal={true} pagingEnabled snapToInterval={CARD_WIDTH + 35}
-          scrollEventThrottle={1} showsHorizontalScrollIndicator={false}
-          decelerationRate={Platform.OS === 'ios' ? 0 : 0.98}
-          snapToAlignment="center"
-          style={styles.scrollView}
-          contentInset={{
-            top: 0,
-            left: SPACING_FOR_CARD_INSET,
-            bottom: 0,
-            right: SPACING_FOR_CARD_INSET,
-          }}
-          contentContainerStyle={{
-            paddingHorizontal:
-              Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0,
-          }}
-        >
-          <SafeAreaView style={styles.flatListContainer}>
-            <FlatList contentContainerStyle={styles.flatList} data={ordering_state.cafes} renderItem={cafe => <ShopCard cafe={cafe.item} />} horizontal={true} />
-          </SafeAreaView>
-        </Animated.ScrollView>
+        <SafeAreaView style={styles.flatListContainer}>
+          <FlatList horizontal={true} pagingEnabled snapToInterval={CARD_WIDTH + 35}
+            scrollEventThrottle={1} showsHorizontalScrollIndicator={false}
+            decelerationRate={Platform.OS === 'ios' ? 0 : 0.98}
+            snapToAlignment="center"
+            style={styles.scrollView}
+            contentInset={{
+              top: 0,
+              left: SPACING_FOR_CARD_INSET,
+              bottom: 0,
+              right: SPACING_FOR_CARD_INSET,
+            }}
+            contentContainerStyle={{
+              paddingHorizontal:
+                Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0,
+            }} data={ordering_state.cafes} renderItem={cafe => <ShopCard cafe={cafe.item} />} />
+        </SafeAreaView>
       </View>
-    </View>
+    </View >
   );
 };
 
