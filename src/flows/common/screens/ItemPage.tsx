@@ -82,6 +82,20 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
     [],
   );
 
+  const optionsStyle = useAnimatedStyle(
+    () => ({
+      opacity: anim.value,
+      transform: [
+        {
+          translateY: interpolate(anim.value, [0, 1], [90, 0]),
+        },
+
+      ],
+    }),
+    [],
+  );
+
+
   const imageContainerStyle = useAnimatedStyle(
     () => ({
       position: 'absolute',
@@ -133,7 +147,10 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
 
   const milkImages = [
     {
-      image: require('../../../assets/pngs/almond-outline.png'),
+      image: require('../../../assets/pngs/nothing-outline.png'),
+    },
+    {
+      image: require('../../../assets/pngs/soy-outline.png'),
     },
     {
       image: require('../../../assets/pngs/soy-outline.png'),
@@ -146,7 +163,10 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
 
   const syrupImages = [
     {
-      image: require('../../../assets/pngs/vanilla-outline.png'),
+      image: require('../../../assets/pngs/nothing-outline.png'),
+    },
+    {
+      image: require('../../../assets/pngs/maple-outline.png'),
     },
     {
       image: require('../../../assets/pngs/maple-outline.png'),
@@ -172,7 +192,7 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
       </Animated.View>
       <Animated.View style={[styles.imageContainer, rImageStyle]} />
 
-      <View style={styles.optionsContainer}>
+      <Animated.View style={[styles.optionsContainer, optionsStyle]}>
         <View style={styles.milkOptions}>
           <OptionCarousel
             data={milkImages}
@@ -185,7 +205,7 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
             pagination={false}
           />
         </View>
-      </View>
+      </Animated.View>
 
 
       <Animated.View style={[styles.descriptionContainer, descriptionStyle]}>
