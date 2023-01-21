@@ -10,7 +10,7 @@ import {
   TrackOrderAction,
   TrackOrderState,
 } from './utils/types/data.types';
-import {AuthState} from './utils/types/enums';
+import { AuthState } from './utils/types/enums';
 
 export const globalData: GlobalState = {
   auth_state: AuthState.SIGNED_OUT,
@@ -75,11 +75,11 @@ const OrderingContext = React.createContext<{
 const SignInContext = React.createContext<{
   sign_in_state: SignInState;
   sign_in_dispatch: React.Dispatch<SignInAction>;
-  sendOTP:(phoneNumber: string) => void;
+  sendOTP: (phoneNumber: string) => void;
 }>({
   sign_in_state: signInData,
   sign_in_dispatch: () => null,
   sendOTP: () => null,
 });
 
-export {TrackOrderContext, GlobalContext, OrderingContext, SignInContext, MapContext};
+export { TrackOrderContext, GlobalContext, OrderingContext, SignInContext, MapContext };
