@@ -48,7 +48,6 @@ const Root = () => {
         },
       ).subscribe(snapshot => {
         const {items, isSynced} = snapshot;
-        console.log('Items: ', items);
         if (isSynced) {
           const basket = ordering_state.specific_basket;
           const old_items = ordering_state.specific_items;

@@ -294,6 +294,11 @@ async function registerError(phone: string, description: string, type: string) {
   );
 }
 
+async function hasOrderRunning(userID: string): Promise<boolean> {
+  const order = await DataStore.query(CurrentOrder, current_order => current_order.userID('eq', userID));
+  return order.length > 0;
+}
+
 export {
   getCommonItems,
   getUserByPhoneNumber,
@@ -311,4 +316,5 @@ export {
   newSignIn,
   updateDeviceToken,
   registerError,
+  hasOrderRunning,
 };

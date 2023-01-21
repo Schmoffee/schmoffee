@@ -47,6 +47,7 @@ export type RootRoutes = {
   push(screen: any, navigator?: any): void;
   Auth: NavigatorScreenParams<AuthRoutes> | undefined;
   Coffee: NavigatorScreenParams<CoffeeRoutes> | undefined;
+  Loading: undefined;
   SideDrawer: NavigatorScreenParams<SideDrawerRoutes> | undefined;
   TrackOrder: NavigatorScreenParams<TrackOrderRoutes> | undefined;
 };

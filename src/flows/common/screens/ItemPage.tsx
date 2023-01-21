@@ -1,5 +1,5 @@
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
-import React, { useContext, useEffect } from 'react';
+import {Dimensions, Image, StyleSheet, View} from 'react-native';
+import React, {useContext, useEffect} from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,12 +8,12 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Body, Heading } from '../typography';
-import { setSpecificBasket } from '../../../utils/helpers/storage';
-import { Colors, Spacings } from '../theme';
-import { OrderItem } from '../../../models';
-import { Footer } from '../components/Footer';
-import { OrderingContext } from '../../../contexts';
+import {Body, Heading} from '../typography';
+import {setSpecificBasket} from '../../../utils/helpers/storage';
+import {Colors, Spacings} from '../theme';
+import {OrderItem} from '../../../models';
+import {Footer} from '../components/Footer';
+import {OrderingContext} from '../../../contexts';
 import LeftChevronBackButton from '../components/LeftChevronBackButton';
 import SwipeableModal from '../components/SwipeableModal';
 import {OrderingActionName} from '../../../utils/types/enums';
@@ -109,7 +109,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
   async function addItem() {
     if (ordering_state.specific_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
       const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
-      const newBasket: OrderItem[] = ordering_state.specific_basket;
+      let newBasket: OrderItem[] = ordering_state.specific_basket;
       newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
@@ -146,8 +146,6 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       </Animated.View>
       <Animated.View style={[styles.imageContainer, rImageStyle]} />
 
-
-
       <Animated.View style={[styles.descriptionContainer, descriptionStyle]}>
         <Body size="large" weight="Bold" color={Colors.darkBrown2}>
           {item.description}
@@ -157,8 +155,6 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       <Animated.View style={[styles.bottomContainer, bottomContainerStyle]}>
         <Footer buttonText="ADD" buttonDisabled={false} onPress={addItem} />
       </Animated.View>
-
-
     </View>
   );
 };
@@ -169,7 +165,6 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingTop: 250,
     // zIndex: 99999999,
-
   },
   semiCircle: {
     zIndex: -1,
@@ -215,7 +210,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     borderWidth: 5,
     borderColor: Colors.white,
-
   },
   image: {
     width: '80%',

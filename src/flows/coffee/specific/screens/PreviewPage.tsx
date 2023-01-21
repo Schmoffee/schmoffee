@@ -44,7 +44,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
   const {isGooglePaySupported} = useGooglePay();
   const {isApplePaySupported} = useApplePay();
   const [loading, setLoading] = useState(true);
-  const [payment, setPayment] = useState<Payment>('card');
   const [total, setTotal] = useState(0);
 
   useDeepCompareEffect(() => {
@@ -103,6 +102,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
           currency: 'gbp',
         };
       }
+      console.log('Payment params: ', paymentParams);
       if (mode === 'google') {
         payment_id = await googlePayCheckout(user.id, paymentParams);
       } else if (mode === 'card') {
@@ -117,9 +117,12 @@ export const PreviewPage = (props: PreviewPageProps) => {
         setLoading(false);
         if (Platform.OS === 'ios') await PushNotificationIOS.requestPermissions();
         await handleSendOrder(payment_id);
+        return true;
       }
+      return false;
     }
     setLoading(false);
+    return false;
   }
 
   async function googlePayCheckout(user_id: string, paymentParams: PaymentParams) {
@@ -172,9 +175,11 @@ export const PreviewPage = (props: PreviewPageProps) => {
     }
   }
 
-  const handleCheckout = async () => {
-    await checkout(payment);
-    navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
+  const handleCheckout = async (mode: Payment) => {
+    const success = await checkout(mode);
+    if (success) {
+      navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
+    }
   };
 
   return (
@@ -204,7 +209,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
               <View style={styles.paymentContainer}>
                 {Platform.OS === 'ios' && (
                   <ApplePayButton
-                    onPress={handleCheckout}
+                    onPress={() => handleCheckout('apple')}
                     type="plain"
                     buttonStyle="black"
                     borderRadius={4}
@@ -217,15 +222,14 @@ export const PreviewPage = (props: PreviewPageProps) => {
                 {Platform.OS !== 'ios' && (
                   <GooglePayButton
                     type="standard"
-                    onPress={handleCheckout}
+                    onPress={() => handleCheckout('google')}
                     style={{
                       width: 200,
                       height: 50,
                     }}
                   />
                 )}
-
-                <ActionButton label="Checkout" onPress={handleCheckout} />
+                <ActionButton label="Checkout" onPress={() => handleCheckout('card')} />
               </View>
             </PreviewSection>
           </View>
@@ -234,7 +238,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
               Total
             </Body>
             <Body size="large" weight="Bold" color={Colors.white}>
-              £{total}
+              £{(total / 100).toFixed(2)}
             </Body>
           </View>
         </View>

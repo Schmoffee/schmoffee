@@ -11,21 +11,25 @@ import {AuthState} from '../utils/types/enums';
 import Geolocation from '@react-native-community/geolocation';
 import {requestLocationPermission, watchLocation} from '../utils/helpers/location';
 import {MapLocation} from '../utils/types/data.types';
+import LoadingPage from '../flows/common/screens/LoadingPage';
 
-export default function Navigator() {
+interface NavigatorProps {
+  loading: boolean;
+}
+
+export default function Navigator(props: NavigatorProps) {
   return (
     <NavigationContainer>
-      <RootNavigator />
+      <RootNavigator loading={props.loading} />
     </NavigationContainer>
   );
 }
 
 const RootStack = createNativeStackNavigator<RootRoutes>();
 
-function RootNavigator() {
+function RootNavigator(props: NavigatorProps) {
   const {global_state} = useContext(GlobalContext);
   const location = useRef<MapLocation | null>(null);
-  console.log('rerendered');
   Geolocation.setRNConfiguration({
     skipPermissionRequests: false,
     authorizationLevel: 'auto',
@@ -53,7 +57,9 @@ function RootNavigator() {
           animation: 'none',
         }}>
         <RootStack.Group>
-          {global_state.auth_state !== AuthState.SIGNED_IN ? (
+          {props.loading ? (
+            <RootStack.Screen name="Loading" component={LoadingPage} />
+          ) : global_state.auth_state === AuthState.SIGNED_IN ? (
             <>
               <RootStack.Screen name="Coffee" component={CoffeeRoot} />
               <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />

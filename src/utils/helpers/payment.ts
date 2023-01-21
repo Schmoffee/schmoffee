@@ -105,10 +105,8 @@ async function initializePaymentSheet(
  */
 async function openPaymentSheet(presentPaymentSheet: () => Promise<PresentPaymentSheetResult>) {
   const {error, paymentOption} = await presentPaymentSheet();
+  console.log(paymentOption);
   if (error) {
-    if (error.code === 'Canceled') {
-      return false;
-    }
     console.log(error);
     return false;
   } else {

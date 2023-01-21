@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Alert, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, Image, Pressable, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import {setSpecificBasket} from '../../../../utils/helpers/storage';
 import {Colors, Spacings} from '../../../common/theme';
@@ -16,8 +16,8 @@ interface BasketItemProps {
 }
 
 export const BasketItem = (props: BasketItemProps) => {
-  const { item } = props;
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
+  const {item} = props;
+  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
   const [expanded, setExpanded] = useState(false);
@@ -33,9 +33,9 @@ export const BasketItem = (props: BasketItemProps) => {
   };
 
   const onIncreaseQuantity = async () => {
-    const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+    let newBasket: OrderItem[] = ordering_state.specific_basket;
+    const index = newBasket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
     if (index > -1) {
-      const newBasket: OrderItem[] = ordering_state.specific_basket;
       newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
@@ -58,8 +58,8 @@ export const BasketItem = (props: BasketItemProps) => {
           text: 'OK',
           onPress: async () => {
             if (index > -1) {
-              const newBasket = ordering_state.specific_basket;
-              const new_item = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
+              let newBasket = ordering_state.specific_basket;
+              const new_item = {...newBasket[index], quantity: newBasket[index].quantity - 1};
 
               if (newBasket[index].quantity === 1) {
                 newBasket.splice(index, 1);
@@ -67,25 +67,28 @@ export const BasketItem = (props: BasketItemProps) => {
                 newBasket[index] = new_item;
               }
               ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
-              await setSpecificBasket(newBasket);
+              // await setSpecificBasket(newBasket);
             }
           },
         },
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
   };
 
   const onReduceQuantity = async () => {
-    const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+    console.log('reduce');
+    let newBasket = ordering_state.specific_basket;
+    console.log('newBasket', newBasket);
+    const index = newBasket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+    console.log(index);
     if (index > -1) {
-      const newBasket = ordering_state.specific_basket;
       if (newBasket[index].quantity === 1) {
         onRemoveItem();
       } else {
         newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity - 1};
         ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
-        await setSpecificBasket(newBasket);
+        // await setSpecificBasket(newBasket);
       }
     }
   };
@@ -170,11 +173,11 @@ export const BasketItem = (props: BasketItemProps) => {
                   {getQuantity()}
                 </Body>
               </Animated.View>
-              <TouchableOpacity onPress={onIncreaseQuantity}>
+              <Pressable onPress={() => console.log('lol')}>
                 <Animated.View style={[styles.quantityPlusButton, rIncrQuantStyle]}>
                   <Text style={styles.quantityPlusText}>+</Text>
                 </Animated.View>
-              </TouchableOpacity>
+              </Pressable>
               <TouchableOpacity onPress={onReduceQuantity} style={styles.random}>
                 <Animated.View style={[styles.quantityPlusButton, rRedQuantStyle]}>
                   <Text style={styles.quantityPlusText}>-</Text>
@@ -183,12 +186,6 @@ export const BasketItem = (props: BasketItemProps) => {
             </Animated.View>
           </View>
         </Animated.View>
-
-        {/* <Animated.View style={[styles.itemName]}>
-          <Body size="small" weight="Regular" color={Colors.darkBrown2}>
-            {props.item.name}
-          </Body>
-        </Animated.View> */}
       </View>
     </TouchableOpacity>
   );
@@ -199,7 +196,6 @@ const styles = StyleSheet.create({
     width: 90,
     height: 70,
     justifyContent: 'center',
-    // backgroundColor: Colors.greenFaded1,
   },
 
   item: {
@@ -228,16 +224,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    width: 30,
-    height: 30,
-    borderRadius: 30,
     position: 'relative',
-    top: -40,
-    right: -15,
   },
   quantityLabel: {
     width: 20,
-    height: 20,
     borderRadius: 10,
     backgroundColor: Colors.white,
     position: 'absolute',
@@ -245,9 +235,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quantityPlusButton: {
-    zIndex: -6,
-    width: 22,
-    height: 20,
+    width: 20,
     borderRadius: 10,
     backgroundColor: Colors.white,
     justifyContent: 'center',

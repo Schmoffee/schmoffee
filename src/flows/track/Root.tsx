@@ -58,26 +58,6 @@ const Root = () => {
     }
   }, [global_dispatch, global_state.current_user, track_order_state.current_order?.status]);
 
-  // useEffect(() => {
-  //   let currWatch: number | undefined = watchID.current;
-  //   async function trackLocation() {
-  //     const locatable = await handleLocationRequest();
-  //     if (locatable) subscribeToLocation(watchID, track_order_dispatch);
-  //   }
-  //   trackLocation()
-  //     .then(() => console.log('tracking'))
-  //     .catch(e => console.log(e));
-  //   return () => {
-  //     if (currWatch) {
-  //       Geolocation.clearWatch(currWatch);
-  //     }
-  //   };
-  // }, [global_dispatch, track_order_state.is_locatable]);
-  //
-  // async function handleLocationRequest() {
-  //   return await requestLocationPermission();
-  // }
-
   async function confirmPayment(mode: Payment, payment_id: string) {
     if (mode === 'card') {
       const {error} = await confirmPaymentSheetPayment();
