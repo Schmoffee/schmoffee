@@ -42,7 +42,7 @@ const Root = () => {
       const subscription = DataStore.observeQuery(
         Item,
         //@ts-ignore
-        item => item.cafeID('eq', ordering_state.current_shop_id).is_in_stock('eq', true),
+        item => item.cafeID('eq', ordering_state.current_shop_id),
         {
           sort: item => item.type(SortDirection.ASCENDING),
         },
