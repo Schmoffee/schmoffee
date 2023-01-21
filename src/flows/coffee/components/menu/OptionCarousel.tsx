@@ -35,6 +35,8 @@ const OptionCarousel = (props: OptionCarouselProps) => {
     });
 
 
+
+
     return (
         <View>
             {props.pagination && <Pagination data={props.data} x={x} size={SIZE} />}
@@ -96,9 +98,14 @@ const OptionCarousel = (props: OptionCarouselProps) => {
                                 <Animated.View style={[styles.imageContainer, rImageStyle]}>
                                     <Image source={item.image} style={styles.image} />
                                 </Animated.View>
-                                <Animated.View style={[styles.priceContainer, rPriceStyle]}>
-                                    <Body size='extraSmall' weight='Thin'>+30p</Body>
-                                </Animated.View>
+                                {
+                                    index !== 1 && (
+                                        <Animated.View style={[styles.priceContainer, rPriceStyle]}>
+                                            <Body size='extraSmall' weight='Thin'>+30p</Body>
+                                        </Animated.View>
+                                    )
+                                }
+
                             </View>
 
                         </View>
