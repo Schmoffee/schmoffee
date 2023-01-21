@@ -1,20 +1,20 @@
-import React, {useCallback, useContext} from 'react';
-import {OrderingContext} from '../../../contexts';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {CoffeeRoutes} from '../../../utils/types/navigation.types';
-import {DataStore, SortDirection} from 'aws-amplify';
-import {Item, OrderItem} from '../../../models';
-import {ShopPage} from './screens/ShopPage';
-import {PreviewPage} from './screens/PreviewPage';
+import React, { useCallback, useContext } from 'react';
+import { OrderingContext } from '../../../contexts';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { CoffeeRoutes } from '../../../utils/types/navigation.types';
+import { DataStore, SortDirection } from 'aws-amplify';
+import { Item, OrderItem } from '../../../models';
+import { ShopPage } from './screens/ShopPage';
+import { PreviewPage } from './screens/PreviewPage';
 import ItemPage from '../../common/screens/ItemPage';
-import {useDeepCompareEffect} from 'react-use';
-import {OrderingActionName} from '../../../utils/types/enums';
-import {Alerts} from '../../../utils/helpers/alerts';
+import { useDeepCompareEffect } from 'react-use';
+import { OrderingActionName } from '../../../utils/types/enums';
+import { Alerts } from '../../../utils/helpers/alerts';
 import CafeBrowsingPage from './screens/CafeBrowsingPage';
-import {Home} from './screens/Home';
+import { Home } from './screens/Home';
 
 const Root = () => {
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const CoffeeStack = createNativeStackNavigator<CoffeeRoutes>();
 
   const filterSpecificBasket = useCallback(
@@ -25,7 +25,7 @@ const Root = () => {
         const new_spec_basket = basket.filter(item => !removed_items.includes(item.name));
         const changes = basket.length - new_spec_basket.length;
         if (changes > 0) {
-          ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: new_spec_basket});
+          ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: new_spec_basket });
           Alerts.outOfStockAlert(removed_items);
         }
       }
@@ -42,19 +42,19 @@ const Root = () => {
       const subscription = DataStore.observeQuery(
         Item,
         //@ts-ignore
-        item => item.cafeID('eq', ordering_state.current_shop_id),
+        item => item.cafeID('eq', ordering_state.current_shop_id).is_in_stock('eq', true),
         {
           sort: item => item.type(SortDirection.ASCENDING),
         },
       ).subscribe(snapshot => {
-        const {items, isSynced} = snapshot;
+        const { items, isSynced } = snapshot;
         console.log('Items: ', items);
         if (isSynced) {
           const basket = ordering_state.specific_basket;
           const old_items = ordering_state.specific_items;
           filterSpecificBasket(items, basket, old_items);
         }
-        ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_ITEMS, payload: items});
+        ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_ITEMS, payload: items });
       });
       return () => subscription.unsubscribe();
     }
@@ -68,7 +68,7 @@ const Root = () => {
 
   return (
     <CoffeeStack.Navigator
-      initialRouteName="Home"
+      initialRouteName="ShopPage"
       screenOptions={{
         gestureEnabled: false,
         headerShown: false,
@@ -77,7 +77,7 @@ const Root = () => {
         <CoffeeStack.Screen name="Home" component={Home} />
         <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
         <CoffeeStack.Screen name="Cafes" component={CafeBrowsingPage} />
-        <CoffeeStack.Group screenOptions={{presentation: 'modal', headerShown: false}}>
+        <CoffeeStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
           <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
           <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
         </CoffeeStack.Group>

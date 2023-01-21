@@ -1,12 +1,12 @@
-import React, {FC, PropsWithChildren} from 'react';
-import {Text, StyleSheet, TextProps} from 'react-native';
-import {Colors} from './theme';
+import React, { FC, PropsWithChildren } from 'react';
+import { Text, StyleSheet, TextProps } from 'react-native';
+import { Colors } from './theme';
 
 interface BodyProps extends TextProps, PropsWithChildren {
   style?: any;
   color?: string;
   weight?: 'Regular' | 'Thin' | 'Bold' | 'Extrabld' | 'Black';
-  size?: 'small' | 'medium' | 'large';
+  size?: 'extraSmall' | 'small' | 'medium' | 'large';
 }
 
 interface HeadingProps extends TextProps, PropsWithChildren {
@@ -17,16 +17,20 @@ interface HeadingProps extends TextProps, PropsWithChildren {
 }
 
 const bodyFontSizes = {
+  extraSmall: 12,
   small: 14,
   medium: 16,
   large: 18,
 };
 
-export const Body: FC<BodyProps> = ({children, style, color, weight, size, ...props}) => {
+export const Body: FC<BodyProps> = ({ children, style, color, weight, size, ...props }) => {
   const textColor = color ? color : Colors.black;
   const fontFamily = weight ? 'ProximaNova-' + weight : weight === 'Thin' ? 'ProximaNovaT-Thin' : 'ProximaNova-Regular';
   let fontSize;
   switch (size) {
+    case 'extraSmall':
+      fontSize = bodyFontSizes.extraSmall;
+      break;
     case 'small':
       fontSize = bodyFontSizes.small;
       break;
@@ -57,7 +61,7 @@ const headingFontSizes = {
   large: 42,
 };
 
-export const Heading: FC<HeadingProps> = ({children, style, color, weight, size, ...props}) => {
+export const Heading: FC<HeadingProps> = ({ children, style, color, weight, size, ...props }) => {
   const textColor = color ? color : Colors.black;
   const fontFamily = weight ? 'ProximaNova-' + weight : weight === 'Thin' ? 'ProximaNovaT-Thin' : 'ProximaNova-Regular';
   let fontSize;
@@ -84,7 +88,7 @@ export const Heading: FC<HeadingProps> = ({children, style, color, weight, size,
   );
 };
 
-export const Error: FC<BodyProps> = ({children}) => {
+export const Error: FC<BodyProps> = ({ children }) => {
   return (
     <Body weight={'Bold'} size={'small'} color={Colors.red}>
       {children}
