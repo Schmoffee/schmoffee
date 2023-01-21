@@ -1,9 +1,9 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {Pressable, StyleSheet, useWindowDimensions} from 'react-native';
-import {CONST_SCREEN_CAFES, CONST_SCREEN_SHOP} from '../../../../../constants';
-import {RootRoutes} from '../../../../utils/types/navigation.types';
-import {PanGestureHandler} from 'react-native-gesture-handler';
+import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import { CONST_SCREEN_CAFES, CONST_SCREEN_SHOP } from '../../../../../constants';
+import { RootRoutes } from '../../../../utils/types/navigation.types';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
   useAnimatedGestureHandler,
@@ -11,9 +11,9 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {SideDrawerContent} from '../../../hamburger/components/SideDrawerContent';
+import { SideDrawerContent } from '../../../hamburger/components/SideDrawerContent';
 import Video from 'react-native-video';
-import {PageLayout} from '../../../common/components/PageLayout';
+import { PageLayout } from '../../../common/components/PageLayout';
 
 export const Home = () => {
   const navigation = useNavigation<RootRoutes>();
@@ -55,7 +55,7 @@ export const Home = () => {
 
   const rPageStyle = useAnimatedStyle(() => {
     return {
-      transform: [{translateX: anim.value}],
+      transform: [{ translateX: anim.value }],
       opacity: interpolate(anim.value, [0, HOME_WIDTH / 2], [1, 0.7]),
     };
   });
@@ -96,7 +96,7 @@ export const Home = () => {
               header="SCHMOFFEE"
               footer={{
                 buttonDisabled: false,
-                onPress: () => navigation.navigate(CONST_SCREEN_SHOP),
+                onPress: () => navigation.navigate(CONST_SCREEN_CAFES),
                 buttonText: 'Get me coffee',
               }}>
               <Video

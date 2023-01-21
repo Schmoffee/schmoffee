@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {EagerItem} from '../../../../models';
-import {Heading} from '../../../common/typography';
-import {CardSection} from './CardSection';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { EagerItem } from '../../../../models';
+import { Heading } from '../../../common/typography';
+import { CardSection } from './CardSection';
 
 interface TabNavigatorProps {
   tab1: EagerItem[];
@@ -93,20 +93,15 @@ const styles = StyleSheet.create({
     color: 'lightgrey',
   },
   cardSectionContainer: {
-    // flex: 1,
     marginTop: 140,
-    // backgroundColor: 'red',
     height: '60%',
+    // backgroundColor: 'red',
   },
   container: {
-    // flex: 1,
-    // backgroundColor: 'blue',
     height: '100%',
     width: WIDTH - 40,
   },
   headerContainer: {
-    // flex: 1,
-    // backgroundColor: 'red',
     height: '5%',
     alignItems: 'center',
   },
