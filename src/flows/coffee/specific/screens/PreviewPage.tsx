@@ -34,6 +34,7 @@ import {useDeepCompareEffect} from 'react-use';
 import {Body, Heading} from '../../../common/typography';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 import {ActionButton} from '../../../common/components/ActionButton';
+import {BlurView} from '@react-native-community/blur';
 
 interface PreviewPageProps {}
 export const PreviewPage = (props: PreviewPageProps) => {
@@ -43,7 +44,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
   const {initPaymentSheet, presentPaymentSheet} = useStripe(); // Stripe hook payment methods
   const {isGooglePaySupported} = useGooglePay();
   const {isApplePaySupported} = useApplePay();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
 
   useDeepCompareEffect(() => {
@@ -176,10 +177,23 @@ export const PreviewPage = (props: PreviewPageProps) => {
   }
 
   const handleCheckout = async (mode: Payment) => {
-    const success = await checkout(mode);
-    if (success) {
-      navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
-    }
+    Alert.alert('Are you sure?', 'Are you sure you want to checkout, this action is final. It will send your order.', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Confirm',
+        onPress: async () => {
+          setLoading(true);
+          const success = await checkout(mode);
+          setLoading(false);
+          if (success) {
+            navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
+          }
+        },
+      },
+    ]);
   };
 
   return (
@@ -243,6 +257,17 @@ export const PreviewPage = (props: PreviewPageProps) => {
           </View>
         </View>
       </ScrollView>
+      {loading && (
+        <>
+          <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
+          <ActivityIndicator
+            animating={loading}
+            size="large"
+            color={Colors.gold}
+            style={{position: 'absolute', top: '45%', left: '45%', zIndex: 5}}
+          />
+        </>
+      )}
     </View>
   );
 };
@@ -251,6 +276,14 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: Colors.darkBrown,
+  },
+
+  absolute: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 
   backButton: {
