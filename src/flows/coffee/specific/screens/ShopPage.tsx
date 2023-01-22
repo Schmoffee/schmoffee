@@ -1,26 +1,27 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {Dimensions, NativeModules, Platform, StyleSheet, TextInput, View} from 'react-native';
-import {OrderingContext} from '../../../../contexts';
-import {Item} from '../../../../models';
-import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
-import {Colors, Spacings} from '../../../common/theme';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { OrderingContext } from '../../../../contexts';
+import { Item } from '../../../../models';
+import Animated, { Easing, Extrapolate, interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Colors, Spacings } from '../../../common/theme';
 import TabNavigator from '../../components/menu/TabNavigator';
-import {BasketPreview} from '../../components/basket/BasketPreview';
+import { BasketPreview } from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 
-const {StatusBarManager} = NativeModules;
+const { StatusBarManager } = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const {height: wHeight, width: wWidth} = Dimensions.get('window');
+const { height: wHeight, width: wWidth } = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
-  const {ordering_state} = useContext(OrderingContext);
+  const { ordering_state } = useContext(OrderingContext);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
   const anim = useSharedValue(0);
   const basketAnim = useSharedValue(0);
+  const searchAnim = useSharedValue(0);
 
   useEffect(() => {
     anim.value = 0;
@@ -38,8 +39,7 @@ export const ShopPage = () => {
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       });
     }
-    if (ordering_state.specific_basket.length > 0) {
-      basketAnim.value = 1;
+    if (ordering_state.specific_basket.length > 0 && basketAnim.value === 0) {
       basketAnim.value = withTiming(1, {
         duration: 2000,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
@@ -47,7 +47,7 @@ export const ShopPage = () => {
     }
   }, [basketAnim, ordering_state.specific_basket.length]);
 
-  const contains = ({name}: Item, query: string) => {
+  const contains = ({ name }: Item, query: string) => {
     const nameLower = name.toLowerCase();
     return nameLower.includes(query);
   };
@@ -76,6 +76,21 @@ export const ShopPage = () => {
     return filtered_items.filter(item => item.type === 'SNACKS');
   };
 
+  const handleSearchPress = () => {
+    if (searchAnim.value === 0) {
+      searchAnim.value = withTiming(1, {
+        duration: 900,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      })
+    }
+    else {
+      searchAnim.value = withTiming(0, {
+        duration: 950,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      })
+    }
+  }
+
   const rCircleStyle = useAnimatedStyle(
     () => ({
       // opacity: anim.value,
@@ -100,6 +115,37 @@ export const ShopPage = () => {
     [],
   );
 
+  const rSearchContainerStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      searchAnim.value,
+      [0, 1],
+      [Colors.darkBrown, Colors.greyLight1]
+    )
+    return {
+      width: interpolate(searchAnim.value, [0, 1], [25, 360]),
+      backgroundColor
+    };
+  });
+  const rSearchIconStyle = useAnimatedStyle(() => {
+    let rotate = interpolate(searchAnim.value, [0, 1], [0, -360], Extrapolate.CLAMP);
+    const tintColor = interpolateColor(
+      searchAnim.value,
+      [0, 1],
+      [Colors.greyLight3, Colors.darkBrown]
+    )
+    return {
+      transform: [
+        {
+          rotate: `${rotate}deg`,
+        },
+      ],
+      tintColor,
+      backgroundColor: 'transparent'
+    };
+  });
+
+
+
   return (
     <View style={styles.root}>
       {/* back button for navigation */}
@@ -107,13 +153,19 @@ export const ShopPage = () => {
         <LeftChevronBackButton />
       </View>
 
+
       <View style={[styles.itemsContainer]}>
         <View style={styles.header}>
           <Animated.Image
             source={require('../../../../assets/pngs/semi-circle.png')}
             style={[styles.semiCircle, rCircleStyle]}
           />
-          <Animated.View style={[styles.searchInputContainer]}>
+          <Animated.View style={[styles.searchInputContainer, rSearchContainerStyle]}>
+            <View style={styles.searchIcon}>
+              <Pressable onPress={handleSearchPress}>
+                <Animated.Image style={rSearchIconStyle} source={require('../../../../assets/pngs/magnifyingglass.png')} />
+              </Pressable>
+            </View>
             <TextInput
               autoCapitalize="none"
               autoCorrect={false}
@@ -121,6 +173,7 @@ export const ShopPage = () => {
               value={query}
               onChangeText={queryText => setQuery(queryText)}
               placeholder="What do you crave?"
+              style={styles.searchText}
             />
           </Animated.View>
           <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} />
@@ -150,7 +203,6 @@ const styles = StyleSheet.create({
     paddingBottom: 70,
     // justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: Colors.red,
   },
   itemsContainer: {
     // flex: 1,
@@ -173,14 +225,29 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.darkBrown,
     borderTopRightRadius: 60,
     borderTopLeftRadius: 60,
-  },
 
+  },
   searchInputContainer: {
-    backgroundColor: Colors.greyLight1,
-    borderRadius: Spacings.s5,
-    padding: Spacings.s2,
-    marginBottom: Spacings.s4,
-    minWidth: '50%',
+    flex: 1,
+    flexDirection: 'row',
+    height: 30,
+    borderRadius: 15,
+    position: 'absolute',
+    top: 65,
+    right: 15,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingLeft: Spacings.s2,
+    elevation: 2,
+    zIndex: 5,
+  },
+  searchIcon: {
+    position: 'relative',
+  },
+  searchText: {
+    height: 40,
+    position: 'absolute',
+    left: 30,
   },
   shopImage: {
     zIndex: -1,

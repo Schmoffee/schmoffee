@@ -1,19 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Pressable, Platform } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Pressable, Platform, Alert } from 'react-native';
 import { Colors, Spacings } from '../../../common/theme';
 import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
-import { CONST_SCREEN_WHEN } from '../../../../../constants';
 import { OrderingContext } from '../../../../contexts';
 import { Body, Heading } from '../../../common/typography';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { OrderingActionName } from '../../../../utils/types/enums';
 
 
 interface ScheduleSectionProps { }
 
 const ScheduleSection = (props: ScheduleSectionProps) => {
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
-  const navigation = useNavigation<CoffeeRoutes>();
+  const { ordering_dispatch } = useContext(OrderingContext);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [scheduled_time, setScheduledTime] = useState(5);
 
@@ -32,10 +31,24 @@ const ScheduleSection = (props: ScheduleSectionProps) => {
     console.log('diff', diff);
     if (diff < 5) {
       // show error
-      return;
+      Alert.alert(
+        'Error',
+        'Please select a time at least 5 minutes from now.',
+        [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK Pressed'),
+            style: 'cancel',
+          },
+        ],
+        { cancelable: false },
+      );
+
+      hideDatePicker();
+      return
     }
     setScheduledTime(diff);
-    ordering_dispatch({ type: 'SET_SCHEDULED_TIME', payload: diff });
+    ordering_dispatch({ type: OrderingActionName.SET_SCHEDULED_TIME, payload: diff });
 
     hideDatePicker();
   };
@@ -63,7 +76,7 @@ const ScheduleSection = (props: ScheduleSectionProps) => {
         <Body size="medium" weight="Bold" color={Colors.white}>
           Pick up time ({scheduled_time} mins)
         </Body>
-        <TouchableOpacity onPress={showDatePicker}>
+        <TouchableOpacity onPress={() => showDatePicker()}>
           <Body size="medium" weight="Bold" color={Colors.greyLight3}>
             Change
           </Body>
@@ -82,7 +95,7 @@ const ScheduleSection = (props: ScheduleSectionProps) => {
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
           mode="time"
-          onConfirm={handleConfirmDate}
+          onConfirm={(e) => handleConfirmDate(e)}
           onCancel={hideDatePicker}
           minimumDate={getDateNow()}
           minuteInterval={5}
