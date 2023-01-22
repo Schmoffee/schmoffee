@@ -254,8 +254,10 @@ const styles = StyleSheet.create({
   leftChevron: {
     position: 'absolute',
     top: 40,
-    left: Spacings.s5,
-    zIndex: 1,
+    left: 5,
+    zIndex: 3,
+    elevation: 3,
+    backgroundColor: Colors.blue,
   },
 
   descriptionContainer: {

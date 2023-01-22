@@ -88,8 +88,7 @@ const styles = StyleSheet.create({
     color: 'lightgrey',
   },
   cardSectionContainer: {
-    marginTop: 140,
-    height: '60%',
+    height: '70%',
     // backgroundColor: 'red',
   },
   container: {

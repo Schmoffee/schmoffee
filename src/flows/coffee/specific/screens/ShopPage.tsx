@@ -39,8 +39,7 @@ export const ShopPage = () => {
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       });
     }
-    if (ordering_state.specific_basket.length > 0) {
-      basketAnim.value = 1;
+    if (ordering_state.specific_basket.length > 0 && basketAnim.value === 0) {
       basketAnim.value = withTiming(1, {
         duration: 2000,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
@@ -80,13 +79,13 @@ export const ShopPage = () => {
   const handleSearchPress = () => {
     if (searchAnim.value === 0) {
       searchAnim.value = withTiming(1, {
-        duration: 700,
+        duration: 900,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       })
     }
     else {
       searchAnim.value = withTiming(0, {
-        duration: 700,
+        duration: 950,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       })
     }
@@ -120,10 +119,10 @@ export const ShopPage = () => {
     const backgroundColor = interpolateColor(
       searchAnim.value,
       [0, 1],
-      [Colors.darkBrown, Colors.greyLight2]
+      [Colors.darkBrown, Colors.greyLight1]
     )
     return {
-      width: interpolate(searchAnim.value, [0, 1], [30, 360]),
+      width: interpolate(searchAnim.value, [0, 1], [25, 360]),
       backgroundColor
     };
   });
@@ -132,7 +131,7 @@ export const ShopPage = () => {
     const tintColor = interpolateColor(
       searchAnim.value,
       [0, 1],
-      [Colors.greyLight2, Colors.darkBrown]
+      [Colors.greyLight3, Colors.darkBrown]
     )
     return {
       transform: [
@@ -226,8 +225,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.darkBrown,
     borderTopRightRadius: 60,
     borderTopLeftRadius: 60,
-  },
 
+  },
   searchInputContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -244,8 +243,6 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     position: 'relative',
-
-
   },
   searchText: {
     height: 40,

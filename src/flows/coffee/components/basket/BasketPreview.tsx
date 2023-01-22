@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withTiming } from 'react-native-reanimated';
+import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withTiming } from 'react-native-reanimated';
 import { BasketItem } from './BasketItem';
 import { OrderingContext } from '../../../../contexts';
 import { Body } from '../../../common/typography';
@@ -30,10 +30,9 @@ export const BasketPreview = (props: BasketPreviewProps) => {
 
   const rChevronStyle = useAnimatedStyle(() => {
     const scale = interpolate(anim.value, [0, 1], [1, 1]);
-    const translateX = interpolate(anim.value, [0, 1], [0, 1.5]);
+    const translateX = interpolate(anim.value, [0, 1], [0, 1.7], Extrapolate.CLAMP);
     return {
       transform: [{ scale }, { translateX }],
-
     };
   }, []);
 
