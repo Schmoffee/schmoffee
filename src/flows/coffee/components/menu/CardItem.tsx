@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   },
   container: {
     position: 'relative',
+    overflow: 'hidden',
     width: 160,
     height: 210,
     backgroundColor: Colors.white,
@@ -112,13 +113,14 @@ const styles = StyleSheet.create({
     margin: Spacings.s2,
     shadowColor: '#000000',
     shadowOffset: {
-      width: 0,
+      width: 30,
       height: 3,
     },
-    shadowRadius: 5,
+    shadowRadius: 35,
     shadowOpacity: 0.2,
     alignItems: 'center',
     justifyContent: 'center',
+    elevation: 5,
   },
   imageContainer: {
     backgroundColor: Colors.darkBrown,
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
       height: 3,
     },
     shadowRadius: 5,
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.9,
   },
   ratingContainer: {
     flex: 1,

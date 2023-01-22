@@ -29,9 +29,8 @@ export default PreviewSection;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.darkBrown,
     marginTop: Spacings.s7,
-    height: 260,
+    paddingTop: Spacings.s2,
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
@@ -40,6 +39,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.2,
     marginHorizontal: 20,
+    flex: 1,
 
   },
   header: {

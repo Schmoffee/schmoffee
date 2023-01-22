@@ -1,7 +1,7 @@
 import React from 'react';
-import {StyleSheet, View, Pressable} from 'react-native';
-import {Colors, Spacings} from '../theme';
-import {Body} from '../typography';
+import { StyleSheet, View, Pressable } from 'react-native';
+import { Colors, Spacings } from '../theme';
+import { Body } from '../typography';
 
 interface ActionButtonProps {
   label: string;

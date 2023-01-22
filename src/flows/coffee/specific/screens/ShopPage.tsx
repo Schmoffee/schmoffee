@@ -123,7 +123,7 @@ export const ShopPage = () => {
       [Colors.darkBrown, Colors.greyLight1]
     )
     return {
-      width: interpolate(searchAnim.value, [0, 1], [25, 360]),
+      width: interpolate(searchAnim.value, [0, 1], [25, 350]),
       backgroundColor
     };
   });
@@ -185,7 +185,7 @@ export const ShopPage = () => {
               </Pressable>
             </View>
           </Animated.View>
-          <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} />
+          <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} query={query} />
         </View>
       </View>
       <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
   },
   basketContainer: {
     position: 'absolute',
+    overflow: 'hidden',
     bottom: -5,
     height: 100,
     justifyContent: 'center',
@@ -234,6 +235,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.darkBrown,
     borderTopRightRadius: 60,
     borderTopLeftRadius: 60,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 30,
+      height: 3,
+    },
+    shadowRadius: 35,
+    shadowOpacity: 0.9,
+    elevation: 553,
 
   },
   searchInputContainer: {
@@ -256,15 +265,16 @@ const styles = StyleSheet.create({
   searchText: {
     height: 40,
     position: 'absolute',
-    left: 15,
+    marginLeft: 20,
     fontStyle: 'italic',
     color: Colors.darkBrown,
+    // backgroundColor: 'red',
+
+    minWidth: 250
   },
   clearIcon: {
     position: 'relative',
     left: 305,
-
-
   },
   shopImage: {
     zIndex: -1,
