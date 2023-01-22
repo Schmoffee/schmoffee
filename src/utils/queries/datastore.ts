@@ -1,6 +1,7 @@
 import {
   Cafe,
   CurrentOrder,
+  Error,
   Item,
   OrderInfo,
   OrderItem,
@@ -191,9 +192,8 @@ async function getBestShop(
   return best_shop ? best_shop.id : null;
 }
 
-async function getShopById(id: string): Promise<Cafe | null> {
-  const results = await DataStore.query(Cafe, c => c.id('eq', id));
-  return results[0];
+async function getShops(id_filter: string | null = null): Promise<Cafe[] | null> {
+  return await DataStore.query(Cafe, c => (id_filter ? c.id('eq', id_filter) : c));
 }
 
 /**
@@ -282,6 +282,23 @@ async function checkMultiSignIn(number: string, token: string): Promise<string |
   return null;
 }
 
+async function registerError(phone: string, description: string, type: string) {
+  const time = new Date(Date.now()).toISOString();
+  await DataStore.save(
+    new Error({
+      user_phone: phone,
+      type: type,
+      description: description,
+      time: time,
+    }),
+  );
+}
+
+async function hasOrderRunning(userID: string): Promise<boolean> {
+  const order = await DataStore.query(CurrentOrder, current_order => current_order.userID('eq', userID));
+  return order.length > 0;
+}
+
 export {
   getCommonItems,
   getUserByPhoneNumber,
@@ -294,8 +311,10 @@ export {
   getUserPastOrders,
   updateCustomerId,
   deleteOrder,
-  getShopById,
+  getShops,
   checkMultiSignIn,
   newSignIn,
   updateDeviceToken,
+  registerError,
+  hasOrderRunning,
 };

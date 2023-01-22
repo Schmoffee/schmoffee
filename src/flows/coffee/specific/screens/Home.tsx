@@ -1,7 +1,7 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useContext} from 'react';
 import {Pressable, StyleSheet, useWindowDimensions} from 'react-native';
-import {CONST_SCREEN_SHOP} from '../../../../../constants';
+import {CONST_SCREEN_CAFES, CONST_SCREEN_ORDER, CONST_SCREEN_SHOP} from '../../../../../constants';
 import {RootRoutes} from '../../../../utils/types/navigation.types';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
@@ -14,8 +14,10 @@ import Animated, {
 import {SideDrawerContent} from '../../../hamburger/components/SideDrawerContent';
 import Video from 'react-native-video';
 import {PageLayout} from '../../../common/components/PageLayout';
+import {GlobalContext} from '../../../../contexts';
 
 export const Home = () => {
+  const {global_state} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const HOME_WIDTH = useWindowDimensions().width;
   const anim = useSharedValue(0);
@@ -80,6 +82,17 @@ export const Home = () => {
     }
   };
 
+  const handleNavigation = () => {
+    console.log('handleNavigation');
+    global_state.current_user?.order_running
+      ? navigation.navigate('TrackOrder', CONST_SCREEN_ORDER)
+      : navigation.navigate(CONST_SCREEN_SHOP);
+  };
+
+  const getButtonText: () => string = () => {
+    return global_state.current_user?.order_running ? 'Track my coffee' : 'Get me coffee';
+  };
+
   return (
     <PanGestureHandler
       onGestureEvent={gestureHandler}
@@ -96,8 +109,8 @@ export const Home = () => {
               header="SCHMOFFEE"
               footer={{
                 buttonDisabled: false,
-                onPress: () => navigation.navigate(CONST_SCREEN_SHOP),
-                buttonText: 'Get me coffee',
+                onPress: () => handleNavigation(),
+                buttonText: getButtonText(),
               }}>
               <Video
                 source={require('../../../../assets/videos/home_animation.mp4')}

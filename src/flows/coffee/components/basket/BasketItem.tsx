@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, StyleSheet, Text, Pressable, View } from 'react-native';
 import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { setSpecificBasket } from '../../../../utils/helpers/storage';
 import { Colors, Spacings } from '../../../common/theme';
 import { OrderItem } from '../../../../models';
 import { Body } from '../../../common/typography';
 import { OrderingContext } from '../../../../contexts';
+import { OrderingActionName } from '../../../../utils/types/enums';
 
 type Size = 'small' | 'medium' | 'large';
 
@@ -32,59 +33,75 @@ export const BasketItem = (props: BasketItemProps) => {
   };
 
   const onIncreaseQuantity = async () => {
-    const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
-    if (index > -1) {
-      const newBasket: OrderItem[] = ordering_state.specific_basket;
-      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
-      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
-      await setSpecificBasket(newBasket);
+    if (anim.value === 0) {
+      // do nothing
     }
+    else {
+      const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+      if (index > -1) {
+        const newBasket: OrderItem[] = ordering_state.specific_basket;
+        newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+        ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+        await setSpecificBasket(newBasket);
+      }
+    }
+
   };
   const onRemoveItem = () => {
-    const index = ordering_state.specific_basket.findIndex((basketItem: any) => basketItem.name === item.name);
-    Alert.alert(
-      'Remove Item',
-      'Are you sure you want to remove this item from your basket?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => {
-            setExpanded(false);
+    if (anim.value === 0) {
+      // do nothing
+    }
+    else {
+      const index = ordering_state.specific_basket.findIndex((basketItem: any) => basketItem.name === item.name);
+      Alert.alert(
+        'Remove Item',
+        'Are you sure you want to remove this item from your basket?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => {
+              setExpanded(false);
+            },
+            style: 'cancel',
           },
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: async () => {
-            if (index > -1) {
-              const newBasket = ordering_state.specific_basket;
-              const new_item = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
+          {
+            text: 'OK',
+            onPress: async () => {
+              if (index > -1) {
+                const newBasket = ordering_state.specific_basket;
+                const new_item = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
 
-              if (newBasket[index].quantity === 1) {
-                newBasket.splice(index, 1);
-              } else {
-                newBasket[index] = new_item;
+                if (newBasket[index].quantity === 1) {
+                  newBasket.splice(index, 1);
+                } else {
+                  newBasket[index] = new_item;
+                }
+                ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+                await setSpecificBasket(newBasket);
               }
-              ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
-              await setSpecificBasket(newBasket);
-            }
+            },
           },
-        },
-      ],
-      { cancelable: false },
-    );
+        ],
+        { cancelable: false },
+      );
+    }
   };
 
   const onReduceQuantity = async () => {
-    const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
-    if (index > -1) {
-      const newBasket = ordering_state.specific_basket;
-      if (newBasket[index].quantity === 1) {
-        onRemoveItem();
-      } else {
-        newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
-        ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
-        await setSpecificBasket(newBasket);
+    if (anim.value === 0) {
+      anim.value = withTiming(1);
+    }
+    else {
+      const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+      if (index > -1) {
+        const newBasket = ordering_state.specific_basket;
+        if (newBasket[index].quantity === 1) {
+          onRemoveItem();
+        } else {
+          newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
+          ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+          await setSpecificBasket(newBasket);
+        }
       }
     }
   };
@@ -113,14 +130,14 @@ export const BasketItem = (props: BasketItemProps) => {
   const rIncrQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{ translateX: interpolate(anim.value, [0, 1], [50, 80]) }],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [50, 60]) }],
     };
   }, []);
 
   const rRedQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{ translateX: interpolate(anim.value, [0, 1], [-80, -52]) }],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [-30, -12]) }],
     };
   }, []);
 
@@ -158,7 +175,7 @@ export const BasketItem = (props: BasketItemProps) => {
   };
 
   return (
-    <TouchableOpacity onPress={onItemPress} style={styles.container}>
+    <Pressable onPress={onItemPress} style={styles.container}>
       <View style={styles.item}>
         <Animated.View style={[rItemStyle]}>
           <View style={styles.itemImage}>
@@ -169,16 +186,18 @@ export const BasketItem = (props: BasketItemProps) => {
                   {getQuantity()}
                 </Body>
               </Animated.View>
-              <TouchableOpacity onPress={onIncreaseQuantity}>
-                <Animated.View style={[styles.quantityPlusButton, rIncrQuantStyle]}>
-                  <Text style={styles.quantityPlusText}>+</Text>
-                </Animated.View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onReduceQuantity} style={styles.random}>
-                <Animated.View style={[styles.quantityPlusButton, rRedQuantStyle]}>
-                  <Text style={styles.quantityPlusText}>-</Text>
-                </Animated.View>
-              </TouchableOpacity>
+              <Animated.View style={[styles.quantityPlusButton, rIncrQuantStyle]}>
+                <Pressable onPress={onIncreaseQuantity} style={styles.quantityPlusButton2}>
+                  <Body size='large' weight='Bold' style={styles.quantityPlusText}>+</Body>
+                </Pressable>
+
+              </Animated.View>
+              <Animated.View style={[styles.quantityPlusButton, rRedQuantStyle]}>
+                <Pressable onPress={onReduceQuantity} style={styles.quantityPlusButton2}>
+                  <Body size='large' weight='Bold' style={styles.quantityPlusText}>-</Body>
+                </Pressable>
+
+              </Animated.View>
             </Animated.View>
           </View>
         </Animated.View>
@@ -189,7 +208,7 @@ export const BasketItem = (props: BasketItemProps) => {
           </Body>
         </Animated.View> */}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -235,7 +254,7 @@ const styles = StyleSheet.create({
     right: -15,
   },
   quantityLabel: {
-    width: 20,
+    width: 25,
     height: 20,
     borderRadius: 10,
     backgroundColor: Colors.white,
@@ -244,7 +263,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quantityPlusButton: {
-    zIndex: -6,
+    width: 22,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: Colors.red,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quantityPlusButton2: {
     width: 22,
     height: 20,
     borderRadius: 10,

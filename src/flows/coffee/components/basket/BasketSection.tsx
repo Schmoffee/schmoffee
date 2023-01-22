@@ -1,24 +1,21 @@
-import React, { useContext, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-import { OrderingContext } from '../../../../contexts';
-import { BasketItem } from './BasketItem';
-import { Colors, Spacings } from '../../../common/theme';
-import { Body } from '../../../common/typography';
-import { useNavigation } from '@react-navigation/native';
-import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import React, {useContext} from 'react';
+import {Pressable, StyleSheet, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
+import {OrderingContext} from '../../../../contexts';
+import {BasketItem} from './BasketItem';
+import {Colors, Spacings} from '../../../common/theme';
+import {Body} from '../../../common/typography';
+import {useNavigation} from '@react-navigation/native';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
 
 interface BasketSectionProps {
   translateY?: Animated.SharedValue<number>;
 }
 
 export const BasketSection = (props: BasketSectionProps) => {
-  const { ordering_state } = useContext(OrderingContext);
-  const translateY = useSharedValue(0) || props.translateY;
+  const {ordering_state} = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
-  const [closed, setClosed] = useState(false);
 
   const height = 100;
   const maxHeight = 350;
@@ -32,11 +29,9 @@ export const BasketSection = (props: BasketSectionProps) => {
     }
   };
 
-
-
   return (
     <ScrollView style={styles.container}>
-      <View style={{ height: getHeight(), maxHeight }}>
+      <View style={{height: getHeight(), maxHeight}}>
         {ordering_state.specific_basket.length === 0 && (
           <View style={styles.emptyContainer}>
             <Pressable onPress={() => navigation.navigate('ShopPage')}>
@@ -48,7 +43,6 @@ export const BasketSection = (props: BasketSectionProps) => {
         )}
         <View style={styles.basketColumn}>
           <View style={styles.headerRow}>
-
             {ordering_state.specific_basket.map((item, index) => {
               return (
                 <View style={styles.itemRow} key={item.id}>
@@ -63,12 +57,11 @@ export const BasketSection = (props: BasketSectionProps) => {
                       {/* {item.description} */}
                     </Body>
                   </View>
-                  <Body size="small" weight="Bold" color={Colors.greyLight2} style={{ position: 'absolute', right: 0 }}>
-                    £{(item.price * item.quantity).toFixed(2)}
+                  <Body size="small" weight="Bold" color={Colors.greyLight2} style={{position: 'absolute', right: 0}}>
+                    £{((item.price * item.quantity) / 100).toFixed(2)}
                   </Body>
                 </View>
-
-              )
+              );
             })}
           </View>
         </View>
@@ -109,12 +102,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
     // backgroundColor: Colors.blue,
-    marginBottom: Spacings.s1
+    marginBottom: Spacings.s1,
   },
 
-  headerRow: {
-  },
-
+  headerRow: {},
 
   itemRow: {
     flex: 1,
@@ -125,8 +116,6 @@ const styles = StyleSheet.create({
     // backgroundColor: Colors.red,
     paddingHorizontal: Spacings.s14,
     marginRight: Spacings.s16,
-
-
   },
 
   detailsColumn: {
@@ -135,18 +124,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginHorizontal: Spacings.s4,
     marginRight: Spacings.s8,
-
   },
 
   itemImage: {
     height: 60,
     width: 60,
-    // borderRadius: 30,
-    // backgroundColor: Colors.brownLight2,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
 
   addItemButton: {
     backgroundColor: Colors.brownLight2,

@@ -7,6 +7,7 @@ export const CONST_SCREEN_WHAT = 'WhatPage';
 export const CONST_SCREEN_WHEN = 'WhenPage';
 export const CONST_SCREEN_PREVIEW = 'PreviewPage';
 export const CONST_SCREEN_SHOP = 'ShopPage';
+export const CONST_SCREEN_CAFES = 'Cafes';
 
 // track order screens
 export const CONST_SCREEN_ORDER = 'OrderPage';

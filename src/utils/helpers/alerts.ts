@@ -1,4 +1,5 @@
 import {Alert} from 'react-native';
+import {registerError} from '../queries/datastore';
 export const AlertMessage = {
   OFFLINE: {
     title: 'You are offline.',
@@ -33,16 +34,21 @@ export const AlertMessage = {
     message: 'An error occured when accessing your current location, want to try that again ?',
   },
   STORAGE: {
-    title: 'Storage error',
-    message: "An error occured when accessing the app's local storage, want to try that again ?",
+    title: 'An error occurred',
+    message: 'We are sorry for the inconvenience, we will make sure this does not happen again. code 3.',
   },
-  NETWORK: {
-    title: 'Network error',
+  PAYMENT: {
+    title: 'Payment error',
     message: 'An error occurred when connecting to the payment server...',
   },
   LOGOUT: {
     title: 'Logout',
     message: 'You are about to logout, you will lose your current basket, are you sure?',
+  },
+  OUT_OF_STOCK: {
+    title: 'Out of stock',
+    message:
+      'Apologies, we had to remove the following items from your basket because they suddenly went out of stock: ',
   },
 };
 
@@ -65,33 +71,32 @@ export const Alerts = {
   expiredOTPAlert: () => {
     Alert.alert(AlertMessage.EXPIRED_OTP.title, AlertMessage.EXPIRED_OTP.message);
   },
-  badPhoneNumberAlert: () => {
+  badPhoneNumberAlert: async () => {
     Alert.alert(AlertMessage.BAD_PHONE_NUMBER.title, AlertMessage.BAD_PHONE_NUMBER.message);
-  },
-  LocationAlert: () => {
-    Alert.alert(AlertMessage.LOCATION.title, AlertMessage.LOCATION.message, [
-      {
-        text: 'OK',
-      },
-      {
-        text: 'No',
-        style: 'cancel',
-      },
-    ]);
   },
   StorageAlert: () => {
     Alert.alert(AlertMessage.STORAGE.title, AlertMessage.STORAGE.message);
   },
-  networkAlert: () => {
-    Alert.alert(AlertMessage.NETWORK.title, AlertMessage.NETWORK.message);
+  paymentAlert: () => {
+    Alert.alert(AlertMessage.PAYMENT.title, AlertMessage.PAYMENT.message);
   },
-  logoutAlert: (logout: () => void) => {
-    Alert.alert(AlertMessage.LOGOUT.title, AlertMessage.LOGOUT.message, [
-      {text: 'Yes', onPress: () => logout()},
+  logoutAlert: async (logout: () => Promise<boolean>) => {
+    let success = false;
+    await Alert.alert(AlertMessage.LOGOUT.title, AlertMessage.LOGOUT.message, [
+      {
+        text: 'Yes',
+        onPress: async () => {
+          success = await logout();
+        },
+      },
       {
         text: 'No',
         style: 'cancel',
       },
     ]);
+    return success;
+  },
+  outOfStockAlert: (deleted_items: string[]) => {
+    Alert.alert(AlertMessage.OUT_OF_STOCK.title, AlertMessage.OUT_OF_STOCK.message + deleted_items.join(', '));
   },
 };

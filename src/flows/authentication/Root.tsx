@@ -4,7 +4,7 @@ import {AuthRoutes} from '../../utils/types/navigation.types';
 import {getFreeTime, getIsFirstTime, getPhone, getTrials, setFreeTime, setTrials} from '../../utils/helpers/storage';
 import {signIn} from '../../utils/queries/auth';
 import {CognitoUser} from 'amazon-cognito-identity-js';
-import {AuthState} from '../../utils/types/enums';
+import {AuthState, GlobalActionName, SignInActionName} from '../../utils/types/enums';
 import {GlobalContext, SignInContext, signInData} from '../../contexts';
 import {signInReducer} from '../../reducers';
 import {Alert} from 'react-native';
@@ -32,15 +32,15 @@ const Root = () => {
     async function refreshState() {
       const trials = await getTrials();
       if (trials) {
-        sign_in_dispatch({type: 'SET_TRIALS', payload: +trials});
+        sign_in_dispatch({type: SignInActionName.SET_TRIALS, payload: +trials});
       }
       const blocked_time = await getFreeTime();
       if (blocked_time) {
-        sign_in_dispatch({type: 'SET_BLOCKED_TIME', payload: +blocked_time});
+        sign_in_dispatch({type: SignInActionName.SET_BLOCKED_TIME, payload: +blocked_time});
       }
       const phone = await getPhone();
       if (phone) {
-        sign_in_dispatch({type: 'SET_PHONE', payload: phone});
+        sign_in_dispatch({type: SignInActionName.SET_PHONE, payload: phone});
       }
     }
 
@@ -76,7 +76,7 @@ const Root = () => {
     } else {
       if (sign_in_state.blocked_time === 0) {
         const free_time = Date.now() + 60 * 60000;
-        sign_in_dispatch({type: 'SET_BLOCKED_TIME', payload: free_time});
+        sign_in_dispatch({type: SignInActionName.SET_BLOCKED_TIME, payload: free_time});
         await setFreeTime(free_time);
       }
       const remaining_time: number = new Date(sign_in_state.blocked_time - Date.now()).getSeconds();
@@ -90,13 +90,13 @@ const Root = () => {
   async function initiateSignIn(phoneNumber: string, trials: number) {
     const newSession = await signIn(phoneNumber);
     if (newSession && newSession instanceof CognitoUser) {
-      sign_in_dispatch({type: 'SET_TRIALS', payload: +trials + 1});
+      sign_in_dispatch({type: SignInActionName.SET_TRIALS, payload: +trials + 1});
       await setTrials(+trials + 1);
       global_dispatch({
-        type: 'SET_AUTH_STATE',
+        type: GlobalActionName.SET_AUTH_STATE,
         payload: AuthState.CONFIRMING_OTP,
       });
-      sign_in_dispatch({type: 'SET_SESSION', payload: newSession});
+      sign_in_dispatch({type: SignInActionName.SET_SESSION, payload: newSession});
       return true;
     } else {
       console.log('error signing in');

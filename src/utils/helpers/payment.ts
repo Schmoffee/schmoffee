@@ -83,7 +83,6 @@ async function initializePaymentSheet(
       defaultBillingDetails: {
         address: {
           country: 'UK',
-          city: 'London',
         },
       },
     });
@@ -106,9 +105,6 @@ async function initializePaymentSheet(
 async function openPaymentSheet(presentPaymentSheet: () => Promise<PresentPaymentSheetResult>) {
   const {error, paymentOption} = await presentPaymentSheet();
   if (error) {
-    if (error.code === 'Canceled') {
-      return false;
-    }
     console.log(error);
     return false;
   } else {

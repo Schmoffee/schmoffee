@@ -1,52 +1,44 @@
-// import {PermissionsAndroid, Platform} from 'react-native';
-// import Geolocation from 'react-native-geolocation-service';
-// import {Dispatch} from 'react';
-// import {TrackOrderAction} from '../types/data.types';
-//
-// /**
-//  * Track the current user's location. Update it in the backend ans set the map center accordingly.
-//  * @param watchID
-//  * @param dispatch
-//  */
-// const subscribeToLocation = (watchID: {current: any}, dispatch: Dispatch<TrackOrderAction>) => {
-//   watchID.current = Geolocation.watchPosition(
-//     async (position: {coords: {longitude: any; latitude: any}}) => {
-//       dispatch({type: 'SET_LOCATION', payload: position.coords});
-//     },
-//     (error: any) => {
-//       console.log(error);
-//     },
-//     {
-//       enableHighAccuracy: true,
-//     },
-//   );
-// };
-//
-// /**
-//  * Platform dependent request for location access.
-//  */
-// const requestLocationPermission = async (): Promise<boolean> => {
-//   if (Platform.OS === 'ios') {
-//     Geolocation.requestAuthorization('whenInUse').then(async (res: any) => {
-//       console.log(res);
-//       return true;
-//     });
-//     return false;
-//   } else {
-//     try {
-//       const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
-//         buttonNegative: 'No',
-//         buttonNeutral: 'Neutral',
-//         buttonPositive: 'Yes',
-//         title: 'Location Access Required',
-//         message: 'This App needs to Access your location',
-//       });
-//       return granted === PermissionsAndroid.RESULTS.GRANTED;
-//     } catch (err) {
-//       console.log(err);
-//       return false;
-//     }
-//   }
-// };
-//
-// export {requestLocationPermission, subscribeToLocation};
+import Geolocation from '@react-native-community/geolocation';
+
+function requestLocationPermission() {
+  let allowed = false;
+  Geolocation.requestAuthorization(
+    () => {
+      allowed = true;
+      console.log('Location permission granted');
+    },
+    (error: {
+      code: number;
+      message: string;
+      PERMISSION_DENIED: number;
+      POSITION_UNAVAILABLE: number;
+      TIMEOUT: number;
+    }) => {
+      console.log('Location permission denied');
+      console.log(error);
+    },
+  );
+  return allowed;
+}
+
+function watchLocation(): {watchId: number; curr_location: any} {
+  let curr_location;
+  const watchId = Geolocation.watchPosition(
+    position => {
+      curr_location = position.coords;
+      console.log(position);
+    },
+    error => {
+      console.log(error);
+    },
+    {
+      enableHighAccuracy: true,
+      distanceFilter: 100,
+      useSignificantChanges: true,
+    },
+  );
+
+  return {watchId, curr_location};
+}
+
+export {requestLocationPermission, watchLocation};

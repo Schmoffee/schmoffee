@@ -18,7 +18,6 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
 
-
   useEffect(() => {
     anim.value = -1;
     anim.value = withTiming(1, {
@@ -37,10 +36,6 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
         imageSpecs,
       });
     });
-    // navigation.navigate('ItemPage', {
-    //   item,
-    //   // imageSpecs,
-    // });
   };
 
   const cardStyleDown = useAnimatedStyle(
@@ -77,9 +72,9 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
             </Body>
           </View>
           <View style={styles.priceContainer}>
-            <Body size="medium" weight="Bold" color={Colors.white} style={styles.priceText}>{`£${item.price.toFixed(
-              2,
-            )}`}</Body>
+            <Body size="medium" weight="Bold" color={Colors.white} style={styles.priceText}>{`£${(
+              item.price / 100
+            ).toFixed(2)}`}</Body>
             <View style={styles.iconContainer}>
               <Image source={require('../../../../assets/pngs/plus.png')} style={styles.plusButton} />
             </View>
@@ -88,7 +83,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
             <Image ref={imageRef} source={{ uri: `${item.image}` }} />
             <View style={styles.ratingContainer}>
               <Image source={require('../../../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
-              <Body size="small" weight="Regular" color={Colors.black} style={styles.ratingText}>
+              <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
                 3.9
               </Body>
             </View>
@@ -111,6 +106,8 @@ const styles = StyleSheet.create({
     height: 210,
     backgroundColor: Colors.white,
     borderRadius: Spacings.s5,
+    borderWidth: 1,
+    borderColor: Colors.greyLight2,
     padding: Spacings.s2,
     margin: Spacings.s2,
     shadowColor: '#000000',
@@ -140,6 +137,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
   },
   ratingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.white,
     height: 20,
     width: 40,
@@ -151,12 +151,12 @@ const styles = StyleSheet.create({
     right: 0,
   },
   textContainer: {
-    marginTop: 140,
+    marginTop: 130,
     width: '100%',
   },
   priceContainer: {
     backgroundColor: Colors.darkBrown,
-    width: 140,
+    width: 135,
     height: 30,
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -176,7 +176,8 @@ const styles = StyleSheet.create({
   ratingText: {
     position: 'absolute',
     right: 7,
-    top: 2,
+    top: 4,
+
   },
 
   ratingStar: {

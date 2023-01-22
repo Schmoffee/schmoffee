@@ -1,10 +1,9 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {CONST_SCREEN_RATING_PAGE} from '../../../../constants';
 import {TrackOrderContext} from '../../../contexts';
 import {TrackOrderRoutes} from '../../../utils/types/navigation.types';
-import BottomSheet from '@gorhom/bottom-sheet';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {OrderStatus} from '../../../models';
 import {Body} from '../../common/typography';
@@ -19,14 +18,6 @@ export const OrderPage = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showRejectionModal, setShowRejectionModal] = useState(false);
 
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['20%', '50%', '90%'], []);
-
-  // callbacks
-  const handleSheetChange = useCallback((index: number) => {
-    // console.log("handleSheetChange", index);
-  }, []);
-
   useEffect(() => {
     if (track_order_state.current_order?.status === OrderStatus.ACCEPTED) {
       setShowSuccessModal(true);
@@ -39,56 +30,58 @@ export const OrderPage = () => {
     }
   }, [track_order_state.current_order?.status]);
 
+  const handleFinishOrder = () => {
+    console.log('Order finished');
+  };
+
   return (
     <PageLayout
       header="Your Order"
       footer={{
         buttonDisabled: false,
-        onPress: () => navigation.navigate(CONST_SCREEN_RATING_PAGE),
+        onPress: () => handleFinishOrder(),
         buttonText: 'Finish Order',
       }}>
       <View style={styles.bottomSheetContainer}>
-        <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} onChange={handleSheetChange} index={1}>
-          <Body size="large" weight="Bold" color={Colors.darkBrown2} style={styles.bottomSheetHeader}>
-            Order details
+        <Body size="large" weight="Bold" color={Colors.darkBrown2} style={styles.bottomSheetHeader}>
+          Order details
+        </Body>
+        <View style={styles.orderDetailsContainer}>
+          <Body size="large" weight="Bold" style={styles.text}>
+            Order ID: {track_order_state.current_order?.id}
           </Body>
-          <View style={styles.orderDetailsContainer}>
-            <Body size="large" weight="Bold" style={styles.text}>
-              Order ID: {track_order_state.current_order?.id}
-            </Body>
-            <Body size="large" weight="Bold" style={styles.text}>
-              Order Status: {track_order_state.current_order?.status}
-            </Body>
-            <Body size="large" weight="Bold" style={styles.text}>
-              Order Total: {track_order_state.current_order?.total}
-            </Body>
+          <Body size="large" weight="Bold" style={styles.text}>
+            Order Status: {track_order_state.current_order?.status}
+          </Body>
+          <Body size="large" weight="Bold" style={styles.text}>
+            Order Total: {track_order_state.current_order?.total}
+          </Body>
+        </View>
+        <View style={styles.orderItemsContainer}>
+          <Body size="large" weight="Bold" style={styles.text}>
+            Order Items
+          </Body>
+          <View style={styles.orderItems}>
+            {track_order_state.current_order?.items?.map((item: any, index: number) => {
+              return (
+                <View key={index} style={styles.orderItem}>
+                  <Body size="large" weight="Regular" style={styles.text}>
+                    {item.name}
+                  </Body>
+                  <Body size="large" weight="Regular" style={styles.text}>
+                    {item.options}
+                  </Body>
+                  <Body size="large" weight="Regular" style={styles.text}>
+                    {item.quantity}
+                  </Body>
+                  <Body size="large" weight="Regular" style={styles.text}>
+                    {item.price}
+                  </Body>
+                </View>
+              );
+            })}
           </View>
-          <View style={styles.orderItemsContainer}>
-            <Body size="large" weight="Bold" style={styles.text}>
-              Order Items
-            </Body>
-            <View style={styles.orderItems}>
-              {track_order_state.current_order?.items?.map((item: any, index: number) => {
-                return (
-                  <View key={index} style={styles.orderItem}>
-                    <Body size="large" weight="Regular" style={styles.text}>
-                      {item.name}
-                    </Body>
-                    <Body size="large" weight="Regular" style={styles.text}>
-                      {item.options}
-                    </Body>
-                    <Body size="large" weight="Regular" style={styles.text}>
-                      {item.quantity}
-                    </Body>
-                    <Body size="large" weight="Regular" style={styles.text}>
-                      {item.price}
-                    </Body>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-        </BottomSheet>
+        </View>
       </View>
       <CustomModal
         visible={showSuccessModal}

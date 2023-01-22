@@ -1,9 +1,9 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {NavigatorScreenParams} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends RootRoutes { }
+    interface RootParamList extends RootRoutes {}
   }
 }
 
@@ -14,7 +14,7 @@ export type SideDrawerRoutes = {
 };
 
 export type AuthRoutes = {
-  navigate(arg0: string, arg1: { screen: string; }): unknown;
+  navigate(arg0: string, arg1: {screen: string}): unknown;
   Intro: undefined;
   AuthPage: undefined;
   Login: undefined;
@@ -31,6 +31,7 @@ export type CoffeeRoutes = {
   ItemPage: undefined;
   ShopPage: undefined;
   ChangeShopPage: undefined;
+  Cafes: undefined;
 };
 
 export type TrackOrderRoutes = {
@@ -46,6 +47,7 @@ export type RootRoutes = {
   push(screen: any, navigator?: any): void;
   Auth: NavigatorScreenParams<AuthRoutes> | undefined;
   Coffee: NavigatorScreenParams<CoffeeRoutes> | undefined;
+  Loading: undefined;
   SideDrawer: NavigatorScreenParams<SideDrawerRoutes> | undefined;
   TrackOrder: NavigatorScreenParams<TrackOrderRoutes> | undefined;
 };

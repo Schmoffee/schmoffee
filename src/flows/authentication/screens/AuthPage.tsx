@@ -2,7 +2,7 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {Keyboard, Pressable, StatusBar, StyleSheet, View} from 'react-native';
 import {sendChallengeAnswer, signUp} from '../../../utils/queries/auth';
 import {GlobalContext, SignInContext} from '../../../contexts';
-import {AuthState} from '../../../utils/types/enums';
+import {AuthState, GlobalActionName, SignInActionName} from '../../../utils/types/enums';
 import {createSignUpUser} from '../../../utils/queries/datastore';
 import {useNavigation} from '@react-navigation/native';
 import {RootRoutes} from '../../../utils/types/navigation.types';
@@ -59,8 +59,8 @@ export const AuthPage = () => {
       if ((remaining_time = sign_in_state.blocked_time - Date.now()) > 1000) {
         timeoutID = setTimeout(async () => {
           setIsLocked(false);
-          sign_in_dispatch({type: 'SET_BLOCKED_TIME', payload: 0});
-          sign_in_dispatch({type: 'SET_TRIALS', payload: 0});
+          sign_in_dispatch({type: SignInActionName.SET_BLOCKED_TIME, payload: 0});
+          sign_in_dispatch({type: SignInActionName.SET_TRIALS, payload: 0});
           await setFreeTime(0);
           await setTrials(0);
         }, remaining_time);
@@ -85,18 +85,16 @@ export const AuthPage = () => {
     setLoading(true);
     // asteroidAnimFinal.value = withTiming(1, { duration: 5000 });
     // planetAnimFinal.value = withTiming(1, { duration: 5000 });
-
     const session = sign_in_state.session;
     const result = await sendChallengeAnswer(otp, session as CognitoUser);
     if (!result) {
       global_dispatch({
-        type: 'SET_AUTH_STATE',
+        type: GlobalActionName.SET_AUTH_STATE,
         payload: AuthState.CONFIRMING_OTP_FAILED,
       });
     }
     //TODO: Handle the error appropriately depending on the error type
     setLoading(false);
-    navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
   };
 
   const handleSignUp = async () => {
@@ -104,7 +102,7 @@ export const AuthPage = () => {
     const result = await signUp(number, name);
     if (typeof result === 'string') {
       global_dispatch({
-        type: 'SET_AUTH_STATE',
+        type: GlobalActionName.SET_AUTH_STATE,
         payload: AuthState.SIGNING_UP_FAILED,
       });
       // TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
@@ -178,7 +176,7 @@ export const AuthPage = () => {
                 placeholder={'Enter phone number...'}
                 setField={(value: React.SetStateAction<string>) => {
                   setNumber(value);
-                  sign_in_dispatch({type: 'SET_PHONE', payload: number});
+                  sign_in_dispatch({type: SignInActionName.SET_PHONE, payload: number});
                 }}
                 type={'phone'}
                 value={number}

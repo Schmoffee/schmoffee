@@ -1,5 +1,5 @@
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
-import React, { useContext, useEffect } from 'react';
+import {Dimensions, Image, StyleSheet, View} from 'react-native';
+import React, {useContext, useEffect} from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,26 +8,26 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Body, Heading } from '../typography';
-import { setSpecificBasket } from '../../../utils/helpers/storage';
-import { Colors, Spacings } from '../theme';
-import { OrderItem } from '../../../models';
-import { Footer } from '../components/Footer';
-import { OrderingContext } from '../../../contexts';
+import {Body, Heading} from '../typography';
+import {setSpecificBasket} from '../../../utils/helpers/storage';
+import {Colors, Spacings} from '../theme';
+import {OrderItem} from '../../../models';
+import {Footer} from '../components/Footer';
+import {OrderingContext} from '../../../contexts';
 import LeftChevronBackButton from '../components/LeftChevronBackButton';
-import SwipeableModal from '../components/SwipeableModal';
+import {OrderingActionName} from '../../../utils/types/enums';
+import OptionCarousel from '../../coffee/components/menu/OptionCarousel';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 interface ItemPageProps {
   route?: any;
   navigation: any;
 }
+const ItemPage = ({route, navigation}: ItemPageProps) => {
+  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
 
-const ItemPage = ({ route, navigation }: ItemPageProps) => {
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
-
-  const { item, imageSpecs } = route?.params;
+  const {item, imageSpecs} = route?.params;
 
   const anim = useSharedValue(0);
   useEffect(() => {
@@ -81,6 +81,18 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
     [],
   );
 
+  const optionsStyle = useAnimatedStyle(
+    () => ({
+      opacity: anim.value,
+      transform: [
+        {
+          translateY: interpolate(anim.value, [0, 1], [90, 0]),
+        },
+      ],
+    }),
+    [],
+  );
+
   const imageContainerStyle = useAnimatedStyle(
     () => ({
       position: 'absolute',
@@ -109,8 +121,8 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
     if (ordering_state.specific_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
       const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
       const newBasket: OrderItem[] = ordering_state.specific_basket;
-      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
-      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
+      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     } else {
       const new_order_item: OrderItem = {
@@ -123,12 +135,42 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
         id: item.id,
       };
       const newBasket: OrderItem[] = [...ordering_state.specific_basket, new_order_item];
-      ordering_dispatch({ type: 'SET_SPECIFIC_BASKET', payload: newBasket });
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     }
     const callback = () => navigation.goBack();
     anim.value = withTiming(0, {}, isFinished => isFinished && runOnJS(callback)());
   }
+
+  const milkImages = [
+    {
+      image: require('../../../assets/pngs/nothing-outline.png'),
+    },
+    {
+      image: require('../../../assets/pngs/soy-outline.png'),
+    },
+    {
+      image: require('../../../assets/pngs/soy-outline.png'),
+    },
+    {
+      image: require('../../../assets/pngs/oat-outline.png'),
+    },
+  ];
+
+  const syrupImages = [
+    {
+      image: require('../../../assets/pngs/nothing-outline.png'),
+    },
+    {
+      image: require('../../../assets/pngs/maple-outline.png'),
+    },
+    {
+      image: require('../../../assets/pngs/maple-outline.png'),
+    },
+    {
+      image: require('../../../assets/pngs/caramel-outline.png'),
+    },
+  ];
 
   return (
     <View style={styles.container}>
@@ -145,7 +187,14 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
       </Animated.View>
       <Animated.View style={[styles.imageContainer, rImageStyle]} />
 
-
+      <Animated.View style={[styles.optionsContainer, optionsStyle]}>
+        <View style={styles.milkOptions}>
+          <OptionCarousel data={milkImages} pagination={false} />
+        </View>
+        <View style={styles.syrupOptions}>
+          <OptionCarousel data={syrupImages} pagination={false} />
+        </View>
+      </Animated.View>
 
       <Animated.View style={[styles.descriptionContainer, descriptionStyle]}>
         <Body size="large" weight="Bold" color={Colors.darkBrown2}>
@@ -156,8 +205,6 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
       <Animated.View style={[styles.bottomContainer, bottomContainerStyle]}>
         <Footer buttonText="ADD" buttonDisabled={false} onPress={addItem} />
       </Animated.View>
-
-
     </View>
   );
 };
@@ -168,7 +215,9 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingTop: 250,
     // zIndex: 99999999,
-
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.greenFaded1,
   },
   semiCircle: {
     zIndex: -1,
@@ -190,8 +239,10 @@ const styles = StyleSheet.create({
   leftChevron: {
     position: 'absolute',
     top: 40,
-    left: Spacings.s5,
-    zIndex: 1,
+    left: 5,
+    zIndex: 3,
+    elevation: 3,
+    backgroundColor: Colors.blue,
   },
 
   descriptionContainer: {
@@ -210,15 +261,37 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.red,
     position: 'absolute',
     top: 170,
-    left: '24%',
     zIndex: 1,
     borderWidth: 5,
     borderColor: Colors.white,
-
   },
   image: {
     width: '80%',
     height: '90%',
+  },
+
+  optionsContainer: {
+    // flex: 1,
+    marginTop: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 100,
+    width: '80%',
+  },
+
+  milkOptions: {
+    width: '50%',
+    borderRightWidth: 1,
+    borderRightColor: Colors.greenFaded3,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  syrupOptions: {
+    width: '50%',
+    borderLeftWidth: 1,
+    borderLeftColor: Colors.greenFaded3,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
   },
 
   bottomContainer: {

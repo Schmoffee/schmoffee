@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {TrackOrderContext} from '../../../contexts';
 import {CurrentOrder, OrderItem} from '../../../models';
@@ -9,6 +9,7 @@ import {terminateOrder} from '../../../utils/queries/datastore';
 import {Body, Heading} from '../../common/typography';
 import {PageLayout} from '../../common/components/PageLayout';
 import {Colors, Spacings} from '../../common/theme';
+import {TrackOrderActionName} from '../../../utils/types/enums';
 
 interface RatingPageProps {}
 
@@ -28,7 +29,7 @@ const RatingItem = ({item}: RatingItemProps) => {
     const ratings = track_order_state.ratings;
     const index = ratings.findIndex(rat => rat.itemID === item.id);
     ratings[index].rating = newRating;
-    track_order_dispatch({type: 'SET_RATINGS', payload: ratings});
+    track_order_dispatch({type: TrackOrderActionName.SET_RATINGS, payload: ratings});
   };
 
   return (

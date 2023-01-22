@@ -1,26 +1,10 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Dimensions, NativeModules, Platform, StyleSheet, TextInput, View } from 'react-native';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { OrderingContext } from '../../../../contexts';
 import { Item } from '../../../../models';
-import Animated, {
-  Easing,
-  Extrapolate,
-  interpolate,
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
-import { PreviewPage } from './PreviewPage';
-import BottomSheet from '@gorhom/bottom-sheet';
-import { CardSection } from '../../components/menu/CardSection';
-import { Heading } from '../../../common/typography';
-import CustomBackdrop from '../../components/preview/CustomBackdrop';
+import Animated, { Easing, Extrapolate, interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Colors, Spacings } from '../../../common/theme';
-import CustomHandle from '../../components/preview/CustomHandle';
 import TabNavigator from '../../components/menu/TabNavigator';
-import ShopHeader from '../../components/ShopHeader';
-import { useNavigation } from '@react-navigation/native';
 import { BasketPreview } from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 
@@ -32,13 +16,12 @@ const { height: wHeight, width: wWidth } = Dimensions.get('window');
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
-  const navigation = useNavigation();
   const { ordering_state } = useContext(OrderingContext);
-  const translateY = useSharedValue(0);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
   const anim = useSharedValue(0);
   const basketAnim = useSharedValue(0);
+  const searchAnim = useSharedValue(0);
 
   useEffect(() => {
     anim.value = 0;
@@ -46,10 +29,9 @@ export const ShopPage = () => {
       duration: 600,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
     });
-  }, []);
+  }, [anim]);
 
   useEffect(() => {
-
     if (ordering_state.specific_basket.length === 0) {
       // basketAnim.value = 1;
       basketAnim.value = withTiming(0, {
@@ -57,23 +39,17 @@ export const ShopPage = () => {
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       });
     }
-    if (ordering_state.specific_basket.length > 0) {
-      basketAnim.value = 1;
+    if (ordering_state.specific_basket.length > 0 && basketAnim.value === 0) {
       basketAnim.value = withTiming(1, {
         duration: 2000,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       });
     }
-
-  }, [ordering_state.specific_basket.length]);
-
+  }, [basketAnim, ordering_state.specific_basket.length]);
 
   const contains = ({ name }: Item, query: string) => {
     const nameLower = name.toLowerCase();
-    if (nameLower.includes(query)) {
-      return true;
-    }
-    return false;
+    return nameLower.includes(query);
   };
   const filtered_items = useMemo(() => {
     const formattedQuery = query.toLowerCase();
@@ -82,22 +58,13 @@ export const ShopPage = () => {
     });
   }, [ordering_state.specific_items, query]);
 
-  const scrollHandler = useAnimatedScrollHandler(event => {
-    translateY.value = event.contentOffset.y;
-  });
   useEffect(() => {
     landing_anim.value = 0;
     landing_anim.value = withTiming(1, {
       duration: 600,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
     });
-  }, []);
-
-  useEffect(() => {
-    if (ordering_state.specific_basket.length === 0) {
-      bottomSheetRef.current?.snapToPosition(0);
-    }
-  }, [ordering_state]);
+  }, [landing_anim]);
 
   const getCoffees = () => {
     return filtered_items.filter(item => item.type === 'COFFEE');
@@ -109,45 +76,21 @@ export const ShopPage = () => {
     return filtered_items.filter(item => item.type === 'SNACKS');
   };
 
-  const rListStyle = useAnimatedStyle(
-    () => ({
-      // opacity: anim.value * 0.5,
-      transform: [
-        {
-          translateY: interpolate(landing_anim.value, [0, 1], [-150, 0]),
-        },
-      ],
-    }),
-    [],
-  );
-
-  const rSearchStyle = useAnimatedStyle(
-    () => ({
-      transform: [
-        {
-          translateY: interpolate(translateY.value, [100, 0], [-100, -20], Extrapolate.CLAMP),
-        },
-      ],
-    }),
-    [],
-  );
-
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
-  // variables
-  const snapPoints = useMemo(() => ['14%', '90%'], []);
-
-  // callbacks
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
-  // const animationConfigs = useBottomSheetSpringConfigs({
-  //   damping: 80,
-  //   overshootClamping: true,
-  //   restDisplacementThreshold: 0.1,
-  //   restSpeedThreshold: 0.1,
-  //   stiffness: 500,
-  // })
+  const handleSearchPress = () => {
+    if (searchAnim.value === 0) {
+      searchAnim.value = withTiming(1, {
+        duration: 900,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      })
+    }
+    else {
+      searchAnim.value = withTiming(0, {
+        duration: 950,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      })
+      setQuery('');
+    }
+  }
 
   const rCircleStyle = useAnimatedStyle(
     () => ({
@@ -173,26 +116,44 @@ export const ShopPage = () => {
     [],
   );
 
-  // const rBasketClosedStyle = useAnimatedStyle(
-  //   () => ({
-  //     // opacity: anim.value,
-  //     transform: [
-  //       {
-  //         translateY: interpolate(basketAnim.value, [0, 1], [0, 100]),
-  //       },
-  //     ],
-  //   }),
-  //   [],
-  // );
+  const rSearchContainerStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      searchAnim.value,
+      [0, 1],
+      [Colors.darkBrown, Colors.greyLight1]
+    )
+    return {
+      width: interpolate(searchAnim.value, [0, 1], [25, 360]),
+      backgroundColor
+    };
+  });
+  const rSearchIconStyle = useAnimatedStyle(() => {
+    let rotate = interpolate(searchAnim.value, [0, 1], [0, -360], Extrapolate.CLAMP);
+    const tintColor = interpolateColor(
+      searchAnim.value,
+      [0, 1],
+      [Colors.greyLight3, Colors.darkBrown]
+    )
+    return {
+      transform: [
+        {
+          rotate: `${rotate}deg`,
+        },
+      ],
+      tintColor,
+      backgroundColor: 'transparent'
+    };
+  });
 
 
 
   return (
     <View style={styles.root}>
       {/* back button for navigation */}
-      <View style={styles.button}>
+      <View style={styles.backButton}>
         <LeftChevronBackButton />
       </View>
+
 
       <View style={[styles.itemsContainer]}>
         <View style={styles.header}>
@@ -200,57 +161,38 @@ export const ShopPage = () => {
             source={require('../../../../assets/pngs/semi-circle.png')}
             style={[styles.semiCircle, rCircleStyle]}
           />
-          <Animated.View style={[styles.searchInputContainer]}>
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              clearButtonMode="always"
-              value={query}
-              onChangeText={queryText => setQuery(queryText)}
-              placeholder="What do you crave?"
-            />
+          <Animated.View style={[styles.searchInputContainer, rSearchContainerStyle]}>
+            <View style={styles.searchIcon}>
+              <Pressable onPress={handleSearchPress}>
+                <Animated.Image style={rSearchIconStyle} source={require('../../../../assets/pngs/magnifyingglass.png')} />
+              </Pressable>
+            </View>
+            <Animated.View style={[styles.searchText]}>
+              <TextInput
+                editable={searchAnim.value === 1}
+                autoCapitalize="none"
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+                value={query}
+                onChangeText={queryText => setQuery(queryText)}
+                placeholder="What do you crave?"
+                style={styles.searchText}
+                placeholderTextColor={Colors.darkBrown}
+                selectionColor={Colors.darkBrown}
+              />
+            </Animated.View>
+            <View style={styles.clearIcon}>
+              <Pressable onPress={handleSearchPress}>
+                <Animated.Image style={[rSearchIconStyle, { width: 15, height: 15 }]} source={require('../../../../assets/pngs/x-outline.png')} />
+              </Pressable>
+            </View>
           </Animated.View>
           <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} />
-          {/* <Heading size="default" weight="Extrabld" color={Colors.white}>
-            COFFEEe
-          </Heading> */}
-          {/* <ShopHeader y={translateY} source={require('../../../../assets/pngs/shop.png')} /> */}
         </View>
-        {/* <Animated.ScrollView */}
-        {/* style={[styles.itemsContainer, rListStyle]}
-          onScroll={scrollHandler}
-          scrollEventThrottle={16}>
-          <View style={styles.container}>
-            <CardSection query={query} items={getCoffees()} />
-            {/* <CardSection items={getJuices()} /> */}
-        {/* <CardSection items={getPastries()} hideDivider /> */}
-        {/* </View> */}
-        {/* </Animated.ScrollView> */}
       </View>
-
-      {/* <View style={styles.bottomSheetContainer}>
-        <BottomSheet
-          index={ordering_state.specific_basket.length > 0 ? 0 : -1}
-          ref={bottomSheetRef}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}
-          style={styles.bottomSheet}
-          onClose={() => {
-            bottomSheetRef.current?.close();
-          }}
-          backdropComponent={props => <CustomBackdrop {...props} />}
-          handleComponent={props => <CustomHandle {...props} />}>
-
-          <View style={styles.previewContainer}>
-            <PreviewPage />
-          </View>
-        </BottomSheet>
-      </View> */}
-
       <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
         <BasketPreview />
       </Animated.View>
-
     </View>
   );
 };
@@ -272,7 +214,6 @@ const styles = StyleSheet.create({
     paddingBottom: 70,
     // justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: Colors.red,
   },
   itemsContainer: {
     // flex: 1,
@@ -296,15 +237,36 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 60,
     borderTopLeftRadius: 60,
 
-
   },
-
   searchInputContainer: {
-    backgroundColor: Colors.greyLight1,
-    borderRadius: Spacings.s5,
-    padding: Spacings.s2,
-    marginBottom: Spacings.s4,
-    minWidth: '50%',
+    flex: 1,
+    flexDirection: 'row',
+    height: 30,
+    borderRadius: 15,
+    position: 'absolute',
+    top: 65,
+    right: 15,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingLeft: Spacings.s2,
+    elevation: 2,
+    zIndex: 5,
+  },
+  searchIcon: {
+    position: 'relative',
+  },
+  searchText: {
+    height: 40,
+    position: 'absolute',
+    left: 15,
+    fontStyle: 'italic',
+    color: Colors.darkBrown,
+  },
+  clearIcon: {
+    position: 'relative',
+    left: 305,
+
+
   },
   shopImage: {
     zIndex: -1,
@@ -348,11 +310,10 @@ const styles = StyleSheet.create({
     right: 0,
     marginHorizontal: Spacings.s9,
   },
-  button: {
+  backButton: {
     position: 'absolute',
     top: 20,
-    left: 0,
+    left: -10,
     zIndex: 1,
   },
-
 });
