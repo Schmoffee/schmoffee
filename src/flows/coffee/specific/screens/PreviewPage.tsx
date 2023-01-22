@@ -177,23 +177,33 @@ export const PreviewPage = (props: PreviewPageProps) => {
   }
 
   const handleCheckout = async (mode: Payment) => {
-    Alert.alert('Are you sure?', 'Are you sure you want to checkout, this action is final. It will send your order.', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Confirm',
-        onPress: async () => {
-          setLoading(true);
-          const success = await checkout(mode);
-          setLoading(false);
-          if (success) {
-            navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
-          }
-        },
-      },
-    ]);
+    if (mode === 'card') {
+      Alert.alert(
+        'Are you sure?',
+        'Are you sure you want to checkout, this action is final. It will send your order.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Confirm',
+            onPress: async () => await initiateCheckout(mode),
+          },
+        ],
+      );
+    } else {
+      await initiateCheckout(mode);
+    }
+  };
+
+  const initiateCheckout = async (mode: Payment) => {
+    setLoading(true);
+    const success = await checkout(mode);
+    setLoading(false);
+    if (success) {
+      navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
+    }
   };
 
   return (

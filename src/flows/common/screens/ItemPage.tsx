@@ -1,5 +1,5 @@
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
-import React, { useContext, useEffect } from 'react';
+import {Dimensions, Image, StyleSheet, View} from 'react-native';
+import React, {useContext, useEffect} from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,27 +8,26 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Body, Heading } from '../typography';
-import { setSpecificBasket } from '../../../utils/helpers/storage';
-import { Colors, Spacings } from '../theme';
-import { OrderItem } from '../../../models';
-import { Footer } from '../components/Footer';
-import { OrderingContext } from '../../../contexts';
+import {Body, Heading} from '../typography';
+import {setSpecificBasket} from '../../../utils/helpers/storage';
+import {Colors, Spacings} from '../theme';
+import {OrderItem} from '../../../models';
+import {Footer} from '../components/Footer';
+import {OrderingContext} from '../../../contexts';
 import LeftChevronBackButton from '../components/LeftChevronBackButton';
-import { OrderingActionName } from '../../../utils/types/enums';
+import {OrderingActionName} from '../../../utils/types/enums';
 import OptionCarousel from '../../coffee/components/menu/OptionCarousel';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 interface ItemPageProps {
   route?: any;
   navigation: any;
 }
+const ItemPage = ({route, navigation}: ItemPageProps) => {
+  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
 
-const ItemPage = ({ route, navigation }: ItemPageProps) => {
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
-
-  const { item, imageSpecs } = route?.params;
+  const {item, imageSpecs} = route?.params;
 
   const anim = useSharedValue(0);
   useEffect(() => {
@@ -89,12 +88,10 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
         {
           translateY: interpolate(anim.value, [0, 1], [90, 0]),
         },
-
       ],
     }),
     [],
   );
-
 
   const imageContainerStyle = useAnimatedStyle(
     () => ({
@@ -124,8 +121,8 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
     if (ordering_state.specific_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
       const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
       const newBasket: OrderItem[] = ordering_state.specific_basket;
-      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
-      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     } else {
       const new_order_item: OrderItem = {
@@ -138,7 +135,7 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
         id: item.id,
       };
       const newBasket: OrderItem[] = [...ordering_state.specific_basket, new_order_item];
-      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     }
     const callback = () => navigation.goBack();
@@ -158,7 +155,6 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
     {
       image: require('../../../assets/pngs/oat-outline.png'),
     },
-
   ];
 
   const syrupImages = [
@@ -174,8 +170,7 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
     {
       image: require('../../../assets/pngs/caramel-outline.png'),
     },
-  ]
-
+  ];
 
   return (
     <View style={styles.container}>
@@ -194,19 +189,12 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
 
       <Animated.View style={[styles.optionsContainer, optionsStyle]}>
         <View style={styles.milkOptions}>
-          <OptionCarousel
-            data={milkImages}
-            pagination={false}
-          />
+          <OptionCarousel data={milkImages} pagination={false} />
         </View>
         <View style={styles.syrupOptions}>
-          <OptionCarousel
-            data={syrupImages}
-            pagination={false}
-          />
+          <OptionCarousel data={syrupImages} pagination={false} />
         </View>
       </Animated.View>
-
 
       <Animated.View style={[styles.descriptionContainer, descriptionStyle]}>
         <Body size="large" weight="Bold" color={Colors.darkBrown2}>
@@ -217,8 +205,6 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
       <Animated.View style={[styles.bottomContainer, bottomContainerStyle]}>
         <Footer buttonText="ADD" buttonDisabled={false} onPress={addItem} />
       </Animated.View>
-
-
     </View>
   );
 };
@@ -232,7 +218,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.greenFaded1,
-
   },
   semiCircle: {
     zIndex: -1,
@@ -277,7 +262,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     borderWidth: 5,
     borderColor: Colors.white,
-
   },
   image: {
     width: '80%',
@@ -299,7 +283,6 @@ const styles = StyleSheet.create({
     borderRightColor: Colors.greenFaded3,
     borderTopRightRadius: 20,
     borderBottomRightRadius: 20,
-
   },
   syrupOptions: {
     width: '50%',
