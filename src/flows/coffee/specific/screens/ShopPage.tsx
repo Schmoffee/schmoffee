@@ -88,6 +88,7 @@ export const ShopPage = () => {
         duration: 950,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
       })
+      setQuery('');
     }
   }
 
@@ -149,7 +150,7 @@ export const ShopPage = () => {
   return (
     <View style={styles.root}>
       {/* back button for navigation */}
-      <View style={styles.button}>
+      <View style={styles.backButton}>
         <LeftChevronBackButton />
       </View>
 
@@ -166,15 +167,25 @@ export const ShopPage = () => {
                 <Animated.Image style={rSearchIconStyle} source={require('../../../../assets/pngs/magnifyingglass.png')} />
               </Pressable>
             </View>
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              clearButtonMode="always"
-              value={query}
-              onChangeText={queryText => setQuery(queryText)}
-              placeholder="What do you crave?"
-              style={styles.searchText}
-            />
+            <Animated.View style={[styles.searchText]}>
+              <TextInput
+                editable={searchAnim.value === 1}
+                autoCapitalize="none"
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+                value={query}
+                onChangeText={queryText => setQuery(queryText)}
+                placeholder="What do you crave?"
+                style={styles.searchText}
+                placeholderTextColor={Colors.darkBrown}
+                selectionColor={Colors.darkBrown}
+              />
+            </Animated.View>
+            <View style={styles.clearIcon}>
+              <Pressable onPress={handleSearchPress}>
+                <Animated.Image style={[rSearchIconStyle, { width: 15, height: 15 }]} source={require('../../../../assets/pngs/x-outline.png')} />
+              </Pressable>
+            </View>
           </Animated.View>
           <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} />
         </View>
@@ -247,7 +258,15 @@ const styles = StyleSheet.create({
   searchText: {
     height: 40,
     position: 'absolute',
-    left: 30,
+    left: 15,
+    fontStyle: 'italic',
+    color: Colors.darkBrown,
+  },
+  clearIcon: {
+    position: 'relative',
+    left: 305,
+
+
   },
   shopImage: {
     zIndex: -1,
@@ -291,10 +310,10 @@ const styles = StyleSheet.create({
     right: 0,
     marginHorizontal: Spacings.s9,
   },
-  button: {
+  backButton: {
     position: 'absolute',
     top: 20,
-    left: 0,
+    left: -10,
     zIndex: 1,
   },
 });
