@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     right: -15,
   },
   quantityLabel: {
-    width: 25,
+    width: 22,
     height: 20,
     borderRadius: 10,
     backgroundColor: Colors.white,

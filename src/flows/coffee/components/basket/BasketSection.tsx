@@ -1,20 +1,20 @@
-import React, {useContext} from 'react';
-import {Pressable, StyleSheet, View} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import React, { useContext } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
-import {OrderingContext} from '../../../../contexts';
-import {BasketItem} from './BasketItem';
-import {Colors, Spacings} from '../../../common/theme';
-import {Body} from '../../../common/typography';
-import {useNavigation} from '@react-navigation/native';
-import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import { OrderingContext } from '../../../../contexts';
+import { BasketItem } from './BasketItem';
+import { Colors, Spacings } from '../../../common/theme';
+import { Body } from '../../../common/typography';
+import { useNavigation } from '@react-navigation/native';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
 
 interface BasketSectionProps {
   translateY?: Animated.SharedValue<number>;
 }
 
 export const BasketSection = (props: BasketSectionProps) => {
-  const {ordering_state} = useContext(OrderingContext);
+  const { ordering_state } = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
 
   const height = 100;
@@ -24,18 +24,18 @@ export const BasketSection = (props: BasketSectionProps) => {
       return height;
     } else if (ordering_state.specific_basket.length <= 2) {
       return height + 100;
-    } else if (ordering_state.specific_basket.length <= 3) {
-      return height + 200;
+    } else if (ordering_state.specific_basket.length >= 3) {
+      return height + 250;
     }
   };
 
   return (
     <ScrollView style={styles.container}>
-      <View style={{height: getHeight(), maxHeight}}>
+      <View style={{ height: getHeight(), maxHeight }}>
         {ordering_state.specific_basket.length === 0 && (
           <View style={styles.emptyContainer}>
             <Pressable onPress={() => navigation.navigate('ShopPage')}>
-              <Body size="medium" weight="Bold" color={Colors.white}>
+              <Body size="medium" weight="Bold" color={Colors.gold}>
                 Click here to add some items to your basket!
               </Body>
             </Pressable>
@@ -57,7 +57,7 @@ export const BasketSection = (props: BasketSectionProps) => {
                       {/* {item.description} */}
                     </Body>
                   </View>
-                  <Body size="small" weight="Bold" color={Colors.greyLight2} style={{position: 'absolute', right: 0}}>
+                  <Body size="small" weight="Bold" color={Colors.greyLight2} style={{ position: 'absolute', right: 0 }}>
                     £{((item.price * item.quantity) / 100).toFixed(2)}
                   </Body>
                 </View>
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: Spacings.s5,
+    marginTop: Spacings.s8,
   },
 
   basketColumn: {

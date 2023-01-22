@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { EagerItem } from '../../../../models';
@@ -9,6 +9,7 @@ interface TabNavigatorProps {
   tab1: EagerItem[];
   tab2: EagerItem[];
   tab3: EagerItem[];
+  query: string;
 }
 
 const WIDTH = Dimensions.get('window').width;
@@ -19,9 +20,30 @@ const TabNavigator = (props: TabNavigatorProps) => {
     setActiveTab(tabname);
   };
 
+  useEffect(() => {
+    if (activeTab === 'coffee' && props.tab1.length === 0) {
+      if (props.tab2.length > 0) {
+        setActiveTab('tea');
+      } else if (props.tab3.length > 0) {
+        setActiveTab('bakery');
+      }
+    } else if (activeTab === 'tea' && props.tab2.length === 0) {
+      if (props.tab1.length > 0) {
+        setActiveTab('coffee');
+      } else if (props.tab3.length > 0) {
+        setActiveTab('bakery');
+      }
+    } else if (activeTab === 'bakery' && props.tab3.length === 0) {
+      if (props.tab1.length > 0) {
+        setActiveTab('coffee');
+      } else if (props.tab2.length > 0) {
+        setActiveTab('tea');
+      }
+    }
+  }, [props.tab1, props.tab2, props.tab3]);
+
   return (
     <View style={styles.container}>
-
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'coffee' ? styles.activeTab : null]}
@@ -58,10 +80,10 @@ const TabNavigator = (props: TabNavigatorProps) => {
 
 const styles = StyleSheet.create({
   tabContainer: {
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 20,
-    // backgroundColor: 'red',
+    height: '27%',
     paddingTop: 30,
   },
   tab: {

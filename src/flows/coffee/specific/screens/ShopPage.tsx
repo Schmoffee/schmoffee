@@ -169,10 +169,8 @@ export const ShopPage = () => {
             </View>
             <Animated.View style={[styles.searchText]}>
               <TextInput
-                editable={searchAnim.value === 1}
                 autoCapitalize="none"
                 autoCorrect={false}
-                clearButtonMode="while-editing"
                 value={query}
                 onChangeText={queryText => setQuery(queryText)}
                 placeholder="What do you crave?"
@@ -227,7 +225,7 @@ const styles = StyleSheet.create({
   basketContainer: {
     position: 'absolute',
     bottom: -5,
-    height: 120,
+    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
     left: 0,

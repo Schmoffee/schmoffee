@@ -4,6 +4,8 @@ import { CardItem } from './CardItem';
 import { Item } from '../../../../models';
 import { Colors, Spacings } from '../../../common/theme';
 import { Body } from '../../../common/typography';
+import GifLoop from '../../../common/components/GifLoop';
+
 
 interface CardSectionProps {
   items: Item[];
@@ -35,6 +37,7 @@ export const CardSection = (props: CardSectionProps) => {
           <Body size="medium" weight="Black" color={Colors.darkBrown2}>
             Uh oh... there's nothing here!
           </Body>
+          <GifLoop />
         </View>
       )}
     </View>
@@ -44,8 +47,7 @@ export const CardSection = (props: CardSectionProps) => {
 const styles = StyleSheet.create({
   container: {
     marginVertical: Spacings.s2,
-    // backgroundColor: Colors.white,
-    height: '100%',
+    height: '85%',
   },
   cardContainer: {
     flexDirection: 'row',
@@ -53,6 +55,6 @@ const styles = StyleSheet.create({
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: Spacings.s20,
+    paddingTop: Spacings.s30,
   },
 });
