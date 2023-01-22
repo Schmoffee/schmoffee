@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { CardItem } from './CardItem';
-import { Item } from '../../../../models';
-import { Colors, Spacings } from '../../../common/theme';
-import { Body } from '../../../common/typography';
+import {View, StyleSheet, FlatList} from 'react-native';
+import {CardItem} from './CardItem';
+import {Item} from '../../../../models';
+import {Colors, Spacings} from '../../../common/theme';
+import {Body} from '../../../common/typography';
 import GifLoop from '../../../common/components/GifLoop';
-
 
 interface CardSectionProps {
   items: Item[];
@@ -14,9 +13,10 @@ interface CardSectionProps {
 }
 
 export const CardSection = (props: CardSectionProps) => {
-  const { items } = props;
+  const {items} = props;
+
   return (
-    <View style={[styles.container, { borderBottomColor: props.hideDivider ? 'transparent' : Colors.brownFaded2 }]}>
+    <View style={[styles.container, {borderBottomColor: props.hideDivider ? 'transparent' : Colors.brownFaded2}]}>
       {items && items.length > 0 ? (
         <FlatList
           data={items}
@@ -29,7 +29,7 @@ export const CardSection = (props: CardSectionProps) => {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={1}
-          renderItem={({ item, index }) => <CardItem query={props.query} item={item} index={index} />}
+          renderItem={({item, index}) => <CardItem query={props.query} item={item} index={index} />}
           keyExtractor={item => item.id}
         />
       ) : (

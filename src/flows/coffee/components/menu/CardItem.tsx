@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Image, Pressable } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { Colors, Spacings } from '../../../common/theme';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
-import { Body } from '../../../common/typography';
-import { Item } from '../../../../models';
+import React, {useEffect, useRef} from 'react';
+import {View, StyleSheet, Image, Pressable} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
+import {Colors, Spacings} from '../../../common/theme';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import {Body} from '../../../common/typography';
+import {Item, Rating} from '../../../../models';
 
 interface CardItemProps {
   item: Item;
@@ -13,7 +13,7 @@ interface CardItemProps {
   query?: string;
 }
 
-export const CardItem = ({ item, index, query }: CardItemProps) => {
+export const CardItem = ({item, index, query}: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
@@ -30,7 +30,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
     'worklet';
     // measure image position & size
     imageRef.current?.measure?.((x, y, width, height, pageX, pageY) => {
-      let imageSpecs = { width, height, pageX, pageY, borderRadius: 10 };
+      let imageSpecs = {width, height, pageX, pageY, borderRadius: 10};
       navigation.navigate('ItemPage', {
         item,
         imageSpecs,
@@ -80,11 +80,14 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
             </View>
           </View>
           <View style={styles.imageContainer}>
-            <Image ref={imageRef} source={{ uri: `${item.image}` }} />
+            <Image source={{uri: item.image}} style={styles.image} />
             <View style={styles.ratingContainer}>
-              <Image source={require('../../../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
               <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
-                3.9
+                {item.ratings
+                  ? item.ratings.length > 0
+                    ? item.ratings.reduce((acc, curr) => acc + (curr ? curr.rating : 0), 0) / item.ratings.length
+                    : 'None'
+                  : 'None'}
               </Body>
             </View>
           </View>
@@ -98,8 +101,10 @@ const styles = StyleSheet.create({
   root: {
     width: '100%',
     flex: 1,
-    // zIndex: 99999999,
   },
+
+  image: {width: '100%', height: '100%'},
+
   container: {
     position: 'relative',
     overflow: 'hidden',
@@ -179,7 +184,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 7,
     top: 4,
-
   },
 
   ratingStar: {

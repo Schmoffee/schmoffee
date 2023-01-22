@@ -48,7 +48,7 @@ export const AlertMessage = {
   OUT_OF_STOCK: {
     title: 'Out of stock',
     message:
-      'Apologies, we had to remove the following items from your basket because they suddenly went out of stock: ',
+      'Apologies, we had to remove the following items and/or options from your basket because they suddenly went out of stock: ',
   },
 };
 
@@ -96,7 +96,12 @@ export const Alerts = {
     ]);
     return success;
   },
-  outOfStockAlert: (deleted_items: string[]) => {
-    Alert.alert(AlertMessage.OUT_OF_STOCK.title, AlertMessage.OUT_OF_STOCK.message + deleted_items.join(', '));
+  outOfStockAlert: (deleted_items: string[], deleted_options: {item: string; option: string}[]) => {
+    Alert.alert(
+      AlertMessage.OUT_OF_STOCK.title,
+      AlertMessage.OUT_OF_STOCK.message +
+        deleted_items.join(', ') +
+        deleted_options.map(option => option.item + ' - ' + option.option).join(', '),
+    );
   },
 };

@@ -1,5 +1,5 @@
 import {Dimensions, Image, StyleSheet, View} from 'react-native';
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,15 +8,15 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {Body, Heading} from '../typography';
-import {setSpecificBasket} from '../../../utils/helpers/storage';
-import {Colors, Spacings} from '../theme';
-import {OrderItem} from '../../../models';
-import {Footer} from '../components/Footer';
-import {OrderingContext} from '../../../contexts';
-import LeftChevronBackButton from '../components/LeftChevronBackButton';
-import {OrderingActionName} from '../../../utils/types/enums';
-import OptionCarousel from '../../coffee/components/menu/OptionCarousel';
+import {Body, Heading} from '../../../common/typography';
+import {setSpecificBasket} from '../../../../utils/helpers/storage';
+import {Colors, Spacings} from '../../../common/theme';
+import {Option, OptionType, OrderItem, OrderOption} from '../../../../models';
+import {Footer} from '../../../common/components/Footer';
+import {OrderingContext} from '../../../../contexts';
+import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
+import {OrderingActionName} from '../../../../utils/types/enums';
+import OptionCarousel from '../../components/menu/OptionCarousel';
 
 const {width} = Dimensions.get('window');
 
@@ -26,8 +26,10 @@ interface ItemPageProps {
 }
 const ItemPage = ({route, navigation}: ItemPageProps) => {
   const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
-
+  const [selectedOptions, setSelectedOptions] = useState<OrderOption[]>([]);
   const {item, imageSpecs} = route?.params;
+  const milkOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.MILK);
+  const syrupOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.SYRUP);
 
   const anim = useSharedValue(0);
   useEffect(() => {
@@ -117,10 +119,22 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     [],
   );
 
+  const equalsCheck = (a: string[], b: string[]) =>
+    a.length === b.length && a.every((v: string, i: number) => v === b[i]);
+
   async function addItem() {
-    if (ordering_state.specific_basket.find((basketItem: OrderItem) => basketItem.name === item.name)) {
-      const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
-      const newBasket: OrderItem[] = ordering_state.specific_basket;
+    let newBasket: OrderItem[] = ordering_state.specific_basket;
+    const index = newBasket.findIndex((basketItem: OrderItem) => {
+      const same_name = basketItem.name === item.name;
+      const has_options = basketItem.options && basketItem.options.length > 0;
+      if (same_name) {
+        const a = has_options ? basketItem.options.map((option: OrderOption) => option.name) : [];
+        const b = selectedOptions.map((op: OrderOption) => op.name);
+        return equalsCheck(a, b);
+      }
+      return false;
+    });
+    if (index !== -1) {
       newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
@@ -131,10 +145,10 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         price: item.price,
         image: item.image,
         preparation_time: item.preparation_time,
-        options: item.options,
+        options: selectedOptions,
         id: item.id,
       };
-      const newBasket: OrderItem[] = [...ordering_state.specific_basket, new_order_item];
+      newBasket = [...ordering_state.specific_basket, new_order_item];
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     }
@@ -142,42 +156,12 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     anim.value = withTiming(0, {}, isFinished => isFinished && runOnJS(callback)());
   }
 
-  const milkImages = [
-    {
-      image: require('../../../assets/pngs/nothing-outline.png'),
-    },
-    {
-      image: require('../../../assets/pngs/soy-outline.png'),
-    },
-    {
-      image: require('../../../assets/pngs/soy-outline.png'),
-    },
-    {
-      image: require('../../../assets/pngs/oat-outline.png'),
-    },
-  ];
-
-  const syrupImages = [
-    {
-      image: require('../../../assets/pngs/nothing-outline.png'),
-    },
-    {
-      image: require('../../../assets/pngs/maple-outline.png'),
-    },
-    {
-      image: require('../../../assets/pngs/maple-outline.png'),
-    },
-    {
-      image: require('../../../assets/pngs/caramel-outline.png'),
-    },
-  ];
-
   return (
     <View style={styles.container}>
       <LeftChevronBackButton />
 
       <Animated.Image
-        source={require('../../../assets/pngs/semi-circle.png')}
+        source={require('../../../../assets/pngs/semi-circle.png')}
         style={[styles.semiCircle, rCircleStyle]}
       />
       <Animated.View style={[styles.headerContainer, titleStyle]}>
@@ -189,10 +173,20 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
 
       <Animated.View style={[styles.optionsContainer, optionsStyle]}>
         <View style={styles.milkOptions}>
-          <OptionCarousel data={milkImages} pagination={false} />
+          <OptionCarousel
+            data={milkOptions}
+            pagination={false}
+            setOptions={setSelectedOptions}
+            selectedOptions={selectedOptions}
+          />
         </View>
         <View style={styles.syrupOptions}>
-          <OptionCarousel data={syrupImages} pagination={false} />
+          <OptionCarousel
+            data={syrupOptions}
+            pagination={false}
+            setOptions={setSelectedOptions}
+            selectedOptions={selectedOptions}
+          />
         </View>
       </Animated.View>
 

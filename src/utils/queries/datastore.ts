@@ -3,6 +3,7 @@ import {
   CurrentOrder,
   Error,
   Item,
+  Option,
   OrderInfo,
   OrderItem,
   OrderStatus,
@@ -299,6 +300,14 @@ async function hasOrderRunning(userID: string): Promise<boolean> {
   return order.length > 0;
 }
 
+async function getAllOptions(): Promise<Option[]> {
+  return await DataStore.query(Option);
+}
+
+async function getAllRatings(): Promise<Rating[]> {
+  return await DataStore.query(Rating);
+}
+
 export {
   getCommonItems,
   getUserByPhoneNumber,
@@ -317,4 +326,6 @@ export {
   updateDeviceToken,
   registerError,
   hasOrderRunning,
+  getAllOptions,
+  getAllRatings,
 };

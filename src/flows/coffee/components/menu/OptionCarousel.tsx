@@ -1,5 +1,5 @@
 import {StyleSheet, View, Image, useWindowDimensions} from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState} from 'react';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -10,15 +10,27 @@ import Animated, {
 import Pagination from './Pagination';
 import {Body} from '../../../common/typography';
 import {Colors} from '../../../common/theme';
+import {Option, OrderOption} from '../../../../models';
 
 interface OptionCarouselProps {
-  data: any[];
+  data: Option[];
   pagination?: boolean;
+  setOptions: (options: OrderOption[]) => void;
+  selectedOptions: OrderOption[];
 }
 
 const OptionCarousel = (props: OptionCarouselProps) => {
+  const {data, pagination, setOptions, selectedOptions} = props;
   const scrollViewRef = useAnimatedRef();
-  const [newData] = useState([{key: 'spacer-left'}, ...props.data, {key: 'spacer-right'}]);
+  const [newData] = useState([
+    {key: 'spacer-left'},
+    {
+      key: 'nothing',
+      image: require('../../../../assets/pngs/nothing-outline.png'),
+    },
+    ...data,
+    {key: 'spacer-right'},
+  ]);
   const {width} = useWindowDimensions();
   const SIZE = width * 0.15;
   const SPACER = (width - SIZE) / 7;
@@ -30,9 +42,14 @@ const OptionCarousel = (props: OptionCarouselProps) => {
     },
   });
 
+  function selectOption(option: Option) {
+    let filtered = selectedOptions.filter((o: OrderOption) => o.option_type !== option.option_type);
+    setOptions([...filtered, {option_type: option.option_type, name: option.name, price: option.price}]);
+  }
+
   return (
     <View>
-      {props.pagination && <Pagination data={props.data} x={x} size={SIZE} />}
+      {pagination && <Pagination data={data} x={x} size={SIZE} />}
       <Animated.ScrollView
         ref={scrollViewRef}
         onScroll={onScroll}
@@ -43,7 +60,6 @@ const OptionCarousel = (props: OptionCarouselProps) => {
         bounces={false}
         showsHorizontalScrollIndicator={false}>
         {newData.map((item, index) => {
-          // eslint-disable-next-line react-hooks/rules-of-hooks
           const rImageStyle = useAnimatedStyle(() => {
             const scale = interpolate(x.value, [(index - 2) * SIZE, (index - 1) * SIZE, index * SIZE], [0.65, 1, 0.65]);
             const opacity = interpolate(
@@ -67,22 +83,25 @@ const OptionCarousel = (props: OptionCarouselProps) => {
             };
           });
 
-          if (!item.image) {
+          if (!item.hasOwnProperty('image')) {
             return <View style={{width: SPACER}} key={index} />;
           }
+          const fullOption: Option = item as Option;
 
-          console.log(item);
+          const image = fullOption.hasOwnProperty('key')
+            ? fullOption.image
+            : {uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/oat-milk-outline.png'};
 
           return (
             <View style={{width: SIZE}} key={index}>
               <View style={styles.itemContainer}>
                 <Animated.View style={[styles.imageContainer, rImageStyle]}>
-                  <Image source={item.image} style={styles.image} />
+                  <Image source={image} style={styles.image} />
                 </Animated.View>
                 {index !== 1 && (
                   <Animated.View style={[styles.priceContainer, rPriceStyle]}>
                     <Body size="extraSmall" weight="Thin">
-                      {item.price}
+                      {fullOption.price}
                     </Body>
                   </Animated.View>
                 )}
