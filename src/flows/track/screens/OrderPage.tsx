@@ -40,7 +40,7 @@ export const OrderPage = () => {
       header="Your Order"
       backgroundColor={Colors.greyLight1}
       footer={{
-        buttonDisabled: false,
+        buttonDisabled: true,
         onPress: () => handleFinishOrder(),
         buttonText: 'Finish Order',
       }}>
