@@ -42,7 +42,6 @@ const Root = () => {
                   break;
                 case OrderStatus.REJECTED:
                   await cancelPayment(new_order.payment_id);
-                  await deleteOrder(new_order.id);
                   break;
               }
             }
@@ -84,8 +83,14 @@ const Root = () => {
           headerShown: false,
           gestureEnabled: true,
         }}>
-        <TrackOrderStack.Screen name="OrderPage" component={OrderPage} />
-        <TrackOrderStack.Screen name="RatingPage" component={RatingPage} />
+        {track_order_state.current_order?.status === OrderStatus.COLLECTED ? (
+          <TrackOrderStack.Screen name="RatingPage" component={RatingPage} />
+        ) : (
+          <>
+            <TrackOrderStack.Screen name="OrderPage" component={OrderPage} />
+            <TrackOrderStack.Screen name="RatingPage" component={RatingPage} />
+          </>
+        )}
       </TrackOrderStack.Navigator>
     </TrackOrderContext.Provider>
   );

@@ -1,11 +1,12 @@
-import React, {useEffect, useRef} from 'react';
-import {View, StyleSheet, Image, Pressable} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, StyleSheet, Pressable, Image} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import {Colors, Spacings} from '../../../common/theme';
 import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
 import {Body} from '../../../common/typography';
-import {Item, Rating} from '../../../../models';
+import {Item} from '../../../../models';
 
 interface CardItemProps {
   item: Item;
@@ -15,7 +16,6 @@ interface CardItemProps {
 
 export const CardItem = ({item, index, query}: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
-  const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
 
   useEffect(() => {
@@ -27,15 +27,7 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
   }, [anim]);
 
   const onItemPress = () => {
-    'worklet';
-    // measure image position & size
-    imageRef.current?.measure?.((x, y, width, height, pageX, pageY) => {
-      let imageSpecs = {width, height, pageX, pageY, borderRadius: 10};
-      navigation.navigate('ItemPage', {
-        item,
-        imageSpecs,
-      });
-    });
+    navigation.navigate('ItemPage', {item});
   };
 
   const cardStyleDown = useAnimatedStyle(
@@ -62,6 +54,8 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
     [],
   );
 
+  const image = item.image ? {uri: item.image} : require('../../../../assets/pngs/x-outline.png');
+
   return (
     <Pressable onPress={onItemPress}>
       <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleDown : cardStyleUp]}>
@@ -80,7 +74,7 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
             </View>
           </View>
           <View style={styles.imageContainer}>
-            <Image source={{uri: item.image}} style={styles.image} />
+            <FastImage source={{uri: item.image ? item.image : undefined}} style={styles.image} />
             <View style={styles.ratingContainer}>
               <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
                 {item.ratings

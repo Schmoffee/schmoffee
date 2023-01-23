@@ -1,15 +1,16 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {CONST_SCREEN_RATING_PAGE} from '../../../../constants';
+import {CONST_SCREEN_HOME, CONST_SCREEN_RATING_PAGE} from '../../../../constants';
 import {TrackOrderContext} from '../../../contexts';
 import {TrackOrderRoutes} from '../../../utils/types/navigation.types';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {OrderStatus} from '../../../models';
+import {CurrentOrder, OrderStatus} from '../../../models';
 import {Body} from '../../common/typography';
 import {PageLayout} from '../../common/components/PageLayout';
 import {Spacings} from '../../common/theme';
 import CustomModal from '../../common/components/CustomModal';
+import {deleteOrder} from '../../../utils/queries/datastore';
 
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
@@ -29,6 +30,16 @@ export const OrderPage = () => {
       setShowRejectionModal(true);
     }
   }, [track_order_state.current_order?.status]);
+
+  async function finishOrder() {
+    const curr_order = track_order_state.current_order as CurrentOrder;
+    if (curr_order.status === OrderStatus.COLLECTED) {
+      navigation.navigate(CONST_SCREEN_RATING_PAGE);
+    } else {
+      navigation.navigate(CONST_SCREEN_HOME);
+    }
+    await deleteOrder(curr_order.id);
+  }
 
   const handleFinishOrder = () => {
     console.log('Order finished');

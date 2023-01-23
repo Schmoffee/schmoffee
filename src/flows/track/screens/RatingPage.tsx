@@ -35,7 +35,7 @@ const RatingItem = ({item}: RatingItemProps) => {
   return (
     <View style={styles.itemContainer}>
       <View style={styles.imageContainer}>
-        <Image source={{uri: `${item.image}`}} style={styles.image} />
+        <Image source={{uri: item.image}} style={styles.image} />
       </View>
       <View style={styles.detailsContainer}>
         <Body size="large" weight="Regular">{`${item.name} - ${item.price}`}</Body>

@@ -1,4 +1,4 @@
-import {Dimensions, Image, StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import Animated, {
   Easing,
@@ -26,10 +26,13 @@ interface ItemPageProps {
 }
 const ItemPage = ({route, navigation}: ItemPageProps) => {
   const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
-  const [selectedOptions, setSelectedOptions] = useState<OrderOption[]>([]);
+  const [selectedMilk, setMilk] = useState<OrderOption>();
+  const [selectedSyrup, setSyrup] = useState<OrderOption>();
   const {item, imageSpecs} = route?.params;
   const milkOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.MILK);
   const syrupOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.SYRUP);
+  console.log('milk', selectedMilk);
+  console.log('syrup', selectedSyrup);
 
   const anim = useSharedValue(0);
   useEffect(() => {
@@ -95,19 +98,6 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     [],
   );
 
-  const imageContainerStyle = useAnimatedStyle(
-    () => ({
-      position: 'absolute',
-      top: interpolate(anim.value, [0, 1], [imageSpecs.pageY, 150]),
-      left: interpolate(anim.value, [0, 1], [imageSpecs.pageX, -15]),
-      width: interpolate(anim.value, [0, 1], [imageSpecs.width, width * 1.1]),
-      height: interpolate(anim.value, [0, 1], [imageSpecs.height, 350]),
-      borderRadius: interpolate(anim.value, [0, 1], [imageSpecs.borderRadius, 0]),
-      overflow: 'hidden',
-    }),
-    [],
-  );
-
   const rImageStyle = useAnimatedStyle(
     () => ({
       transform: [
@@ -129,7 +119,8 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       const has_options = basketItem.options && basketItem.options.length > 0;
       if (same_name) {
         const a = has_options ? basketItem.options.map((option: OrderOption) => option.name) : [];
-        const b = selectedOptions.map((op: OrderOption) => op.name);
+        const selected = [selectedMilk, selectedSyrup].filter(option => option !== undefined) as OrderOption[];
+        const b = selected.map((op: OrderOption) => op.name);
         return equalsCheck(a, b);
       }
       return false;
@@ -145,7 +136,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         price: item.price,
         image: item.image,
         preparation_time: item.preparation_time,
-        options: selectedOptions,
+        options: [selectedMilk, selectedSyrup].filter(option => option !== undefined) as OrderOption[],
         id: item.id,
       };
       newBasket = [...ordering_state.specific_basket, new_order_item];
@@ -173,20 +164,10 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
 
       <Animated.View style={[styles.optionsContainer, optionsStyle]}>
         <View style={styles.milkOptions}>
-          <OptionCarousel
-            data={milkOptions}
-            pagination={false}
-            setOptions={setSelectedOptions}
-            selectedOptions={selectedOptions}
-          />
+          <OptionCarousel data={milkOptions} pagination={false} setOption={setMilk} />
         </View>
         <View style={styles.syrupOptions}>
-          <OptionCarousel
-            data={syrupOptions}
-            pagination={false}
-            setOptions={setSelectedOptions}
-            selectedOptions={selectedOptions}
-          />
+          <OptionCarousel data={syrupOptions} pagination={false} setOption={setSyrup} />
         </View>
       </Animated.View>
 

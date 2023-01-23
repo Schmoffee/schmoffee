@@ -1,4 +1,4 @@
-import {StyleSheet, View, Image, useWindowDimensions} from 'react-native';
+import {StyleSheet, View, Image, useWindowDimensions, NativeScrollEvent, NativeSyntheticEvent} from 'react-native';
 import React, {useState} from 'react';
 import Animated, {
   useSharedValue,
@@ -15,22 +15,13 @@ import {Option, OrderOption} from '../../../../models';
 interface OptionCarouselProps {
   data: Option[];
   pagination?: boolean;
-  setOptions: (options: OrderOption[]) => void;
-  selectedOptions: OrderOption[];
+  setOption: (option: OrderOption | undefined) => void;
 }
 
 const OptionCarousel = (props: OptionCarouselProps) => {
-  const {data, pagination, setOptions, selectedOptions} = props;
+  const {data, pagination, setOption} = props;
   const scrollViewRef = useAnimatedRef();
-  const [newData] = useState([
-    {key: 'spacer-left'},
-    {
-      key: 'nothing',
-      image: require('../../../../assets/pngs/nothing-outline.png'),
-    },
-    ...data,
-    {key: 'spacer-right'},
-  ]);
+  const [newData] = useState([{key: 'spacer-left'}, {key: 'nothing'}, ...data, {key: 'spacer-right'}]);
   const {width} = useWindowDimensions();
   const SIZE = width * 0.15;
   const SPACER = (width - SIZE) / 7;
@@ -41,11 +32,17 @@ const OptionCarousel = (props: OptionCarouselProps) => {
       x.value = event.contentOffset.x;
     },
   });
-
-  function selectOption(option: Option) {
-    let filtered = selectedOptions.filter((o: OrderOption) => o.option_type !== option.option_type);
-    setOptions([...filtered, {option_type: option.option_type, name: option.name, price: option.price}]);
-  }
+  const onMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const currentIndex = Math.round(offsetX / SIZE);
+    const selected = newData[currentIndex + 1];
+    if (!selected.hasOwnProperty('key')) {
+      const selectedOption = selected as Option;
+      setOption({option_type: selectedOption.option_type, price: selectedOption.price, name: selectedOption.name});
+    } else {
+      setOption(undefined);
+    }
+  };
 
   return (
     <View>
@@ -58,6 +55,7 @@ const OptionCarousel = (props: OptionCarouselProps) => {
         snapToInterval={SIZE}
         horizontal
         bounces={false}
+        onMomentumScrollEnd={event => onMomentumScrollEnd(event)}
         showsHorizontalScrollIndicator={false}>
         {newData.map((item, index) => {
           const rImageStyle = useAnimatedStyle(() => {
@@ -89,8 +87,8 @@ const OptionCarousel = (props: OptionCarouselProps) => {
           const fullOption: Option = item as Option;
 
           const image = fullOption.hasOwnProperty('key')
-            ? fullOption.image
-            : {uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/oat-milk-outline.png'};
+            ? require('../../../../assets/pngs/nothing-outline.png')
+            : {uri: fullOption.image};
 
           return (
             <View style={{width: SIZE}} key={index}>
@@ -134,7 +132,6 @@ const styles = StyleSheet.create({
   priceContainer: {
     position: 'absolute',
     bottom: 0,
-    // right: 0,
     borderWidth: 0,
     borderColor: Colors.greyLight3,
     borderTopLeftRadius: 10,

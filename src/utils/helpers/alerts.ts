@@ -74,19 +74,17 @@ export const Alerts = {
   badPhoneNumberAlert: async () => {
     Alert.alert(AlertMessage.BAD_PHONE_NUMBER.title, AlertMessage.BAD_PHONE_NUMBER.message);
   },
-  StorageAlert: () => {
-    Alert.alert(AlertMessage.STORAGE.title, AlertMessage.STORAGE.message);
-  },
   paymentAlert: () => {
     Alert.alert(AlertMessage.PAYMENT.title, AlertMessage.PAYMENT.message);
   },
   logoutAlert: async (logout: () => Promise<boolean>) => {
-    let success = false;
+    let val = {logout: false, success: false};
     await Alert.alert(AlertMessage.LOGOUT.title, AlertMessage.LOGOUT.message, [
       {
         text: 'Yes',
         onPress: async () => {
-          success = await logout();
+          val.logout = true;
+          val.success = await logout();
         },
       },
       {
@@ -94,7 +92,7 @@ export const Alerts = {
         style: 'cancel',
       },
     ]);
-    return success;
+    return val;
   },
   outOfStockAlert: (deleted_items: string[], deleted_options: {item: string; option: string}[]) => {
     Alert.alert(

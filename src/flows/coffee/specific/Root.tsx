@@ -104,7 +104,7 @@ const Root = () => {
 
   return (
     <CoffeeStack.Navigator
-      initialRouteName="ShopPage"
+      initialRouteName="Home"
       screenOptions={{
         gestureEnabled: false,
         headerShown: false,

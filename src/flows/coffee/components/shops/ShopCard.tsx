@@ -1,22 +1,25 @@
 import React from 'react';
-import { Cafe, Rating } from '../../../../models';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { CARD_HEIGHT, CARD_WIDTH } from '../../../../../constants';
-import { Colors, Spacings } from '../../../common/theme';
-import { Body } from '../../../common/typography';
-import { useNavigation } from '@react-navigation/native';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import {Cafe, Rating} from '../../../../models';
+import {Pressable, StyleSheet, View} from 'react-native';
+import {CARD_HEIGHT, CARD_WIDTH} from '../../../../../constants';
+import {Colors, Spacings} from '../../../common/theme';
+import {Body} from '../../../common/typography';
+import {useNavigation} from '@react-navigation/native';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import FastImage from 'react-native-fast-image';
 
 interface CafeCardProps {
   cafe: Cafe;
 }
 const CafeCard = (props: CafeCardProps) => {
-  const { cafe } = props;
+  const {cafe} = props;
   const navigation = useNavigation<CoffeeRoutes>();
 
   return (
     <Pressable style={styles.root} onPress={() => navigation.navigate('ShopPage')}>
-      <View style={styles.cardImage} />
+      <View style={styles.cardImage}>
+        <FastImage source={{uri: cafe.image ? cafe.image : undefined}} />
+      </View>
       <View style={styles.cafeDetails}>
         <Body size="medium" weight="Extrabld" color={Colors.black}>
           {cafe.name}
@@ -31,11 +34,8 @@ const CafeCard = (props: CafeCardProps) => {
         <Body size="small" weight="Regular" color={Colors.black}>
           {cafe.description}
         </Body>
-
-
       </View>
-
-    </Pressable >
+    </Pressable>
   );
 };
 
@@ -65,8 +65,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginTop: Spacings.s3,
   },
-
-
-})
+});
 
 export default CafeCard;
