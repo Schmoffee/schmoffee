@@ -1,17 +1,17 @@
 import { Dimensions } from 'react-native';
 
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+export const WIDTH = Dimensions.get('window').width;
+export const HEIGHT = Dimensions.get('window').height;
 
-export const CARD_WIDTH = width * 0.8
-export const CARD_HEIGHT = height * 0.2;
+export const CARD_WIDTH = WIDTH * 0.8
+export const CARD_HEIGHT = HEIGHT * 0.2;
 
-export const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
+export const SPACING_FOR_CARD_INSET = WIDTH * 0.1 - 10;
 
 export default {
   window: {
-    width,
-    height,
+    WIDTH,
+    HEIGHT,
   },
-  isSmallDevice: width < 375,
+  isSmallDevice: WIDTH < 375,
 };

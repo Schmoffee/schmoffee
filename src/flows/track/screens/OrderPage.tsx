@@ -40,9 +40,9 @@ export const OrderPage = () => {
       header="Your Order"
       backgroundColor={Colors.greyLight1}
       footer={{
-        buttonDisabled: true,
+        buttonDisabled: false,
         onPress: () => handleFinishOrder(),
-        buttonText: 'Finish Order',
+        buttonText: 'Show Pin',
       }}>
       <View style={styles.mapContainer}>
         <Map cafeIdFilter={track_order_state.current_order?.cafeID} />

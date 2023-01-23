@@ -1,9 +1,9 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import React, {useContext} from 'react';
-import {Pressable, StyleSheet, useWindowDimensions} from 'react-native';
-import {CONST_SCREEN_CAFES, CONST_SCREEN_ORDER, CONST_SCREEN_SHOP} from '../../../../../constants';
-import {RootRoutes} from '../../../../utils/types/navigation.types';
-import {PanGestureHandler} from 'react-native-gesture-handler';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useContext } from 'react';
+import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { HEIGHT, WIDTH, CONST_SCREEN_CAFES, CONST_SCREEN_ORDER, CONST_SCREEN_SHOP } from '../../../../../constants';
+import { RootRoutes } from '../../../../utils/types/navigation.types';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
   useAnimatedGestureHandler,
@@ -11,13 +11,15 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {SideDrawerContent} from '../../../hamburger/components/SideDrawerContent';
+import { SideDrawerContent } from '../../../hamburger/components/SideDrawerContent';
 import Video from 'react-native-video';
-import {PageLayout} from '../../../common/components/PageLayout';
-import {GlobalContext} from '../../../../contexts';
+import { PageLayout } from '../../../common/components/PageLayout';
+import { GlobalContext } from '../../../../contexts';
+import { CurrentOrderBanner } from '../../../track/components/CurrentOrderBanner';
+import { Colors } from '../../../common/theme';
 
 export const Home = () => {
-  const {global_state} = useContext(GlobalContext);
+  const { global_state } = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const HOME_WIDTH = useWindowDimensions().width;
   const anim = useSharedValue(0);
@@ -57,7 +59,7 @@ export const Home = () => {
 
   const rPageStyle = useAnimatedStyle(() => {
     return {
-      transform: [{translateX: anim.value}],
+      transform: [{ translateX: anim.value }],
       opacity: interpolate(anim.value, [0, HOME_WIDTH / 2], [1, 0.7]),
     };
   });
@@ -123,6 +125,11 @@ export const Home = () => {
           </Animated.View>
         </Pressable>
 
+        <View style={styles.currentOrderBanner}>
+          <CurrentOrderBanner />
+
+        </View>
+
         <SideDrawerContent anim={anim} />
       </Animated.View>
     </PanGestureHandler>
@@ -136,5 +143,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -270,
     left: -90,
+  },
+  currentOrderBanner: {
+    position: 'absolute',
+    top: HEIGHT / 1.5,
+    left: WIDTH / 12,
+
   },
 });

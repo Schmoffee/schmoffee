@@ -13,7 +13,7 @@ interface HeadingProps extends TextProps, PropsWithChildren {
   style?: any;
   color?: string;
   weight?: 'Regular' | 'Thin' | 'Bold' | 'Extrabld' | 'Black';
-  size?: 'default' | 'large';
+  size?: 'small' | 'default' | 'large';
 }
 
 const bodyFontSizes = {
@@ -57,6 +57,7 @@ export const Body: FC<BodyProps> = ({ children, style, color, weight, size, ...p
 };
 
 const headingFontSizes = {
+  small: 24,
   default: 32,
   large: 42,
 };
@@ -66,6 +67,10 @@ export const Heading: FC<HeadingProps> = ({ children, style, color, weight, size
   const fontFamily = weight ? 'ProximaNova-' + weight : weight === 'Thin' ? 'ProximaNovaT-Thin' : 'ProximaNova-Regular';
   let fontSize;
   switch (size) {
+    case 'small':
+      fontSize = headingFontSizes.small;
+      break;
+
     case 'default':
       fontSize = headingFontSizes.default;
       break;
