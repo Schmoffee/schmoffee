@@ -1,332 +1,332 @@
 {
-  "analytics": {
-    "schmoffee": {
-      "providerPlugin": "awscloudformation",
-      "service": "Pinpoint"
-    }
-  },
-  "api": {
-    "schmoffee": {
-      "dependsOn": [],
-      "output": {
-        "authConfig": {
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "AWS_IAM"
-            }
-          ],
-          "defaultAuthentication": {
-            "apiKeyConfig": {
-              "apiKeyExpirationDays": 30,
-              "description": "api key description"
+    "analytics": {
+        "schmoffee": {
+            "providerPlugin": "awscloudformation",
+            "service": "Pinpoint"
+        }
+    },
+    "api": {
+        "schmoffee": {
+            "dependsOn": [],
+            "output": {
+                "authConfig": {
+                    "additionalAuthenticationProviders": [
+                        {
+                            "authenticationType": "AWS_IAM"
+                        }
+                    ],
+                    "defaultAuthentication": {
+                        "apiKeyConfig": {
+                            "apiKeyExpirationDays": 30,
+                            "description": "api key description"
+                        },
+                        "authenticationType": "API_KEY"
+                    }
+                }
             },
-            "authenticationType": "API_KEY"
-          }
+            "providerPlugin": "awscloudformation",
+            "service": "AppSync"
         }
-      },
-      "providerPlugin": "awscloudformation",
-      "service": "AppSync"
-    }
-  },
-  "auth": {
-    "schmoffeeAuth": {
-      "customAuth": true,
-      "dependsOn": [
-        {
-          "attributes": [
-            "Arn",
-            "Name"
-          ],
-          "category": "function",
-          "resourceName": "schmoffeeAuthCreateAuthChallenge",
-          "triggerProvider": "Cognito"
+    },
+    "auth": {
+        "schmoffeeAuth": {
+            "customAuth": true,
+            "dependsOn": [
+                {
+                    "attributes": [
+                        "Arn",
+                        "Name"
+                    ],
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthCreateAuthChallenge",
+                    "triggerProvider": "Cognito"
+                },
+                {
+                    "attributes": [
+                        "Arn",
+                        "Name"
+                    ],
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthDefineAuthChallenge",
+                    "triggerProvider": "Cognito"
+                },
+                {
+                    "attributes": [
+                        "Arn",
+                        "Name"
+                    ],
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthPreSignup",
+                    "triggerProvider": "Cognito"
+                },
+                {
+                    "attributes": [
+                        "Arn",
+                        "Name"
+                    ],
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse",
+                    "triggerProvider": "Cognito"
+                }
+            ],
+            "frontendAuthConfig": {
+                "mfaConfiguration": "OFF",
+                "mfaTypes": [
+                    "SMS"
+                ],
+                "passwordProtectionSettings": {
+                    "passwordPolicyCharacters": [],
+                    "passwordPolicyMinLength": 8
+                },
+                "signupAttributes": [
+                    "NAME",
+                    "PHONE_NUMBER"
+                ],
+                "socialProviders": [],
+                "usernameAttributes": [],
+                "verificationMechanisms": [
+                    "PHONE_NUMBER"
+                ]
+            },
+            "providerPlugin": "awscloudformation",
+            "service": "Cognito"
+        }
+    },
+    "function": {
+        "schmoffeeAuthCreateAuthChallenge": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda"
         },
-        {
-          "attributes": [
-            "Arn",
-            "Name"
-          ],
-          "category": "function",
-          "resourceName": "schmoffeeAuthDefineAuthChallenge",
-          "triggerProvider": "Cognito"
+        "schmoffeeAuthDefineAuthChallenge": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda"
         },
-        {
-          "attributes": [
-            "Arn",
-            "Name"
-          ],
-          "category": "function",
-          "resourceName": "schmoffeeAuthPreSignup",
-          "triggerProvider": "Cognito"
+        "schmoffeeAuthPreSignup": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda"
         },
-        {
-          "attributes": [
-            "Arn",
-            "Name"
-          ],
-          "category": "function",
-          "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse",
-          "triggerProvider": "Cognito"
-        }
-      ],
-      "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
-        "mfaTypes": [
-          "SMS"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [],
-          "passwordPolicyMinLength": 8
+        "schmoffeeAuthVerifyAuthChallengeResponse": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda"
         },
-        "signupAttributes": [
-          "NAME",
-          "PHONE_NUMBER"
-        ],
-        "socialProviders": [],
-        "usernameAttributes": [],
-        "verificationMechanisms": [
-          "PHONE_NUMBER"
-        ]
-      },
-      "providerPlugin": "awscloudformation",
-      "service": "Cognito"
-    }
-  },
-  "function": {
-    "schmoffeeAuthCreateAuthChallenge": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "schmoffeeAuthDefineAuthChallenge": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "schmoffeeAuthPreSignup": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "schmoffeeAuthVerifyAuthChallengeResponse": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "schmoffeeCancelPayment": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "schmoffeeGooglePayConfirmPayment": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "schmoffeePayWithStripe": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "schmoffeeSendNotification": {
-      "build": true,
-      "dependsOn": [],
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    }
-  },
-  "notifications": {
-    "schmoffee": {
-      "channels": [
-        "APNS",
-        "FCM"
-      ],
-      "service": "Pinpoint"
-    }
-  },
-  "parameters": {
-    "AMPLIFY_analytics_Pinpoint_Id": {
-      "usedBy": [
-        {
-          "category": "analytics",
-          "resourceName": "Pinpoint"
+        "schmoffeeCancelPayment": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda"
+        },
+        "schmoffeeGooglePayConfirmPayment": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda"
+        },
+        "schmoffeePayWithStripe": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda"
+        },
+        "schmoffeeSendNotification": {
+            "build": true,
+            "dependsOn": [],
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda"
         }
-      ]
     },
-    "AMPLIFY_analytics_Pinpoint_Name": {
-      "usedBy": [
-        {
-          "category": "analytics",
-          "resourceName": "Pinpoint"
+    "notifications": {
+        "schmoffee": {
+            "service": "Pinpoint",
+            "channels": [
+                "APNS",
+                "FCM"
+            ]
         }
-      ]
     },
-    "AMPLIFY_analytics_Pinpoint_Region": {
-      "usedBy": [
-        {
-          "category": "analytics",
-          "resourceName": "Pinpoint"
+    "parameters": {
+        "AMPLIFY_analytics_Pinpoint_Id": {
+            "usedBy": [
+                {
+                    "category": "analytics",
+                    "resourceName": "Pinpoint"
+                }
+            ]
+        },
+        "AMPLIFY_analytics_Pinpoint_Name": {
+            "usedBy": [
+                {
+                    "category": "analytics",
+                    "resourceName": "Pinpoint"
+                }
+            ]
+        },
+        "AMPLIFY_analytics_Pinpoint_Region": {
+            "usedBy": [
+                {
+                    "category": "analytics",
+                    "resourceName": "Pinpoint"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeAuthCreateAuthChallenge_deploymentBucketName": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthCreateAuthChallenge"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeAuthCreateAuthChallenge_s3Key": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthCreateAuthChallenge"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeAuthDefineAuthChallenge_deploymentBucketName": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthDefineAuthChallenge"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeAuthDefineAuthChallenge_s3Key": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthDefineAuthChallenge"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeAuthPreSignup_deploymentBucketName": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthPreSignup"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeAuthPreSignup_s3Key": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthPreSignup"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeAuthVerifyAuthChallengeResponse_deploymentBucketName": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeAuthVerifyAuthChallengeResponse_s3Key": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeCancelPayment_deploymentBucketName": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeCancelPayment"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeCancelPayment_s3Key": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeCancelPayment"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeGooglePayConfirmPayment_deploymentBucketName": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeGooglePayConfirmPayment"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeGooglePayConfirmPayment_s3Key": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeGooglePayConfirmPayment"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeePayWithStripe_deploymentBucketName": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeePayWithStripe"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeePayWithStripe_s3Key": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeePayWithStripe"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeSendNotification_deploymentBucketName": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeSendNotification"
+                }
+            ]
+        },
+        "AMPLIFY_function_schmoffeeSendNotification_s3Key": {
+            "usedBy": [
+                {
+                    "category": "function",
+                    "resourceName": "schmoffeeSendNotification"
+                }
+            ]
+        },
+        "AMPLIFY_notifications_Pinpoint_Id": {
+            "usedBy": [
+                {
+                    "category": "notifications",
+                    "resourceName": "Pinpoint"
+                }
+            ]
+        },
+        "AMPLIFY_notifications_Pinpoint_Name": {
+            "usedBy": [
+                {
+                    "category": "notifications",
+                    "resourceName": "Pinpoint"
+                }
+            ]
+        },
+        "AMPLIFY_notifications_Pinpoint_Region": {
+            "usedBy": [
+                {
+                    "category": "notifications",
+                    "resourceName": "Pinpoint"
+                }
+            ]
         }
-      ]
     },
-    "AMPLIFY_function_schmoffeeAuthCreateAuthChallenge_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeAuthCreateAuthChallenge"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeAuthCreateAuthChallenge_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeAuthCreateAuthChallenge"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeAuthDefineAuthChallenge_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeAuthDefineAuthChallenge"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeAuthDefineAuthChallenge_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeAuthDefineAuthChallenge"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeAuthPreSignup_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeAuthPreSignup"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeAuthPreSignup_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeAuthPreSignup"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeAuthVerifyAuthChallengeResponse_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeAuthVerifyAuthChallengeResponse_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeCancelPayment_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeCancelPayment"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeCancelPayment_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeCancelPayment"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeGooglePayConfirmPayment_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeGooglePayConfirmPayment"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeGooglePayConfirmPayment_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeGooglePayConfirmPayment"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeePayWithStripe_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeePayWithStripe"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeePayWithStripe_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeePayWithStripe"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeSendNotification_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeSendNotification"
-        }
-      ]
-    },
-    "AMPLIFY_function_schmoffeeSendNotification_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "schmoffeeSendNotification"
-        }
-      ]
-    },
-    "AMPLIFY_notifications_Pinpoint_Id": {
-      "usedBy": [
-        {
-          "category": "notifications",
-          "resourceName": "Pinpoint"
-        }
-      ]
-    },
-    "AMPLIFY_notifications_Pinpoint_Name": {
-      "usedBy": [
-        {
-          "category": "notifications",
-          "resourceName": "Pinpoint"
-        }
-      ]
-    },
-    "AMPLIFY_notifications_Pinpoint_Region": {
-      "usedBy": [
-        {
-          "category": "notifications",
-          "resourceName": "Pinpoint"
-        }
-      ]
-    }
-  },
-  "storage": {
     "storage": {
-      "dependsOn": [],
-      "providerPlugin": "awscloudformation",
-      "service": "S3"
+        "storage": {
+            "dependsOn": [],
+            "providerPlugin": "awscloudformation",
+            "service": "S3"
+        }
     }
-  }
 }

@@ -1,10 +1,11 @@
-import React, {PropsWithChildren} from 'react';
-import {View, StyleSheet, Pressable, TouchableOpacity} from 'react-native';
-import {Footer} from './Footer';
-import {Colors, Spacings} from '../theme';
-import {Body, Heading} from '../typography';
-import {FooterType} from '../../../utils/types/component.types';
+import React, { PropsWithChildren } from 'react';
+import { View, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { Footer } from './Footer';
+import { Colors, Spacings } from '../theme';
+import { Body, Heading } from '../typography';
+import { FooterType } from '../../../utils/types/component.types';
 import HamburgerIcon from '../../hamburger/components/HamburgerIcon';
+import LeftChevronBackButton from './LeftChevronBackButton';
 
 interface PageLayoutProps extends PropsWithChildren {
   style?: any;
@@ -18,6 +19,7 @@ interface PageLayoutProps extends PropsWithChildren {
   showCircle?: boolean;
   hamburger?: boolean;
   hamburgerOnPress?: () => void;
+  backButton?: boolean;
 }
 
 export const PageLayout = (props: PageLayoutProps) => {
@@ -25,9 +27,12 @@ export const PageLayout = (props: PageLayoutProps) => {
   return (
     <>
       <Pressable onPress={props.onPress} />
-      <View style={[styles.root, {backgroundColor: backgroundStyle}]}>
+      <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
         {props.showCircle ? <View style={[styles.bigSemiCircle]} /> : null}
         <View style={styles.header}>
+          <View style={styles.backChevron}>
+            <LeftChevronBackButton color={Colors.black} />
+          </View>
           {props.hamburger ? (
             <TouchableOpacity onPress={props.hamburgerOnPress}>
               <View style={styles.hamburgerButton}>
@@ -65,17 +70,28 @@ const styles = StyleSheet.create({
     paddingTop: Spacings.s11,
     paddingBottom: Spacings.s9,
     height: '100%',
+
   },
   contentContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   mainContentContainer: {},
   header: {
+    position: 'relative',
     alignItems: 'center',
-    marginTop: Spacings.s7,
+    marginTop: Spacings.s4,
     flexDirection: 'row',
     justifyContent: 'center',
+    // backgroundColor: Colors.red,
   },
+  backChevron: {
+    position: 'absolute',
+    left: 0,
+    top: -5,
+  },
+
   headerChildren: {
     alignItems: 'center',
 

@@ -4,9 +4,6 @@ import {sendChallengeAnswer, signUp} from '../../../utils/queries/auth';
 import {GlobalContext, SignInContext} from '../../../contexts';
 import {AuthState, GlobalActionName, SignInActionName} from '../../../utils/types/enums';
 import {createSignUpUser} from '../../../utils/queries/datastore';
-import {useNavigation} from '@react-navigation/native';
-import {RootRoutes} from '../../../utils/types/navigation.types';
-import {CONST_SCREEN_HOME} from '../../../../constants';
 import {setFreeTime, setPhone, setTrials} from '../../../utils/helpers/storage';
 import {AuthLayout} from '../components/AuthLayout';
 import {CognitoUser} from 'amazon-cognito-identity-js';
@@ -24,7 +21,6 @@ export const AuthPage = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
   const {sign_in_dispatch, sendOTP, sign_in_state} = useContext(SignInContext);
   const [mode, setMode] = useState<Mode>('signup');
-  const navigation = useNavigation<RootRoutes>();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [otp, setOtp] = useState('');
@@ -35,7 +31,6 @@ export const AuthPage = () => {
   const planetAnim = useSharedValue(0);
   const asteroidAnim = useSharedValue(0);
   const asteroidAnimFinal = useSharedValue(0);
-  const planetAnimFinal = useSharedValue(0);
 
   function handleModeChange() {
     if (mode === 'signup') {
@@ -76,6 +71,7 @@ export const AuthPage = () => {
 
   const handleResendOTP = async () => {
     setLoading(true);
+    console.log(sign_in_state.phone_number);
     await sendOTP(sign_in_state.phone_number);
     setOtp('');
     setLoading(false);
@@ -83,8 +79,6 @@ export const AuthPage = () => {
 
   const handleConfirmOTP = async () => {
     setLoading(true);
-    // asteroidAnimFinal.value = withTiming(1, { duration: 5000 });
-    // planetAnimFinal.value = withTiming(1, { duration: 5000 });
     const session = sign_in_state.session;
     const result = await sendChallengeAnswer(otp, session as CognitoUser);
     if (!result) {

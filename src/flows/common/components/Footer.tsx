@@ -1,13 +1,13 @@
-import React, {useContext} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {ActionButton} from './ActionButton';
-import {FooterType} from '../../../utils/types/component.types';
-import {OrderingContext} from '../../../contexts';
-import {Colors, Spacings} from '../theme';
-import {Body} from '../typography';
+import React, { useContext } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { ActionButton } from './ActionButton';
+import { FooterType } from '../../../utils/types/component.types';
+import { OrderingContext } from '../../../contexts';
+import { Colors, Spacings } from '../theme';
+import { Body } from '../typography';
 
 export const Footer = (props: FooterType) => {
-  const {ordering_state} = useContext(OrderingContext);
+  const { ordering_state } = useContext(OrderingContext);
 
   const getBasketPrice = () => {
     let price = 0;
@@ -61,9 +61,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: Spacings.s1,
     width: '100%',
-    height: 100,
+    // height: 100,
     zIndex: 999,
-    paddingHorizontal: Spacings.s1,
+    paddingHorizontal: Spacings.s4,
   },
 
   childrenContainer: {

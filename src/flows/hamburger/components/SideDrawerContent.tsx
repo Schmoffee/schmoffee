@@ -23,25 +23,20 @@ export const SideDrawerContent = ({anim}: SideDrawerContentProps) => {
 
   const handleSignOut = async () => {
     const id = global_state.current_user?.id as string;
-    const is_signed_out = await Alerts.logoutAlert(signOut);
-    if (!is_signed_out) {
+    const {logout, success} = await Alerts.logoutAlert(signOut);
+    if (logout && !success) {
       global_dispatch({
         type: GlobalActionName.SET_AUTH_STATE,
         payload: AuthState.SIGNING_OUT_FAILED,
       });
-    } else {
+    } else if (logout && success) {
       await updateDeviceToken(id, '');
     }
   };
 
   const rSideDrawerStyle = useAnimatedStyle(() => {
     return {
-      transform: [
-        {translateX: anim.value - HOME_WIDTH},
-        // {
-        //     skewY: anim.value > 195 ? `-${195 / 2000}rad` : `-${anim.value / 2000}rad`
-        // }
-      ],
+      transform: [{translateX: anim.value - HOME_WIDTH}],
       opacity: (anim.value / HOME_WIDTH) * 10,
     };
   });
@@ -51,7 +46,7 @@ export const SideDrawerContent = ({anim}: SideDrawerContentProps) => {
       <View>
         <View style={styles.sideDrawerContent}>
           <Heading size="default" weight="Extrabld">
-            Hi, Meyad!
+            Hi, {global_state.current_user?.name}!
           </Heading>
           <Pressable onPress={() => navigation.navigate('SideDrawer', {screen: CONST_SCREEN_SETTINGS})}>
             <View style={styles.sideDrawerButton}>

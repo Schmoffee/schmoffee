@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Image, Pressable } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { Colors, Spacings } from '../../../common/theme';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
-import { Body } from '../../../common/typography';
-import { Item } from '../../../../models';
+import React, {useEffect} from 'react';
+import {View, StyleSheet, Pressable, Image} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {useNavigation} from '@react-navigation/native';
+import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
+import {Colors, Spacings} from '../../../common/theme';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import {Body} from '../../../common/typography';
+import {Item} from '../../../../models';
 
 interface CardItemProps {
   item: Item;
@@ -15,7 +16,6 @@ interface CardItemProps {
 
 export const CardItem = ({ item, index, query }: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
-  const imageRef = useRef<Image>();
   const anim = useSharedValue(0);
 
   useEffect(() => {
@@ -29,18 +29,14 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
   const onItemPress = () => {
     'worklet';
     // measure image position & size
-    imageRef.current?.measure?.((x, y, width, height, pageX, pageY) => {
-      let imageSpecs = { width, height, pageX, pageY, borderRadius: 10 };
-      navigation.navigate('ItemPage', {
-        item,
-        imageSpecs,
-      });
+    navigation.navigate('ItemPage', {
+      item,
     });
   };
 
   const cardStyleDown = useAnimatedStyle(
     () => ({
-      opacity: anim.value,
+      // opacity: anim.value,
       transform: [
         {
           translateY: interpolate(anim.value, [0, 1], [-100, 0]),
@@ -52,7 +48,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
 
   const cardStyleUp = useAnimatedStyle(
     () => ({
-      opacity: anim.value,
+      // opacity: anim.value,
       transform: [
         {
           translateY: interpolate(anim.value, [0, 1], [100, 0]),
@@ -62,9 +58,34 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
     [],
   );
 
+  const cardStyleRight = useAnimatedStyle(
+    () => ({
+      // opacity: anim.value,
+      transform: [
+        {
+          translateX: interpolate(anim.value, [0, 1], [-100, 0]),
+        },
+      ],
+    }),
+    [],
+  );
+
+  const cardStyleLeft = useAnimatedStyle(
+    () => ({
+      // opacity: anim.value,
+      transform: [
+        {
+          translateX: interpolate(anim.value, [0, 1], [100, 0]),
+        },
+      ],
+    }),
+    [],
+  );
+
+
   return (
     <Pressable onPress={onItemPress}>
-      <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleDown : cardStyleUp]}>
+      <Animated.View style={[styles.root, index === 0 ? cardStyleRight : index === 1 ? cardStyleLeft : cardStyleUp]}>
         <View style={styles.container}>
           <View style={styles.textContainer}>
             <Body size="medium" weight="Bold" color={Colors.darkBrown2} style={styles.titleText}>
@@ -80,11 +101,14 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
             </View>
           </View>
           <View style={styles.imageContainer}>
-            <Image ref={imageRef} source={{ uri: `${item.image}` }} />
+            <FastImage source={{uri: item.image ? item.image : undefined}} style={styles.image} />
             <View style={styles.ratingContainer}>
-              <Image source={require('../../../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
               <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
-                3.9
+                {item.ratings
+                  ? item.ratings.length > 0
+                    ? item.ratings.reduce((acc, curr) => acc + (curr ? curr.rating : 0), 0) / item.ratings.length
+                    : 'None'
+                  : 'None'}
               </Body>
             </View>
           </View>
@@ -98,10 +122,14 @@ const styles = StyleSheet.create({
   root: {
     width: '100%',
     flex: 1,
-    // zIndex: 99999999,
+  },
+  image: {
+    width: '100%',
+    height: '100%'
   },
   container: {
     position: 'relative',
+    overflow: 'hidden',
     width: 160,
     height: 210,
     backgroundColor: Colors.white,
@@ -112,13 +140,14 @@ const styles = StyleSheet.create({
     margin: Spacings.s2,
     shadowColor: '#000000',
     shadowOffset: {
-      width: 0,
+      width: 30,
       height: 3,
     },
-    shadowRadius: 5,
+    shadowRadius: 35,
     shadowOpacity: 0.2,
     alignItems: 'center',
     justifyContent: 'center',
+    elevation: 5,
   },
   imageContainer: {
     backgroundColor: Colors.darkBrown,
@@ -133,8 +162,8 @@ const styles = StyleSheet.create({
       width: 0,
       height: 3,
     },
-    shadowRadius: 5,
-    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    shadowOpacity: 0.2,
   },
   ratingContainer: {
     flex: 1,
@@ -177,7 +206,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 7,
     top: 4,
-
   },
 
   ratingStar: {

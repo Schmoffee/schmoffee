@@ -859,6 +859,13 @@ export const schema = {
                         "associatedWith": "cafeID"
                     }
                 },
+                "address": {
+                    "name": "address",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1295,6 +1302,5 @@ export const schema = {
             }
         }
     },
-    "codegenVersion": "3.3.4",
-    "version": "34777ad6ac8741f524c03040d2246688"
+    "version": "c3e8dcee49a305c4c447b4f70a96c8fc"
 };

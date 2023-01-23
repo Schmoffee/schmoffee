@@ -8,6 +8,7 @@ import {Colors, Spacings} from '../../../common/theme';
 import {Body} from '../../../common/typography';
 import {useNavigation} from '@react-navigation/native';
 import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import {getOptionsPrice} from '../../../../utils/helpers/basket';
 
 interface BasketSectionProps {
   translateY?: Animated.SharedValue<number>;
@@ -24,8 +25,8 @@ export const BasketSection = (props: BasketSectionProps) => {
       return height;
     } else if (ordering_state.specific_basket.length <= 2) {
       return height + 100;
-    } else if (ordering_state.specific_basket.length <= 3) {
-      return height + 200;
+    } else if (ordering_state.specific_basket.length >= 3) {
+      return height + 250;
     }
   };
 
@@ -35,7 +36,7 @@ export const BasketSection = (props: BasketSectionProps) => {
         {ordering_state.specific_basket.length === 0 && (
           <View style={styles.emptyContainer}>
             <Pressable onPress={() => navigation.navigate('ShopPage')}>
-              <Body size="medium" weight="Bold" color={Colors.white}>
+              <Body size="medium" weight="Bold" color={Colors.gold}>
                 Click here to add some items to your basket!
               </Body>
             </Pressable>
@@ -45,7 +46,7 @@ export const BasketSection = (props: BasketSectionProps) => {
           <View style={styles.headerRow}>
             {ordering_state.specific_basket.map((item, index) => {
               return (
-                <View style={styles.itemRow} key={item.id}>
+                <View style={styles.itemRow} key={item.id + index.toString()}>
                   <View style={styles.itemImage}>
                     <BasketItem key={index} item={item} />
                   </View>
@@ -53,12 +54,15 @@ export const BasketSection = (props: BasketSectionProps) => {
                     <Body size="medium" weight="Bold" color={Colors.white}>
                       {item.name}
                     </Body>
-                    <Body size="small" weight="Bold" color={Colors.greyLight2}>
-                      {/* {item.description} */}
-                    </Body>
+
+                    {item.options?.map(opt => (
+                      <Body size="small" weight="Bold" color={Colors.greyLight3}>
+                        {'- ' + opt.name}
+                      </Body>
+                    ))}
                   </View>
                   <Body size="small" weight="Bold" color={Colors.greyLight2} style={{position: 'absolute', right: 0}}>
-                    £{((item.price * item.quantity) / 100).toFixed(2)}
+                    £{(((item.price + getOptionsPrice(item)) * item.quantity) / 100).toFixed(2)}
                   </Body>
                 </View>
               );
@@ -91,7 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: Spacings.s5,
+    marginTop: Spacings.s8,
   },
 
   basketColumn: {

@@ -1,5 +1,5 @@
-import {StyleSheet, View, Image, useWindowDimensions} from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import {StyleSheet, View, Image, useWindowDimensions, NativeScrollEvent, NativeSyntheticEvent} from 'react-native';
+import React, {useState} from 'react';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -10,15 +10,23 @@ import Animated, {
 import Pagination from './Pagination';
 import {Body} from '../../../common/typography';
 import {Colors} from '../../../common/theme';
+import {Option, OrderOption} from '../../../../models';
 
 interface OptionCarouselProps {
-  data: any[];
+  data: Option[];
   pagination?: boolean;
+  setOption: (option: OrderOption | undefined) => void;
 }
 
 const OptionCarousel = (props: OptionCarouselProps) => {
+  const {data, pagination, setOption} = props;
   const scrollViewRef = useAnimatedRef();
-  const [newData] = useState([{key: 'spacer-left'}, ...props.data, {key: 'spacer-right'}]);
+  const [newData] = useState([
+    {key: 'spacer-left'},
+    {key: 'nothing', image: require('../../../../assets/pngs/nothing-outline.png')},
+    ...data,
+    {key: 'spacer-right'},
+  ]);
   const {width} = useWindowDimensions();
   const SIZE = width * 0.15;
   const SPACER = (width - SIZE) / 7;
@@ -29,10 +37,21 @@ const OptionCarousel = (props: OptionCarouselProps) => {
       x.value = event.contentOffset.x;
     },
   });
+  const onMomentumScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const currentIndex = Math.round(offsetX / SIZE);
+    const selected = newData[currentIndex + 1];
+    if (!selected.hasOwnProperty('key')) {
+      const selectedOption = selected as Option;
+      setOption({option_type: selectedOption.option_type, price: selectedOption.price, name: selectedOption.name});
+    } else {
+      setOption(undefined);
+    }
+  };
 
   return (
     <View>
-      {props.pagination && <Pagination data={props.data} x={x} size={SIZE} />}
+      {pagination && <Pagination data={data} x={x} size={SIZE} />}
       <Animated.ScrollView
         ref={scrollViewRef}
         onScroll={onScroll}
@@ -41,9 +60,9 @@ const OptionCarousel = (props: OptionCarouselProps) => {
         snapToInterval={SIZE}
         horizontal
         bounces={false}
+        onMomentumScrollEnd={event => onMomentumScrollEnd(event)}
         showsHorizontalScrollIndicator={false}>
         {newData.map((item, index) => {
-          // eslint-disable-next-line react-hooks/rules-of-hooks
           const rImageStyle = useAnimatedStyle(() => {
             const scale = interpolate(x.value, [(index - 2) * SIZE, (index - 1) * SIZE, index * SIZE], [0.65, 1, 0.65]);
             const opacity = interpolate(
@@ -67,22 +86,23 @@ const OptionCarousel = (props: OptionCarouselProps) => {
             };
           });
 
-          if (!item.image) {
+          if (!item.hasOwnProperty('image')) {
             return <View style={{width: SPACER}} key={index} />;
           }
+          const fullOption: Option = item as Option;
 
-          console.log(item);
+          const image = fullOption.hasOwnProperty('key') ? fullOption.image : {uri: fullOption.image};
 
           return (
             <View style={{width: SIZE}} key={index}>
               <View style={styles.itemContainer}>
                 <Animated.View style={[styles.imageContainer, rImageStyle]}>
-                  <Image source={item.image} style={styles.image} />
+                  <Image source={image} style={styles.image} />
                 </Animated.View>
                 {index !== 1 && (
                   <Animated.View style={[styles.priceContainer, rPriceStyle]}>
-                    <Body size="extraSmall" weight="Thin">
-                      {item.price}
+                    <Body size="extraSmall" weight="Regular">
+                      +{fullOption.price}p
                     </Body>
                   </Animated.View>
                 )}
@@ -115,7 +135,6 @@ const styles = StyleSheet.create({
   priceContainer: {
     position: 'absolute',
     bottom: 0,
-    // right: 0,
     borderWidth: 0,
     borderColor: Colors.greyLight3,
     borderTopLeftRadius: 10,

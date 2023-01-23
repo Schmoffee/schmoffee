@@ -123,7 +123,7 @@ export const ShopPage = () => {
       [Colors.darkBrown, Colors.greyLight1]
     )
     return {
-      width: interpolate(searchAnim.value, [0, 1], [25, 360]),
+      width: interpolate(searchAnim.value, [0, 1], [25, 350]),
       backgroundColor
     };
   });
@@ -169,10 +169,8 @@ export const ShopPage = () => {
             </View>
             <Animated.View style={[styles.searchText]}>
               <TextInput
-                editable={searchAnim.value === 1}
                 autoCapitalize="none"
                 autoCorrect={false}
-                clearButtonMode="while-editing"
                 value={query}
                 onChangeText={queryText => setQuery(queryText)}
                 placeholder="What do you crave?"
@@ -187,7 +185,7 @@ export const ShopPage = () => {
               </Pressable>
             </View>
           </Animated.View>
-          <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} />
+          <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} query={query} />
         </View>
       </View>
       <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
@@ -226,8 +224,9 @@ const styles = StyleSheet.create({
   },
   basketContainer: {
     position: 'absolute',
+    overflow: 'hidden',
     bottom: -5,
-    height: 120,
+    height: '13%',
     justifyContent: 'center',
     alignItems: 'center',
     left: 0,
@@ -236,6 +235,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.darkBrown,
     borderTopRightRadius: 60,
     borderTopLeftRadius: 60,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 30,
+      height: 3,
+    },
+    shadowRadius: 35,
+    shadowOpacity: 0.9,
+    elevation: 5,
 
   },
   searchInputContainer: {
@@ -244,8 +251,8 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     position: 'absolute',
-    top: 65,
-    right: 15,
+    top: '10.5%',
+    right: '5%',
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingLeft: Spacings.s2,
@@ -258,15 +265,16 @@ const styles = StyleSheet.create({
   searchText: {
     height: 40,
     position: 'absolute',
-    left: 15,
+    marginLeft: 20,
     fontStyle: 'italic',
     color: Colors.darkBrown,
+    // backgroundColor: 'red',
+
+    minWidth: 250
   },
   clearIcon: {
     position: 'relative',
     left: 305,
-
-
   },
   shopImage: {
     zIndex: -1,
