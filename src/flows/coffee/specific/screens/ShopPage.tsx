@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     overflow: 'hidden',
     bottom: -5,
-    height: 100,
+    height: '13%',
     justifyContent: 'center',
     alignItems: 'center',
     left: 0,
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 35,
     shadowOpacity: 0.9,
-    elevation: 553,
+    elevation: 5,
 
   },
   searchInputContainer: {
@@ -251,8 +251,8 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     position: 'absolute',
-    top: 65,
-    right: 15,
+    top: '10.5%',
+    right: '5%',
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingLeft: Spacings.s2,

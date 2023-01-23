@@ -1,5 +1,5 @@
-import {Dimensions, Image, StyleSheet, View} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,26 +8,26 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {Body, Heading} from '../../../common/typography';
-import {setSpecificBasket} from '../../../../utils/helpers/storage';
-import {Colors, Spacings} from '../../../common/theme';
-import {Option, OptionType, OrderItem, OrderOption} from '../../../../models';
-import {Footer} from '../../../common/components/Footer';
-import {OrderingContext} from '../../../../contexts';
+import { Body, Heading } from '../../../common/typography';
+import { setSpecificBasket } from '../../../../utils/helpers/storage';
+import { Colors, Spacings } from '../../../common/theme';
+import { Option, OptionType, OrderItem, OrderOption } from '../../../../models';
+import { Footer } from '../../../common/components/Footer';
+import { OrderingContext } from '../../../../contexts';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
-import {OrderingActionName} from '../../../../utils/types/enums';
+import { OrderingActionName } from '../../../../utils/types/enums';
 import OptionCarousel from '../../components/menu/OptionCarousel';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 interface ItemPageProps {
   route?: any;
   navigation: any;
 }
-const ItemPage = ({route, navigation}: ItemPageProps) => {
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+const ItemPage = ({ route, navigation }: ItemPageProps) => {
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const [selectedOptions, setSelectedOptions] = useState<OrderOption[]>([]);
-  const {item, imageSpecs} = route?.params;
+  const { item } = route?.params;
   const milkOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.MILK);
   const syrupOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.SYRUP);
 
@@ -95,18 +95,18 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     [],
   );
 
-  const imageContainerStyle = useAnimatedStyle(
-    () => ({
-      position: 'absolute',
-      top: interpolate(anim.value, [0, 1], [imageSpecs.pageY, 150]),
-      left: interpolate(anim.value, [0, 1], [imageSpecs.pageX, -15]),
-      width: interpolate(anim.value, [0, 1], [imageSpecs.width, width * 1.1]),
-      height: interpolate(anim.value, [0, 1], [imageSpecs.height, 350]),
-      borderRadius: interpolate(anim.value, [0, 1], [imageSpecs.borderRadius, 0]),
-      overflow: 'hidden',
-    }),
-    [],
-  );
+  // const imageContainerStyle = useAnimatedStyle(
+  //   () => ({
+  //     position: 'absolute',
+  //     top: interpolate(anim.value, [0, 1], [imageSpecs.pageY, 150]),
+  //     left: interpolate(anim.value, [0, 1], [imageSpecs.pageX, -15]),
+  //     width: interpolate(anim.value, [0, 1], [imageSpecs.width, width * 1.1]),
+  //     height: interpolate(anim.value, [0, 1], [imageSpecs.height, 350]),
+  //     borderRadius: interpolate(anim.value, [0, 1], [imageSpecs.borderRadius, 0]),
+  //     overflow: 'hidden',
+  //   }),
+  //   [],
+  // );
 
   const rImageStyle = useAnimatedStyle(
     () => ({
@@ -135,8 +135,8 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       return false;
     });
     if (index !== -1) {
-      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
       await setSpecificBasket(newBasket);
     } else {
       const new_order_item: OrderItem = {
@@ -149,7 +149,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         id: item.id,
       };
       newBasket = [...ordering_state.specific_basket, new_order_item];
-      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
       await setSpecificBasket(newBasket);
     }
     const callback = () => navigation.goBack();
@@ -158,7 +158,9 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
 
   return (
     <View style={styles.container}>
-      <LeftChevronBackButton />
+      <View style={styles.leftChevron}>
+        <LeftChevronBackButton />
+      </View>
 
       <Animated.Image
         source={require('../../../../assets/pngs/semi-circle.png')}
@@ -233,10 +235,10 @@ const styles = StyleSheet.create({
   leftChevron: {
     position: 'absolute',
     top: 40,
-    left: 5,
+    left: -20,
     zIndex: 3,
     elevation: 3,
-    backgroundColor: Colors.blue,
+    // backgroundColor: Colors.blue,
   },
 
   descriptionContainer: {

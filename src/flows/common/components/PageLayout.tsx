@@ -1,9 +1,9 @@
-import React, {PropsWithChildren} from 'react';
-import {View, StyleSheet, Pressable, TouchableOpacity} from 'react-native';
-import {Footer} from './Footer';
-import {Colors, Spacings} from '../theme';
-import {Body, Heading} from '../typography';
-import {FooterType} from '../../../utils/types/component.types';
+import React, { PropsWithChildren } from 'react';
+import { View, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { Footer } from './Footer';
+import { Colors, Spacings } from '../theme';
+import { Body, Heading } from '../typography';
+import { FooterType } from '../../../utils/types/component.types';
 import HamburgerIcon from '../../hamburger/components/HamburgerIcon';
 
 interface PageLayoutProps extends PropsWithChildren {
@@ -25,7 +25,7 @@ export const PageLayout = (props: PageLayoutProps) => {
   return (
     <>
       <Pressable onPress={props.onPress} />
-      <View style={[styles.root, {backgroundColor: backgroundStyle}]}>
+      <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
         {props.showCircle ? <View style={[styles.bigSemiCircle]} /> : null}
         <View style={styles.header}>
           {props.hamburger ? (
@@ -65,9 +65,12 @@ const styles = StyleSheet.create({
     paddingTop: Spacings.s11,
     paddingBottom: Spacings.s9,
     height: '100%',
+
   },
   contentContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   mainContentContainer: {},
   header: {

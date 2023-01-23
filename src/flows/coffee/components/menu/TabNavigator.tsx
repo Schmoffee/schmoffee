@@ -110,12 +110,16 @@ const styles = StyleSheet.create({
     color: 'lightgrey',
   },
   cardSectionContainer: {
-    height: '70%',
+    marginTop: -10,
+    height: '80%',
+    width: '100%',
+    flex: 1,
+    alignItems: 'center',
     // backgroundColor: 'red',
   },
   container: {
     height: '100%',
-    width: WIDTH - 40,
+    width: '100%',
   },
   headerContainer: {
     alignItems: 'center',

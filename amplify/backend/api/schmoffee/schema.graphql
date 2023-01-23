@@ -148,6 +148,7 @@ type Cafe @model @auth(rules: [{allow: public}]) {
   past_orders: [PastOrder] @hasMany(indexName: "byCafe", fields: ["id"])
   current_orders: [CurrentOrder] @hasMany(indexName: "byCafe", fields: ["id"])
   ratings: [Rating] @hasMany(indexName: "byCafe", fields: ["id"])
+  address: String!
 }
 
 type Rating @model @auth(rules: [{allow: public}]) {

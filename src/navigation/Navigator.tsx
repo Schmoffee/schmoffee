@@ -50,7 +50,7 @@ function RootNavigator(props: NavigatorProps) {
   return (
     <MapContext.Provider value={{ location: location.current }}>
       <RootStack.Navigator
-        initialRouteName="Coffee"
+        initialRouteName="TrackOrder"
         screenOptions={{
           gestureEnabled: false,
           headerShown: false,
@@ -59,7 +59,7 @@ function RootNavigator(props: NavigatorProps) {
         <RootStack.Group>
           {props.loading ? (
             <RootStack.Screen name="Loading" component={LoadingPage} />
-          ) : global_state.auth_state === AuthState.SIGNED_IN ? (
+          ) : global_state.auth_state !== AuthState.SIGNED_IN ? (
             <>
               <RootStack.Screen name="Coffee" component={CoffeeRoot} />
               <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />
