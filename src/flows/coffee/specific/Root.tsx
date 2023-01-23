@@ -1,21 +1,21 @@
-import React, {useCallback, useContext} from 'react';
-import {OrderingContext} from '../../../contexts';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {CoffeeRoutes} from '../../../utils/types/navigation.types';
-import {DataStore, SortDirection} from 'aws-amplify';
-import {Item, OrderItem} from '../../../models';
-import {ShopPage} from './screens/ShopPage';
-import {PreviewPage} from './screens/PreviewPage';
+import React, { useCallback, useContext } from 'react';
+import { OrderingContext } from '../../../contexts';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { CoffeeRoutes } from '../../../utils/types/navigation.types';
+import { DataStore, SortDirection } from 'aws-amplify';
+import { Item, OrderItem } from '../../../models';
+import { ShopPage } from './screens/ShopPage';
+import { PreviewPage } from './screens/PreviewPage';
 import ItemPage from './screens/ItemPage';
-import {useDeepCompareEffect} from 'react-use';
-import {OrderingActionName} from '../../../utils/types/enums';
-import {Alerts} from '../../../utils/helpers/alerts';
+import { useDeepCompareEffect } from 'react-use';
+import { OrderingActionName } from '../../../utils/types/enums';
+import { Alerts } from '../../../utils/helpers/alerts';
 import CafeBrowsingPage from './screens/CafeBrowsingPage';
-import {Home} from './screens/Home';
-import {getAllOptions, getAllRatings} from '../../../utils/queries/datastore';
+import { Home } from './screens/Home';
+import { getAllOptions, getAllRatings } from '../../../utils/queries/datastore';
 
 const Root = () => {
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const CoffeeStack = createNativeStackNavigator<CoffeeRoutes>();
 
   const filterSpecificBasket = useCallback(
@@ -27,7 +27,7 @@ const Root = () => {
         .flat();
       let new_basket: OrderItem[] = basket;
       let removed_items: string[] = [];
-      let removed_options: {item: string; option: string}[] = [];
+      let removed_options: { item: string; option: string }[] = [];
       oldItems.forEach(item => {
         if (out_of_stock_items.includes(item.id) && item.is_in_stock) {
           new_basket = new_basket.filter(basket_item => {
@@ -42,7 +42,7 @@ const Root = () => {
             if (out_of_stock_options.includes(option?.id) && option?.is_in_stock) {
               new_basket.map(basket_item => {
                 if (basket_item.id === item.id) {
-                  removed_options.push({item: basket_item.name, option: option?.name});
+                  removed_options.push({ item: basket_item.name, option: option?.name });
                   return {
                     ...basket_item,
                     options: basket_item.options?.filter(basket_option => basket_option?.name !== option?.name),
@@ -56,7 +56,7 @@ const Root = () => {
       });
       const changes = removed_options.length + removed_items.length;
       if (changes) {
-        ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: new_basket});
+        ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: new_basket });
         Alerts.outOfStockAlert(removed_items, removed_options);
       }
     },
@@ -76,9 +76,12 @@ const Root = () => {
           sort: item => item.type(SortDirection.ASCENDING),
         },
       ).subscribe(async snapshot => {
-        const {items, isSynced} = snapshot;
+        const { items, isSynced } = snapshot;
+        console.log(ordering_state.current_shop_id, ": CURRENT SHOP ID")
         let full_items: Item[] = [];
         if (isSynced) {
+          console.log(items, ": iTEMS ITEMS ITEMSR")
+
           const all_options = await getAllOptions();
           const all_ratings = await getAllRatings();
           const basket = ordering_state.specific_basket;
@@ -86,11 +89,11 @@ const Root = () => {
           full_items = items.map(item => {
             const options = all_options.filter(option => option.itemID === item.id);
             const ratings = all_ratings.filter(rating => rating.itemID === item.id);
-            return {...item, options: options, ratings: ratings};
+            return { ...item, options: options, ratings: ratings };
           });
           filterSpecificBasket(full_items, basket, old_items);
         }
-        ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_ITEMS, payload: full_items});
+        ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_ITEMS, payload: full_items });
       });
       return () => subscription.unsubscribe();
     }
@@ -113,9 +116,9 @@ const Root = () => {
         <CoffeeStack.Screen name="Home" component={Home} />
         <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
         <CoffeeStack.Screen name="Cafes" component={CafeBrowsingPage} />
-        <CoffeeStack.Group screenOptions={{presentation: 'modal', headerShown: false}}>
-          <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
+        <CoffeeStack.Group screenOptions={{ presentation: 'modal', headerShown: false }}>
           <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
+          <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
         </CoffeeStack.Group>
       </CoffeeStack.Group>
     </CoffeeStack.Navigator>

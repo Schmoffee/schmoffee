@@ -31,8 +31,6 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
   const {item, imageSpecs} = route?.params;
   const milkOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.MILK);
   const syrupOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.SYRUP);
-  console.log('milk', selectedMilk);
-  console.log('syrup', selectedSyrup);
 
   const anim = useSharedValue(0);
   useEffect(() => {
@@ -126,8 +124,8 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       return false;
     });
     if (index !== -1) {
-      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
       await setSpecificBasket(newBasket);
     } else {
       const new_order_item: OrderItem = {
@@ -140,7 +138,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         id: item.id,
       };
       newBasket = [...ordering_state.specific_basket, new_order_item];
-      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
       await setSpecificBasket(newBasket);
     }
     const callback = () => navigation.goBack();
@@ -149,7 +147,9 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
 
   return (
     <View style={styles.container}>
-      <LeftChevronBackButton />
+      <View style={styles.leftChevron}>
+        <LeftChevronBackButton />
+      </View>
 
       <Animated.Image
         source={require('../../../../assets/pngs/semi-circle.png')}
@@ -214,10 +214,10 @@ const styles = StyleSheet.create({
   leftChevron: {
     position: 'absolute',
     top: 40,
-    left: 5,
+    left: -20,
     zIndex: 3,
     elevation: 3,
-    backgroundColor: Colors.blue,
+    // backgroundColor: Colors.blue,
   },
 
   descriptionContainer: {

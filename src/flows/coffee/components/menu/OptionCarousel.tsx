@@ -90,26 +90,27 @@ const OptionCarousel = (props: OptionCarouselProps) => {
             ? require('../../../../assets/pngs/nothing-outline.png')
             : {uri: fullOption.image};
 
-          return (
-            <View style={{width: SIZE}} key={index}>
-              <View style={styles.itemContainer}>
-                <Animated.View style={[styles.imageContainer, rImageStyle]}>
-                  <Image source={image} style={styles.image} />
-                </Animated.View>
-                {index !== 1 && (
-                  <Animated.View style={[styles.priceContainer, rPriceStyle]}>
-                    <Body size="extraSmall" weight="Thin">
-                      {fullOption.price}
-                    </Body>
-                  </Animated.View>
-                )}
-              </View>
-            </View>
-          );
-        })}
-      </Animated.ScrollView>
-    </View>
-  );
+                    return (
+                        <View style={{ width: SIZE }} key={index}>
+                            <View style={styles.itemContainer}>
+                                <Animated.View style={[styles.imageContainer, rImageStyle]}>
+                                    <Image source={image} style={styles.image} />
+                                </Animated.View>
+                                {index !== 1 && (
+                                    <Animated.View style={[styles.priceContainer, rPriceStyle]}>
+                                        <Body size="extraSmall" weight="Regular">
+
+                                            +{fullOption.price}p
+                                        </Body>
+                                    </Animated.View>
+                                )}
+                            </View>
+                        </View>
+                    );
+                })}
+            </Animated.ScrollView>
+        </View>
+    );
 };
 
 export default OptionCarousel;
