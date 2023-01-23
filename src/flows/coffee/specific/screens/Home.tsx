@@ -1,7 +1,7 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import React, {useContext} from 'react';
-import {Pressable, StyleSheet, useWindowDimensions} from 'react-native';
-import {CONST_SCREEN_CAFES, CONST_SCREEN_ORDER, CONST_SCREEN_SHOP} from '../../../../../constants';
+import {Pressable, StyleSheet, useWindowDimensions, View} from 'react-native';
+import {HEIGHT, WIDTH, CONST_SCREEN_ORDER, CONST_SCREEN_SHOP} from '../../../../../constants';
 import {RootRoutes} from '../../../../utils/types/navigation.types';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
@@ -15,13 +15,12 @@ import {SideDrawerContent} from '../../../hamburger/components/SideDrawerContent
 import Video from 'react-native-video';
 import {PageLayout} from '../../../common/components/PageLayout';
 import {GlobalContext} from '../../../../contexts';
-
+import CurrentOrderBanner from '../../../track/components/CurrentOrderBanner';
 export const Home = () => {
   const {global_state} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const HOME_WIDTH = useWindowDimensions().width;
   const anim = useSharedValue(0);
-
   useFocusEffect(
     React.useCallback(() => {
       return () => {
@@ -29,7 +28,6 @@ export const Home = () => {
       };
     }, [anim]),
   );
-
   const gestureHandler = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
       // @ts-ignore
@@ -54,26 +52,22 @@ export const Home = () => {
       }
     },
   });
-
   const rPageStyle = useAnimatedStyle(() => {
     return {
       transform: [{translateX: anim.value}],
       opacity: interpolate(anim.value, [0, HOME_WIDTH / 2], [1, 0.7]),
     };
   });
-
   const rContainerStyle = useAnimatedStyle(() => {
     return {
       opacity: 1,
     };
   });
-
   const handlePagePress = () => {
     if (anim.value === 195) {
       anim.value = withTiming(0);
     }
   };
-
   const handleHamburgerPress = () => {
     if (anim.value === 0) {
       anim.value = withTiming(195);
@@ -81,18 +75,15 @@ export const Home = () => {
       anim.value = withTiming(0);
     }
   };
-
   const handleNavigation = () => {
     console.log('handleNavigation');
     global_state.current_user?.order_running
       ? navigation.navigate('TrackOrder', CONST_SCREEN_ORDER)
       : navigation.navigate(CONST_SCREEN_SHOP);
   };
-
   const getButtonText: () => string = () => {
     return global_state.current_user?.order_running ? 'Track my coffee' : 'Get me coffee';
   };
-
   return (
     <PanGestureHandler
       onGestureEvent={gestureHandler}
@@ -122,13 +113,14 @@ export const Home = () => {
             </PageLayout>
           </Animated.View>
         </Pressable>
-
+        <View style={styles.currentOrderBanner}>
+          <CurrentOrderBanner />
+        </View>
         <SideDrawerContent anim={anim} />
       </Animated.View>
     </PanGestureHandler>
   );
 };
-
 const styles = StyleSheet.create({
   videoContainer: {
     width: '140%',
@@ -136,5 +128,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -270,
     left: -90,
+  },
+  currentOrderBanner: {
+    position: 'absolute',
+    top: HEIGHT / 1.5,
+    left: WIDTH / 12,
   },
 });

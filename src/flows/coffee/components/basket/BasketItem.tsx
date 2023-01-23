@@ -3,11 +3,12 @@ import {Alert, StyleSheet, Pressable, View} from 'react-native';
 import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import {setSpecificBasket} from '../../../../utils/helpers/storage';
 import {Colors, Spacings} from '../../../common/theme';
-import {OrderItem} from '../../../../models';
+import {OrderItem, OrderOption} from '../../../../models';
 import {Body} from '../../../common/typography';
 import {OrderingContext} from '../../../../contexts';
 import {OrderingActionName} from '../../../../utils/types/enums';
 import FastImage from 'react-native-fast-image';
+import {equalsCheck, findSameItemIndex} from '../../../../utils/helpers/basket';
 
 type Size = 'small' | 'medium' | 'large';
 
@@ -23,33 +24,27 @@ export const BasketItem = (props: BasketItemProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const getQuantity = () => {
-    let quantity = 0;
-    ordering_state.specific_basket.forEach(basketItem => {
-      if (basketItem.name === item.name) {
-        quantity = basketItem.quantity;
-      }
-    });
-    return quantity;
+    const index = findSameItemIndex(ordering_state.specific_basket, item);
+    return ordering_state.specific_basket[index]?.quantity || 0;
   };
 
   const onIncreaseQuantity = async () => {
     if (anim.value === 0) {
-      // do nothing
+      return;
     } else {
-      const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+      let newBasket: OrderItem[] = ordering_state.specific_basket;
+      const index = findSameItemIndex(newBasket, item);
       if (index > -1) {
-        const newBasket: OrderItem[] = ordering_state.specific_basket;
         newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
         ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
         await setSpecificBasket(newBasket);
       }
     }
   };
-  const onRemoveItem = () => {
+  const onRemoveItem = (index: number) => {
     if (anim.value === 0) {
-      // do nothing
+      return;
     } else {
-      const index = ordering_state.specific_basket.findIndex((basketItem: any) => basketItem.name === item.name);
       Alert.alert(
         'Remove Item',
         'Are you sure you want to remove this item from your basket?',
@@ -64,18 +59,10 @@ export const BasketItem = (props: BasketItemProps) => {
           {
             text: 'OK',
             onPress: async () => {
-              if (index > -1) {
-                const newBasket = ordering_state.specific_basket;
-                const new_item = {...newBasket[index], quantity: newBasket[index].quantity - 1};
-
-                if (newBasket[index].quantity === 1) {
-                  newBasket.splice(index, 1);
-                } else {
-                  newBasket[index] = new_item;
-                }
-                ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
-                await setSpecificBasket(newBasket);
-              }
+              let newBasket: OrderItem[] = ordering_state.specific_basket;
+              newBasket.splice(index, 1);
+              ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+              await setSpecificBasket(newBasket);
             },
           },
         ],
@@ -88,11 +75,11 @@ export const BasketItem = (props: BasketItemProps) => {
     if (anim.value === 0) {
       anim.value = withTiming(1);
     } else {
-      const index = ordering_state.specific_basket.findIndex((basketItem: OrderItem) => basketItem.name === item.name);
+      let newBasket: OrderItem[] = ordering_state.specific_basket;
+      const index = findSameItemIndex(newBasket, item);
       if (index > -1) {
-        const newBasket = ordering_state.specific_basket;
         if (newBasket[index].quantity === 1) {
-          onRemoveItem();
+          onRemoveItem(index);
         } else {
           newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity - 1};
           ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});

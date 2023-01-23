@@ -17,6 +17,7 @@ import {OrderingContext} from '../../../../contexts';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 import {OrderingActionName} from '../../../../utils/types/enums';
 import OptionCarousel from '../../components/menu/OptionCarousel';
+import {findSameItemIndex} from '../../../../utils/helpers/basket';
 
 const {width} = Dimensions.get('window');
 
@@ -107,25 +108,12 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     [],
   );
 
-  const equalsCheck = (a: string[], b: string[]) =>
-    a.length === b.length && a.every((v: string, i: number) => v === b[i]);
-
   async function addItem() {
     let newBasket: OrderItem[] = ordering_state.specific_basket;
-    const index = newBasket.findIndex((basketItem: OrderItem) => {
-      const same_name = basketItem.name === item.name;
-      const has_options = basketItem.options && basketItem.options.length > 0;
-      if (same_name) {
-        const a = has_options ? basketItem.options.map((option: OrderOption) => option.name) : [];
-        const selected = [selectedMilk, selectedSyrup].filter(option => option !== undefined) as OrderOption[];
-        const b = selected.map((op: OrderOption) => op.name);
-        return equalsCheck(a, b);
-      }
-      return false;
-    });
+    const index = findSameItemIndex(newBasket, item);
     if (index !== -1) {
-      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
-      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     } else {
       const new_order_item: OrderItem = {
@@ -138,7 +126,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         id: item.id,
       };
       newBasket = [...ordering_state.specific_basket, new_order_item];
-      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     }
     const callback = () => navigation.goBack();
@@ -148,7 +136,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.leftChevron}>
-        <LeftChevronBackButton />
+        <LeftChevronBackButton color={'#fff'} />
       </View>
 
       <Animated.Image
@@ -203,7 +191,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     position: 'absolute',
     top: 40,
-    left: Spacings.s9,
+    left: Spacings.s13,
     right: 0,
     // height: 150,
     // backgroundColor: Colors.red,

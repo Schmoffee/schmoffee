@@ -1,20 +1,21 @@
-import React, { useContext } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import React, {useContext} from 'react';
+import {Pressable, StyleSheet, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
-import { OrderingContext } from '../../../../contexts';
-import { BasketItem } from './BasketItem';
-import { Colors, Spacings } from '../../../common/theme';
-import { Body } from '../../../common/typography';
-import { useNavigation } from '@react-navigation/native';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import {OrderingContext} from '../../../../contexts';
+import {BasketItem} from './BasketItem';
+import {Colors, Spacings} from '../../../common/theme';
+import {Body} from '../../../common/typography';
+import {useNavigation} from '@react-navigation/native';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import {getOptionsPrice} from '../../../../utils/helpers/basket';
 
 interface BasketSectionProps {
   translateY?: Animated.SharedValue<number>;
 }
 
 export const BasketSection = (props: BasketSectionProps) => {
-  const { ordering_state } = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
 
   const height = 100;
@@ -31,7 +32,7 @@ export const BasketSection = (props: BasketSectionProps) => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={{ height: getHeight(), maxHeight }}>
+      <View style={{height: getHeight(), maxHeight}}>
         {ordering_state.specific_basket.length === 0 && (
           <View style={styles.emptyContainer}>
             <Pressable onPress={() => navigation.navigate('ShopPage')}>
@@ -45,7 +46,7 @@ export const BasketSection = (props: BasketSectionProps) => {
           <View style={styles.headerRow}>
             {ordering_state.specific_basket.map((item, index) => {
               return (
-                <View style={styles.itemRow} key={item.id}>
+                <View style={styles.itemRow} key={item.id + index.toString()}>
                   <View style={styles.itemImage}>
                     <BasketItem key={index} item={item} />
                   </View>
@@ -53,12 +54,15 @@ export const BasketSection = (props: BasketSectionProps) => {
                     <Body size="medium" weight="Bold" color={Colors.white}>
                       {item.name}
                     </Body>
-                    <Body size="small" weight="Bold" color={Colors.greyLight2}>
-                      {/* {item.description} */}
-                    </Body>
+
+                    {item.options?.map(opt => (
+                      <Body size="small" weight="Bold" color={Colors.greyLight3}>
+                        {'- ' + opt.name}
+                      </Body>
+                    ))}
                   </View>
-                  <Body size="small" weight="Bold" color={Colors.greyLight2} style={{ position: 'absolute', right: 0 }}>
-                    £{((item.price * item.quantity) / 100).toFixed(2)}
+                  <Body size="small" weight="Bold" color={Colors.greyLight2} style={{position: 'absolute', right: 0}}>
+                    £{(((item.price + getOptionsPrice(item)) * item.quantity) / 100).toFixed(2)}
                   </Body>
                 </View>
               );

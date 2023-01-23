@@ -21,7 +21,12 @@ interface OptionCarouselProps {
 const OptionCarousel = (props: OptionCarouselProps) => {
   const {data, pagination, setOption} = props;
   const scrollViewRef = useAnimatedRef();
-  const [newData] = useState([{key: 'spacer-left'}, {key: 'nothing'}, ...data, {key: 'spacer-right'}]);
+  const [newData] = useState([
+    {key: 'spacer-left'},
+    {key: 'nothing', image: require('../../../../assets/pngs/nothing-outline.png')},
+    ...data,
+    {key: 'spacer-right'},
+  ]);
   const {width} = useWindowDimensions();
   const SIZE = width * 0.15;
   const SPACER = (width - SIZE) / 7;
@@ -86,31 +91,28 @@ const OptionCarousel = (props: OptionCarouselProps) => {
           }
           const fullOption: Option = item as Option;
 
-          const image = fullOption.hasOwnProperty('key')
-            ? require('../../../../assets/pngs/nothing-outline.png')
-            : {uri: fullOption.image};
+          const image = fullOption.hasOwnProperty('key') ? fullOption.image : {uri: fullOption.image};
 
-                    return (
-                        <View style={{ width: SIZE }} key={index}>
-                            <View style={styles.itemContainer}>
-                                <Animated.View style={[styles.imageContainer, rImageStyle]}>
-                                    <Image source={image} style={styles.image} />
-                                </Animated.View>
-                                {index !== 1 && (
-                                    <Animated.View style={[styles.priceContainer, rPriceStyle]}>
-                                        <Body size="extraSmall" weight="Regular">
-
-                                            +{fullOption.price}p
-                                        </Body>
-                                    </Animated.View>
-                                )}
-                            </View>
-                        </View>
-                    );
-                })}
-            </Animated.ScrollView>
-        </View>
-    );
+          return (
+            <View style={{width: SIZE}} key={index}>
+              <View style={styles.itemContainer}>
+                <Animated.View style={[styles.imageContainer, rImageStyle]}>
+                  <Image source={image} style={styles.image} />
+                </Animated.View>
+                {index !== 1 && (
+                  <Animated.View style={[styles.priceContainer, rPriceStyle]}>
+                    <Body size="extraSmall" weight="Regular">
+                      +{fullOption.price}p
+                    </Body>
+                  </Animated.View>
+                )}
+              </View>
+            </View>
+          );
+        })}
+      </Animated.ScrollView>
+    </View>
+  );
 };
 
 export default OptionCarousel;
