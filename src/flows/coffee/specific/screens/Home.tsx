@@ -118,10 +118,11 @@ export const Home = () => {
           // }}
           > */}
         {/* <TapGesture /> */}
-        <View style={styles.hoverButtonContainer}>
-          <HoverButton onPress={() => handlePress()} onLongPress={() => navigation.navigate('PreviewPage')} />
-
-        </View>
+        {currentVideo !== "fly-complete.mp4" &&
+          <View style={styles.hoverButtonContainer}>
+            <HoverButton onShortPressOut={() => handlePress()} onLongPress={currentVideo === "astronaut.mp4" ? () => navigation.navigate('TrackOrder') : () => navigation.navigate('PreviewPage')} />
+          </View>
+        }
         <Video
           source={currentVideo === "home-loop.mp4" ? homeLoop : currentVideo === "fly-complete.mp4" ? flyComplete : astronaut}
           style={styles.videoContainer}

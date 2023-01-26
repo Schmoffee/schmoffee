@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Colors, Spacings } from '../../theme';
 
 interface HoverButtonProps {
-    onPress: () => void;
+    onShortPressOut: () => void;
     onLongPress: () => void;
 }
 
@@ -32,16 +33,23 @@ const HoverButton = (props: HoverButtonProps) => {
     };
 
     const handlePressOut = () => {
-        if (pressed) {
-            setPressed(false);
+        setPressed(false);
+
+        if (longPressed) {
+            setLongPressed(false);
             anim.value = withTiming(1, {
                 duration: 50,
                 easing: Easing.bezier(0.25, 0.1, 0.25, 1),
             });
-            props.onPress();
+
         }
-
-
+        else {
+            anim.value = withTiming(1, {
+                duration: 50,
+                easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+            });
+            props.onShortPressOut();
+        }
     };
 
 
@@ -56,13 +64,28 @@ const HoverButton = (props: HoverButtonProps) => {
                     ),
 
                 },
+                {
+                    translateY: interpolate(
+                        anim.value,
+                        [0, 1],
+                        [-15, 0],
+                    ),
+
+                },
+                {
+                    translateX: interpolate(
+                        anim.value,
+                        [0, 1],
+                        [20, 0],
+                    ),
+                }
             ],
             shadowOffset: {
                 width: 0,
                 height: 0,
             },
             // shadowOpacity: interpolate(anim.value, [0, 1], [0, 1]),
-            shadowRadius: anim.value * 2,
+            shadowRadius: anim.value * 4,
             elevation: 0,
 
         };
@@ -71,7 +94,7 @@ const HoverButton = (props: HoverButtonProps) => {
 
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={styles.root}>
             <Animated.View style={[rButtonStyle, styles.button2]}>
                 <Pressable
                     onPressIn={() => {
@@ -88,12 +111,18 @@ const HoverButton = (props: HoverButtonProps) => {
                         pressed ? styles.buttonPressed : null
                     ]}
                 >
-                    {/* <View style={styles.buttonText}>
-                    <Text>Button</Text>
-                </View> */}
+                    {/* {pressed ?
+                        <View style={styles.buttonText}>
+                            <Text>USUAL</Text>
+                        </View>
+                        :
+                        <View style={styles.buttonText}>
+                            <Text>GO</Text>
+                        </View>
+                    } */}
                 </Pressable>
             </Animated.View>
-            <Image source={require('../../../../assets/pngs/button-blue.png')} />
+            <Image style={styles.image} source={require('../../../../assets/pngs/button-blue.png')} />
 
         </View>
 
@@ -102,35 +131,56 @@ const HoverButton = (props: HoverButtonProps) => {
 
 
 const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        // backgroundColor: 'red',
+        // width: 70,
+        // height: 70,
+        // borderRadius: 35,
+        // elevation: 4,
+        // marginTop: -0,
+        // marginLeft: 20,
+        // zIndex: 1,
+    },
+
     button: {
-        backgroundColor: 'blue',
+        backgroundColor: Colors.blue,
         padding: 16,
         width: 70,
         height: 70,
         borderRadius: 35,
         // borderRadius: 4,
         elevation: 4,
-        marginTop: -60,
-        marginLeft: 1,
+        marginTop: -40,
+        marginLeft: 52,
         // zIndex: 1,
     },
     buttonPressed: {
         elevation: 0,
         zIndex: 0,
-        backgroundColor: 'red',
+        backgroundColor: Colors.blue,
     },
     buttonText: {
-        color: '#333',
         textAlign: 'center',
-        fontWeight: 'bold',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '130%',
+        paddingRight: Spacings.s2,
+        color: '#333',
     },
     button2: {
         position: 'absolute',
-        // flex: 1,
-
-
         zIndex: 1,
     },
+    image: {
+        width: 150,
+        height: 150,
+        marginLeft: 50,
+        marginTop: 10,
+    }
 });
 
 
