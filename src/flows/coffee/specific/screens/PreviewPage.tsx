@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   useStripe,
   initStripe,
@@ -9,7 +9,7 @@ import {
   useApplePay,
   ApplePayButton,
 } from '@stripe/stripe-react-native';
-import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
 import {
   createGooglePaymentMethod,
   initializeGooglePay,
@@ -17,33 +17,33 @@ import {
   openPaymentSheet,
   payWithApplePay,
 } from '../../../../utils/helpers/payment';
-import {BasketSection} from '../../components/basket/BasketSection';
-import {GlobalContext, OrderingContext} from '../../../../contexts';
-import {OrderInfo, OrderItem, PlatformType, User, UserInfo} from '../../../../models';
-import {CONST_SCREEN_ORDER} from '../../../../../constants';
-import {sendOrder, updatePaymentMethod} from '../../../../utils/queries/datastore';
-import {LocalUser, Payment, PaymentParams} from '../../../../utils/types/data.types';
+import { BasketSection } from '../../components/basket/BasketSection';
+import { GlobalContext, OrderingContext } from '../../../../contexts';
+import { OrderInfo, OrderItem, PlatformType, User, UserInfo } from '../../../../models';
+import { CONST_SCREEN_ORDER } from '../../../../../constants';
+import { sendOrder, updatePaymentMethod } from '../../../../utils/queries/datastore';
+import { LocalUser, Payment, PaymentParams } from '../../../../utils/types/data.types';
 import Map from '../../../common/components/Map';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import {clearStorageSpecificBasket} from '../../../../utils/helpers/storage';
+import { clearStorageSpecificBasket } from '../../../../utils/helpers/storage';
 import ScheduleSection from '../../components/preview/ScheduleSection';
 import PreviewSection from '../../components/preview/PreviewSection';
-import {Colors, Spacings} from '../../../common/theme';
-import {useDeepCompareEffect} from 'react-use';
-import {Body, Heading} from '../../../common/typography';
+import { Colors, Spacings } from '../../../common/theme';
+import { useDeepCompareEffect } from 'react-use';
+import { Body, Heading } from '../../../common/typography';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
-import {ActionButton} from '../../../common/components/ActionButton';
-import {BlurView} from '@react-native-community/blur';
-import {getOptionsPrice} from '../../../../utils/helpers/basket';
+import { ActionButton } from '../../../common/components/Buttons/ActionButton';
+import { BlurView } from '@react-native-community/blur';
+import { getOptionsPrice } from '../../../../utils/helpers/basket';
 
-interface PreviewPageProps {}
+interface PreviewPageProps { }
 export const PreviewPage = (props: PreviewPageProps) => {
-  const {global_state} = useContext(GlobalContext);
-  const {ordering_state} = useContext(OrderingContext);
+  const { global_state } = useContext(GlobalContext);
+  const { ordering_state } = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
-  const {initPaymentSheet, presentPaymentSheet} = useStripe(); // Stripe hook payment methods
-  const {isGooglePaySupported} = useGooglePay();
-  const {isApplePaySupported} = useApplePay();
+  const { initPaymentSheet, presentPaymentSheet } = useStripe(); // Stripe hook payment methods
+  const { isGooglePaySupported } = useGooglePay();
+  const { isApplePaySupported } = useApplePay();
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
 
@@ -114,7 +114,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
   }
 
   async function googlePayCheckout(user_id: string, paymentParams: PaymentParams) {
-    if (!(await isGooglePaySupported({testEnv: true}))) {
+    if (!(await isGooglePaySupported({ testEnv: true }))) {
       Alert.alert('Google Pay is not supported.');
       return;
     }
@@ -189,7 +189,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
     const success = await checkout(mode);
     setLoading(false);
     if (success) {
-      navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
+      navigation.navigate('TrackOrder', { screen: CONST_SCREEN_ORDER });
     }
   };
 
@@ -198,8 +198,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
       <View style={styles.backButton}>
         <LeftChevronBackButton color={'#fff'} />
       </View>
-      <ScrollView style={styles.previewScrollContainer} contentContainerStyle={{flexGrow: 1}}>
-        <View style={{minHeight: '100%'}}>
+      <ScrollView style={styles.previewScrollContainer} contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={{ minHeight: '100%' }}>
           <View style={styles.heading}>
             <Heading size="default" weight="Bold" color={Colors.white}>
               Summary
@@ -260,7 +260,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
             animating={loading}
             size="large"
             color={Colors.gold}
-            style={{position: 'absolute', top: '45%', left: '45%', zIndex: 5}}
+            style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 5 }}
           />
         </>
       )}
