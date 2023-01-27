@@ -1,20 +1,19 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import { CONST_SCREEN_RATING_PAGE } from '../../../../constants';
-import { TrackOrderContext } from '../../../contexts';
-import { TrackOrderRoutes } from '../../../utils/types/navigation.types';
-import { OrderStatus } from '../../../models';
-import { Body } from '../../common/typography';
-import { PageLayout } from '../../common/components/PageLayout';
-import { Colors, Spacings } from '../../common/theme';
+import {useNavigation} from '@react-navigation/native';
+import React, {useContext, useEffect, useState} from 'react';
+import {Image, StyleSheet, View} from 'react-native';
+import {CONST_SCREEN_RATING_PAGE} from '../../../../constants';
+import {TrackOrderContext} from '../../../contexts';
+import {TrackOrderRoutes} from '../../../utils/types/navigation.types';
+import {OrderStatus} from '../../../models';
+import {Body} from '../../common/typography';
+import {PageLayout} from '../../common/components/PageLayout';
+import {Colors, Spacings} from '../../common/theme';
 import CustomModal from '../../common/components/CustomModal';
 import Map from '../../common/components/Map';
 
-
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
-  const { track_order_state } = useContext(TrackOrderContext);
+  const {track_order_state} = useContext(TrackOrderContext);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showRejectionModal, setShowRejectionModal] = useState(false);
@@ -45,11 +44,14 @@ export const OrderPage = () => {
         buttonText: 'Show Pin',
       }}>
       <View style={styles.mapContainer}>
-        <Map cafeIdFilter={track_order_state.current_order?.cafeID} />
+        <Map cafeIdFilter={track_order_state.current_order?.cafeID} cafeLocationFilter={track_order_state.current_order.} />
       </View>
       <View style={styles.orderDetailsContainer}>
         <View style={styles.timeContainer}>
-          <Image style={{ height: 70, width: 75, }} source={{ uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/pickup-icon.png' }} />
+          <Image
+            style={{height: 70, width: 75}}
+            source={{uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/pickup-icon.png'}}
+          />
           <View style={styles.timeText}>
             <Body size="small" weight="Extrabld" color={Colors.greyLight3}>
               Pickup time
@@ -61,7 +63,10 @@ export const OrderPage = () => {
         </View>
 
         <View style={styles.timeContainer}>
-          <Image style={{ height: 70, width: 75, }} source={{ uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/location-icon.png' }} />
+          <Image
+            style={{height: 70, width: 75}}
+            source={{uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/location-icon.png'}}
+          />
           <View style={styles.timeText}>
             <Body size="small" weight="Extrabld" color={Colors.greyLight3}>
               Pickup address
@@ -101,8 +106,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.greyLight3,
     overflow: 'hidden',
-
-
   },
   orderDetailsContainer: {
     height: '30%',
@@ -129,7 +132,7 @@ const styles = StyleSheet.create({
   timeText: {
     marginLeft: Spacings.s5,
     flex: 1,
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
   },
   location: {
     // backgroundColor: 'gold',
@@ -137,9 +140,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
   },
-
-
-
 });
