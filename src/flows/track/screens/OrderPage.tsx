@@ -8,7 +8,7 @@ import {Body} from '../../common/typography';
 import {PageLayout} from '../../common/components/PageLayout';
 import {Colors, Spacings} from '../../common/theme';
 import CustomModal from '../../common/components/CustomModal';
-import Map from '../../common/components/Map';
+import Map from '../../common/components/Map/Map';
 
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
@@ -43,7 +43,10 @@ export const OrderPage = () => {
         buttonText: 'Show Pin',
       }}>
       <View style={styles.mapContainer}>
-        <Map cafeIdFilter={track_order_state.current_order?.cafeID} />
+        <Map
+          cafeIdFilter={track_order_state.current_order?.cafeID}
+          cafeLocationFilter={track_order_state.destination}
+        />
       </View>
       <View style={styles.orderDetailsContainer}>
         <View style={styles.timeContainer}>
@@ -95,64 +98,49 @@ export const OrderPage = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mapContainer: {
     flex: 1,
+    height: '50%',
+    width: '95%',
+    borderRadius: 40,
+    marginTop: Spacings.s5,
+    borderWidth: 1,
+    borderColor: Colors.greyLight3,
+    overflow: 'hidden',
   },
   orderDetailsContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
+    height: '30%',
+    width: '95%',
+    paddingTop: Spacings.s5,
+    paddingHorizontal: Spacings.s2,
+    marginBottom: Spacings.s25,
   },
-  text: {
-    marginBottom: 10,
-  },
-  orderItemsContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  orderItems: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  orderItem: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  bottomSheetContainer: {
+  iconsContainer: {
+    paddingVertical: Spacings.s6,
     height: '100%',
-    elevation: 200,
-    zIndex: 100,
-    position: 'absolute',
-    width: '100%',
-    bottom: 35,
-  },
-  bottomSheetHeaderContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    width: '30%',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: Spacings.s7,
   },
-
-  bottomSheetHeader: {
-    marginTop: Spacings.s5,
-    alignSelf: 'center',
-    fontSize: 25,
-  },
-  bottomSheetHandleContainer: {
+  timeContainer: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
-  bottomSheetHandle: {
-    width: 20,
-    height: 20,
-    borderRadius: 2.5,
-    backgroundColor: Colors.brown2,
-    marginTop: Spacings.s5,
-    marginRight: Spacings.s5,
+  timeText: {
+    marginLeft: Spacings.s5,
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  location: {
+    // backgroundColor: 'gold',
+    height: '50%',
+    width: '100%',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
 });

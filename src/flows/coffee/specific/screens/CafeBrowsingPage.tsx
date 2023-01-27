@@ -1,24 +1,28 @@
 import React from 'react';
-import { FlatList, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import { OrderingContext } from '../../../../contexts';
-import { useContext } from 'react';
+import {FlatList, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
+import {OrderingContext} from '../../../../contexts';
+import {useContext} from 'react';
 import ShopCard from '../../components/shops/ShopCard';
-import Map from '../../../common/components/Map';
+import Map from '../../../common/components/Map/Map';
 import Animated from 'react-native-reanimated';
-import { CARD_WIDTH, SPACING_FOR_CARD_INSET } from '../../../../../constants';
+import {CARD_WIDTH, SPACING_FOR_CARD_INSET} from '../../../../../constants';
 
 const CafeBrowsingPage = () => {
-  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
+  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
 
   return (
     <View style={styles.root}>
       <View style={styles.mapContainer}>
         <Map cafeIdFilter={null} />
       </View>
-      <View style={styles.scrollViewContainer} >
+      <View style={styles.scrollViewContainer}>
         <SafeAreaView style={styles.flatListContainer}>
-          <FlatList horizontal={true} pagingEnabled snapToInterval={CARD_WIDTH + 35}
-            scrollEventThrottle={1} showsHorizontalScrollIndicator={false}
+          <FlatList
+            horizontal={true}
+            pagingEnabled
+            snapToInterval={CARD_WIDTH + 35}
+            scrollEventThrottle={1}
+            showsHorizontalScrollIndicator={false}
             decelerationRate={Platform.OS === 'ios' ? 0 : 0.98}
             snapToAlignment="center"
             style={styles.scrollView}
@@ -29,12 +33,14 @@ const CafeBrowsingPage = () => {
               right: SPACING_FOR_CARD_INSET,
             }}
             contentContainerStyle={{
-              paddingHorizontal:
-                Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0,
-            }} data={ordering_state.cafes} renderItem={cafe => <ShopCard cafe={cafe.item} />} />
+              paddingHorizontal: Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0,
+            }}
+            data={ordering_state.cafes}
+            renderItem={cafe => <ShopCard cafe={cafe.item} />}
+          />
         </SafeAreaView>
       </View>
-    </View >
+    </View>
   );
 };
 
@@ -47,10 +53,12 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: 1,
     elevation: 1,
-    top: 0, left: 0, right: 0, bottom: 0
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
-  scrollView: {
-  },
+  scrollView: {},
 
   scrollViewContainer: {
     position: 'absolute',
@@ -68,6 +76,5 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 });
-
 
 export default CafeBrowsingPage;

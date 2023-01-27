@@ -25,6 +25,7 @@ export const trackOrderData: TrackOrderState = {
   current_order: null,
   ratings: [],
   address: '',
+  destination: undefined,
 };
 
 export const orderingData: OrderingState = {
