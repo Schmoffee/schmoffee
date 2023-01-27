@@ -80,12 +80,7 @@ const HoverButton = (props: HoverButtonProps) => {
                     ),
                 }
             ],
-            shadowOffset: {
-                width: 0,
-                height: 0,
-            },
-            // shadowOpacity: interpolate(anim.value, [0, 1], [0, 1]),
-            shadowRadius: anim.value * 4,
+
             elevation: 0,
 
         };
@@ -104,7 +99,7 @@ const HoverButton = (props: HoverButtonProps) => {
                         handleLongPress();
                     }}
                     onPressOut={() => handlePressOut()}
-                    delayLongPress={400}
+                    delayLongPress={300}
 
                     style={[
                         styles.button,
@@ -135,14 +130,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        // backgroundColor: 'red',
-        // width: 70,
-        // height: 70,
-        // borderRadius: 35,
-        // elevation: 4,
-        // marginTop: -0,
-        // marginLeft: 20,
-        // zIndex: 1,
     },
 
     button: {
@@ -151,11 +138,9 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
         borderRadius: 35,
-        // borderRadius: 4,
         elevation: 4,
         marginTop: -40,
         marginLeft: 52,
-        // zIndex: 1,
     },
     buttonPressed: {
         elevation: 0,

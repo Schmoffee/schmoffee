@@ -25,7 +25,6 @@ export const Home = () => {
   const { global_state } = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const HOME_WIDTH = useWindowDimensions().width;
-  const [isPlaying, setIsPlaying] = useState(false);
   const [currentVideo, setCurrentVideo] = useState("home-loop.mp4");
   const [buttonPressed, setButtonPressed] = useState(false);
   // const anim = useSharedValue(0);

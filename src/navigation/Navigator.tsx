@@ -50,7 +50,7 @@ function RootNavigator(props: NavigatorProps) {
   return (
     <MapContext.Provider value={{ location: location.current }}>
       <RootStack.Navigator
-        initialRouteName="Coffee"
+        initialRouteName="Auth"
         screenOptions={{
           gestureEnabled: false,
           headerShown: false,
