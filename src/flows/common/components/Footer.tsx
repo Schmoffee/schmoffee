@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActionButton } from './ActionButton';
+import { ActionButton } from './Buttons/ActionButton';
 import { FooterType } from '../../../utils/types/component.types';
 import { OrderingContext } from '../../../contexts';
 import { Colors, Spacings } from '../theme';
