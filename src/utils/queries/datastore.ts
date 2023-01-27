@@ -50,6 +50,10 @@ async function getUserById(id: string): Promise<User | null> {
   return result[0];
 }
 
+async function getCafeById(id: string): Promise<Cafe | null> {
+  const result = await DataStore.query(Cafe, c => c.id('eq', id));
+  return result[0];
+}
 async function updatePaymentMethod(id: string, payment_method: string) {
   const user = await getUserById(id);
   if (user) {
@@ -328,4 +332,5 @@ export {
   hasOrderRunning,
   getAllOptions,
   getAllRatings,
+  getCafeById,
 };

@@ -1,7 +1,7 @@
 import React, {useContext, useReducer} from 'react';
 import {GlobalContext, TrackOrderContext, trackOrderData} from '../../contexts';
 import {DataStore} from 'aws-amplify';
-import {CurrentOrder, OrderStatus} from '../../models';
+import {Cafe, CurrentOrder, OrderStatus} from '../../models';
 import {getClientSecret} from '../../utils/helpers/storage';
 import {trackOrderReducer} from '../../reducers';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -11,7 +11,7 @@ import {OrderPage} from './screens/OrderPage';
 import {confirmApplePayPayment, confirmPaymentSheetPayment} from '@stripe/stripe-react-native';
 import {Alert} from 'react-native';
 import {cancelPayment, confirmGooglePayPayment} from '../../utils/helpers/payment';
-import {deleteOrder} from '../../utils/queries/datastore';
+import {getCafeById} from '../../utils/queries/datastore';
 import {LocalUser, Payment} from '../../utils/types/data.types';
 import {useDeepCompareEffect} from 'react-use';
 import {TrackOrderActionName} from '../../utils/types/enums';
@@ -20,6 +20,17 @@ const Root = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
   const [track_order_state, track_order_dispatch] = useReducer(trackOrderReducer, trackOrderData);
   const TrackOrderStack = createNativeStackNavigator<TrackOrderRoutes>();
+
+  useDeepCompareEffect(() => {
+    async function refreshAddress() {
+      if (track_order_state.current_order && track_order_state.address === '') {
+        const cafe: Cafe = (await getCafeById(track_order_state.current_order.cafeID)) as Cafe;
+        track_order_dispatch({type: TrackOrderActionName.SET_ADDRESS, payload: cafe?.address});
+      }
+    }
+
+    refreshAddress().catch(e => console.log(e));
+  }, [track_order_state.current_order]);
 
   /**
    * Get the user's current order from the database and subscribe to any changes to it.
