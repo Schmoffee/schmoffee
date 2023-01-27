@@ -1,7 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
-import {CONST_SCREEN_RATING_PAGE} from '../../../../constants';
 import {TrackOrderContext} from '../../../contexts';
 import {TrackOrderRoutes} from '../../../utils/types/navigation.types';
 import {OrderStatus} from '../../../models';
@@ -44,7 +43,7 @@ export const OrderPage = () => {
         buttonText: 'Show Pin',
       }}>
       <View style={styles.mapContainer}>
-        <Map cafeIdFilter={track_order_state.current_order?.cafeID} cafeLocationFilter={track_order_state.current_order.} />
+        <Map cafeIdFilter={track_order_state.current_order?.cafeID} />
       </View>
       <View style={styles.orderDetailsContainer}>
         <View style={styles.timeContainer}>
@@ -57,7 +56,7 @@ export const OrderPage = () => {
               Pickup time
             </Body>
             <Body size="large" weight="Bold" color={Colors.black}>
-              15:30
+              {track_order_state.current_order?.order_info.scheduled_times[0]}
             </Body>
           </View>
         </View>
@@ -72,12 +71,11 @@ export const OrderPage = () => {
               Pickup address
             </Body>
             <Body size="large" weight="Bold" color={Colors.black}>
-              NW3 3NQ
+              {track_order_state.address}
             </Body>
           </View>
         </View>
       </View>
-
       <CustomModal
         visible={showSuccessModal}
         setVisible={setShowSuccessModal}
@@ -97,49 +95,64 @@ export const OrderPage = () => {
 };
 
 const styles = StyleSheet.create({
-  mapContainer: {
+  container: {
     flex: 1,
-    height: '50%',
-    width: '95%',
-    borderRadius: 40,
-    marginTop: Spacings.s5,
-    borderWidth: 1,
-    borderColor: Colors.greyLight3,
-    overflow: 'hidden',
   },
   orderDetailsContainer: {
-    height: '30%',
-    width: '95%',
-    paddingTop: Spacings.s5,
-    paddingHorizontal: Spacings.s2,
-    marginBottom: Spacings.s25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
   },
-  iconsContainer: {
-    paddingVertical: Spacings.s6,
+  text: {
+    marginBottom: 10,
+  },
+  orderItemsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  orderItems: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  orderItem: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  bottomSheetContainer: {
     height: '100%',
-    width: '30%',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    elevation: 200,
+    zIndex: 100,
+    position: 'absolute',
+    width: '100%',
+    bottom: 35,
+  },
+  bottomSheetHeaderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: Spacings.s7,
   },
-  timeContainer: {
-    flex: 1,
+
+  bottomSheetHeader: {
+    marginTop: Spacings.s5,
+    alignSelf: 'center',
+    fontSize: 25,
+  },
+  bottomSheetHandleContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
-  timeText: {
-    marginLeft: Spacings.s5,
-    flex: 1,
-    alignItems: 'flex-start',
-  },
-  location: {
-    // backgroundColor: 'gold',
-    height: '50%',
-    width: '100%',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+  bottomSheetHandle: {
+    width: 20,
+    height: 20,
+    borderRadius: 2.5,
+    backgroundColor: Colors.brown2,
+    marginTop: Spacings.s5,
+    marginRight: Spacings.s5,
   },
 });

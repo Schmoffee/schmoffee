@@ -27,6 +27,7 @@ export enum GlobalActionName {
 export enum TrackOrderActionName {
   SET_CURRENT_ORDER,
   SET_RATINGS,
+  SET_ADDRESS,
 }
 export enum OrderingActionName {
   SET_CURRENT_SHOP_ID,
