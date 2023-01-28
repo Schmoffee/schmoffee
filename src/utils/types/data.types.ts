@@ -35,6 +35,8 @@ export type AuthUser = {
 
 export type TrackOrderState = {
   current_order: CurrentOrder | null;
+  address: string;
+  destination: {latitude: number; longitude: number} | undefined;
   ratings: PreRating[];
 };
 
@@ -92,7 +94,9 @@ export type GlobalAction =
 
 export type TrackOrderAction =
   | {type: TrackOrderActionName.SET_CURRENT_ORDER; payload: CurrentOrder}
-  | {type: TrackOrderActionName.SET_RATINGS; payload: PreRating[]};
+  | {type: TrackOrderActionName.SET_RATINGS; payload: PreRating[]}
+  | {type: TrackOrderActionName.SET_DESTINATION; payload: {latitude: number; longitude: number}}
+  | {type: TrackOrderActionName.SET_ADDRESS; payload: string};
 
 export type OrderingAction =
   | {type: OrderingActionName.SET_CURRENT_SHOP_ID; payload: string}

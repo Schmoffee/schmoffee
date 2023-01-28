@@ -27,6 +27,8 @@ export enum GlobalActionName {
 export enum TrackOrderActionName {
   SET_CURRENT_ORDER,
   SET_RATINGS,
+  SET_ADDRESS,
+  SET_DESTINATION,
 }
 export enum OrderingActionName {
   SET_CURRENT_SHOP_ID,
@@ -42,4 +44,10 @@ export enum SignInActionName {
   SET_BLOCKED_TIME,
   SET_SESSION,
   SET_PHONE,
+}
+
+export enum MapAppName {
+  GOOGLE_MAPS = 'google',
+  APPLE_MAPS = 'apple',
+  CITYMAPPER = 'citymapper',
 }

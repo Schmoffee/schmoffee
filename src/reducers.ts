@@ -34,6 +34,10 @@ export const trackOrderReducer = (state: TrackOrderState, action: TrackOrderActi
       return {...state, current_order: action.payload};
     case TrackOrderActionName.SET_RATINGS:
       return {...state, ratings: action.payload};
+    case TrackOrderActionName.SET_ADDRESS:
+      return {...state, address: action.payload};
+    case TrackOrderActionName.SET_DESTINATION:
+      return {...state, destination: action.payload};
     default:
       return state;
   }

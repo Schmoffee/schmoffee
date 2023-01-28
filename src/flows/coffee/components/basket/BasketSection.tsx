@@ -46,9 +46,9 @@ export const BasketSection = (props: BasketSectionProps) => {
           <View style={styles.headerRow}>
             {ordering_state.specific_basket.map((item, index) => {
               return (
-                <View style={styles.itemRow} key={item.id + index.toString()}>
+                <View style={styles.itemRow} key={item.id + index}>
                   <View style={styles.itemImage}>
-                    <BasketItem key={index} item={item} />
+                    <BasketItem item={item} />
                   </View>
                   <View style={styles.detailsColumn}>
                     <Body size="medium" weight="Bold" color={Colors.white}>

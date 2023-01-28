@@ -1,22 +1,30 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { OrderingContext } from '../../../../contexts';
-import { Item } from '../../../../models';
-import Animated, { Easing, Extrapolate, interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { Colors, Spacings } from '../../../common/theme';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import {Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {OrderingContext} from '../../../../contexts';
+import {Item} from '../../../../models';
+import Animated, {
+  Easing,
+  Extrapolate,
+  interpolate,
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import {Colors, Spacings} from '../../../common/theme';
 import TabNavigator from '../../components/menu/TabNavigator';
-import { BasketPreview } from '../../components/basket/BasketPreview';
+import {BasketPreview} from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 
-const { StatusBarManager } = NativeModules;
+const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const { height: wHeight, width: wWidth } = Dimensions.get('window');
+const {height: wHeight, width: wWidth} = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
-  const { ordering_state } = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
   const anim = useSharedValue(0);
@@ -47,7 +55,7 @@ export const ShopPage = () => {
     }
   }, [basketAnim, ordering_state.specific_basket.length]);
 
-  const contains = ({ name }: Item, query: string) => {
+  const contains = ({name}: Item, query: string) => {
     const nameLower = name.toLowerCase();
     return nameLower.includes(query);
   };
@@ -81,16 +89,15 @@ export const ShopPage = () => {
       searchAnim.value = withTiming(1, {
         duration: 900,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-      })
-    }
-    else {
+      });
+    } else {
       searchAnim.value = withTiming(0, {
         duration: 950,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-      })
+      });
       setQuery('');
     }
-  }
+  };
 
   const rCircleStyle = useAnimatedStyle(
     () => ({
@@ -117,23 +124,15 @@ export const ShopPage = () => {
   );
 
   const rSearchContainerStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(
-      searchAnim.value,
-      [0, 1],
-      [Colors.darkBrown, Colors.greyLight1]
-    )
+    const backgroundColor = interpolateColor(searchAnim.value, [0, 1], [Colors.darkBrown, Colors.greyLight1]);
     return {
       width: interpolate(searchAnim.value, [0, 1], [25, 350]),
-      backgroundColor
+      backgroundColor,
     };
   });
   const rSearchIconStyle = useAnimatedStyle(() => {
     let rotate = interpolate(searchAnim.value, [0, 1], [0, -360], Extrapolate.CLAMP);
-    const tintColor = interpolateColor(
-      searchAnim.value,
-      [0, 1],
-      [Colors.greyLight3, Colors.darkBrown]
-    )
+    const tintColor = interpolateColor(searchAnim.value, [0, 1], [Colors.greyLight3, Colors.darkBrown]);
     return {
       transform: [
         {
@@ -141,19 +140,16 @@ export const ShopPage = () => {
         },
       ],
       tintColor,
-      backgroundColor: 'transparent'
+      backgroundColor: 'transparent',
     };
   });
-
-
 
   return (
     <View style={styles.root}>
       {/* back button for navigation */}
       <View style={styles.backButton}>
-        <LeftChevronBackButton />
+        <LeftChevronBackButton color={'black'} />
       </View>
-
 
       <View style={[styles.itemsContainer]}>
         <View style={styles.header}>
@@ -164,7 +160,10 @@ export const ShopPage = () => {
           <Animated.View style={[styles.searchInputContainer, rSearchContainerStyle]}>
             <View style={styles.searchIcon}>
               <Pressable onPress={handleSearchPress}>
-                <Animated.Image style={rSearchIconStyle} source={require('../../../../assets/pngs/magnifyingglass.png')} />
+                <Animated.Image
+                  style={rSearchIconStyle}
+                  source={require('../../../../assets/pngs/magnifyingglass.png')}
+                />
               </Pressable>
             </View>
             <Animated.View style={[styles.searchText]}>
@@ -181,7 +180,10 @@ export const ShopPage = () => {
             </Animated.View>
             <View style={styles.clearIcon}>
               <Pressable onPress={handleSearchPress}>
-                <Animated.Image style={[rSearchIconStyle, { width: 15, height: 15 }]} source={require('../../../../assets/pngs/x-outline.png')} />
+                <Animated.Image
+                  style={[rSearchIconStyle, {width: 15, height: 15}]}
+                  source={require('../../../../assets/pngs/x-outline.png')}
+                />
               </Pressable>
             </View>
           </Animated.View>
@@ -243,7 +245,6 @@ const styles = StyleSheet.create({
     shadowRadius: 35,
     shadowOpacity: 0.9,
     elevation: 5,
-
   },
   searchInputContainer: {
     flex: 1,
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
     color: Colors.darkBrown,
     // backgroundColor: 'red',
 
-    minWidth: 250
+    minWidth: 250,
   },
   clearIcon: {
     position: 'relative',
