@@ -35,6 +35,7 @@ import LeftChevronBackButton from '../../../common/components/LeftChevronBackBut
 import {ActionButton} from '../../../common/components/Buttons/ActionButton';
 import {BlurView} from '@react-native-community/blur';
 import {getOptionsPrice} from '../../../../utils/helpers/basket';
+import {getOrderId} from '../../../../utils/helpers/order_id';
 
 interface PreviewPageProps {}
 export const PreviewPage = (props: PreviewPageProps) => {
@@ -147,9 +148,13 @@ export const PreviewPage = (props: PreviewPageProps) => {
   async function handleSendOrder(paymentId: string) {
     if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
       const user: LocalUser = global_state.current_user as LocalUser;
+      const {orderId, pin, final_color} = getOrderId();
       const order_info: OrderInfo = {
         sent_time: new Date(Date.now()).toISOString(),
         scheduled_times: [new Date(Date.now() + 30 * 60000).toISOString()],
+        color: final_color,
+        pin: pin,
+        unique_id: orderId,
       };
       const platform = Platform.OS === 'ios' ? PlatformType.IOS : PlatformType.ANDROID;
       const user_info: UserInfo = {
@@ -205,75 +210,75 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   return (
     <View style={styles.root}>
-      {/*<View style={styles.backButton}>*/}
-      {/*  <LeftChevronBackButton color={'#fff'} />*/}
-      {/*</View>*/}
-      {/*<ScrollView style={styles.previewScrollContainer} contentContainerStyle={{flexGrow: 1}}>*/}
-      {/*  <View style={{minHeight: '100%'}}>*/}
-      {/*    <View style={styles.heading}>*/}
-      {/*      <Heading size="default" weight="Bold" color={Colors.white}>*/}
-      {/*        Summary*/}
-      {/*      </Heading>*/}
-      {/*    </View>*/}
-      {/*    <View style={styles.basketContainer}>*/}
-      {/*      <BasketSection />*/}
-      {/*    </View>*/}
-      {/*    <ScheduleSection />*/}
-      {/*    <PreviewSection title="Pick up location" description={getCafeAddress()}>*/}
-      {/*      <View style={styles.mapContainer}>*/}
-      <Map cafeIdFilter={ordering_state.current_shop_id} cafeLocationFilter={getCafeLocation()} />
-      {/*  </View>*/}
-      {/*</PreviewSection>*/}
+      <View style={styles.backButton}>
+        <LeftChevronBackButton color={'#fff'} />
+      </View>
+      <ScrollView style={styles.previewScrollContainer} contentContainerStyle={{flexGrow: 1}}>
+        <View style={{minHeight: '100%'}}>
+          <View style={styles.heading}>
+            <Heading size="default" weight="Bold" color={Colors.white}>
+              Summary
+            </Heading>
+          </View>
+          <View style={styles.basketContainer}>
+            <BasketSection />
+          </View>
+          <ScheduleSection />
+          <PreviewSection title="Pick up location" description={getCafeAddress()}>
+            <View style={styles.mapContainer}>
+              <Map cafeIdFilter={ordering_state.current_shop_id} cafeLocationFilter={getCafeLocation()} />
+            </View>
+          </PreviewSection>
 
-      {/*    <PreviewSection title="Payment method">*/}
-      {/*      <View style={styles.paymentContainer}>*/}
-      {/*        {Platform.OS === 'ios' && (*/}
-      {/*          <ApplePayButton*/}
-      {/*            onPress={() => handleCheckout('apple')}*/}
-      {/*            type="plain"*/}
-      {/*            buttonStyle="black"*/}
-      {/*            borderRadius={4}*/}
-      {/*            style={{*/}
-      {/*              width: '100%',*/}
-      {/*              height: 50,*/}
-      {/*            }}*/}
-      {/*          />*/}
-      {/*        )}*/}
-      {/*        {Platform.OS !== 'ios' && (*/}
-      {/*          <GooglePayButton*/}
-      {/*            type="standard"*/}
-      {/*            onPress={() => handleCheckout('google')}*/}
-      {/*            style={{*/}
-      {/*              width: 200,*/}
-      {/*              height: 50,*/}
-      {/*            }}*/}
-      {/*          />*/}
-      {/*        )}*/}
-      {/*        <ActionButton label="Checkout" onPress={() => handleCheckout('card')} />*/}
-      {/*      </View>*/}
-      {/*    </PreviewSection>*/}
+          <PreviewSection title="Payment method">
+            <View style={styles.paymentContainer}>
+              {Platform.OS === 'ios' && (
+                <ApplePayButton
+                  onPress={() => handleCheckout('apple')}
+                  type="plain"
+                  buttonStyle="black"
+                  borderRadius={4}
+                  style={{
+                    width: '100%',
+                    height: 50,
+                  }}
+                />
+              )}
+              {Platform.OS !== 'ios' && (
+                <GooglePayButton
+                  type="standard"
+                  onPress={() => handleCheckout('google')}
+                  style={{
+                    width: 200,
+                    height: 50,
+                  }}
+                />
+              )}
+              <ActionButton label="Checkout" onPress={() => handleCheckout('card')} />
+            </View>
+          </PreviewSection>
 
-      {/*    <View style={styles.totalContainer}>*/}
-      {/*      <Body size="large" weight="Bold" color={Colors.white}>*/}
-      {/*        Total*/}
-      {/*      </Body>*/}
-      {/*      <Body size="large" weight="Bold" color={Colors.white}>*/}
-      {/*        £{(total / 100).toFixed(2)}*/}
-      {/*      </Body>*/}
-      {/*    </View>*/}
-      {/*  </View>*/}
-      {/*</ScrollView>*/}
-      {/*{loading && (*/}
-      {/*  <>*/}
-      {/*    <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />*/}
-      {/*    <ActivityIndicator*/}
-      {/*      animating={loading}*/}
-      {/*      size="large"*/}
-      {/*      color={Colors.gold}*/}
-      {/*      style={{position: 'absolute', top: '45%', left: '45%', zIndex: 5}}*/}
-      {/*    />*/}
-      {/*  </>*/}
-      {/*)}*/}
+          <View style={styles.totalContainer}>
+            <Body size="large" weight="Bold" color={Colors.white}>
+              Total
+            </Body>
+            <Body size="large" weight="Bold" color={Colors.white}>
+              £{(total / 100).toFixed(2)}
+            </Body>
+          </View>
+        </View>
+      </ScrollView>
+      {loading && (
+        <>
+          <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
+          <ActivityIndicator
+            animating={loading}
+            size="large"
+            color={Colors.gold}
+            style={{position: 'absolute', top: '45%', left: '45%', zIndex: 5}}
+          />
+        </>
+      )}
     </View>
   );
 };
