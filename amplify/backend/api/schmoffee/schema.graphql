@@ -87,6 +87,9 @@ type OrderInfo {
   preparing_time: AWSDateTime
   sent_time: AWSDateTime!
   rejection_justification: String
+  color: String!
+  pin: String!
+  unique_id: String!
 }
 
 type CurrentOrder @model @auth(rules: [{allow: public}]) {

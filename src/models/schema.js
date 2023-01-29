@@ -1298,9 +1298,31 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
+                },
+                "color": {
+                    "name": "color",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "pin": {
+                    "name": "pin",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "unique_id": {
+                    "name": "unique_id",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
                 }
             }
         }
     },
-    "version": "c3e8dcee49a305c4c447b4f70a96c8fc"
+    "codegenVersion": "3.3.4",
+    "version": "3c9c35e37dc9e03a0cf2d990f258bf07"
 };

@@ -13,6 +13,8 @@ import Map from '../../common/components/Map/Map';
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
   const {track_order_state} = useContext(TrackOrderContext);
+  const color = track_order_state.current_order?.order_info.color;
+  const pin = track_order_state.current_order?.order_info.pin;
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showRejectionModal, setShowRejectionModal] = useState(false);

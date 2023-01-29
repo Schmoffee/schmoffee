@@ -1,4 +1,6 @@
-import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplify/datastore";
+import { ModelInit, MutableModel } from "@aws-amplify/datastore";
+// @ts-ignore
+import { LazyLoading, LazyLoadingDisabled, AsyncCollection, AsyncItem } from "@aws-amplify/datastore";
 
 export enum OptionType {
   BEAN = "BEAN",
@@ -37,14 +39,23 @@ export enum Day {
   SUNDAY = "SUNDAY"
 }
 
-export declare class UsualOrder {
+type EagerUsualOrder = {
   readonly items: OrderItem[];
   readonly schedule: number;
   readonly cafeID: string;
-  constructor(init: ModelInit<UsualOrder>);
 }
 
-export declare class OrderItem {
+type LazyUsualOrder = {
+  readonly items: OrderItem[];
+  readonly schedule: number;
+  readonly cafeID: string;
+}
+
+export declare type UsualOrder = LazyLoading extends LazyLoadingDisabled ? EagerUsualOrder : LazyUsualOrder
+
+export declare const UsualOrder: (new (init: ModelInit<UsualOrder>) => UsualOrder)
+
+type EagerOrderItem = {
   readonly quantity: number;
   readonly id: string;
   readonly name: string;
@@ -52,25 +63,57 @@ export declare class OrderItem {
   readonly image?: string | null;
   readonly preparation_time: number;
   readonly options?: OrderOption[] | null;
-  constructor(init: ModelInit<OrderItem>);
 }
 
-export declare class OrderOption {
+type LazyOrderItem = {
+  readonly quantity: number;
+  readonly id: string;
+  readonly name: string;
+  readonly price: number;
+  readonly image?: string | null;
+  readonly preparation_time: number;
+  readonly options?: OrderOption[] | null;
+}
+
+export declare type OrderItem = LazyLoading extends LazyLoadingDisabled ? EagerOrderItem : LazyOrderItem
+
+export declare const OrderItem: (new (init: ModelInit<OrderItem>) => OrderItem)
+
+type EagerOrderOption = {
   readonly name: string;
   readonly price: number;
   readonly option_type: OptionType | keyof typeof OptionType;
-  constructor(init: ModelInit<OrderOption>);
 }
 
-export declare class UserInfo {
+type LazyOrderOption = {
+  readonly name: string;
+  readonly price: number;
+  readonly option_type: OptionType | keyof typeof OptionType;
+}
+
+export declare type OrderOption = LazyLoading extends LazyLoadingDisabled ? EagerOrderOption : LazyOrderOption
+
+export declare const OrderOption: (new (init: ModelInit<OrderOption>) => OrderOption)
+
+type EagerUserInfo = {
   readonly name: string;
   readonly phone: string;
   readonly device_token: string;
   readonly platform: PlatformType | keyof typeof PlatformType;
-  constructor(init: ModelInit<UserInfo>);
 }
 
-export declare class OrderInfo {
+type LazyUserInfo = {
+  readonly name: string;
+  readonly phone: string;
+  readonly device_token: string;
+  readonly platform: PlatformType | keyof typeof PlatformType;
+}
+
+export declare type UserInfo = LazyLoading extends LazyLoadingDisabled ? EagerUserInfo : LazyUserInfo
+
+export declare const UserInfo: (new (init: ModelInit<UserInfo>) => UserInfo)
+
+type EagerOrderInfo = {
   readonly accepted_time?: string | null;
   readonly rejected_time?: string | null;
   readonly ready_time?: string | null;
@@ -80,8 +123,29 @@ export declare class OrderInfo {
   readonly preparing_time?: string | null;
   readonly sent_time: string;
   readonly rejection_justification?: string | null;
-  constructor(init: ModelInit<OrderInfo>);
+  readonly color: string;
+  readonly pin: string;
+  readonly unique_id: string;
 }
+
+type LazyOrderInfo = {
+  readonly accepted_time?: string | null;
+  readonly rejected_time?: string | null;
+  readonly ready_time?: string | null;
+  readonly collected_time?: string | null;
+  readonly received_time?: string | null;
+  readonly scheduled_times: string[];
+  readonly preparing_time?: string | null;
+  readonly sent_time: string;
+  readonly rejection_justification?: string | null;
+  readonly color: string;
+  readonly pin: string;
+  readonly unique_id: string;
+}
+
+export declare type OrderInfo = LazyLoading extends LazyLoadingDisabled ? EagerOrderInfo : LazyOrderInfo
+
+export declare const OrderInfo: (new (init: ModelInit<OrderInfo>) => OrderInfo)
 
 type ErrorMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
@@ -115,7 +179,7 @@ type UserMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
-export declare class Error {
+type EagerError = {
   readonly id: string;
   readonly user_phone?: string | null;
   readonly time?: string | null;
@@ -123,11 +187,25 @@ export declare class Error {
   readonly type?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<Error, ErrorMetaData>);
-  static copyOf(source: Error, mutator: (draft: MutableModel<Error, ErrorMetaData>) => MutableModel<Error, ErrorMetaData> | void): Error;
 }
 
-export declare class Option {
+type LazyError = {
+  readonly id: string;
+  readonly user_phone?: string | null;
+  readonly time?: string | null;
+  readonly description?: string | null;
+  readonly type?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Error = LazyLoading extends LazyLoadingDisabled ? EagerError : LazyError
+
+export declare const Error: (new (init: ModelInit<Error, ErrorMetaData>) => Error) & {
+  copyOf(source: Error, mutator: (draft: MutableModel<Error, ErrorMetaData>) => MutableModel<Error, ErrorMetaData> | void): Error;
+}
+
+type EagerOption = {
   readonly id: string;
   readonly name: string;
   readonly option_type: OptionType | keyof typeof OptionType;
@@ -137,11 +215,27 @@ export declare class Option {
   readonly itemID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<Option, OptionMetaData>);
-  static copyOf(source: Option, mutator: (draft: MutableModel<Option, OptionMetaData>) => MutableModel<Option, OptionMetaData> | void): Option;
 }
 
-export declare class PastOrder {
+type LazyOption = {
+  readonly id: string;
+  readonly name: string;
+  readonly option_type: OptionType | keyof typeof OptionType;
+  readonly price: number;
+  readonly image?: string | null;
+  readonly is_in_stock: boolean;
+  readonly itemID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Option = LazyLoading extends LazyLoadingDisabled ? EagerOption : LazyOption
+
+export declare const Option: (new (init: ModelInit<Option, OptionMetaData>) => Option) & {
+  copyOf(source: Option, mutator: (draft: MutableModel<Option, OptionMetaData>) => MutableModel<Option, OptionMetaData> | void): Option;
+}
+
+type EagerPastOrder = {
   readonly id: string;
   readonly items: OrderItem[];
   readonly order_info: OrderInfo;
@@ -152,11 +246,28 @@ export declare class PastOrder {
   readonly payment_id: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<PastOrder, PastOrderMetaData>);
-  static copyOf(source: PastOrder, mutator: (draft: MutableModel<PastOrder, PastOrderMetaData>) => MutableModel<PastOrder, PastOrderMetaData> | void): PastOrder;
 }
 
-export declare class CurrentOrder {
+type LazyPastOrder = {
+  readonly id: string;
+  readonly items: OrderItem[];
+  readonly order_info: OrderInfo;
+  readonly cafeID: string;
+  readonly userID: string;
+  readonly final_status: OrderStatus | keyof typeof OrderStatus;
+  readonly total: number;
+  readonly payment_id: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type PastOrder = LazyLoading extends LazyLoadingDisabled ? EagerPastOrder : LazyPastOrder
+
+export declare const PastOrder: (new (init: ModelInit<PastOrder, PastOrderMetaData>) => PastOrder) & {
+  copyOf(source: PastOrder, mutator: (draft: MutableModel<PastOrder, PastOrderMetaData>) => MutableModel<PastOrder, PastOrderMetaData> | void): PastOrder;
+}
+
+type EagerCurrentOrder = {
   readonly id: string;
   readonly items: OrderItem[];
   readonly total: number;
@@ -169,11 +280,30 @@ export declare class CurrentOrder {
   readonly userID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<CurrentOrder, CurrentOrderMetaData>);
-  static copyOf(source: CurrentOrder, mutator: (draft: MutableModel<CurrentOrder, CurrentOrderMetaData>) => MutableModel<CurrentOrder, CurrentOrderMetaData> | void): CurrentOrder;
 }
 
-export declare class Item {
+type LazyCurrentOrder = {
+  readonly id: string;
+  readonly items: OrderItem[];
+  readonly total: number;
+  readonly order_info: OrderInfo;
+  readonly cafeID: string;
+  readonly user_info: UserInfo;
+  readonly status: OrderStatus | keyof typeof OrderStatus;
+  readonly payment_id: string;
+  readonly display: boolean;
+  readonly userID: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type CurrentOrder = LazyLoading extends LazyLoadingDisabled ? EagerCurrentOrder : LazyCurrentOrder
+
+export declare const CurrentOrder: (new (init: ModelInit<CurrentOrder, CurrentOrderMetaData>) => CurrentOrder) & {
+  copyOf(source: CurrentOrder, mutator: (draft: MutableModel<CurrentOrder, CurrentOrderMetaData>) => MutableModel<CurrentOrder, CurrentOrderMetaData> | void): CurrentOrder;
+}
+
+type EagerItem = {
   readonly id: string;
   readonly name: string;
   readonly price: number;
@@ -187,11 +317,31 @@ export declare class Item {
   readonly type?: ItemType | keyof typeof ItemType | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<Item, ItemMetaData>);
-  static copyOf(source: Item, mutator: (draft: MutableModel<Item, ItemMetaData>) => MutableModel<Item, ItemMetaData> | void): Item;
 }
 
-export declare class Rating {
+type LazyItem = {
+  readonly id: string;
+  readonly name: string;
+  readonly price: number;
+  readonly image?: string | null;
+  readonly is_common: boolean;
+  readonly is_in_stock: boolean;
+  readonly preparation_time: number;
+  readonly cafeID: string;
+  readonly ratings: AsyncCollection<Rating>;
+  readonly options: AsyncCollection<Option>;
+  readonly type?: ItemType | keyof typeof ItemType | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Item = LazyLoading extends LazyLoadingDisabled ? EagerItem : LazyItem
+
+export declare const Item: (new (init: ModelInit<Item, ItemMetaData>) => Item) & {
+  copyOf(source: Item, mutator: (draft: MutableModel<Item, ItemMetaData>) => MutableModel<Item, ItemMetaData> | void): Item;
+}
+
+type EagerRating = {
   readonly id: string;
   readonly rating: number;
   readonly cafeID: string;
@@ -201,11 +351,27 @@ export declare class Rating {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly ratingOrderId: string;
-  constructor(init: ModelInit<Rating, RatingMetaData>);
-  static copyOf(source: Rating, mutator: (draft: MutableModel<Rating, RatingMetaData>) => MutableModel<Rating, RatingMetaData> | void): Rating;
 }
 
-export declare class Cafe {
+type LazyRating = {
+  readonly id: string;
+  readonly rating: number;
+  readonly cafeID: string;
+  readonly userID: string;
+  readonly itemID: string;
+  readonly order: AsyncItem<PastOrder>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly ratingOrderId: string;
+}
+
+export declare type Rating = LazyLoading extends LazyLoadingDisabled ? EagerRating : LazyRating
+
+export declare const Rating: (new (init: ModelInit<Rating, RatingMetaData>) => Rating) & {
+  copyOf(source: Rating, mutator: (draft: MutableModel<Rating, RatingMetaData>) => MutableModel<Rating, RatingMetaData> | void): Rating;
+}
+
+type EagerCafe = {
   readonly id: string;
   readonly name: string;
   readonly email: string;
@@ -224,11 +390,36 @@ export declare class Cafe {
   readonly address: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<Cafe, CafeMetaData>);
-  static copyOf(source: Cafe, mutator: (draft: MutableModel<Cafe, CafeMetaData>) => MutableModel<Cafe, CafeMetaData> | void): Cafe;
 }
 
-export declare class User {
+type LazyCafe = {
+  readonly id: string;
+  readonly name: string;
+  readonly email: string;
+  readonly latitude: number;
+  readonly longitude: number;
+  readonly opening_hours: string[];
+  readonly is_open: boolean;
+  readonly opening_days?: Day[] | keyof typeof Day | null;
+  readonly image?: string | null;
+  readonly description: string;
+  readonly digital_queue: string;
+  readonly menu: AsyncCollection<Item>;
+  readonly past_orders: AsyncCollection<PastOrder>;
+  readonly current_orders: AsyncCollection<CurrentOrder>;
+  readonly ratings: AsyncCollection<Rating>;
+  readonly address: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Cafe = LazyLoading extends LazyLoadingDisabled ? EagerCafe : LazyCafe
+
+export declare const Cafe: (new (init: ModelInit<Cafe, CafeMetaData>) => Cafe) & {
+  copyOf(source: Cafe, mutator: (draft: MutableModel<Cafe, CafeMetaData>) => MutableModel<Cafe, CafeMetaData> | void): Cafe;
+}
+
+type EagerUser = {
   readonly id: string;
   readonly phone: string;
   readonly name: string;
@@ -240,6 +431,24 @@ export declare class User {
   readonly device_token: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  constructor(init: ModelInit<User, UserMetaData>);
-  static copyOf(source: User, mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void): User;
+}
+
+type LazyUser = {
+  readonly id: string;
+  readonly phone: string;
+  readonly name: string;
+  readonly payment_method?: string | null;
+  readonly ratings: AsyncCollection<Rating>;
+  readonly past_orders: AsyncCollection<PastOrder>;
+  readonly the_usual?: UsualOrder | null;
+  readonly customer_id?: string | null;
+  readonly device_token: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type User = LazyLoading extends LazyLoadingDisabled ? EagerUser : LazyUser
+
+export declare const User: (new (init: ModelInit<User, UserMetaData>) => User) & {
+  copyOf(source: User, mutator: (draft: MutableModel<User, UserMetaData>) => MutableModel<User, UserMetaData> | void): User;
 }
