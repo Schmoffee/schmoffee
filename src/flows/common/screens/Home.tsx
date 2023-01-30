@@ -1,9 +1,9 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
-import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { HEIGHT, WIDTH, CONST_SCREEN_ORDER, CONST_SCREEN_SHOP } from '../../../../../constants';
-import { RootRoutes } from '../../../../utils/types/navigation.types';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import React, {useContext, useState} from 'react';
+import {Pressable, StyleSheet, useWindowDimensions, View} from 'react-native';
+import {HEIGHT, WIDTH, CONST_SCREEN_ORDER, CONST_SCREEN_SHOP} from '../../../../constants';
+import {RootRoutes} from '../../../utils/types/navigation.types';
+import {PanGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
   useAnimatedGestureHandler,
@@ -11,21 +11,21 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { SideDrawerContent } from '../../../hamburger/components/SideDrawerContent';
+import {SideDrawerContent} from '../../hamburger/components/SideDrawerContent';
 import Video from 'react-native-video';
-import { PageLayout } from '../../../common/components/PageLayout';
-import { GlobalContext } from '../../../../contexts';
-import CurrentOrderBanner from '../../../track/components/CurrentOrderBanner';
-import HoverButton from '../../../common/components/Buttons/LongPressButton';
-import astronaut from '../../../../assets/videos/astronaut.mp4'
-import homeLoop from '../../../../assets/videos/home-loop.mp4';
-import flyComplete from '../../../../assets/videos/fly-complete.mp4';
+import {PageLayout} from '../components/PageLayout';
+import {GlobalContext} from '../../../contexts';
+import CurrentOrderBanner from '../../track/components/CurrentOrderBanner';
+import HoverButton from '../components/Buttons/LongPressButton';
+import astronaut from '../../../assets/videos/astronaut.mp4';
+import homeLoop from '../../../assets/videos/home-loop.mp4';
+import flyComplete from '../../../assets/videos/fly-complete.mp4';
 
 export const Home = () => {
-  const { global_state } = useContext(GlobalContext);
+  const {global_state} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const HOME_WIDTH = useWindowDimensions().width;
-  const [currentVideo, setCurrentVideo] = useState("home-loop.mp4");
+  const [currentVideo, setCurrentVideo] = useState('home-loop.mp4');
   const [buttonPressed, setButtonPressed] = useState(false);
   // const anim = useSharedValue(0);
   // useFocusEffect(
@@ -83,11 +83,10 @@ export const Home = () => {
   //   }
   // };
   const onVideoEnd = () => {
-    global_state.current_user?.order_running
+    global_state.current_user?.current_order
       ? navigation.navigate('TrackOrder', CONST_SCREEN_ORDER)
       : navigation.navigate(CONST_SCREEN_SHOP);
     setCurrentVideo('astronaut.mp4');
-
   };
 
   const handlePress = () => {
@@ -95,7 +94,7 @@ export const Home = () => {
   };
 
   const getButtonText: () => string = () => {
-    return global_state.current_user?.order_running ? 'Track my coffee' : 'Get me coffee';
+    return global_state.current_user?.current_order ? 'Track my coffee' : 'Get me coffee';
   };
   return (
     // <PanGestureHandler
@@ -117,26 +116,37 @@ export const Home = () => {
           // }}
           > */}
         {/* <TapGesture /> */}
-        {currentVideo !== "fly-complete.mp4" &&
+        {currentVideo !== 'fly-complete.mp4' && (
           <View style={styles.hoverButtonContainer}>
-            <HoverButton onShortPressOut={() => handlePress()} onLongPress={currentVideo === "astronaut.mp4" ? () => navigation.navigate('TrackOrder') : () => navigation.navigate('PreviewPage')} />
+            <HoverButton
+              onShortPressOut={() => handlePress()}
+              onLongPress={
+                currentVideo === 'astronaut.mp4'
+                  ? () => navigation.navigate('TrackOrder')
+                  : () => navigation.navigate('PreviewPage')
+              }
+            />
           </View>
-        }
+        )}
         <Video
-          source={currentVideo === "home-loop.mp4" ? homeLoop : currentVideo === "fly-complete.mp4" ? flyComplete : astronaut}
+          source={
+            currentVideo === 'home-loop.mp4' ? homeLoop : currentVideo === 'fly-complete.mp4' ? flyComplete : astronaut
+          }
           style={styles.videoContainer}
           paused={false}
           resizeMode="stretch"
-          repeat={currentVideo === "fly-complete.mp4" ? false : true}
-          onEnd={currentVideo === "fly-complete.mp4" ? () => onVideoEnd() : () => { }}
+          repeat={currentVideo === 'fly-complete.mp4' ? false : true}
+          onEnd={currentVideo === 'fly-complete.mp4' ? () => onVideoEnd() : () => {}}
         />
         {/* </PageLayout> */}
       </View>
       <View style={styles.currentOrderBanner}>
-        {/* <CurrentOrderBanner /> */}
+        {global_state.current_user?.current_order ? (
+          <CurrentOrderBanner currentOrder={global_state.current_user.current_order} />
+        ) : null}
       </View>
       {/* <SideDrawerContent anim={anim} /> */}
-    </View >
+    </View>
   );
 };
 const styles = StyleSheet.create({
@@ -156,7 +166,6 @@ const styles = StyleSheet.create({
     width: WIDTH,
     height: HEIGHT,
     position: 'absolute',
-
   },
   currentOrderBanner: {
     position: 'absolute',
