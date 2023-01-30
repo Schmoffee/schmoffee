@@ -3,7 +3,7 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TrackOrderContext } from '../../../contexts';
 import { Cafe, CurrentOrder, OrderItem } from '../../../models';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { CONST_SCREEN_HOME, HEIGHT, WIDTH } from '../../../../constants';
 import { terminateOrder } from '../../../utils/queries/datastore';
 import { Body, Heading } from '../../common/typography';
@@ -86,6 +86,7 @@ export const RatingPage = (props: RatingPageProps) => {
         <View style={styles.detailsContainer}>
           <Image source={{ uri: track_order_state.current_order?.cafeImage }} style={styles.cafeImage} />
           <RatingItem rating={rating} setRating={setRating} cafe={track_order_state.current_order?.cafeID} />
+          <TextInput placeholder="Tell us more..." style={styles.textFormContainer} />
           <Pressable onPress={() => navigation.navigate('Report')}>
             <Body size="medium" weight="Bold" style={styles.reportButton}>
               Report an issue
@@ -120,7 +121,6 @@ const styles = StyleSheet.create({
     width: WIDTH * 0.8,
     height: 200,
     borderRadius: 10,
-    // backgroundColor: Colors.red,
     border: 1,
     borderWidth: 1,
     marginBottom: Spacings.s10,
@@ -136,6 +136,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 3.5,
     margin: 10,
+  },
+  textFormContainer: {
+    flex: 1,
+    width: WIDTH * 0.7,
+    height: 40,
+    borderRadius: 0,
+    border: 1,
+    borderWidth: 0.5,
+    marginTop: Spacings.s10,
+    marginBottom: Spacings.s5,
+    paddingHorizontal: Spacings.s4,
   },
   reportButton: {
     color: Colors.red,
