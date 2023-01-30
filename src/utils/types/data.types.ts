@@ -184,5 +184,5 @@ export type LocalUser = {
   the_usual: UsualOrder | null | undefined;
   customer_id: string | null | undefined;
   device_token: string;
-  order_running: boolean;
+  current_order: CurrentOrder | null;
 };

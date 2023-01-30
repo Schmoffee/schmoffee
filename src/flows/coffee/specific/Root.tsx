@@ -11,7 +11,7 @@ import {useDeepCompareEffect} from 'react-use';
 import {OrderingActionName} from '../../../utils/types/enums';
 import {Alerts} from '../../../utils/helpers/alerts';
 import CafeBrowsingPage from './screens/CafeBrowsingPage';
-import {Home} from './screens/Home';
+import {Home} from '../../common/screens/Home';
 import {getAllOptions, getAllRatings} from '../../../utils/queries/datastore';
 
 const Root = () => {

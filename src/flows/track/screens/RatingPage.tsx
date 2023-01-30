@@ -1,17 +1,16 @@
-import React, { useContext, useState } from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { TrackOrderContext } from '../../../contexts';
-import { Cafe, CurrentOrder, OrderItem } from '../../../models';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-import { CONST_SCREEN_HOME, HEIGHT, WIDTH } from '../../../../constants';
-import { terminateOrder } from '../../../utils/queries/datastore';
-import { Body, Heading } from '../../common/typography';
-import { PageLayout } from '../../common/components/PageLayout';
-import { Colors, Spacings } from '../../common/theme';
-import { TrackOrderActionName } from '../../../utils/types/enums';
+import React, {useContext, useState} from 'react';
+import {Image, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {GlobalContext, TrackOrderContext} from '../../../contexts';
+import {CurrentOrder} from '../../../models';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {CONST_SCREEN_HOME, HEIGHT, WIDTH} from '../../../../constants';
+import {terminateOrder} from '../../../utils/queries/datastore';
+import {Body, Heading} from '../../common/typography';
+import {PageLayout} from '../../common/components/PageLayout';
+import {Colors, Spacings} from '../../common/theme';
 
-interface RatingPageProps { }
+interface RatingPageProps {}
 
 interface RatingItemProps {
   cafe: string | undefined;
@@ -20,7 +19,7 @@ interface RatingItemProps {
 }
 
 const RatingItem = (props: RatingItemProps) => {
-  const { track_order_state, track_order_dispatch } = useContext(TrackOrderContext);
+  const {track_order_state, track_order_dispatch} = useContext(TrackOrderContext);
   const navigation = useNavigation();
   const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
 
@@ -36,10 +35,7 @@ const RatingItem = (props: RatingItemProps) => {
     <View style={styles.ratingContainer}>
       {maxRating.map((it, index) => {
         return (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            key={it}
-            onPress={() => handleRatingChange(it)}>
+          <TouchableOpacity activeOpacity={0.7} key={it} onPress={() => handleRatingChange(it)}>
             <Image
               source={
                 it <= props.rating
@@ -57,15 +53,15 @@ const RatingItem = (props: RatingItemProps) => {
 
 export const RatingPage = (props: RatingPageProps) => {
   const navigation = useNavigation();
-  // const current_shop = DATA_SHOPS[0] as Cafe;
-  const { track_order_state } = useContext(TrackOrderContext)
+  const {global_state} = useContext(GlobalContext);
+  const {track_order_state} = useContext(TrackOrderContext);
   const [rating, setRating] = useState(0);
-  ;
 
   const handleTerminateOrder = async () => {
+    const usual = !!global_state.current_user?.the_usual;
     const order: CurrentOrder = track_order_state.current_order as CurrentOrder;
-    await terminateOrder(order.id, track_order_state.ratings);
-    navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
+    await terminateOrder(order.id, track_order_state.ratings, usual);
+    navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
   };
 
   return (
@@ -84,7 +80,7 @@ export const RatingPage = (props: RatingPageProps) => {
           </Heading>
         </View>
         <View style={styles.detailsContainer}>
-          <Image source={{ uri: track_order_state.current_order?.cafeImage }} style={styles.cafeImage} />
+          <Image source={{uri: track_order_state.current_order?.cafeImage}} style={styles.cafeImage} />
           <RatingItem rating={rating} setRating={setRating} cafe={track_order_state.current_order?.cafeID} />
           <TextInput placeholder="Tell us more..." style={styles.textFormContainer} />
           <Pressable onPress={() => navigation.navigate('Report')}>
@@ -94,7 +90,7 @@ export const RatingPage = (props: RatingPageProps) => {
           </Pressable>
         </View>
       </View>
-    </PageLayout >
+    </PageLayout>
   );
 };
 
@@ -152,5 +148,4 @@ const styles = StyleSheet.create({
     color: Colors.red,
     marginTop: Spacings.s10,
   },
-
 });

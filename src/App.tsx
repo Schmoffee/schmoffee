@@ -6,11 +6,11 @@ import {DataStore, Hub} from 'aws-amplify';
 import {authListener, datastoreListener} from './utils/helpers/listeners';
 import {getCurrentAuthUser, signOut} from './utils/queries/auth';
 import {AuthState, GlobalActionName} from './utils/types/enums';
-import {getUserById, getUserByPhoneNumber, hasOrderRunning, updateDeviceToken} from './utils/queries/datastore';
+import {getCurrOrder, getUserById, getUserByPhoneNumber, updateDeviceToken} from './utils/queries/datastore';
 import {LocalUser} from './utils/types/data.types';
 import {updateEndpoint} from './utils/helpers/notifications';
 import Navigator from './navigation/Navigator';
-import {User} from './models';
+import {CurrentOrder, User} from './models';
 import {firebase} from '@react-native-firebase/messaging';
 import {Alerts} from './utils/helpers/alerts';
 const App = () => {
@@ -128,8 +128,7 @@ const App = () => {
       const {items} = snapshot;
       if (global_state.auth_state === AuthState.SIGNED_IN && items.length > 0) {
         const currentUser = items[0];
-        const order_running = await hasOrderRunning(currentUser.id);
-        console.log('order_running', order_running);
+        const curr_order: CurrentOrder | null = await getCurrOrder(currentUser.id);
         const localUser: LocalUser = {
           id: currentUser.id,
           name: currentUser.name,
@@ -138,7 +137,7 @@ const App = () => {
           the_usual: currentUser.the_usual,
           customer_id: currentUser.customer_id,
           device_token: global_state.device_token,
-          order_running: order_running,
+          current_order: curr_order,
         };
         global_dispatch({type: GlobalActionName.SET_CURRENT_USER, payload: localUser});
       }

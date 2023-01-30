@@ -11,6 +11,7 @@ import {
   Rating,
   User,
   UserInfo,
+  UsualOrder,
 } from '../../models';
 import {DataStore} from 'aws-amplify';
 import {DigitalQueue, LocalUser, Location, PreferenceWeights, PreRating} from '../types/data.types';
@@ -118,7 +119,7 @@ async function deleteOrder(order_id: string): Promise<CurrentOrder | null> {
   return deleted_orders[0] ? deleted_orders[0] : null;
 }
 
-async function terminateOrder(order_id: string, ratings: PreRating[]) {
+async function terminateOrder(order_id: string, ratings: PreRating[], usual: boolean) {
   const terminated_order = await deleteOrder(order_id);
   if (terminated_order) {
     const past_order = await DataStore.save(
@@ -145,6 +146,29 @@ async function terminateOrder(order_id: string, ratings: PreRating[]) {
         }),
       );
     }
+
+    if (!usual) {
+      const scheduled_time = new Date(terminated_order.order_info.scheduled_times[0]).getMinutes();
+      const sent_time = new Date(terminated_order.order_info.sent_time).getMinutes();
+      const schedule = Math.abs(scheduled_time - sent_time);
+      const usual_order: UsualOrder = {
+        items: terminated_order.items,
+        schedule: schedule,
+        cafeID: terminated_order.cafeID,
+      };
+      await setUsualOrder(usual_order, terminated_order.userID);
+    }
+  }
+}
+
+async function setUsualOrder(usual_order: UsualOrder, userID: string) {
+  const user = await getUserById(userID);
+  if (user) {
+    await DataStore.save(
+      User.copyOf(user, updated => {
+        updated.the_usual = usual_order;
+      }),
+    );
   }
 }
 
@@ -299,9 +323,9 @@ async function registerError(phone: string, description: string, type: string) {
   );
 }
 
-async function hasOrderRunning(userID: string): Promise<boolean> {
+async function getCurrOrder(userID: string): Promise<CurrentOrder | null> {
   const order = await DataStore.query(CurrentOrder, current_order => current_order.userID('eq', userID));
-  return order.length > 0;
+  return order[0] ? order[0] : null;
 }
 
 async function getAllOptions(): Promise<Option[]> {
@@ -329,8 +353,9 @@ export {
   newSignIn,
   updateDeviceToken,
   registerError,
-  hasOrderRunning,
+  getCurrOrder,
   getAllOptions,
   getAllRatings,
   getCafeById,
+  setUsualOrder,
 };
