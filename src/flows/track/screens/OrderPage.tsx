@@ -15,10 +15,11 @@ import { HEIGHT, WIDTH } from '../../../../constants';
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
   const { track_order_state } = useContext(TrackOrderContext);
-  // const color = track_order_state.current_order?.order_info.color;
-  const color = Colors.red;
-  // const pin = track_order_state.current_order?.order_info.pin;
-  const pin = '1234';
+
+  const color = track_order_state.current_order ? track_order_state.current_order?.order_info.color : Colors.red;
+  const pin = track_order_state.current_order ? track_order_state.current_order?.order_info.pin : '0000';
+
+
   const anim = useSharedValue(0);
   const [showPin, setShowPin] = useState(false);
 
@@ -58,10 +59,6 @@ export const OrderPage = () => {
       opacity: interpolate(anim.value, [0, 1], [0, 1], Extrapolate.CLAMP),
     };
   });
-
-
-
-
 
   return (
     <PageLayout
@@ -171,7 +168,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   location: {
-    // backgroundColor: 'gold',
     height: '50%',
     width: '100%',
     flex: 1,
@@ -190,12 +186,12 @@ const styles = StyleSheet.create({
   },
   pinText: {
     fontSize: 100,
-    letterSpacing: 20,
-    position: 'absolute',
-    top: HEIGHT / 2.5,
-    left: WIDTH / 6,
+    letterSpacing: Spacings.s3,
+    paddingLeft: Spacings.s3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'blue',
+    marginBottom: Spacings.s25,
   },
-
-
 
 });
