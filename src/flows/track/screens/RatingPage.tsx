@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {TrackOrderContext} from '../../../contexts';
+import {GlobalContext, TrackOrderContext} from '../../../contexts';
 import {CurrentOrder, OrderItem} from '../../../models';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {CONST_SCREEN_HOME} from '../../../../constants';
@@ -35,7 +35,7 @@ const RatingItem = ({item}: RatingItemProps) => {
   return (
     <View style={styles.itemContainer}>
       <View style={styles.imageContainer}>
-        <Image source={{uri: item.image}} style={styles.image} />
+        <Image source={{uri: item.image as string}} style={styles.image} />
       </View>
       <View style={styles.detailsContainer}>
         <Body size="large" weight="Regular">{`${item.name} - ${item.price}`}</Body>
@@ -69,12 +69,13 @@ const RatingItem = ({item}: RatingItemProps) => {
 
 export const RatingPage = (props: RatingPageProps) => {
   const navigation = useNavigation();
-  // const current_shop = DATA_SHOPS[0] as Cafe;
+  const {global_state} = useContext(GlobalContext);
   const {track_order_state} = useContext(TrackOrderContext);
 
   const handleTerminateOrder = async () => {
+    const usual = !!global_state.current_user?.the_usual;
     const order: CurrentOrder = track_order_state.current_order as CurrentOrder;
-    await terminateOrder(order.id, track_order_state.ratings);
+    await terminateOrder(order.id, track_order_state.ratings, usual);
     navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
   };
 

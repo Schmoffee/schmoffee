@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Alert, Platform, ScrollView, StyleSheet, View} from 'react-native';
 import {
   useStripe,
   initStripe,
@@ -19,9 +19,9 @@ import {
 } from '../../../../utils/helpers/payment';
 import {BasketSection} from '../../components/basket/BasketSection';
 import {GlobalContext, OrderingContext} from '../../../../contexts';
-import {OrderInfo, OrderItem, PlatformType, User, UserInfo} from '../../../../models';
+import {OrderInfo, PlatformType, User, UserInfo, UsualOrder} from '../../../../models';
 import {CONST_SCREEN_ORDER} from '../../../../../constants';
-import {sendOrder, updatePaymentMethod} from '../../../../utils/queries/datastore';
+import {sendOrder, setUsualOrder, updatePaymentMethod} from '../../../../utils/queries/datastore';
 import {LocalUser, Payment, PaymentParams} from '../../../../utils/types/data.types';
 import Map from '../../../common/components/Map/Map';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
@@ -47,6 +47,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
   const {isApplePaySupported} = useApplePay();
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
+  const [usual, setUsual] = useState(true);
+  const [scheduled_time, setScheduledTime] = useState(5);
 
   useDeepCompareEffect(() => {
     let totalTemp = ordering_state.specific_basket
@@ -58,12 +60,12 @@ export const PreviewPage = (props: PreviewPageProps) => {
   }, [ordering_state.specific_basket]);
 
   function getCafeLocation() {
-    const cafe = ordering_state.cafes.find(cafe => cafe.id === ordering_state.current_shop_id);
+    const cafe = ordering_state.cafes.find(c => c.id === ordering_state.current_shop_id);
     return cafe ? {latitude: cafe.latitude, longitude: cafe.longitude} : undefined;
   }
 
   function getCafeAddress() {
-    const cafe = ordering_state.cafes.find(cafe => cafe.id === ordering_state.current_shop_id);
+    const cafe = ordering_state.cafes.find(c => c.id === ordering_state.current_shop_id);
     return cafe ? cafe.address : undefined;
   }
 
@@ -151,7 +153,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
       const {orderId, pin, final_color} = getOrderId();
       const order_info: OrderInfo = {
         sent_time: new Date(Date.now()).toISOString(),
-        scheduled_times: [new Date(Date.now() + 30 * 60000).toISOString()],
+        scheduled_times: [new Date(Date.now() + scheduled_time * 60000).toISOString()],
         color: final_color,
         pin: pin,
         unique_id: orderId,
@@ -172,9 +174,23 @@ export const PreviewPage = (props: PreviewPageProps) => {
         user_info,
         paymentId,
       );
+      if (usual) {
+        await saveUsualOrder();
+      }
       await clearStorageSpecificBasket();
     } else {
       console.log('User or shop or payment_id is not defined');
+    }
+  }
+
+  async function saveUsualOrder() {
+    if (global_state.current_user && ordering_state.current_shop_id) {
+      const usual_order: UsualOrder = {
+        items: ordering_state.specific_basket,
+        schedule: scheduled_time,
+        cafeID: ordering_state.current_shop_id,
+      };
+      await setUsualOrder(usual_order, global_state.current_user.id);
     }
   }
 
@@ -223,7 +239,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
           <View style={styles.basketContainer}>
             <BasketSection />
           </View>
-          <ScheduleSection />
+          <ScheduleSection setSchedule={setScheduledTime} />
           <PreviewSection title="Pick up location" description={getCafeAddress()}>
             <View style={styles.mapContainer}>
               <Map cafeIdFilter={ordering_state.current_shop_id} cafeLocationFilter={getCafeLocation()} />

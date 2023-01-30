@@ -1,21 +1,19 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Pressable, Platform, Alert } from 'react-native';
-import { Colors, Spacings } from '../../../common/theme';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
-import { OrderingContext } from '../../../../contexts';
-import { Body, Heading } from '../../../common/typography';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { OrderingActionName } from '../../../../utils/types/enums';
+import React, {useContext, useRef, useState} from 'react';
+import {StyleSheet, View, TouchableOpacity, Pressable, Alert} from 'react-native';
+import {Colors, Spacings} from '../../../common/theme';
+import {OrderingContext} from '../../../../contexts';
+import {Body, Heading} from '../../../common/typography';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {OrderingActionName} from '../../../../utils/types/enums';
 
-
-interface ScheduleSectionProps { }
+interface ScheduleSectionProps {
+  setSchedule: (schedule: number) => void;
+}
 
 const ScheduleSection = (props: ScheduleSectionProps) => {
-  const { ordering_dispatch } = useContext(OrderingContext);
+  const {ordering_dispatch} = useContext(OrderingContext);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [scheduled_time, setScheduledTime] = useState(5);
-
+  const scheduled_time = useRef<number>(5);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -41,19 +39,20 @@ const ScheduleSection = (props: ScheduleSectionProps) => {
             style: 'cancel',
           },
         ],
-        { cancelable: false },
+        {cancelable: false},
       );
 
       hideDatePicker();
-      return
+      return;
     }
-    setScheduledTime(diff);
-    ordering_dispatch({ type: OrderingActionName.SET_SCHEDULED_TIME, payload: diff });
+    props.setSchedule(diff);
+    scheduled_time.current = diff;
+    ordering_dispatch({type: OrderingActionName.SET_SCHEDULED_TIME, payload: diff});
 
     hideDatePicker();
   };
   function getDateNow() {
-    return new Date()
+    return new Date();
   }
 
   function getScheduleTime(minutes: number) {
@@ -67,8 +66,7 @@ const ScheduleSection = (props: ScheduleSectionProps) => {
     const minutes3 = minutes2 < 10 ? '0' + minutes2 : minutes2;
     const strTime = hours3 + ':' + minutes3 + ' ' + ampm;
     return strTime;
-  };
-
+  }
 
   return (
     <View style={styles.container}>
@@ -81,25 +79,22 @@ const ScheduleSection = (props: ScheduleSectionProps) => {
             Change
           </Body>
         </TouchableOpacity>
-
       </View>
       <View style={styles.timeContainer}>
-
         <Pressable onPress={showDatePicker}>
           <View style={styles.rescheduleButton}>
             <Heading size="default" weight="Regular" color={Colors.white}>
-              {getScheduleTime(scheduled_time)}
+              {getScheduleTime(scheduled_time.current)}
             </Heading>
           </View>
         </Pressable>
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
           mode="time"
-          onConfirm={(e) => handleConfirmDate(e)}
+          onConfirm={e => handleConfirmDate(e)}
           onCancel={hideDatePicker}
           minimumDate={getDateNow()}
           minuteInterval={5}
-
         />
       </View>
     </View>
@@ -127,8 +122,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 100,
     paddingBottom: Spacings.s30,
     paddingTop: Spacings.s6,
-
-
   },
   header: {
     height: 30,
@@ -136,13 +129,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: Spacings.s2,
     flexDirection: 'row',
-
   },
   timeContainer: {
     marginTop: Spacings.s3,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   rescheduleButton: {
     // backgroundColor: Colors.brownLight2,
