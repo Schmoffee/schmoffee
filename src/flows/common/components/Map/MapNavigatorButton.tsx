@@ -1,8 +1,8 @@
 import React from 'react';
-import {ActionButton} from '../Buttons/ActionButton';
+import { ActionButton } from '../Buttons/ActionButton';
 import LaunchNavigator from 'react-native-launch-navigator';
-import {Platform} from 'react-native';
-import {MapAppName} from '../../../../utils/types/enums';
+import { Platform } from 'react-native';
+import { MapAppName } from '../../../../utils/types/enums';
 
 interface MapNavigatorButtonProps {
   latitude: number | undefined;
@@ -58,7 +58,7 @@ const MapNavigatorButton = (props: MapNavigatorButtonProps) => {
       });
   }
 
-  return <ActionButton label={'Open in another map'} onPress={handlePress} />;
+  return <ActionButton label={'Open in maps'} onPress={handlePress} />;
 };
 
 export default MapNavigatorButton;
