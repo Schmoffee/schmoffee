@@ -78,6 +78,7 @@ export const OrderPage = () => {
         <Map
           cafeIdFilter={track_order_state.current_order?.cafeID}
           cafeLocationFilter={track_order_state.destination}
+          preview
         />
       </View>
       <View style={styles.orderDetailsContainer}>

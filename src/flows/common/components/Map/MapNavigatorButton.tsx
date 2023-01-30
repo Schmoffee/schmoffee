@@ -58,7 +58,7 @@ const MapNavigatorButton = (props: MapNavigatorButtonProps) => {
       });
   }
 
-  return <ActionButton label={'Open in City Mapper'} onPress={handlePress} />;
+  return <ActionButton label={'Open in maps'} onPress={handlePress} />;
 };
 
 export default MapNavigatorButton;

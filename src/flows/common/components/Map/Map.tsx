@@ -10,10 +10,12 @@ import MapMarker from '../../../coffee/components/map/MapMarker';
 import MapViewDirections from 'react-native-maps-directions';
 import MapNavigatorButton from './MapNavigatorButton';
 import { MapAppName } from '../../../../utils/types/enums';
+import { CARD_HEIGHT, HEIGHT, WIDTH } from '../../../../../constants';
 
 interface MapProps {
   cafeIdFilter: string | null | undefined;
   cafeLocationFilter: { latitude: number; longitude: number } | undefined;
+  preview?: boolean;
 }
 
 const Map = (props: MapProps) => {
@@ -144,7 +146,7 @@ const Map = (props: MapProps) => {
           </View>
         </Marker>
       </MapView>
-      <View style={styles.navigatorButton}>
+      <View style={props.preview ? styles.previewButton : styles.navigatorButton}>
         <MapNavigatorButton
           latitude={destination?.latitude}
           longitude={destination?.longitude}
@@ -168,12 +170,22 @@ const styles = StyleSheet.create({
     height: 70, // Matches the real dimensions of the real Marker
   },
   navigatorButton: {
+    width: WIDTH - 70,
     position: 'absolute',
-    left: 0,
-    right: 0,
+    bottom: HEIGHT / 2.1 - CARD_HEIGHT,
+    left: 35,
+    zIndex: 1,
+    paddingBottom: 0,
+  },
+  previewButton: {
+    width: WIDTH - 20,
+    position: 'absolute',
     bottom: -5,
-    height: 70,
-  }
+    zIndex: 1,
+    paddingBottom: 0,
+    backgroundColor: 'transparent',
+  },
+
 });
 
 export default Map;
