@@ -1,68 +1,56 @@
-import React, {useContext, useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {TrackOrderContext} from '../../../contexts';
-import {CurrentOrder, OrderItem} from '../../../models';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {CONST_SCREEN_HOME} from '../../../../constants';
-import {terminateOrder} from '../../../utils/queries/datastore';
-import {Body, Heading} from '../../common/typography';
-import {PageLayout} from '../../common/components/PageLayout';
-import {Colors, Spacings} from '../../common/theme';
-import {TrackOrderActionName} from '../../../utils/types/enums';
+import React, { useContext, useState } from 'react';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { TrackOrderContext } from '../../../contexts';
+import { Cafe, CurrentOrder, OrderItem } from '../../../models';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { CONST_SCREEN_HOME, HEIGHT, WIDTH } from '../../../../constants';
+import { terminateOrder } from '../../../utils/queries/datastore';
+import { Body, Heading } from '../../common/typography';
+import { PageLayout } from '../../common/components/PageLayout';
+import { Colors, Spacings } from '../../common/theme';
+import { TrackOrderActionName } from '../../../utils/types/enums';
 
-interface RatingPageProps {}
+interface RatingPageProps { }
 
 interface RatingItemProps {
-  item: OrderItem;
-  key: number;
+  cafe: string | undefined;
+  rating: number;
+  setRating: (rating: number) => void;
 }
 
-const RatingItem = ({item}: RatingItemProps) => {
-  const {track_order_state, track_order_dispatch} = useContext(TrackOrderContext);
+const RatingItem = (props: RatingItemProps) => {
+  const { track_order_state, track_order_dispatch } = useContext(TrackOrderContext);
   const navigation = useNavigation();
-  const [rating, setRating] = useState(0);
   const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
 
   const handleRatingChange = (newRating: number) => {
-    setRating(newRating);
-    const ratings = track_order_state.ratings;
-    const index = ratings.findIndex(rat => rat.itemID === item.id);
-    ratings[index].rating = newRating;
-    track_order_dispatch({type: TrackOrderActionName.SET_RATINGS, payload: ratings});
+    props.setRating(newRating);
+    // const ratings = track_order_state.ratings;
+    // const index = ratings.findIndex(rat => rat.itemID === item.id);
+    // ratings[index].rating = newRating;
+    // track_order_dispatch({ type: TrackOrderActionName.SET_RATINGS, payload: ratings });
   };
 
   return (
-    <View style={styles.itemContainer}>
-      <View style={styles.imageContainer}>
-        <Image source={{uri: item.image}} style={styles.image} />
-      </View>
-      <View style={styles.detailsContainer}>
-        <Body size="large" weight="Regular">{`${item.name} - ${item.price}`}</Body>
-        {/* <Body size='large' weight='Regular'>{item.options}</Body> */}
-        <View style={styles.ratingContainer}>
-          <View style={styles.rating}>
-            {maxRating.map((it, index) => {
-              return (
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  key={it}
-                  style={styles.ratingItem}
-                  onPress={() => handleRatingChange(it)}>
-                  <Image
-                    source={
-                      it <= rating
-                        ? require('../../../assets/pngs/star-filled.png')
-                        : require('../../../assets/pngs/star-outline.png')
-                    }
-                    style={it <= rating ? styles.ratingStar : styles.ratingStarOutline}
-                  />
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View>
-      </View>
+    <View style={styles.ratingContainer}>
+      {maxRating.map((it, index) => {
+        return (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            key={it}
+            onPress={() => handleRatingChange(it)}>
+            <Image
+              source={
+                it <= props.rating
+                  ? require('../../../assets/pngs/star-filled.png')
+                  : require('../../../assets/pngs/star-outline.png')
+              }
+              style={styles.ratingStar}
+            />
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
@@ -70,19 +58,22 @@ const RatingItem = ({item}: RatingItemProps) => {
 export const RatingPage = (props: RatingPageProps) => {
   const navigation = useNavigation();
   // const current_shop = DATA_SHOPS[0] as Cafe;
-  const {track_order_state} = useContext(TrackOrderContext);
+  const { track_order_state } = useContext(TrackOrderContext)
+  const [rating, setRating] = useState(0);
+  ;
 
   const handleTerminateOrder = async () => {
     const order: CurrentOrder = track_order_state.current_order as CurrentOrder;
     await terminateOrder(order.id, track_order_state.ratings);
-    navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
+    navigation.navigate('Coffee', { screen: CONST_SCREEN_HOME });
   };
 
   return (
     <PageLayout
-      header={'Rate your order'}
+      header={'How was your order?'}
+      subHeader={'Help us improve our service by rating your order from ' + track_order_state.current_order?.cafeName}
       footer={{
-        buttonDisabled: false,
+        buttonDisabled: rating === 0,
         onPress: () => handleTerminateOrder(),
         buttonText: 'Rate',
       }}>
@@ -92,11 +83,17 @@ export const RatingPage = (props: RatingPageProps) => {
             {/* {current_shop.name} */}
           </Heading>
         </View>
-        {track_order_state.current_order?.items.map((item, index) => {
-          return <RatingItem item={item} key={index} />;
-        })}
+        <View style={styles.detailsContainer}>
+          <Image source={{ uri: track_order_state.current_order?.cafeImage }} style={styles.cafeImage} />
+          <RatingItem rating={rating} setRating={setRating} cafe={track_order_state.current_order?.cafeID} />
+          <Pressable onPress={() => navigation.navigate('Report')}>
+            <Body size="medium" weight="Bold" style={styles.reportButton}>
+              Report an issue
+            </Body>
+          </Pressable>
+        </View>
       </View>
-    </PageLayout>
+    </PageLayout >
   );
 };
 
@@ -104,8 +101,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: Spacings.s3,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
+    // backgroundColor: Colors.red,
   },
   headingContainer: {
     width: '100%',
@@ -113,59 +111,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: Spacings.s10,
   },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: Spacings.s5,
-    borderBottomWidth: 1,
-    paddingVertical: Spacings.s5,
-  },
   detailsContainer: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    // backgroundColor: Colors.white,
-  },
-  imageContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: Colors.gold,
-    justifyContent: 'center',
     alignItems: 'center',
-    marginRight: Spacings.s5,
+    position: 'absolute',
+    top: HEIGHT / 15,
   },
-  image: {
-    width: 45,
-    height: 50,
+  cafeImage: {
+    width: WIDTH * 0.8,
+    height: 200,
+    borderRadius: 10,
+    // backgroundColor: Colors.red,
+    border: 1,
+    borderWidth: 1,
+    marginBottom: Spacings.s10,
   },
   ratingContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     width: '100%',
-    marginTop: Spacings.s2,
-  },
-  rating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '50%',
-  },
-  ratingItem: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
   },
   ratingStar: {
-    width: 30,
-    height: 30,
-    tintColor: Colors.gold,
-    alignSelf: 'center',
-  },
-  ratingStarOutline: {
-    width: 24,
-    height: 24,
+    width: 53,
+    height: 50,
     tintColor: Colors.gold,
     alignSelf: 'center',
     marginTop: 3.5,
+    margin: 10,
   },
+  reportButton: {
+    color: Colors.red,
+    marginTop: Spacings.s10,
+  },
+
 });
