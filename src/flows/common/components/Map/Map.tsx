@@ -1,28 +1,28 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
-import {Image, Keyboard, Platform, StyleSheet, View} from 'react-native';
-import {ShopMarker} from '../../../../utils/types/data.types';
-import {MapContext} from '../../../../contexts';
-import {Cafe} from '../../../../models';
-import {getShops} from '../../../../utils/queries/datastore';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import { Image, Keyboard, Platform, StyleSheet, View } from 'react-native';
+import { ShopMarker } from '../../../../utils/types/data.types';
+import { MapContext } from '../../../../contexts';
+import { Cafe } from '../../../../models';
+import { getShops } from '../../../../utils/queries/datastore';
 import LoadingPage from '../../screens/LoadingPage';
 import MapMarker from '../../../coffee/components/map/MapMarker';
 import MapViewDirections from 'react-native-maps-directions';
 import MapNavigatorButton from './MapNavigatorButton';
-import {MapAppName} from '../../../../utils/types/enums';
+import { MapAppName } from '../../../../utils/types/enums';
 
 interface MapProps {
   cafeIdFilter: string | null | undefined;
-  cafeLocationFilter: {latitude: number; longitude: number} | undefined;
+  cafeLocationFilter: { latitude: number; longitude: number } | undefined;
 }
 
 const Map = (props: MapProps) => {
   const mapRef = useRef<MapView | null>(null);
-  const {location} = useContext(MapContext);
+  const { location } = useContext(MapContext);
   const [mapLoading, setMapLoading] = useState(true);
   const [currRegion, setRegion] = useState<Region>();
   const [markers, setMarkers] = useState<ShopMarker[]>([]);
-  const [centredInfo, setCentredInfo] = useState({manuallyCentred: false, userCentred: true});
+  const [centredInfo, setCentredInfo] = useState({ manuallyCentred: false, userCentred: true });
   const currentMarkerSelected = useRef<number | null>(null);
   const destination = props.cafeLocationFilter;
   const GOOGLE_MAPS_APIKEY = 'AIzaSyAeJAH2Ezqz7VwvjAAaEtkiAJ2K70iUhmU';
@@ -33,7 +33,7 @@ const Map = (props: MapProps) => {
       const shopMarkers: ShopMarker[] = displayShops.map(shop => {
         return {
           name: shop.name,
-          coords: {latitude: shop.latitude, longitude: shop.longitude},
+          coords: { latitude: shop.latitude, longitude: shop.longitude },
           description: shop.description,
           is_open: shop.is_open,
           image: shop.image ? shop.image : '',
@@ -55,13 +55,13 @@ const Map = (props: MapProps) => {
    * Dismiss the keyboard and search results when the map is clicked
    */
   const mapPressed = () => {
-    setCentredInfo({manuallyCentred: false, userCentred: centredInfo.userCentred});
+    setCentredInfo({ manuallyCentred: false, userCentred: centredInfo.userCentred });
     Keyboard.dismiss();
   };
 
   const mapDragged = () => {
     mapPressed();
-    setCentredInfo({manuallyCentred: centredInfo.manuallyCentred, userCentred: false});
+    setCentredInfo({ manuallyCentred: centredInfo.manuallyCentred, userCentred: false });
   };
 
   return !mapLoading ? (
@@ -139,16 +139,18 @@ const Map = (props: MapProps) => {
           <View>
             <Image
               source={require('../../../../assets/pngs/schmoff_dino.png')}
-              style={{width: 50, height: 50, resizeMode: 'cover'}}
+              style={{ width: 50, height: 50, resizeMode: 'cover' }}
             />
           </View>
         </Marker>
       </MapView>
-      <MapNavigatorButton
-        latitude={destination?.latitude}
-        longitude={destination?.longitude}
-        app={MapAppName.GOOGLE_MAPS}
-      />
+      <View style={styles.navigatorButton}>
+        <MapNavigatorButton
+          latitude={destination?.latitude}
+          longitude={destination?.longitude}
+          app={MapAppName.GOOGLE_MAPS}
+        />
+      </View>
     </>
   ) : (
     <LoadingPage />
@@ -156,15 +158,22 @@ const Map = (props: MapProps) => {
 };
 
 const styles = StyleSheet.create({
-  map: {...StyleSheet.absoluteFillObject, flex: 1},
-  closed: {color: 'coral', fontWeight: 'bold', top: 0},
-  userMarker: {height: 70, width: 70},
+  map: { ...StyleSheet.absoluteFillObject, flex: 1 },
+  closed: { color: 'coral', fontWeight: 'bold', top: 0 },
+  userMarker: { height: 70, width: 70 },
   markerPointInfo: {
     // This is ONLY used for Detox: hiding the x/y coordinate details.
     opacity: 0, // Hiding it...
     width: 70,
     height: 70, // Matches the real dimensions of the real Marker
   },
+  navigatorButton: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -5,
+    height: 70,
+  }
 });
 
 export default Map;
