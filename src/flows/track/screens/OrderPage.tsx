@@ -1,20 +1,26 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
-import {TrackOrderContext} from '../../../contexts';
-import {TrackOrderRoutes} from '../../../utils/types/navigation.types';
-import {OrderStatus} from '../../../models';
-import {Body} from '../../common/typography';
-import {PageLayout} from '../../common/components/PageLayout';
-import {Colors, Spacings} from '../../common/theme';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
+import { TrackOrderContext } from '../../../contexts';
+import { TrackOrderRoutes } from '../../../utils/types/navigation.types';
+import { OrderStatus } from '../../../models';
+import { Body, Heading } from '../../common/typography';
+import { PageLayout } from '../../common/components/PageLayout';
+import { Colors, Spacings } from '../../common/theme';
 import CustomModal from '../../common/components/CustomModal';
 import Map from '../../common/components/Map/Map';
+import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { HEIGHT, WIDTH } from '../../../../constants';
 
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
-  const {track_order_state} = useContext(TrackOrderContext);
-  const color = track_order_state.current_order?.order_info.color;
-  const pin = track_order_state.current_order?.order_info.pin;
+  const { track_order_state } = useContext(TrackOrderContext);
+  // const color = track_order_state.current_order?.order_info.color;
+  const color = Colors.red;
+  // const pin = track_order_state.current_order?.order_info.pin;
+  const pin = '1234';
+  const anim = useSharedValue(0);
+  const [showPin, setShowPin] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showRejectionModal, setShowRejectionModal] = useState(false);
@@ -31,9 +37,31 @@ export const OrderPage = () => {
     }
   }, [track_order_state.current_order?.status]);
 
-  const handleFinishOrder = () => {
-    console.log('Order finished');
+  const handlePress = () => {
+    showPin ? setShowPin(false) : setShowPin(true);
+    anim.value = withTiming(showPin ? 0 : 1, { duration: 300 });
   };
+
+  const rStyleShowPin = useAnimatedStyle(() => {
+    return {
+      transform: [
+        // {
+        //   translateX: interpolate(anim.value, [0, 1], [0, WIDTH]),
+        // },
+        {
+          translateY: interpolate(anim.value, [0, 1], [45, 0], Extrapolate.CLAMP),
+        },
+        {
+          scale: interpolate(anim.value, [0, 1], [0.3, 1], Extrapolate.CLAMP),
+        },
+      ],
+      opacity: interpolate(anim.value, [0, 1], [0, 1], Extrapolate.CLAMP),
+    };
+  });
+
+
+
+
 
   return (
     <PageLayout
@@ -41,9 +69,14 @@ export const OrderPage = () => {
       backgroundColor={Colors.greyLight1}
       footer={{
         buttonDisabled: false,
-        onPress: () => handleFinishOrder(),
-        buttonText: 'Show Pin',
+        onPress: () => handlePress(),
+        buttonText: showPin ? 'Hide Pin' : 'Show Pin',
       }}>
+      <Animated.View style={[styles.showPin, rStyleShowPin, { backgroundColor: color }]}>
+        <Heading size="large" weight="Bold" color={Colors.black} style={styles.pinText}>
+          {pin}
+        </Heading>
+      </Animated.View>
       <View style={styles.mapContainer}>
         <Map
           cafeIdFilter={track_order_state.current_order?.cafeID}
@@ -53,8 +86,8 @@ export const OrderPage = () => {
       <View style={styles.orderDetailsContainer}>
         <View style={styles.timeContainer}>
           <Image
-            style={{height: 70, width: 75}}
-            source={{uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/pickup-icon.png'}}
+            style={{ height: 70, width: 75 }}
+            source={{ uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/pickup-icon.png' }}
           />
           <View style={styles.timeText}>
             <Body size="small" weight="Extrabld" color={Colors.greyLight3}>
@@ -68,8 +101,8 @@ export const OrderPage = () => {
 
         <View style={styles.timeContainer}>
           <Image
-            style={{height: 70, width: 75}}
-            source={{uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/location-icon.png'}}
+            style={{ height: 70, width: 75 }}
+            source={{ uri: 'https://schmoffee-storage111934-dev.s3.eu-central-1.amazonaws.com/public/location-icon.png' }}
           />
           <View style={styles.timeText}>
             <Body size="small" weight="Extrabld" color={Colors.greyLight3}>
@@ -145,4 +178,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
+  showPin: {
+    position: 'absolute',
+    width: WIDTH,
+    height: HEIGHT + 100,
+    borderRadius: 30,
+    zIndex: 1,
+    elevation: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pinText: {
+    fontSize: 100,
+    letterSpacing: 20,
+    position: 'absolute',
+    top: HEIGHT / 2.5,
+    left: WIDTH / 6,
+  },
+
+
+
 });
