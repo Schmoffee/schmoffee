@@ -47,7 +47,7 @@ export const PageLayout = (props: PageLayoutProps) => {
         </View>
         {props.subHeader ? (
           <View style={styles.subHeader}>
-            <Body size="small" weight="Bold" color={Colors.greyLight2} style={styles.subHeader}>
+            <Body size="small" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
               {props.subHeader}
             </Body>
           </View>
@@ -67,10 +67,8 @@ export const PageLayout = (props: PageLayoutProps) => {
 
 const styles = StyleSheet.create({
   root: {
-    // paddingTop: Spacings.s11,
     paddingBottom: Spacings.s9,
     height: '100%',
-
   },
   contentContainer: {
     flex: 1,
@@ -81,20 +79,17 @@ const styles = StyleSheet.create({
   header: {
     position: 'relative',
     alignItems: 'center',
-    marginTop: Spacings.s4,
     flexDirection: 'row',
     justifyContent: 'center',
-    // backgroundColor: Colors.red,
+    marginTop: Spacings.s12,
   },
   backChevron: {
     position: 'absolute',
     left: 0,
     top: -5,
   },
-
   headerChildren: {
     alignItems: 'center',
-
     justifyContent: 'center',
     zIndex: -1,
   },
