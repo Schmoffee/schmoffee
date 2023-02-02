@@ -50,7 +50,7 @@
     "react": "18.1.0",
     "react-native": "0.70.6",
     "react-native-fast-image": "^8.6.3",
-    "react-native-gesture-handler": "^2.6.2",
+    "react-native-gesture-handler": "^2.9.0",
     "react-native-get-random-values": "1.8.0",
     "react-native-google-maps": "^1.0.0",
     "react-native-launch-navigator": "^1.0.9",
