@@ -4,16 +4,15 @@ import {OrderingContext} from '../../../../contexts';
 import {useContext} from 'react';
 import ShopCard from '../../components/shops/ShopCard';
 import Map from '../../../common/components/Map/Map';
-import Animated from 'react-native-reanimated';
 import {CARD_WIDTH, SPACING_FOR_CARD_INSET} from '../../../../../constants';
 
 const CafeBrowsingPage = () => {
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
 
   return (
     <View style={styles.root}>
       <View style={styles.mapContainer}>
-        <Map cafeIdFilter={null} />
+        <Map cafeIdFilter={null} cafeLocationFilter={undefined} />
       </View>
       <View style={styles.scrollViewContainer}>
         <SafeAreaView style={styles.flatListContainer}>

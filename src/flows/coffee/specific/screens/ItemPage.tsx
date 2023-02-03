@@ -110,7 +110,9 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
 
   async function addItem() {
     let newBasket: OrderItem[] = ordering_state.specific_basket;
-    const index = findSameItemIndex(newBasket, item);
+    const cleaned_options = [selectedMilk, selectedSyrup].filter(option => option !== undefined) as OrderOption[];
+    const index = findSameItemIndex(newBasket, item, cleaned_options);
+    console.log('index', index);
     if (index !== -1) {
       newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
@@ -126,6 +128,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         id: item.id,
       };
       newBasket = [...ordering_state.specific_basket, new_order_item];
+      console.log('newBasket', newBasket);
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     }

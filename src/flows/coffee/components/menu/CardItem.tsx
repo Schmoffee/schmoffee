@@ -14,7 +14,7 @@ interface CardItemProps {
   query?: string;
 }
 
-export const CardItem = ({ item, index, query }: CardItemProps) => {
+export const CardItem = ({item, index, query}: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const anim = useSharedValue(0);
 
@@ -82,7 +82,6 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
     [],
   );
 
-
   return (
     <Pressable onPress={onItemPress}>
       <Animated.View style={[styles.root, index === 0 ? cardStyleRight : index === 1 ? cardStyleLeft : cardStyleUp]}>
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   container: {
     position: 'relative',

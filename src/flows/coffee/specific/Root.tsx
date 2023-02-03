@@ -104,15 +104,15 @@ const Root = () => {
 
   return (
     <CoffeeStack.Navigator
-      initialRouteName="Home"
+      initialRouteName="PreviewPage"
       screenOptions={{
         gestureEnabled: false,
         headerShown: false,
       }}>
       <CoffeeStack.Group>
         <CoffeeStack.Screen name="Home" component={Home} />
-        <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
         <CoffeeStack.Screen name="Cafes" component={CafeBrowsingPage} />
+        <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
         <CoffeeStack.Group screenOptions={{presentation: 'modal', headerShown: false}}>
           <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
           <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />

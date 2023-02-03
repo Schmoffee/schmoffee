@@ -59,10 +59,10 @@ function RootNavigator(props: NavigatorProps) {
         <RootStack.Group>
           {props.loading ? (
             <RootStack.Screen name="Loading" component={LoadingPage} />
-          ) : global_state.auth_state !== AuthState.SIGNED_IN ? (
+          ) : global_state.auth_state === AuthState.SIGNED_IN ? (
             <>
-              <RootStack.Screen name="Coffee" component={CoffeeRoot} />
-              <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />
+              {/*<RootStack.Screen name="Coffee" component={CoffeeRoot} />*/}
+              {/*<RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />*/}
               <RootStack.Screen name="TrackOrder" component={TrackOrderRoot} />
             </>
           ) : (

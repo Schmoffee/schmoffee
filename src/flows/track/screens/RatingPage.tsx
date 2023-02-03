@@ -9,6 +9,7 @@ import {terminateOrder} from '../../../utils/queries/datastore';
 import {Body, Heading} from '../../common/typography';
 import {PageLayout} from '../../common/components/PageLayout';
 import {Colors, Spacings} from '../../common/theme';
+import {TrackOrderActionName} from '../../../utils/types/enums';
 
 interface RatingPageProps {}
 
@@ -21,14 +22,21 @@ interface RatingItemProps {
 const RatingItem = (props: RatingItemProps) => {
   const {track_order_state, track_order_dispatch} = useContext(TrackOrderContext);
   const navigation = useNavigation();
-  const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
+  const maxRating = [1, 2, 3, 4, 5];
 
   const handleRatingChange = (newRating: number) => {
     props.setRating(newRating);
-    // const ratings = track_order_state.ratings;
-    // const index = ratings.findIndex(rat => rat.itemID === item.id);
-    // ratings[index].rating = newRating;
-    // track_order_dispatch({ type: TrackOrderActionName.SET_RATINGS, payload: ratings });
+    if (track_order_state.current_order) {
+      const ratings = track_order_state.current_order.items.map(item => {
+        return {
+          itemID: item.id,
+          rating: newRating,
+        };
+      });
+      track_order_dispatch({type: TrackOrderActionName.SET_RATINGS, payload: ratings});
+    } else {
+      console.log('no current order');
+    }
   };
 
   return (
@@ -67,7 +75,7 @@ export const RatingPage = (props: RatingPageProps) => {
   return (
     <PageLayout
       header={'How was your order?'}
-      subHeader={'Help us improve our service by rating your order from ' + track_order_state.current_order?.cafeName}
+      subHeader={'Help us improve our service by rating your order from ' + track_order_state.cafe?.name}
       footer={{
         buttonDisabled: rating === 0,
         onPress: () => handleTerminateOrder(),
@@ -80,10 +88,10 @@ export const RatingPage = (props: RatingPageProps) => {
           </Heading>
         </View>
         <View style={styles.detailsContainer}>
-          <Image source={{uri: track_order_state.current_order?.cafeImage}} style={styles.cafeImage} />
+          <Image source={{uri: track_order_state.cafe?.image as string}} style={styles.cafeImage} />
           <RatingItem rating={rating} setRating={setRating} cafe={track_order_state.current_order?.cafeID} />
           <TextInput placeholder="Tell us more..." style={styles.textFormContainer} />
-          <Pressable onPress={() => navigation.navigate('Report')}>
+          <Pressable onPress={() => console.log('Navigate to report page')}>
             <Body size="medium" weight="Bold" style={styles.reportButton}>
               Report an issue
             </Body>

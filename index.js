@@ -14,6 +14,8 @@ import RemotePushNotification from '@aws-amplify/pushnotification';
 import LocalPushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {SendLocalNotification} from './src/utils/helpers/notifications';
+import {LogBox} from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 RemotePushNotification.onNotification(async notification => {
   // Note that the notification object structure is different from Android and IOS
