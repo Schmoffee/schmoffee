@@ -12,14 +12,13 @@ export const Home = () => {
   const {global_state} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const [currentVideo, setCurrentVideo] = useState(0);
-  console.log('currentVideo', currentVideo);
   const [buttonPressed, setButtonPressed] = useState(false);
 
   const onVideoEnd = () => {
     global_state.current_user?.current_order
       ? navigation.navigate('TrackOrder', CONST_SCREEN_ORDER)
       : navigation.navigate(CONST_SCREEN_SHOP);
-    setCurrentVideo(0);
+    setCurrentVideo(2);
   };
 
   const handlePress = () => {

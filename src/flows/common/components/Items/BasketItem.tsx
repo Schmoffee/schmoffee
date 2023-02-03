@@ -1,14 +1,14 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Alert, StyleSheet, Pressable, View} from 'react-native';
 import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import {setSpecificBasket} from '../../../../utils/helpers/storage';
-import {Colors, Spacings} from '../../../common/theme';
-import {OrderItem, OrderOption} from '../../../../models';
-import {Body} from '../../../common/typography';
+import {Colors, Spacings} from '../../theme';
+import {OrderItem} from '../../../../models';
+import {Body} from '../../typography';
 import {OrderingContext} from '../../../../contexts';
 import {OrderingActionName} from '../../../../utils/types/enums';
 import FastImage from 'react-native-fast-image';
-import {equalsCheck, findSameItemIndex} from '../../../../utils/helpers/basket';
+import {findSameItemIndex} from '../../../../utils/helpers/basket';
 
 type Size = 'small' | 'medium' | 'large';
 
@@ -24,8 +24,9 @@ export const BasketItem = (props: BasketItemProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const getQuantity = () => {
-    const index = findSameItemIndex(ordering_state.specific_basket, item);
-    return ordering_state.specific_basket[index]?.quantity || 0;
+    const options = item.options ? item.options : [];
+    const index = findSameItemIndex(ordering_state.specific_basket, item, options);
+    return item.quantity;
   };
 
   const onIncreaseQuantity = async () => {
@@ -33,7 +34,8 @@ export const BasketItem = (props: BasketItemProps) => {
       return;
     } else {
       let newBasket: OrderItem[] = ordering_state.specific_basket;
-      const index = findSameItemIndex(newBasket, item);
+      const options = item.options ? item.options : [];
+      const index = findSameItemIndex(newBasket, item, options);
       if (index > -1) {
         newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
         ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
@@ -76,7 +78,8 @@ export const BasketItem = (props: BasketItemProps) => {
       anim.value = withTiming(1);
     } else {
       let newBasket: OrderItem[] = ordering_state.specific_basket;
-      const index = findSameItemIndex(newBasket, item);
+      const options = item.options ? item.options : [];
+      const index = findSameItemIndex(newBasket, item, options);
       if (index > -1) {
         if (newBasket[index].quantity === 1) {
           onRemoveItem(index);

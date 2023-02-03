@@ -1,12 +1,12 @@
-import {OrderItem, OrderOption} from '../../models';
+import {Item, OrderItem, OrderOption} from '../../models';
 
-function findSameItemIndex(basket: OrderItem[], item: OrderItem) {
+function findSameItemIndex(basket: OrderItem[], item: Item | OrderItem, options: OrderOption[]) {
   return basket.findIndex((basketItem: OrderItem) => {
     const same_name = basketItem.name === item.name;
     const has_options = basketItem.options && basketItem.options.length > 0;
     if (same_name) {
       const a = has_options ? basketItem.options.map((option: OrderOption) => option.name) : [];
-      const b = item.options && item.options.length > 0 ? item.options.map((option: OrderOption) => option.name) : [];
+      const b = options && options.length > 0 ? options.map((option: OrderOption) => option.name) : [];
       return equalsCheck(a, b);
     }
     return false;

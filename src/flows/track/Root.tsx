@@ -22,14 +22,14 @@ const Root = () => {
   const TrackOrderStack = createNativeStackNavigator<TrackOrderRoutes>();
 
   useDeepCompareEffect(() => {
-    async function refreshAddress() {
-      if (track_order_state.current_order && track_order_state.address === '') {
+    async function refreshCafe() {
+      if (track_order_state.current_order && !track_order_state.cafe) {
         const cafe: Cafe = (await getCafeById(track_order_state.current_order.cafeID)) as Cafe;
-        track_order_dispatch({type: TrackOrderActionName.SET_ADDRESS, payload: cafe?.address});
+        track_order_dispatch({type: TrackOrderActionName.SET_CAFE, payload: cafe});
       }
     }
 
-    refreshAddress().catch(e => console.log(e));
+    refreshCafe().catch(e => console.log(e));
   }, [track_order_state.current_order]);
 
   /**

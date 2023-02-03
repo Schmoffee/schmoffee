@@ -10,11 +10,12 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import {BasketItem} from './BasketItem';
+import {BasketItem} from '../../../common/components/Items/BasketItem';
 import {OrderingContext} from '../../../../contexts';
 import {Body} from '../../../common/typography';
 import {Colors, Spacings} from '../../../common/theme';
 import {useNavigation} from '@react-navigation/native';
+import FullOrderItem from '../../../common/components/Items/FullOrderItem';
 
 interface BasketPreviewProps {
   translateY?: Animated.SharedValue<number>;
@@ -47,7 +48,7 @@ export const BasketPreview = (props: BasketPreviewProps) => {
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {ordering_state.specific_basket.map((item, index) => {
-          return <BasketItem key={index} item={item} />;
+          return <BasketItem item={item} key={item.id + index} />;
         })}
       </ScrollView>
       <Pressable style={styles.circle} onPress={() => navigation.navigate('PreviewPage')}>

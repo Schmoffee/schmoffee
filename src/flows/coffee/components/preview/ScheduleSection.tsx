@@ -1,5 +1,5 @@
 import React, {useContext, useRef, useState} from 'react';
-import {StyleSheet, View, TouchableOpacity, Pressable, Alert} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Pressable, Alert, Text} from 'react-native';
 import {Colors, Spacings} from '../../../common/theme';
 import {OrderingContext} from '../../../../contexts';
 import {Body, Heading} from '../../../common/typography';
@@ -72,7 +72,7 @@ const ScheduleSection = (props: ScheduleSectionProps) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Body size="medium" weight="Bold" color={Colors.white}>
-          Pick up time ({scheduled_time} mins)
+          Pick up time ({scheduled_time.current} min)
         </Body>
         <TouchableOpacity onPress={() => showDatePicker()}>
           <Body size="medium" weight="Bold" color={Colors.greyLight3}>
