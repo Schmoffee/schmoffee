@@ -1,5 +1,5 @@
-import { Dimensions, StyleSheet, View } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import {Dimensions, StyleSheet, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,21 +8,21 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Body, Heading } from '../../../common/typography';
-import { setSpecificBasket } from '../../../../utils/helpers/storage';
-import { Colors, Spacings } from '../../../common/theme';
-import { Option, OptionType, OrderItem, OrderOption } from '../../../../models';
-import { Footer } from '../../../common/components/Footer';
-import { OrderingContext } from '../../../../contexts';
+import {Body, Heading} from '../../../common/typography';
+import {setSpecificBasket} from '../../../../utils/helpers/storage';
+import {Colors, Spacings} from '../../../common/theme';
+import {Option, OptionType, OrderItem, OrderOption} from '../../../../models';
+import {Footer} from '../../../common/components/Footer';
+import {OrderingContext} from '../../../../contexts';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
-import { OrderingActionName } from '../../../../utils/types/enums';
+import {OrderingActionName} from '../../../../utils/types/enums';
 import OptionCarousel from '../../components/menu/OptionCarousel';
-import { findSameItemIndex } from '../../../../utils/helpers/basket';
+import {findSameItemIndex} from '../../../../utils/helpers/basket';
 import FastImage from 'react-native-fast-image';
-import { HEIGHT, WIDTH } from '../../../../../constants';
+import {HEIGHT} from '../../../../../constants';
 import QuantitySelector from '../../components/menu/QuantitySelector';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 interface ItemPageProps {
   route?: any;
@@ -33,7 +33,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
   const [selectedMilk, setMilk] = useState<OrderOption>();
   const [selectedSyrup, setSyrup] = useState<OrderOption>();
   const [quantity, setQuantity] = useState(1);
-  const { item, imageSpecs } = route?.params;
+  const {item, imageSpecs} = route?.params;
   const milkOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.MILK);
   const syrupOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.SYRUP);
 
@@ -153,8 +153,8 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
           {item.name}
         </Heading>
       </Animated.View>
-      <Animated.View style={[styles.imageContainer, rImageStyle]} >
-        <FastImage source={{ uri: item.image ? item.image : undefined }} style={styles.image} />
+      <Animated.View style={[styles.imageContainer, rImageStyle]}>
+        <FastImage source={{uri: item.image ? item.image : undefined}} style={styles.image} />
       </Animated.View>
 
       <Animated.View style={[styles.priceQuantityContainer]}>
@@ -166,7 +166,6 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         <View style={styles.quantityContainer}>
           <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
         </View>
-
       </Animated.View>
 
       <Animated.View style={[styles.optionsContainer, optionsStyle]}>
@@ -179,7 +178,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       </Animated.View>
 
       <Animated.View style={[styles.descriptionContainer, descriptionStyle]}>
-        <Heading size="small" weight="Bold" color={Colors.darkBrown} style={{ marginBottom: Spacings.s2 }}>
+        <Heading size="small" weight="Bold" color={Colors.darkBrown} style={{marginBottom: Spacings.s2}}>
           Allergens & Ingredients
         </Heading>
 
@@ -196,10 +195,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
             {item.preparation_time} min
           </Body>
         </View> */}
-
       </Animated.View>
-
-
 
       <Animated.View style={[styles.bottomContainer, bottomContainerStyle]}>
         <Footer buttonText="ADD" buttonDisabled={false} onPress={addItem} />
@@ -271,7 +267,6 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   quantityContainer: {
     width: '52%',
@@ -282,9 +277,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 6,
     borderColor: Colors.greenFaded1,
-    marginLeft: Spacings.s1
+    marginLeft: Spacings.s1,
   },
-
 
   descriptionContainer: {
     paddingHorizontal: Spacings.s6,
@@ -293,7 +287,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-
 
   optionsContainer: {
     marginTop: Spacings.s7,
@@ -317,20 +310,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
   },
-  descriptionContainer: {
-    paddingHorizontal: Spacings.s6,
-    position: 'absolute',
-    top: HEIGHT / 1.6,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
   extraDetailsContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
     width: '80%',
     marginTop: Spacings.s4,
   },
-
 
   bottomContainer: {
     height: 100,
