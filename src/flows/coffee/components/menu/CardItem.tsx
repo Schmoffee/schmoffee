@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, Pressable, Image} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Pressable, Image } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
@@ -14,7 +14,7 @@ interface CardItemProps {
   query?: string;
 }
 
-export const CardItem = ({item, index, query}: CardItemProps) => {
+export const CardItem = ({ item, index, query }: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const anim = useSharedValue(0);
 
@@ -58,33 +58,11 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
     [],
   );
 
-  const cardStyleRight = useAnimatedStyle(
-    () => ({
-      // opacity: anim.value,
-      transform: [
-        {
-          translateX: interpolate(anim.value, [0, 1], [-100, 0]),
-        },
-      ],
-    }),
-    [],
-  );
 
-  const cardStyleLeft = useAnimatedStyle(
-    () => ({
-      // opacity: anim.value,
-      transform: [
-        {
-          translateX: interpolate(anim.value, [0, 1], [100, 0]),
-        },
-      ],
-    }),
-    [],
-  );
 
   return (
     <Pressable onPress={onItemPress}>
-      <Animated.View style={[styles.root, index === 0 ? cardStyleRight : index === 1 ? cardStyleLeft : cardStyleUp]}>
+      <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleDown : cardStyleUp]}>
         <View style={styles.container}>
           <View style={styles.textContainer}>
             <Body size="medium" weight="Bold" color={Colors.darkBrown2} style={styles.titleText}>
@@ -100,7 +78,7 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
             </View>
           </View>
           <View style={styles.imageContainer}>
-            <FastImage source={{uri: item.image ? item.image : undefined}} style={styles.image} />
+            <FastImage source={{ uri: item.image ? item.image : undefined }} style={styles.image} />
             <View style={styles.ratingContainer}>
               <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
                 {item.ratings
@@ -122,10 +100,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
   },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
+
   container: {
     position: 'relative',
     overflow: 'hidden',
@@ -163,6 +138,11 @@ const styles = StyleSheet.create({
     },
     shadowRadius: 4,
     shadowOpacity: 0.2,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    transform: [{ scale: 0.9 }],
   },
   ratingContainer: {
     flex: 1,

@@ -24,8 +24,6 @@ export const BasketItem = (props: BasketItemProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const getQuantity = () => {
-    const options = item.options ? item.options : [];
-    const index = findSameItemIndex(ordering_state.specific_basket, item, options);
     return item.quantity;
   };
 
@@ -127,13 +125,6 @@ export const BasketItem = (props: BasketItemProps) => {
     };
   }, []);
 
-  const rItemNameStyle = useAnimatedStyle(() => {
-    return {
-      opacity: anim.value,
-      transform: [{translateY: 8 * anim.value}],
-    };
-  }, []);
-
   useEffect(() => {
     if (!expanded) {
       anim.value = withTiming(0);
@@ -197,7 +188,7 @@ export const BasketItem = (props: BasketItemProps) => {
 const styles = StyleSheet.create({
   container: {
     width: 90,
-    height: 70,
+    height: '105%',
     justifyContent: 'center',
   },
 
@@ -210,16 +201,16 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 30,
-    borderWidth: 3.5,
+    borderWidth: 2.5,
     borderColor: Colors.white,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative',
-    backgroundColor: Colors.red,
+    // backgroundColor: Colors.red,
   },
   image: {
-    width: 50,
-    height: 50,
+    position: 'absolute',
+    width: 45,
+    height: 45,
     borderRadius: 30,
   },
 
@@ -231,7 +222,7 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 30,
     position: 'relative',
-    top: -40,
+    top: -20,
     right: -15,
   },
   quantityLabel: {

@@ -1,5 +1,5 @@
-import {Dimensions, StyleSheet, View} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,18 +8,21 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {Body, Heading} from '../../../common/typography';
-import {setSpecificBasket} from '../../../../utils/helpers/storage';
-import {Colors, Spacings} from '../../../common/theme';
-import {Option, OptionType, OrderItem, OrderOption} from '../../../../models';
-import {Footer} from '../../../common/components/Footer';
-import {OrderingContext} from '../../../../contexts';
+import { Body, Heading } from '../../../common/typography';
+import { setSpecificBasket } from '../../../../utils/helpers/storage';
+import { Colors, Spacings } from '../../../common/theme';
+import { Option, OptionType, OrderItem, OrderOption } from '../../../../models';
+import { Footer } from '../../../common/components/Footer';
+import { OrderingContext } from '../../../../contexts';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
-import {OrderingActionName} from '../../../../utils/types/enums';
+import { OrderingActionName } from '../../../../utils/types/enums';
 import OptionCarousel from '../../components/menu/OptionCarousel';
-import {findSameItemIndex} from '../../../../utils/helpers/basket';
+import { findSameItemIndex } from '../../../../utils/helpers/basket';
+import FastImage from 'react-native-fast-image';
+import { HEIGHT, WIDTH } from '../../../../../constants';
+import QuantitySelector from '../../components/menu/QuantitySelector';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 interface ItemPageProps {
   route?: any;
@@ -29,7 +32,8 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
   const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
   const [selectedMilk, setMilk] = useState<OrderOption>();
   const [selectedSyrup, setSyrup] = useState<OrderOption>();
-  const {item, imageSpecs} = route?.params;
+  const [quantity, setQuantity] = useState(1);
+  const { item, imageSpecs } = route?.params;
   const milkOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.MILK);
   const syrupOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.SYRUP);
 
@@ -112,14 +116,13 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     let newBasket: OrderItem[] = ordering_state.specific_basket;
     const cleaned_options = [selectedMilk, selectedSyrup].filter(option => option !== undefined) as OrderOption[];
     const index = findSameItemIndex(newBasket, item, cleaned_options);
-    console.log('index', index);
     if (index !== -1) {
       newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     } else {
       const new_order_item: OrderItem = {
-        quantity: 1,
+        quantity: quantity,
         name: item.name,
         price: item.price,
         image: item.image,
@@ -128,7 +131,6 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         id: item.id,
       };
       newBasket = [...ordering_state.specific_basket, new_order_item];
-      console.log('newBasket', newBasket);
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
       await setSpecificBasket(newBasket);
     }
@@ -151,7 +153,21 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
           {item.name}
         </Heading>
       </Animated.View>
-      <Animated.View style={[styles.imageContainer, rImageStyle]} />
+      <Animated.View style={[styles.imageContainer, rImageStyle]} >
+        <FastImage source={{ uri: item.image ? item.image : undefined }} style={styles.image} />
+      </Animated.View>
+
+      <Animated.View style={[styles.priceQuantityContainer]}>
+        <View style={styles.priceContainer}>
+          <Body size="medium" weight="Bold" color={Colors.white}>
+            £{(item.price / 100).toFixed(2)}
+          </Body>
+        </View>
+        <View style={styles.quantityContainer}>
+          <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
+        </View>
+
+      </Animated.View>
 
       <Animated.View style={[styles.optionsContainer, optionsStyle]}>
         <View style={styles.milkOptions}>
@@ -163,10 +179,27 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       </Animated.View>
 
       <Animated.View style={[styles.descriptionContainer, descriptionStyle]}>
-        <Body size="large" weight="Bold" color={Colors.darkBrown2}>
+        <Heading size="small" weight="Bold" color={Colors.darkBrown} style={{ marginBottom: Spacings.s2 }}>
+          Allergens & Ingredients
+        </Heading>
+
+        <Body size="small" weight="Bold" color={Colors.darkBrown2}>
           {item.description}
+          We have addition of additives such as sugar, milk, cream, or added flavors.
         </Body>
+
+        {/* <View style={styles.extraDetailsContainer}>
+          <Body size="small" weight="Bold" color={Colors.darkBrown2}>
+            Prep time
+          </Body>
+          <Body size="small" weight="Bold" color={Colors.darkBrown2}>
+            {item.preparation_time} min
+          </Body>
+        </View> */}
+
       </Animated.View>
+
+
 
       <Animated.View style={[styles.bottomContainer, bottomContainerStyle]}>
         <Footer buttonText="ADD" buttonDisabled={false} onPress={addItem} />
@@ -179,8 +212,6 @@ export default ItemPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop: 250,
-    // zIndex: 99999999,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.greenFaded1,
@@ -196,8 +227,6 @@ const styles = StyleSheet.create({
     top: 40,
     left: Spacings.s13,
     right: 0,
-    // height: 150,
-    // backgroundColor: Colors.red,
     justifyContent: 'center',
     alignItems: 'flex-start',
     zIndex: 1,
@@ -208,15 +237,6 @@ const styles = StyleSheet.create({
     left: -20,
     zIndex: 3,
     elevation: 3,
-    // backgroundColor: Colors.blue,
-  },
-
-  descriptionContainer: {
-    paddingHorizontal: Spacings.s7,
-    position: 'absolute',
-    bottom: 150,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
   },
   imageContainer: {
     width: 200,
@@ -224,24 +244,62 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.red,
+    backgroundColor: Colors.darkBrown,
     position: 'absolute',
-    top: 170,
+    top: HEIGHT / 5.5,
     zIndex: 1,
     borderWidth: 5,
     borderColor: Colors.white,
   },
   image: {
-    width: '80%',
+    width: '100%',
     height: '90%',
   },
-
-  optionsContainer: {
-    // flex: 1,
-    marginTop: 50,
+  priceQuantityContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 100,
+    alignItems: 'center',
+    marginTop: '25%',
+    width: '50%',
+    height: 33,
+    borderRadius: 20,
+    zIndex: 1,
+    backgroundColor: Colors.darkBrown2,
+  },
+  priceContainer: {
+    width: '50%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+  },
+  quantityContainer: {
+    width: '52%',
+    height: '130%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.darkBrown,
+    borderRadius: 50,
+    borderWidth: 6,
+    borderColor: Colors.greenFaded1,
+    marginLeft: Spacings.s1
+  },
+
+
+  descriptionContainer: {
+    paddingHorizontal: Spacings.s6,
+    position: 'absolute',
+    top: HEIGHT / 1.5,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+
+
+  optionsContainer: {
+    marginTop: Spacings.s7,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: 65,
     width: '80%',
   },
 
@@ -259,6 +317,20 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
   },
+  descriptionContainer: {
+    paddingHorizontal: Spacings.s6,
+    position: 'absolute',
+    top: HEIGHT / 1.6,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  extraDetailsContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginTop: Spacings.s4,
+  },
+
 
   bottomContainer: {
     height: 100,

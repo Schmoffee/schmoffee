@@ -13,6 +13,16 @@
       "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-schmoffee-dev-111934-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
+      "notifications": {
+        "Pinpoint": {
+          "Name": "schmoffee-dev",
+          "Id": "3648ce85f9d543e1877c149dccf556b4",
+          "Region": "eu-central-1"
+        }
+      },
+      "auth": {
+        "schmoffeeAuth": {}
+      },
       "function": {
         "schmoffeeAuthCreateAuthChallenge": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
@@ -30,14 +40,6 @@
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
           "s3Key": "amplify-builds/schmoffeeAuthVerifyAuthChallengeResponse-3364566e456f68373563-build.zip"
         },
-        "schmoffeePayWithStripe": {
-          "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
-          "s3Key": "amplify-builds/schmoffeePayWithStripe-7062464e522f35737367-build.zip"
-        },
-        "schmoffeeSendNotification": {
-          "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
-          "s3Key": "amplify-builds/schmoffeeSendNotification-4c772b67454f62794167-build.zip"
-        },
         "schmoffeeCancelPayment": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
           "s3Key": "amplify-builds/schmoffeeCancelPayment-5053672f345665447436-build.zip"
@@ -45,32 +47,15 @@
         "schmoffeeGooglePayConfirmPayment": {
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
           "s3Key": "amplify-builds/schmoffeeGooglePayConfirmPayment-557661646b5243466b57-build.zip"
-        }
-      },
-      "auth": {
-        "schmoffeeAuth": {},
-        "true": {}
-      },
-      "notifications": {
-        "Pinpoint": {
-          "Name": "schmoffee-dev",
-          "Id": "3648ce85f9d543e1877c149dccf556b4",
-          "Region": "eu-central-1"
-        }
-      },
-      "analytics": {
-        "Pinpoint": {
-          "Name": "schmoffee-dev",
-          "Id": "3648ce85f9d543e1877c149dccf556b4",
-          "Region": "eu-central-1"
         },
-        "schmoffee": {}
-      },
-      "storage": {
-        "storage": {}
-      },
-      "api": {
-        "schmoffee": {}
+        "schmoffeePayWithStripe": {
+          "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
+          "s3Key": "amplify-builds/schmoffeePayWithStripe-7062464e522f35737367-build.zip"
+        },
+        "schmoffeeSendNotification": {
+          "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
+          "s3Key": "amplify-builds/schmoffeeSendNotification-4c772b67454f62794167-build.zip"
+        }
       }
     }
   }
