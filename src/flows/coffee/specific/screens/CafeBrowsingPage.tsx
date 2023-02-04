@@ -1,13 +1,13 @@
 import React from 'react';
-import {FlatList, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
-import {OrderingContext} from '../../../../contexts';
-import {useContext} from 'react';
+import { FlatList, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
+import { OrderingContext } from '../../../../contexts';
+import { useContext } from 'react';
 import ShopCard from '../../components/shops/ShopCard';
 import Map from '../../../common/components/Map/Map';
-import {CARD_WIDTH, SPACING_FOR_CARD_INSET} from '../../../../../constants';
+import { CARD_WIDTH, SPACING_FOR_CARD_INSET } from '../../../../../constants';
 
 const CafeBrowsingPage = () => {
-  const {ordering_state} = useContext(OrderingContext);
+  const { ordering_state } = useContext(OrderingContext);
 
   return (
     <View style={styles.root}>

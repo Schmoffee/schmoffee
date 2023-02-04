@@ -59,11 +59,11 @@ const styles = StyleSheet.create({
   root: {
     justifyContent: 'flex-start',
     position: 'absolute',
-    bottom: Spacings.s1,
+    bottom: -Spacings.s2,
     width: '100%',
     // height: 100,
     zIndex: 999,
-    paddingHorizontal: Spacings.s4,
+    paddingHorizontal: Spacings.s8,
   },
 
   childrenContainer: {
