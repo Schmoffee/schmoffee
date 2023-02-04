@@ -67,7 +67,7 @@ export const PageLayout = (props: PageLayoutProps) => {
 
 const styles = StyleSheet.create({
   root: {
-    paddingBottom: Spacings.s9,
+    paddingVertical: Spacings.s13,
     height: '100%',
   },
   contentContainer: {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: Spacings.s12,
+    // marginTop: Spacings.s12,
   },
   backChevron: {
     position: 'absolute',

@@ -1,21 +1,22 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import { StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import FullOrderItem from '../../common/components/Items/FullOrderItem';
-import {Colors, Spacings} from '../../common/theme';
+import { Colors, Spacings } from '../../common/theme';
 import Animated from 'react-native-reanimated';
-import {OrderItem} from '../../../models';
+import { OrderItem } from '../../../models';
 
 interface OrderItemsListProps {
   translateY?: Animated.SharedValue<number>;
   items: OrderItem[];
   optionalComponent?: React.ReactNode;
+  scrollable?: boolean;
 }
 
 const OrderItemsList = (props: OrderItemsListProps) => {
   const height = 100;
   const maxHeight = 350;
-  const {items, optionalComponent} = props;
+  const { items, optionalComponent } = props;
   const length = props.items.length;
   const getHeight = () => {
     if (length <= 1) {
@@ -28,19 +29,36 @@ const OrderItemsList = (props: OrderItemsListProps) => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={{height: getHeight(), maxHeight}}>
-        {optionalComponent}
-        <View style={styles.basketColumn}>
-          <View style={styles.headerRow}>
-            {items.map((item, index) => {
-              return <FullOrderItem item={item} index={index} key={item.id + index} />;
-            })}
+    <>
+
+      {props.scrollable ? (
+        <ScrollView style={styles.container} >
+          <View style={{ height: getHeight(), maxHeight }}>
+            {optionalComponent}
+            <View style={styles.basketColumn}>
+              <View style={styles.headerRow}>
+                {items.map((item, index) => {
+                  return <FullOrderItem item={item} index={index} key={item.id + index} />;
+                })}
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      ) : (
+        <View style={{ height: getHeight(), maxHeight }}>
+          {optionalComponent}
+          <View style={styles.basketColumn}>
+            <View style={styles.headerRow}>
+              {items.map((item, index) => {
+                return <FullOrderItem item={item} index={index} key={item.id + index} />;
+              })}
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
-  );
+      )}
+    </>
+  )
+
 };
 
 export default OrderItemsList;

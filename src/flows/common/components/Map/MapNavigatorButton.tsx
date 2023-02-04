@@ -1,8 +1,10 @@
 import React from 'react';
-import {ActionButton} from '../Buttons/ActionButton';
+import { ActionButton } from '../Buttons/ActionButton';
 import LaunchNavigator from 'react-native-launch-navigator';
-import {Platform} from 'react-native';
-import {MapAppName} from '../../../../utils/types/enums';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { MapAppName } from '../../../../utils/types/enums';
+import { Body } from '../../typography';
+import { Colors } from '../../theme';
 
 interface MapNavigatorButtonProps {
   latitude: number | undefined;
@@ -58,7 +60,32 @@ const MapNavigatorButton = (props: MapNavigatorButtonProps) => {
       });
   }
 
-  return <ActionButton label={'Open in maps'} onPress={handlePress} />;
-};
+  return (
+    <Pressable onPress={handlePress}>
+      <View style={styles.button}>
+        <Body size="medium" weight="Bold" color={Colors.darkBrown}>
+          open in maps
+        </Body>
+      </View>
+    </Pressable>
 
+  )
+};
 export default MapNavigatorButton;
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.greyLight1,
+    borderRadius: 10,
+    padding: 10,
+    shadowColor: Colors.black,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+  },
+})

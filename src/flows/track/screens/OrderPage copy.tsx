@@ -18,7 +18,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { HEIGHT, WIDTH } from '../../../../constants';
 import OrderItemsList from '../components/OrderItemsList';
-import OrderCardCarousel from '../components/OrderCardCarousel';
 
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
@@ -68,12 +67,10 @@ export const OrderPage = () => {
     };
   });
 
-
-
   return (
     <PageLayout
-      header="Order Details"
-      backgroundColor={Colors.greenFaded1}
+      header="Your Order"
+      backgroundColor={Colors.greyLight1}
       footer={{
         buttonDisabled: false,
         onPress: () => handlePress(),
@@ -84,9 +81,12 @@ export const OrderPage = () => {
           {pin}
         </Heading>
       </Animated.View>
-
-      <View style={styles.carouselContainer}>
-        <OrderCardCarousel />
+      <View style={styles.mapContainer}>
+        <Map
+          cafeIdFilter={track_order_state.current_order?.cafeID}
+          cafeLocationFilter={track_order_state.destination}
+          preview
+        />
       </View>
       <View style={styles.orderDetailsContainer}>
         <View style={styles.timeContainer}>
@@ -118,21 +118,23 @@ export const OrderPage = () => {
             </Body>
           </View>
         </View>
-
+        <View style={{ flex: 1 }}>
+          <OrderItemsList items={track_order_state.current_order?.items ? track_order_state.current_order.items : []} />
+        </View>
       </View>
       <CustomModal
         visible={showSuccessModal}
         setVisible={setShowSuccessModal}
         type="success"
         title="Order Accepted"
-        message="Your order has been accepted!"
+        message="Your order has been accepted pussy"
       />
       <CustomModal
         visible={showRejectionModal}
         setVisible={setShowRejectionModal}
         type="error"
         title="Order Rejected"
-        message="Your order has been rejected."
+        message="Your order has been rejected pussy"
       />
     </PageLayout>
   );
@@ -142,23 +144,17 @@ const styles = StyleSheet.create({
   mapContainer: {
     // flex: 1,
     height: '40%',
-    width: '80%',
+    width: '95%',
     borderRadius: 40,
     // marginTop: Spacings.s5,
     borderWidth: 1,
     borderColor: Colors.greyLight3,
     overflow: 'hidden',
   },
-  carouselContainer: {
-    marginTop: Spacings.s10,
-    height: '60%',
-    width: '100%',
-    // backgroundColor: 'red'
-  },
   orderDetailsContainer: {
     height: '30%',
     width: '95%',
-    paddingTop: Spacings.s8,
+    paddingTop: Spacings.s5,
     paddingHorizontal: Spacings.s2,
     marginBottom: Spacings.s25,
   },

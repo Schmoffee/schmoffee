@@ -1,5 +1,5 @@
-import {StyleSheet, View, Image, useWindowDimensions, NativeScrollEvent, NativeSyntheticEvent} from 'react-native';
-import React, {useState} from 'react';
+import { StyleSheet, View, Image, useWindowDimensions, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import React, { useState } from 'react';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -8,9 +8,9 @@ import Animated, {
   useAnimatedRef,
 } from 'react-native-reanimated';
 import Pagination from './Pagination';
-import {Body} from '../../../common/typography';
-import {Colors} from '../../../common/theme';
-import {Option, OrderOption} from '../../../../models';
+import { Body } from '../../../common/typography';
+import { Colors } from '../../../common/theme';
+import { Option, OrderOption } from '../../../../models';
 
 interface OptionCarouselProps {
   data: Option[];
@@ -19,15 +19,15 @@ interface OptionCarouselProps {
 }
 
 const OptionCarousel = (props: OptionCarouselProps) => {
-  const {data, pagination, setOption} = props;
+  const { data, pagination, setOption } = props;
   const scrollViewRef = useAnimatedRef();
   const [newData] = useState([
-    {key: 'spacer-left'},
-    {key: 'nothing', image: require('../../../../assets/pngs/nothing-outline.png')},
+    { key: 'spacer-left' },
+    { key: 'nothing', image: require('../../../../assets/pngs/nothing-outline.png') },
     ...data,
-    {key: 'spacer-right'},
+    { key: 'spacer-right' },
   ]);
-  const {width} = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const SIZE = width * 0.15;
   const SPACER = (width - SIZE) / 7;
   const x = useSharedValue(0);
@@ -43,7 +43,7 @@ const OptionCarousel = (props: OptionCarouselProps) => {
     const selected = newData[currentIndex + 1];
     if (!selected.hasOwnProperty('key')) {
       const selectedOption = selected as Option;
-      setOption({option_type: selectedOption.option_type, price: selectedOption.price, name: selectedOption.name});
+      setOption({ option_type: selectedOption.option_type, price: selectedOption.price, name: selectedOption.name });
     } else {
       setOption(undefined);
     }
@@ -71,7 +71,7 @@ const OptionCarousel = (props: OptionCarouselProps) => {
               [0.35, 1, 0.35],
             );
             return {
-              transform: [{scale}],
+              transform: [{ scale }],
               opacity,
             };
           });
@@ -82,19 +82,19 @@ const OptionCarousel = (props: OptionCarouselProps) => {
 
             return {
               opacity,
-              transform: [{translateY}],
+              transform: [{ translateY }],
             };
           });
 
           if (!item.hasOwnProperty('image')) {
-            return <View style={{width: SPACER}} key={index} />;
+            return <View style={{ width: SPACER }} key={index} />;
           }
           const fullOption: Option = item as Option;
 
-          const image = fullOption.hasOwnProperty('key') ? fullOption.image : {uri: fullOption.image};
+          const image = fullOption.hasOwnProperty('key') ? fullOption.image : { uri: fullOption.image };
 
           return (
-            <View style={{width: SIZE}} key={index}>
+            <View style={{ width: SIZE }} key={index}>
               <View style={styles.itemContainer}>
                 <Animated.View style={[styles.imageContainer, rImageStyle]}>
                   <Image source={image} style={styles.image} />
