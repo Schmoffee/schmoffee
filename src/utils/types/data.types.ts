@@ -1,4 +1,4 @@
-import {Cafe, CurrentOrder, Item, Option, OrderItem, UsualOrder} from '../../models';
+import {Cafe, CurrentOrder, Item, Option, OrderItem, PastOrder, UsualOrder} from '../../models';
 import {CognitoUser} from 'amazon-cognito-identity-js';
 import {AuthState, GlobalActionName, OrderingActionName, SignInActionName, TrackOrderActionName} from './enums';
 
@@ -185,4 +185,5 @@ export type LocalUser = {
   customer_id: string | null | undefined;
   device_token: string;
   current_order: CurrentOrder | null;
+  past_orders: PastOrder[];
 };

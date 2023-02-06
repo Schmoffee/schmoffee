@@ -2,12 +2,12 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
 import {ActivityIndicator, Alert, Platform, ScrollView, StyleSheet, View} from 'react-native';
 import {
-  useStripe,
-  initStripe,
-  useGooglePay,
-  GooglePayButton,
-  useApplePay,
   ApplePayButton,
+  GooglePayButton,
+  initStripe,
+  useApplePay,
+  useGooglePay,
+  useStripe,
 } from '@stripe/stripe-react-native';
 import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
 import {
@@ -36,10 +36,11 @@ import {ActionButton} from '../../../common/components/Buttons/ActionButton';
 import {BlurView} from '@react-native-community/blur';
 import {getOptionsPrice} from '../../../../utils/helpers/basket';
 import {getOrderId} from '../../../../utils/helpers/order_id';
+import {GlobalActionName} from '../../../../utils/types/enums';
 
 interface PreviewPageProps {}
 export const PreviewPage = (props: PreviewPageProps) => {
-  const {global_state} = useContext(GlobalContext);
+  const {global_state, global_dispatch} = useContext(GlobalContext);
   const {ordering_state} = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
   const {initPaymentSheet, presentPaymentSheet} = useStripe(); // Stripe hook payment methods
@@ -165,7 +166,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
         device_token: user.device_token,
         platform: platform,
       };
-      await sendOrder(
+
+      const order = await sendOrder(
         ordering_state.specific_basket,
         total,
         order_info,
@@ -174,6 +176,10 @@ export const PreviewPage = (props: PreviewPageProps) => {
         user_info,
         paymentId,
       );
+      global_dispatch({
+        type: GlobalActionName.SET_CURRENT_USER,
+        payload: {...global_state.current_user, current_order: order},
+      });
       if (usual) {
         await saveUsualOrder();
       }

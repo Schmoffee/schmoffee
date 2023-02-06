@@ -6,11 +6,17 @@ import {DataStore, Hub} from 'aws-amplify';
 import {authListener, datastoreListener} from './utils/helpers/listeners';
 import {getCurrentAuthUser, signOut} from './utils/queries/auth';
 import {AuthState, GlobalActionName} from './utils/types/enums';
-import {getCurrOrder, getUserById, getUserByPhoneNumber, updateDeviceToken} from './utils/queries/datastore';
+import {
+  getCurrOrder,
+  getPastOrders,
+  getUserById,
+  getUserByPhoneNumber,
+  updateDeviceToken,
+} from './utils/queries/datastore';
 import {LocalUser} from './utils/types/data.types';
 import {updateEndpoint} from './utils/helpers/notifications';
 import Navigator from './navigation/Navigator';
-import {CurrentOrder, User} from './models';
+import {CurrentOrder, PastOrder, User} from './models';
 import {firebase} from '@react-native-firebase/messaging';
 import {Alerts} from './utils/helpers/alerts';
 const App = () => {
@@ -129,6 +135,7 @@ const App = () => {
       if (global_state.auth_state === AuthState.SIGNED_IN && items.length > 0) {
         const currentUser = items[0];
         const curr_order: CurrentOrder | null = await getCurrOrder(currentUser.id);
+        const past_orders: PastOrder[] = await getPastOrders(currentUser.id);
         const localUser: LocalUser = {
           id: currentUser.id,
           name: currentUser.name,
@@ -138,6 +145,7 @@ const App = () => {
           customer_id: currentUser.customer_id,
           device_token: global_state.device_token,
           current_order: curr_order,
+          past_orders: past_orders,
         };
         global_dispatch({type: GlobalActionName.SET_CURRENT_USER, payload: localUser});
       }

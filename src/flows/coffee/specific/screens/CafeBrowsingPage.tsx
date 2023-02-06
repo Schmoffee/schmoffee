@@ -1,13 +1,22 @@
-import React from 'react';
-import { FlatList, Platform, SafeAreaView, StyleSheet, View } from 'react-native';
-import { OrderingContext } from '../../../../contexts';
-import { useContext } from 'react';
+import React, {useCallback} from 'react';
+import {FlatList, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
+import {OrderingContext} from '../../../../contexts';
+import {useContext} from 'react';
 import ShopCard from '../../components/shops/ShopCard';
 import Map from '../../../common/components/Map/Map';
-import { CARD_WIDTH, SPACING_FOR_CARD_INSET } from '../../../../../constants';
+import {CARD_WIDTH, SPACING_FOR_CARD_INSET} from '../../../../../constants';
 
 const CafeBrowsingPage = () => {
-  const { ordering_state } = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
+
+  const viewabilityConfig = {
+    waitForInteraction: true,
+    itemVisiblePercentThreshold: 50,
+  };
+
+  const handleViewableItemsChanged = useCallback((info: any) => {
+    console.log('info', info);
+  }, []);
 
   return (
     <View style={styles.root}>
@@ -21,6 +30,8 @@ const CafeBrowsingPage = () => {
             pagingEnabled
             snapToInterval={CARD_WIDTH + 35}
             scrollEventThrottle={1}
+            viewabilityConfig={viewabilityConfig}
+            onViewableItemsChanged={handleViewableItemsChanged}
             showsHorizontalScrollIndicator={false}
             decelerationRate={Platform.OS === 'ios' ? 0 : 0.98}
             snapToAlignment="center"

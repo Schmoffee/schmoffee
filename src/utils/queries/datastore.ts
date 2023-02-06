@@ -97,7 +97,7 @@ async function sendOrder(
   userID: string,
   user_info: UserInfo,
   payment_id: string,
-): Promise<string> {
+): Promise<CurrentOrder> {
   const order: CurrentOrder = await DataStore.save(
     new CurrentOrder({
       items: items,
@@ -111,7 +111,7 @@ async function sendOrder(
       display: true,
     }),
   );
-  return order.id;
+  return order;
 }
 
 async function deleteOrder(order_id: string): Promise<CurrentOrder | null> {
@@ -336,6 +336,10 @@ async function getAllRatings(): Promise<Rating[]> {
   return await DataStore.query(Rating);
 }
 
+async function getPastOrders(userID: string): Promise<PastOrder[]> {
+  return await DataStore.query(PastOrder, past_order => past_order.userID('eq', userID));
+}
+
 export {
   getCommonItems,
   getUserByPhoneNumber,
@@ -358,4 +362,5 @@ export {
   getAllRatings,
   getCafeById,
   setUsualOrder,
+  getPastOrders,
 };
