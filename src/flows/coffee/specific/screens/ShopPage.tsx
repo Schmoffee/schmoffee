@@ -152,7 +152,7 @@ export const ShopPage = () => {
         <LeftChevronBackButton color={Colors.white} />
       </View>
       <View style={[styles.itemsContainer]}>
-        <LinearGradient locations={[0.3, 1]}
+        <LinearGradient locations={[0.2, 1]}
           colors={[Colors.darkBrown2, Colors.cream]}>
           <View style={styles.header}>
             <Animated.Image

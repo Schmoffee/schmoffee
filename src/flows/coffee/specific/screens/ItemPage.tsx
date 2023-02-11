@@ -112,6 +112,19 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
     [],
   );
 
+  const rAddButtonStyle = useAnimatedStyle(
+    () => ({
+      opacity: anim.value,
+      transform: [
+        {
+          translateY: interpolate(anim.value, [0, 1], [200, 0]),
+        },
+      ],
+    }),
+    [],
+  );
+
+
   async function addItem() {
     let newBasket: OrderItem[] = ordering_state.specific_basket;
     const cleaned_options = [selectedMilk, selectedSyrup].filter(option => option !== undefined) as OrderOption[];
@@ -214,7 +227,7 @@ const ItemPage = ({ route, navigation }: ItemPageProps) => {
       <Animated.View style={[styles.bottomContainer, bottomContainerStyle]}>
         {/* <Footer buttonText="ADD" buttonDisabled={false} onPress={addItem} /> */}
         <Pressable onPress={addItem}>
-          <Image source={require('../../../../assets/pngs/add-button.png')} style={styles.addButton} />
+          <Animated.Image source={require('../../../../assets/pngs/add-button.png')} style={[styles.addButton, rAddButtonStyle]} />
         </Pressable>
       </Animated.View>
     </View>

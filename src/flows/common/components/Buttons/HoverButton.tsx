@@ -3,17 +3,21 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { WIDTH } from '../../../../../constants';
 import { Colors, Spacings } from '../../theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface HoverButtonProps {
     onShortPressOut: () => void;
     onLongPress: () => void;
+    backgroundColor?: string;
+    buttonPressedColor?: string;
 }
 
 const HoverButton = (props: HoverButtonProps) => {
     const [pressed, setPressed] = useState(false)
     const [longPressed, setLongPressed] = useState(false);
     const anim = useSharedValue(1);
-
+    const backgroundColor = props.backgroundColor ? props.backgroundColor : Colors.darkBrown;
+    const buttonPressedColor = props.buttonPressedColor ? props.buttonPressedColor : Colors.brownFaded2;
 
     const handlePressIn = () => {
         setPressed(true);
@@ -102,8 +106,8 @@ const HoverButton = (props: HoverButtonProps) => {
                     delayLongPress={300}
 
                     style={[
-                        styles.button,
-                        pressed ? styles.buttonPressed : null
+                        [styles.button, { backgroundColor: backgroundColor }],
+                        pressed ? [styles.buttonPressed, { backgroundColor: buttonPressedColor }] : null
                     ]}
                 >
                     {/* {pressed ?
@@ -135,7 +139,6 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        backgroundColor: Colors.darkBrown,
         padding: 16,
         width: 70,
         height: 70,
@@ -147,7 +150,6 @@ const styles = StyleSheet.create({
     buttonPressed: {
         elevation: 0,
         zIndex: 0,
-        backgroundColor: Colors.darkBrown,
     },
     buttonText: {
         textAlign: 'center',

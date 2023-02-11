@@ -74,10 +74,11 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
               <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
                 {item.ratings
                   ? item.ratings.length > 0
-                    ? item.ratings.reduce((acc, curr) => acc + (curr ? curr.rating : 0), 0) / item.ratings.length
+                    ? (item.ratings.reduce((acc, curr) => acc + (curr ? curr.rating : 0), 0) / item.ratings.length).toFixed(1)
                     : 'None'
                   : 'None'}
               </Body>
+              <Image source={require('../../../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
             </View>
           </View>
         </View>
@@ -177,15 +178,15 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     position: 'absolute',
-    right: 7,
+    right: 20,
     top: 4,
   },
 
   ratingStar: {
-    height: 15,
-    width: 15,
+    height: 10,
+    width: 10,
     position: 'absolute',
-    left: 0,
+    left: 22,
     tintColor: Colors.gold,
   },
   plusButton: {
