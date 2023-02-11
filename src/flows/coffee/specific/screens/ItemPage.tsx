@@ -335,6 +335,11 @@ const styles = StyleSheet.create({
     marginTop: Spacings.s4,
   },
 
+  addButton: {
+    width: 100,
+    height: 100,
+  },
+
   bottomContainer: {
     height: 100,
     width: '100%',

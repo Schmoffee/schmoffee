@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { WIDTH } from '../../../../../constants';
 import { Colors, Spacings } from '../../theme';
 
 interface HoverButtonProps {
@@ -24,7 +25,6 @@ const HoverButton = (props: HoverButtonProps) => {
     const handleLongPress = () => {
         setLongPressed(true);
         // wait for animation to finish
-
         anim.value = withTiming(1.05, {
             duration: 5000,
             easing: Easing.bezier(0.25, 0.1, 0.25, 1),
@@ -65,20 +65,20 @@ const HoverButton = (props: HoverButtonProps) => {
 
                 },
                 {
-                    translateY: interpolate(
-                        anim.value,
-                        [0, 1],
-                        [-15, 0],
-                    ),
-
-                },
-                {
                     translateX: interpolate(
                         anim.value,
                         [0, 1],
-                        [20, 0],
+                        [-35, 0],
                     ),
-                }
+                },
+                {
+                    translateY: interpolate(
+                        anim.value,
+                        [0, 1],
+                        [-30, 0],
+                    ),
+                },
+
             ],
 
             elevation: 0,
@@ -117,7 +117,9 @@ const HoverButton = (props: HoverButtonProps) => {
                     } */}
                 </Pressable>
             </Animated.View>
-            <Image style={styles.image} source={require('../../../../assets/pngs/button-blue.png')} />
+            <View style={styles.buttonContainer}>
+                <Image style={styles.image} source={require('../../../../assets/pngs/home-button.png')} />
+            </View>
 
         </View>
 
@@ -133,19 +135,19 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.darkBrown,
         padding: 16,
         width: 70,
         height: 70,
         borderRadius: 35,
         elevation: 4,
-        marginTop: -40,
-        marginLeft: 52,
+        marginTop: -50,
+        marginLeft: -70,
     },
     buttonPressed: {
         elevation: 0,
         zIndex: 0,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.darkBrown,
     },
     buttonText: {
         textAlign: 'center',
@@ -160,11 +162,17 @@ const styles = StyleSheet.create({
         position: 'absolute',
         zIndex: 1,
     },
+    buttonContainer: {
+        width: WIDTH,
+        marginLeft: -70,
+        alignItems: 'center',
+    },
+
     image: {
         width: 150,
         height: 150,
-        marginLeft: 50,
-        marginTop: 10,
+        marginTop: 0,
+
     }
 });
 

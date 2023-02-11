@@ -30,9 +30,11 @@ export const PageLayout = (props: PageLayoutProps) => {
       <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
         {props.showCircle ? <View style={[styles.bigSemiCircle]} /> : null}
         <View style={styles.header}>
-          <View style={styles.backChevron}>
-            {/* <LeftChevronBackButton color={Colors.black} /> */}
-          </View>
+          {props.backButton ? (
+            <View style={styles.backChevron}>
+              <LeftChevronBackButton color={Colors.black} />
+            </View>
+          ) : null}
           {props.hamburger ? (
             <TouchableOpacity onPress={props.hamburgerOnPress}>
               <View style={styles.hamburgerButton}>
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
   },
   backChevron: {
     position: 'absolute',
-    left: 0,
+    left: -20,
     top: -5,
   },
   headerChildren: {

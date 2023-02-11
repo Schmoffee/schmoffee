@@ -31,6 +31,7 @@ export const Colors = {
   goldLight3: '#f3fbff',
   cream: '#FFF5E6',
   darkBrown: '#240903',
+  darkerBrown: '#1C1414',
   darkBrown2: '#562A17',
   darkBrownFaded: '#945128'
 };

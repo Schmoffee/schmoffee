@@ -1,20 +1,19 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import Video from 'react-native-video';
 import CurrentOrderBanner from '../../track/components/CurrentOrderBanner';
-import {GlobalContext} from '../../../contexts';
-import {RootRoutes} from '../../../utils/types/navigation.types';
-import {CONST_SCREEN_ORDER, CONST_SCREEN_SHOP, HEIGHT, WIDTH} from '../../../../constants';
-import HoverButton from '../components/Buttons/LongPressButton';
+import { GlobalContext } from '../../../contexts';
+import { RootRoutes } from '../../../utils/types/navigation.types';
+import { CONST_SCREEN_ORDER, CONST_SCREEN_SHOP, HEIGHT, WIDTH } from '../../../../constants';
+import HoverButton from '../components/Buttons/HoverButton';
 import FastImage from 'react-native-fast-image';
 
 export const Home = () => {
-  const {global_state} = useContext(GlobalContext);
+  const { global_state } = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const [currentVideo, setCurrentVideo] = useState<number>(0);
-  console.log('currentVideo', currentVideo);
-  const [orderRunningn, setOrderRunning] = useState<boolean>(false);
+
 
   const onVideoEnd = () => {
     global_state.current_user?.current_order
@@ -24,7 +23,12 @@ export const Home = () => {
   };
 
   const handlePress = () => {
-    setCurrentVideo(1);
+    if (currentVideo === 0) {
+      setCurrentVideo(1);
+    }
+    else if (currentVideo === 2) {
+      navigation.navigate('TrackOrder', CONST_SCREEN_ORDER)
+    }
   };
 
   return (
@@ -40,7 +44,7 @@ export const Home = () => {
       </View>
 
       <View>
-        {currentVideo === 0 ? (
+        {currentVideo !== 1 ? (
           <View style={styles.hoverButtonContainer}>
             <HoverButton onShortPressOut={() => handlePress()} onLongPress={() => navigation.navigate('PreviewPage')} />
           </View>
@@ -50,16 +54,16 @@ export const Home = () => {
             currentVideo === 0
               ? require('../../../assets/videos/home-loop-og.mp4')
               : currentVideo === 1
-              ? require('../../../assets/videos/fly-complete-2.mp4')
-              : global_state.current_user?.current_order
-              ? require('../../../assets/videos/astronaut.mp4')
-              : null
+                ? require('../../../assets/videos/fly-complete-2.mp4')
+                : global_state.current_user?.current_order
+                  ? require('../../../assets/videos/astronaut.mp4')
+                  : null
           }
           style={styles.videoContainer}
           paused={false}
           resizeMode="stretch"
           repeat={currentVideo !== 1}
-          onEnd={currentVideo === 1 ? () => onVideoEnd() : () => {}}
+          onEnd={currentVideo === 1 ? () => onVideoEnd() : () => { }}
         />
       </View>
       <View style={styles.currentOrderBanner}>

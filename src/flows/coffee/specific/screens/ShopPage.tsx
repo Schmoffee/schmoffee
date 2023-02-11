@@ -148,7 +148,7 @@ export const ShopPage = () => {
     <View style={styles.root}>
       {/* back button for navigation */}
       <View style={styles.backButton}>
-        <LeftChevronBackButton color={'black'} />
+        <LeftChevronBackButton color={Colors.white} />
       </View>
 
       <View style={[styles.itemsContainer]}>

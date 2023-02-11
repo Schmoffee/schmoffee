@@ -1,9 +1,9 @@
 import React from 'react';
-import {StyleSheet, View, Pressable} from 'react-native';
-import {HEIGHT, WIDTH} from '../../../../constants';
-import {CurrentOrder} from '../../../models';
-import {Colors} from '../../common/theme';
-import {Body, Heading} from '../../common/typography';
+import { StyleSheet, View, Pressable } from 'react-native';
+import { HEIGHT, WIDTH } from '../../../../constants';
+import { CurrentOrder } from '../../../models';
+import { Colors } from '../../common/theme';
+import { Body, Heading } from '../../common/typography';
 
 interface CurrentOrderBannerProps {
   currentOrder?: CurrentOrder;
@@ -11,7 +11,7 @@ interface CurrentOrderBannerProps {
 
 const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
   return (
-    <Pressable onPress={() => {}}>
+    <Pressable onPress={() => { }}>
       <View style={styles.root}>
         <View style={styles.container}>
           <View style={styles.cafe}>
@@ -24,7 +24,7 @@ const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
           </View>
 
           <View style={styles.time}>
-            <Heading size="small" weight="Extrabld" color={'green'} style={{marginTop: 10}}>
+            <Heading size="small" weight="Extrabld" color={'green'} style={{ marginTop: 10 }}>
               READY
             </Heading>
 
@@ -47,9 +47,9 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     flexDirection: 'column',
-    height: HEIGHT / 6,
-    // backgroundColor: Colors.greyLight2,
-
+    height: HEIGHT / 7,
+    backgroundColor: Colors.greyLight2,
+    opacity: 0.9,
     width: WIDTH / 1.2,
     borderRadius: 20,
     // justifyContent: 'flex-start',
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   moreInfo: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 5,
     left: '13%',
     // backgroundColor: 'green',
     height: '20%',

@@ -52,10 +52,13 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
 
   const cardStyleUp = useAnimatedStyle(
     () => ({
-      // opacity: anim.value,
+      opacity: interpolate(anim.value, [0, 1], [0.95, 1], Extrapolate.CLAMP),
       transform: [
         {
-          translateY: interpolate(anim.value, [0, 1], [100, 0]),
+          translateY: interpolate(anim.value, [0, 1], [10, 0]),
+        },
+        {
+          scale: interpolate(anim.value, [0, 1], [1.03, 1]),
         },
       ],
     }),
@@ -65,7 +68,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
 
   return (
     <Pressable onPress={onItemPress}>
-      <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleDown : cardStyleDown]}>
+      <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleUp : cardStyleUp]}>
         <View style={styles.container}>
           <View style={styles.textContainer}>
             <Body size="medium" weight="Bold" color={Colors.darkBrown2} style={styles.titleText}>
