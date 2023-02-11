@@ -59,7 +59,7 @@ export const Home = () => {
               onShortPressOut={() => handlePress()} onLongPress={() => navigation.navigate('PreviewPage')} />
           </View>
         ) : null}
-        <Image source={
+        <FastImage source={
           currentVideo === 0 ? require('../../../assets/gifs/home-loop.gif') :
             currentVideo === 1 ? require('../../../assets/gifs/fly-complete.gif') :
               require('../../../assets/gifs/astronaut.gif')
@@ -71,6 +71,7 @@ export const Home = () => {
               }, 2700);
             }
           }}
+
           style={styles.videoContainer} />
 
       </View>
