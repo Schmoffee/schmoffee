@@ -226,8 +226,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
     const success = await checkout(mode);
     setLoading(false);
     if (success) {
-      // close modal 
-
       navigation.navigate('TrackOrder', { screen: CONST_SCREEN_ORDER });
     }
   };

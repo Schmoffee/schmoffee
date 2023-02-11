@@ -336,8 +336,6 @@ const styles = StyleSheet.create({
   },
 
   addButton: {
-    width: 100,
-    height: 100,
   },
 
   bottomContainer: {

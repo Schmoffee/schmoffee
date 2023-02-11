@@ -299,6 +299,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
     position: 'absolute',
     top: -450,
+    tintColor: Colors.darkBrown,
   },
 
   footerContainer: {
