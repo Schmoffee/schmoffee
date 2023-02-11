@@ -33,7 +33,8 @@ export const Colors = {
   darkBrown: '#240903',
   darkerBrown: '#1C1414',
   darkBrown2: '#562A17',
-  darkBrownFaded: '#945128'
+  darkBrownFaded: '#945128',
+  orange: '#9F3407',
 };
 
 export const Spacings = {

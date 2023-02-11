@@ -35,24 +35,9 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
     });
   };
 
-  const cardStyleDown = useAnimatedStyle(
-    () => ({
-      opacity: interpolate(anim.value, [0, 1], [0.95, 1], Extrapolate.CLAMP),
-      transform: [
-        {
-          translateY: interpolate(anim.value, [0, 1], [-10, 0]),
-        },
-        {
-          scale: interpolate(anim.value, [0, 1], [1.03, 1]),
-        },
-      ],
-    }),
-    [],
-  );
-
   const cardStyleUp = useAnimatedStyle(
     () => ({
-      opacity: interpolate(anim.value, [0, 1], [0.95, 1], Extrapolate.CLAMP),
+      opacity: interpolate(anim.value, [0, 1], [0.93, 1], Extrapolate.CLAMP),
       transform: [
         {
           translateY: interpolate(anim.value, [0, 1], [10, 0]),

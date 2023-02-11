@@ -18,6 +18,7 @@ import { Body, Heading } from '../../common/typography';
 import { Colors, Spacings } from '../../common/theme';
 import { Footer } from '../../common/components/Footer';
 
+
 interface AuthLayoutProps extends PropsWithChildren {
   style?: any;
   headerChildren?: React.ReactNode;
@@ -175,7 +176,6 @@ export const AuthLayout = (props: AuthLayoutProps) => {
             )}
           </View>
         </View>
-
         {isKeyboardVisible ? (
           <Animated.View entering={SlideInDown} exiting={SlideOutDown} style={styles.blurView}>
             <BlurView
@@ -195,7 +195,7 @@ export const AuthLayout = (props: AuthLayoutProps) => {
         ) : null}
       </View>
       {/* </Pressable> */}
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView >
   );
 };
 

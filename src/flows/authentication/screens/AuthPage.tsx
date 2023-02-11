@@ -14,6 +14,8 @@ import { Footer } from '../../common/components/Footer';
 import { InputOTP } from '../components/InputOTP';
 import FormField from '../../common/components/FormField';
 import LoadingPage from '../../common/screens/LoadingPage';
+import LinearGradient from 'react-native-linear-gradient';
+
 
 export type Mode = 'signup' | 'login' | 'verify';
 
@@ -158,6 +160,7 @@ export const AuthPage = () => {
         </View>
       ) : (
         <>
+
           {mode === 'signup' ? (
             <View style={styles.formContainerName}>
               <FormField title="" placeholder={'Enter name...'} setField={setName} type={'name'} value={name} />
@@ -215,6 +218,7 @@ export const AuthPage = () => {
         </>
       )}
     </AuthLayout>
+
   );
 };
 
