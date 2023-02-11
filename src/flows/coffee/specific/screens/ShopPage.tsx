@@ -227,8 +227,8 @@ const styles = StyleSheet.create({
   basketContainer: {
     position: 'absolute',
     overflow: 'hidden',
-    bottom: -5,
-    height: '12%',
+    bottom: 0,
+    height: '13%',
     justifyContent: 'center',
     alignItems: 'center',
     left: 0,

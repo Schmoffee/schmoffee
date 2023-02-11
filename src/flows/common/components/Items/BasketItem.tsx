@@ -1,14 +1,14 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Alert, StyleSheet, Pressable, View} from 'react-native';
-import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
-import {setSpecificBasket} from '../../../../utils/helpers/storage';
-import {Colors, Spacings} from '../../theme';
-import {OrderItem} from '../../../../models';
-import {Body} from '../../typography';
-import {OrderingContext} from '../../../../contexts';
-import {OrderingActionName} from '../../../../utils/types/enums';
+import React, { useContext, useEffect, useState } from 'react';
+import { Alert, StyleSheet, Pressable, View } from 'react-native';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { setSpecificBasket } from '../../../../utils/helpers/storage';
+import { Colors, Spacings } from '../../theme';
+import { OrderItem } from '../../../../models';
+import { Body } from '../../typography';
+import { OrderingContext } from '../../../../contexts';
+import { OrderingActionName } from '../../../../utils/types/enums';
 import FastImage from 'react-native-fast-image';
-import {findSameItemIndex} from '../../../../utils/helpers/basket';
+import { findSameItemIndex } from '../../../../utils/helpers/basket';
 
 type Size = 'small' | 'medium' | 'large';
 
@@ -18,8 +18,8 @@ interface BasketItemProps {
 }
 
 export const BasketItem = (props: BasketItemProps) => {
-  const {item} = props;
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+  const { item } = props;
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const anim = useSharedValue(0);
   const [expanded, setExpanded] = useState(false);
 
@@ -35,8 +35,8 @@ export const BasketItem = (props: BasketItemProps) => {
       const options = item.options ? item.options : [];
       const index = findSameItemIndex(newBasket, item, options);
       if (index > -1) {
-        newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-        ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+        newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + 1 };
+        ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
         await setSpecificBasket(newBasket);
       }
     }
@@ -61,12 +61,12 @@ export const BasketItem = (props: BasketItemProps) => {
             onPress: async () => {
               let newBasket: OrderItem[] = ordering_state.specific_basket;
               newBasket.splice(index, 1);
-              ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+              ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
               await setSpecificBasket(newBasket);
             },
           },
         ],
-        {cancelable: false},
+        { cancelable: false },
       );
     }
   };
@@ -82,8 +82,8 @@ export const BasketItem = (props: BasketItemProps) => {
         if (newBasket[index].quantity === 1) {
           onRemoveItem(index);
         } else {
-          newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity - 1};
-          ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+          newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity - 1 };
+          ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
           await setSpecificBasket(newBasket);
         }
       }
@@ -93,35 +93,35 @@ export const BasketItem = (props: BasketItemProps) => {
   const rItemStyle = useAnimatedStyle(
     () => ({
       marginHorizontal: interpolate(anim.value, [0, 1], [-4, 15]),
-      transform: [{scale: interpolate(anim.value, [0, 1], [1, 1.15])}],
+      transform: [{ scale: interpolate(anim.value, [0, 1], [1, 1.15]) }],
     }),
     [],
   );
 
   const rQuantityStyle = useAnimatedStyle(() => {
     return {
-      transform: [{translateX: 39 * -anim.value}, {translateY: 4 * -anim.value}],
+      transform: [{ translateX: 39 * -anim.value }, { translateY: 1 * -anim.value }, { scale: interpolate(anim.value, [0, 1], [1, 1]) }],
     };
   }, []);
 
   const rQuantityLabelStyle = useAnimatedStyle(() => {
     return {
       // opacity: anim.value,
-      transform: [{translateX: 24.5 * anim.value}],
+      transform: [{ translateX: 24.5 * anim.value }],
     };
   }, []);
 
   const rIncrQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateX: interpolate(anim.value, [0, 1], [50, 60])}],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [50, 60]) }],
     };
   }, []);
 
   const rRedQuantStyle = useAnimatedStyle(() => {
     return {
       opacity: anim.value,
-      transform: [{translateX: interpolate(anim.value, [0, 1], [-30, -12])}],
+      transform: [{ translateX: interpolate(anim.value, [0, 1], [-30, -12]) }],
     };
   }, []);
 
@@ -136,19 +136,7 @@ export const BasketItem = (props: BasketItemProps) => {
   }, [expanded]);
 
   const onItemPress = () => {
-    // 'worklet';
-    // //measure image position & size
-    // imageRef.current?.measure?.((x, y, width, height, pageX, pageY) => {
-    //   let imageSpecs = { width, height, pageX, pageY, borderRadius: 10 }
-    //   navigation.navigate('ItemPage', {
-    //     item,
-    //     imageSpecs
-    //   },
-    //   );
-    // });
-
     setExpanded(!expanded);
-    // anim.value = withTiming(expanded ? 0 : 1, { duration: 300, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
   };
 
   return (
@@ -156,7 +144,7 @@ export const BasketItem = (props: BasketItemProps) => {
       <View style={styles.item}>
         <Animated.View style={[rItemStyle]}>
           <View style={styles.itemImage}>
-            <FastImage source={{uri: props.item.image ? props.item.image : undefined}} style={styles.image} />
+            <FastImage source={{ uri: props.item.image ? props.item.image : undefined }} style={styles.image} />
             <Animated.View style={[styles.quantityContainer, rQuantityStyle]}>
               <Animated.View style={[styles.quantityLabel, rQuantityLabelStyle]}>
                 <Body size="medium" weight="Bold" color={Colors.darkBrown}>
@@ -196,6 +184,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: Spacings.s2,
+    // paddingTop: Spacings.s1,
   },
   itemImage: {
     width: 50,

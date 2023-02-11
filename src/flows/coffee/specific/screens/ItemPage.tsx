@@ -1,5 +1,5 @@
-import {Dimensions, StyleSheet, View} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import { Dimensions, Image, Pressable, StyleSheet, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -8,32 +8,32 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {Body, Heading} from '../../../common/typography';
-import {setSpecificBasket} from '../../../../utils/helpers/storage';
-import {Colors, Spacings} from '../../../common/theme';
-import {Option, OptionType, OrderItem, OrderOption} from '../../../../models';
-import {Footer} from '../../../common/components/Footer';
-import {OrderingContext} from '../../../../contexts';
+import { Body, Heading } from '../../../common/typography';
+import { setSpecificBasket } from '../../../../utils/helpers/storage';
+import { Colors, Spacings } from '../../../common/theme';
+import { Option, OptionType, OrderItem, OrderOption } from '../../../../models';
+import { Footer } from '../../../common/components/Footer';
+import { OrderingContext } from '../../../../contexts';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
-import {OrderingActionName} from '../../../../utils/types/enums';
+import { OrderingActionName } from '../../../../utils/types/enums';
 import OptionCarousel from '../../components/menu/OptionCarousel';
-import {findSameItemIndex} from '../../../../utils/helpers/basket';
+import { findSameItemIndex } from '../../../../utils/helpers/basket';
 import FastImage from 'react-native-fast-image';
-import {HEIGHT} from '../../../../../constants';
+import { HEIGHT } from '../../../../../constants';
 import QuantitySelector from '../../components/menu/QuantitySelector';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 interface ItemPageProps {
   route?: any;
   navigation: any;
 }
-const ItemPage = ({route, navigation}: ItemPageProps) => {
-  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
+const ItemPage = ({ route, navigation }: ItemPageProps) => {
+  const { ordering_state, ordering_dispatch } = useContext(OrderingContext);
   const [selectedMilk, setMilk] = useState<OrderOption>();
   const [selectedSyrup, setSyrup] = useState<OrderOption>();
   const [quantity, setQuantity] = useState(1);
-  const {item, imageSpecs} = route?.params;
+  const { item, imageSpecs } = route?.params;
   const milkOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.MILK);
   const syrupOptions = item?.options?.filter((option: Option) => option.option_type === OptionType.SYRUP);
 
@@ -117,8 +117,8 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
     const cleaned_options = [selectedMilk, selectedSyrup].filter(option => option !== undefined) as OrderOption[];
     const index = findSameItemIndex(newBasket, item, cleaned_options);
     if (index !== -1) {
-      newBasket[index] = {...newBasket[index], quantity: newBasket[index].quantity + 1};
-      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+      newBasket[index] = { ...newBasket[index], quantity: newBasket[index].quantity + quantity };
+      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
       await setSpecificBasket(newBasket);
     } else {
       const new_order_item: OrderItem = {
@@ -131,12 +131,26 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         id: item.id,
       };
       newBasket = [...ordering_state.specific_basket, new_order_item];
-      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket});
+      ordering_dispatch({ type: OrderingActionName.SET_SPECIFIC_BASKET, payload: newBasket });
       await setSpecificBasket(newBasket);
     }
     const callback = () => navigation.goBack();
     anim.value = withTiming(0, {}, isFinished => isFinished && runOnJS(callback)());
   }
+
+  const getItemPrice = () => {
+    let price = item.price;
+
+    if (selectedMilk) {
+      price += selectedMilk.price;
+    }
+    if (selectedSyrup) {
+      price += selectedSyrup.price;
+    }
+
+    return (price * quantity) / 100;
+  };
+
 
   return (
     <View style={styles.container}>
@@ -154,13 +168,13 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
         </Heading>
       </Animated.View>
       <Animated.View style={[styles.imageContainer, rImageStyle]}>
-        <FastImage source={{uri: item.image ? item.image : undefined}} style={styles.image} />
+        <FastImage source={{ uri: item.image ? item.image : undefined }} style={styles.image} />
       </Animated.View>
 
-      <Animated.View style={[styles.priceQuantityContainer]}>
+      <Animated.View style={[styles.priceQuantityContainer, rImageStyle]}>
         <View style={styles.priceContainer}>
           <Body size="medium" weight="Bold" color={Colors.white}>
-            £{(item.price / 100).toFixed(2)}
+            £{getItemPrice().toFixed(2)}
           </Body>
         </View>
         <View style={styles.quantityContainer}>
@@ -178,7 +192,7 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       </Animated.View>
 
       <Animated.View style={[styles.descriptionContainer, descriptionStyle]}>
-        <Heading size="small" weight="Bold" color={Colors.darkBrown} style={{marginBottom: Spacings.s2}}>
+        <Heading size="small" weight="Bold" color={Colors.darkBrown} style={{ marginBottom: Spacings.s2 }}>
           Allergens & Ingredients
         </Heading>
 
@@ -198,7 +212,10 @@ const ItemPage = ({route, navigation}: ItemPageProps) => {
       </Animated.View>
 
       <Animated.View style={[styles.bottomContainer, bottomContainerStyle]}>
-        <Footer buttonText="ADD" buttonDisabled={false} onPress={addItem} />
+        {/* <Footer buttonText="ADD" buttonDisabled={false} onPress={addItem} /> */}
+        <Pressable onPress={addItem}>
+          <Image source={require('../../../../assets/pngs/add-button.png')} style={styles.addButton} />
+        </Pressable>
       </Animated.View>
     </View>
   );
@@ -217,6 +234,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -450,
     left: -100,
+    tintColor: Colors.darkBrown2,
   },
   headerContainer: {
     position: 'absolute',
@@ -322,10 +340,9 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: Spacings.s10,
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 30,
+    bottom: -15,
   },
 });

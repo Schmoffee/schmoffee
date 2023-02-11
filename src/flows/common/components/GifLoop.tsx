@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { View, Image, Animated, StyleSheet } from 'react-native';
 
 interface GifLoopProps {
-    source: string
+    source?: string
 }
 
 const GifLoop = (props: GifLoopProps) => {
