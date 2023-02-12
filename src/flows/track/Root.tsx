@@ -14,7 +14,7 @@ import {cancelPayment, confirmGooglePayPayment} from '../../utils/helpers/paymen
 import {getCafeById} from '../../utils/queries/datastore';
 import {LocalUser, Payment} from '../../utils/types/data.types';
 import {useDeepCompareEffect} from 'react-use';
-import {TrackOrderActionName} from '../../utils/types/enums';
+import {GlobalActionName, TrackOrderActionName} from '../../utils/types/enums';
 
 const Root = () => {
   const {global_state, global_dispatch} = useContext(GlobalContext);
@@ -57,6 +57,10 @@ const Root = () => {
               }
             }
             track_order_dispatch({type: TrackOrderActionName.SET_CURRENT_ORDER, payload: items[0]});
+            global_dispatch({
+              type: GlobalActionName.SET_CURRENT_USER,
+              payload: {...(global_state.current_user as LocalUser), current_order: items[0]},
+            });
           } else {
             items.length === 0
               ? console.log('No current order found')

@@ -2,7 +2,7 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {Keyboard, Pressable, StatusBar, StyleSheet, View} from 'react-native';
 import {sendChallengeAnswer, signUp} from '../../../utils/queries/auth';
 import {GlobalContext, SignInContext} from '../../../contexts';
-import {AuthState, GlobalActionName, SignInActionName} from '../../../utils/types/enums';
+import {AuthState, ErrorTypes, GlobalActionName, SignInActionName} from '../../../utils/types/enums';
 import {createSignUpUser} from '../../../utils/queries/datastore';
 import {setFreeTime, setPhone, setTrials} from '../../../utils/helpers/storage';
 import {AuthLayout} from '../components/AuthLayout';
@@ -14,6 +14,7 @@ import {Footer} from '../../common/components/Footer';
 import {InputOTP} from '../components/InputOTP';
 import FormField from '../../common/components/FormField';
 import LoadingPage from '../../common/screens/LoadingPage';
+import {Alerts} from '../../../utils/helpers/alerts';
 
 export type Mode = 'signup' | 'login' | 'verify';
 
@@ -71,7 +72,6 @@ export const AuthPage = () => {
 
   const handleResendOTP = async () => {
     setLoading(true);
-    console.log(sign_in_state.phone_number);
     await sendOTP(sign_in_state.phone_number);
     setOtp('');
     setLoading(false);
@@ -81,14 +81,14 @@ export const AuthPage = () => {
     setLoading(true);
     const session = sign_in_state.session;
     const result = await sendChallengeAnswer(otp, session as CognitoUser);
+    setLoading(false);
     if (!result) {
       global_dispatch({
         type: GlobalActionName.SET_AUTH_STATE,
         payload: AuthState.CONFIRMING_OTP_FAILED,
       });
+      Alerts.wrongOTPAlert();
     }
-    //TODO: Handle the error appropriately depending on the error type
-    setLoading(false);
   };
 
   const handleSignUp = async () => {
@@ -99,7 +99,11 @@ export const AuthPage = () => {
         type: GlobalActionName.SET_AUTH_STATE,
         payload: AuthState.SIGNING_UP_FAILED,
       });
-      // TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
+      if (result === ErrorTypes.USERNAME_EXISTS) {
+        Alerts.phoneExistsAlert();
+      } else {
+        Alerts.signUpErrorAlert();
+      }
     } else {
       await createSignUpUser(number, name, global_state.device_token);
       await handleSignIn();
@@ -110,10 +114,16 @@ export const AuthPage = () => {
     if (!loading) {
       setLoading(true);
     }
-    await setPhone(number);
-    await sendOTP(number);
-    setMode('verify');
+    const success = await sendOTP(number);
     setLoading(false);
+    if (success) {
+      await setPhone(number);
+      setMode('verify');
+      animate();
+    }
+  };
+
+  const animate = () => {
     planetAnim.value === 0 && mode !== 'verify'
       ? (planetAnim.value = withTiming(1, {duration: 1000}))
       : (planetAnim.value = withTiming(0, {duration: 1000}));
@@ -129,7 +139,11 @@ export const AuthPage = () => {
   };
 
   const handleSubmit = async () => {
-    mode === 'signup' ? await handleSignUp() : mode === 'login' ? await handleSignIn() : await handleConfirmOTP();
+    mode === 'signup'
+      ? await handleSignUp()
+      : mode === 'login'
+      ? await handleSignIn()
+      : await Alerts.confirmOTPAlert(handleConfirmOTP);
   };
 
   const isValidNumber = useCallback(() => {

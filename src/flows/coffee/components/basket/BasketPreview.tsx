@@ -15,7 +15,6 @@ import {OrderingContext} from '../../../../contexts';
 import {Body} from '../../../common/typography';
 import {Colors, Spacings} from '../../../common/theme';
 import {useNavigation} from '@react-navigation/native';
-import FullOrderItem from '../../../common/components/Items/FullOrderItem';
 
 interface BasketPreviewProps {
   translateY?: Animated.SharedValue<number>;

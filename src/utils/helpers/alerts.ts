@@ -1,5 +1,4 @@
 import {Alert} from 'react-native';
-import {registerError} from '../queries/datastore';
 export const AlertMessage = {
   OFFLINE: {
     title: 'You are offline.',
@@ -15,19 +14,32 @@ export const AlertMessage = {
   },
   WRONG_OTP: {
     title: 'Wrong OTP',
-    message: 'You can try as many times as you want. The code will be valid for 3 minutes.',
+    message: 'You entered the wrong OTP, ask for a new one.',
   },
   EXPIRED_OTP: {
     title: 'OTP Expired',
     message: 'This code has expired. Please request a new one.',
   },
   BAD_PHONE_NUMBER: {
-    title: 'Bad Phone Number',
-    message: "That doesn't look like a valid phone number.",
+    title: 'Invalid Phone Number',
+    message:
+      "This number is not registered with us. Please check the number and try again. If you don't have an account, please sign up.",
   },
   ELSE: {
     title: 'Rare Error!',
     message: "This is a funky error! We don't really know what went wrong, but something went wrong.",
+  },
+  SIGN_IN_ERROR: {
+    title: 'Sign In Error',
+    message: 'There was an error signing in. Please try again.',
+  },
+  SIGN_UP_ERROR: {
+    title: 'Sign Up Error',
+    message: 'There was an error signing up. Please try again.',
+  },
+  USERNAME_EXISTS: {
+    title: 'Phone number already registered',
+    message: 'This phone number is already registered. Try logging in.',
   },
   LOCATION: {
     title: 'Location inaccessible',
@@ -45,10 +57,18 @@ export const AlertMessage = {
     title: 'Logout',
     message: 'You are about to logout, you will lose your current basket, are you sure?',
   },
+  ORDER_RUNNING: {
+    title: 'Order running',
+    message: 'You already have a current order, you can only have one order at a time.',
+  },
   OUT_OF_STOCK: {
     title: 'Out of stock',
     message:
       'Apologies, we had to remove the following items and/or options from your basket because they suddenly went out of stock: ',
+  },
+  CONFIRM_OTP: {
+    title: 'Confirm OTP',
+    message: 'You are about to send the OTP. You only have one attempt per OTP. Are you sure?',
   },
 };
 
@@ -59,11 +79,20 @@ export const Alerts = {
   databaseAlert: () => {
     Alert.alert(AlertMessage.DATABASE.title, AlertMessage.DATABASE.message);
   },
+  phoneExistsAlert: () => {
+    Alert.alert(AlertMessage.USERNAME_EXISTS.title, AlertMessage.USERNAME_EXISTS.message);
+  },
+  signUpErrorAlert: () => {
+    Alert.alert(AlertMessage.SIGN_UP_ERROR.title, AlertMessage.SIGN_UP_ERROR.message);
+  },
   tokenAlert: () => {
     Alert.alert(AlertMessage.TOKEN.title, AlertMessage.TOKEN.message);
   },
   elseAlert: () => {
     Alert.alert(AlertMessage.ELSE.title, AlertMessage.ELSE.message);
+  },
+  orderAlert: () => {
+    Alert.alert(AlertMessage.ORDER_RUNNING.title, AlertMessage.ORDER_RUNNING.message);
   },
   wrongOTPAlert: () => {
     Alert.alert(AlertMessage.WRONG_OTP.title, AlertMessage.WRONG_OTP.message);
@@ -71,8 +100,11 @@ export const Alerts = {
   expiredOTPAlert: () => {
     Alert.alert(AlertMessage.EXPIRED_OTP.title, AlertMessage.EXPIRED_OTP.message);
   },
-  badPhoneNumberAlert: async () => {
+  badPhoneNumberAlert: () => {
     Alert.alert(AlertMessage.BAD_PHONE_NUMBER.title, AlertMessage.BAD_PHONE_NUMBER.message);
+  },
+  signInErrorAlert: () => {
+    Alert.alert(AlertMessage.SIGN_IN_ERROR.title, AlertMessage.SIGN_IN_ERROR.message);
   },
   paymentAlert: () => {
     Alert.alert(AlertMessage.PAYMENT.title, AlertMessage.PAYMENT.message);
@@ -93,6 +125,21 @@ export const Alerts = {
       },
     ]);
     return val;
+  },
+
+  confirmOTPAlert: async (confirmOTP: () => Promise<void>) => {
+    await Alert.alert(AlertMessage.CONFIRM_OTP.title, AlertMessage.CONFIRM_OTP.message, [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: async () => {
+          await confirmOTP();
+        },
+      },
+    ]);
   },
   outOfStockAlert: (deleted_items: string[], deleted_options: {item: string; option: string}[]) => {
     Alert.alert(

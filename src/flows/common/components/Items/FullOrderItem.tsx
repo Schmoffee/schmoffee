@@ -21,8 +21,8 @@ const FullOrderItem = (props: FullOrderItemProps) => {
         <Body size="medium" weight="Bold" color={Colors.white}>
           {item.name}
         </Body>
-        {item.options?.map(opt => (
-          <Body size="small" weight="Bold" color={Colors.greyLight3}>
+        {item.options?.map((opt, index) => (
+          <Body size="small" weight="Bold" color={Colors.greyLight3} key={opt.name + index}>
             {'- ' + opt.name}
           </Body>
         ))}

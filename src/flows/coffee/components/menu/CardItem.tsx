@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Pressable, Image } from 'react-native';
+import React, {useEffect} from 'react';
+import {View, StyleSheet, Pressable, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
@@ -14,7 +14,7 @@ interface CardItemProps {
   query?: string;
 }
 
-export const CardItem = ({ item, index, query }: CardItemProps) => {
+export const CardItem = ({item, index, query}: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const anim = useSharedValue(0);
 
@@ -58,8 +58,6 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
     [],
   );
 
-
-
   return (
     <Pressable onPress={onItemPress}>
       <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleDown : cardStyleUp]}>
@@ -78,12 +76,14 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
             </View>
           </View>
           <View style={styles.imageContainer}>
-            <FastImage source={{ uri: item.image ? item.image : undefined }} style={styles.image} />
+            <FastImage source={{uri: item.image ? item.image : undefined}} style={styles.image} />
             <View style={styles.ratingContainer}>
               <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
                 {item.ratings
                   ? item.ratings.length > 0
-                    ? item.ratings.reduce((acc, curr) => acc + (curr ? curr.rating : 0), 0) / item.ratings.length
+                    ? (
+                        item.ratings.reduce((acc, curr) => acc + (curr ? curr.rating : 0), 0) / item.ratings.length
+                      ).toFixed(1)
                     : 'None'
                   : 'None'}
               </Body>
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
-    transform: [{ scale: 0.9 }],
+    transform: [{scale: 0.9}],
   },
   ratingContainer: {
     flex: 1,

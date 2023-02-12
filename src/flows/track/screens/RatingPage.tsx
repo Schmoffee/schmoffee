@@ -9,7 +9,8 @@ import {terminateOrder} from '../../../utils/queries/datastore';
 import {Body, Heading} from '../../common/typography';
 import {PageLayout} from '../../common/components/PageLayout';
 import {Colors, Spacings} from '../../common/theme';
-import {TrackOrderActionName} from '../../../utils/types/enums';
+import {GlobalActionName, TrackOrderActionName} from '../../../utils/types/enums';
+import {LocalUser} from '../../../utils/types/data.types';
 
 interface RatingPageProps {}
 
@@ -43,7 +44,7 @@ const RatingItem = (props: RatingItemProps) => {
     <View style={styles.ratingContainer}>
       {maxRating.map((it, index) => {
         return (
-          <TouchableOpacity activeOpacity={0.7} key={it} onPress={() => handleRatingChange(it)}>
+          <Pressable key={it} onPress={() => handleRatingChange(it)}>
             <Image
               source={
                 it <= props.rating
@@ -52,7 +53,7 @@ const RatingItem = (props: RatingItemProps) => {
               }
               style={styles.ratingStar}
             />
-          </TouchableOpacity>
+          </Pressable>
         );
       })}
     </View>
@@ -61,7 +62,7 @@ const RatingItem = (props: RatingItemProps) => {
 
 export const RatingPage = (props: RatingPageProps) => {
   const navigation = useNavigation();
-  const {global_state} = useContext(GlobalContext);
+  const {global_state, global_dispatch} = useContext(GlobalContext);
   const {track_order_state} = useContext(TrackOrderContext);
   const [rating, setRating] = useState(0);
 
@@ -69,6 +70,10 @@ export const RatingPage = (props: RatingPageProps) => {
     const usual = !!global_state.current_user?.the_usual;
     const order: CurrentOrder = track_order_state.current_order as CurrentOrder;
     await terminateOrder(order.id, track_order_state.ratings, usual);
+    global_dispatch({
+      type: GlobalActionName.SET_CURRENT_USER,
+      payload: {...(global_state.current_user as LocalUser), current_order: null},
+    });
     navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME});
   };
 
@@ -108,7 +113,6 @@ const styles = StyleSheet.create({
     marginTop: Spacings.s3,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: Colors.red,
   },
   headingContainer: {
     width: '100%',
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
   detailsContainer: {
     alignItems: 'center',
     position: 'absolute',
-    top: HEIGHT / 15,
+    top: HEIGHT / 25,
   },
   cafeImage: {
     width: WIDTH * 0.8,

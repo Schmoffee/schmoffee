@@ -37,6 +37,7 @@ import {BlurView} from '@react-native-community/blur';
 import {getOptionsPrice} from '../../../../utils/helpers/basket';
 import {getOrderId} from '../../../../utils/helpers/order_id';
 import {GlobalActionName} from '../../../../utils/types/enums';
+import {Alerts} from '../../../../utils/helpers/alerts';
 
 interface PreviewPageProps {}
 export const PreviewPage = (props: PreviewPageProps) => {
@@ -149,7 +150,9 @@ export const PreviewPage = (props: PreviewPageProps) => {
   }
 
   async function handleSendOrder(paymentId: string) {
-    if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
+    if (global_state.current_user?.current_order) {
+      Alerts.orderAlert();
+    } else if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
       const user: LocalUser = global_state.current_user as LocalUser;
       const {orderId, pin, final_color} = getOrderId();
       const order_info: OrderInfo = {

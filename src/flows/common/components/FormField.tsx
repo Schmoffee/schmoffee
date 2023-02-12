@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     fontSize: 16,
     fontFamily: 'Helvetica',
+    color: Colors.black,
   },
   titleContainer: {
     marginBottom: Spacings.s1,

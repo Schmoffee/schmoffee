@@ -63,9 +63,7 @@ export const Home = () => {
         />
       </View>
       <View style={styles.currentOrderBanner}>
-        {global_state.current_user?.current_order ? (
-          <CurrentOrderBanner currentOrder={global_state.current_user.current_order} />
-        ) : null}
+        {global_state.current_user?.current_order ? <CurrentOrderBanner /> : null}
       </View>
       {/* <SideDrawerContent anim={anim} /> */}
     </View>
