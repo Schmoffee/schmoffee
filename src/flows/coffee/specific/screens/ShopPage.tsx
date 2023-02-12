@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { OrderingContext } from '../../../../contexts';
-import { Item } from '../../../../models';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import {Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {OrderingContext} from '../../../../contexts';
+import {Item} from '../../../../models';
 import Animated, {
   Easing,
   Extrapolate,
@@ -11,21 +11,21 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Colors, Spacings } from '../../../common/theme';
+import {Colors, Spacings} from '../../../common/theme';
 import TabNavigator from '../../components/menu/TabNavigator';
-import { BasketPreview } from '../../components/basket/BasketPreview';
+import {BasketPreview} from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 import LinearGradient from 'react-native-linear-gradient';
 
-const { StatusBarManager } = NativeModules;
+const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const { height: wHeight, width: wWidth } = Dimensions.get('window');
+const {height: wHeight, width: wWidth} = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
-  const { ordering_state } = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
   const anim = useSharedValue(0);
@@ -56,7 +56,7 @@ export const ShopPage = () => {
     }
   }, [basketAnim, ordering_state.specific_basket.length]);
 
-  const contains = ({ name }: Item, query: string) => {
+  const contains = ({name}: Item, query: string) => {
     const nameLower = name.toLowerCase();
     return nameLower.includes(query);
   };
@@ -152,8 +152,7 @@ export const ShopPage = () => {
         <LeftChevronBackButton color={Colors.white} />
       </View>
       <View style={[styles.itemsContainer]}>
-        <LinearGradient locations={[0.2, 1]}
-          colors={[Colors.darkBrown2, Colors.cream]}>
+        <LinearGradient locations={[0.2, 1]} colors={[Colors.darkBrown2, Colors.cream]}>
           <View style={styles.header}>
             <Animated.Image
               source={require('../../../../assets/pngs/semi-circle.png')}
@@ -183,7 +182,7 @@ export const ShopPage = () => {
               <View style={styles.clearIcon}>
                 <Pressable onPress={handleSearchPress}>
                   <Animated.Image
-                    style={[rSearchIconStyle, { width: 15, height: 15 }]}
+                    style={[rSearchIconStyle, {width: 15, height: 15}]}
                     source={require('../../../../assets/pngs/x-outline.png')}
                   />
                 </Pressable>
@@ -225,7 +224,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-
   },
   basketContainer: {
     position: 'absolute',
@@ -248,6 +246,7 @@ const styles = StyleSheet.create({
     shadowRadius: 35,
     shadowOpacity: 0.9,
     elevation: 5,
+    zIndex: 1,
   },
   searchInputContainer: {
     flex: 1,

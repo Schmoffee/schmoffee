@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import React, {useContext, useEffect} from 'react';
+import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -10,40 +10,42 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { BasketItem } from '../../../common/components/Items/BasketItem';
-import { OrderingContext } from '../../../../contexts';
-import { Body } from '../../../common/typography';
-import { Colors, Spacings } from '../../../common/theme';
-import { useNavigation } from '@react-navigation/native';
-import FullOrderItem from '../../../common/components/Items/FullOrderItem';
+import {BasketItem} from '../../../common/components/Items/BasketItem';
+import {OrderingContext} from '../../../../contexts';
+import {Colors, Spacings} from '../../../common/theme';
+import {useNavigation} from '@react-navigation/native';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
 
 interface BasketPreviewProps {
   translateY?: Animated.SharedValue<number>;
 }
 
 export const BasketPreview = (props: BasketPreviewProps) => {
-  const { ordering_state } = useContext(OrderingContext);
-  const navigation = useNavigation();
+  const {ordering_state} = useContext(OrderingContext);
+  const navigation = useNavigation<CoffeeRoutes>();
 
   //  loop animation
   const anim = useSharedValue(1);
   useEffect(() => {
     anim.value = 0;
-    anim.value = withDelay(1500, withRepeat(withTiming(1, { duration: 700 }), -1, true));
+    anim.value = withDelay(1500, withRepeat(withTiming(1, {duration: 700}), -1, true));
   }, [anim]);
 
   const rChevronStyle = useAnimatedStyle(() => {
     const scale = interpolate(anim.value, [0, 1], [1, 1]);
     const translateX = interpolate(anim.value, [0, 1], [0, 1.7], Extrapolate.CLAMP);
     return {
-      transform: [{ scale }, { translateX }],
+      transform: [{scale}, {translateX}],
     };
   }, []);
 
   return (
     <View style={styles.itemRow}>
       <View style={styles.cartIcon}>
-        <Image source={require('../../../../assets/pngs/cart.png')} style={{ width: 35, height: 35, tintColor: Colors.white }} />
+        <Image
+          source={require('../../../../assets/pngs/cart.png')}
+          style={{width: 35, height: 35, tintColor: Colors.white}}
+        />
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -51,7 +53,11 @@ export const BasketPreview = (props: BasketPreviewProps) => {
           return <BasketItem item={item} key={item.id + index} />;
         })}
       </ScrollView>
-      <Pressable style={styles.circle} onPress={() => navigation.navigate('PreviewPage')}>
+      <Pressable
+        style={styles.circle}
+        onPress={() => {
+          navigation.navigate('Coffee', {screen: 'PreviewPage'});
+        }}>
         <Animated.View style={[rChevronStyle]}>
           <Image source={require('../../../../assets/pngs/right_chevron.png')} style={[styles.rightChevron]} />
         </Animated.View>

@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import React, {useContext, useEffect, useState} from 'react';
+import {ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import {
   ApplePayButton,
   GooglePayButton,
@@ -9,7 +9,8 @@ import {
   useGooglePay,
   useStripe,
 } from '@stripe/stripe-react-native';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+
 import {
   createGooglePaymentMethod,
   initializeGooglePay,
@@ -32,7 +33,6 @@ import {Colors, Spacings} from '../../../common/theme';
 import {useDeepCompareEffect} from 'react-use';
 import {Body, Heading} from '../../../common/typography';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
-import {ActionButton} from '../../../common/components/Buttons/ActionButton';
 import {BlurView} from '@react-native-community/blur';
 import {getOptionsPrice} from '../../../../utils/helpers/basket';
 import {getOrderId} from '../../../../utils/helpers/order_id';
@@ -205,20 +205,16 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   const handleCheckout = async (mode: Payment) => {
     if (mode === 'card') {
-      Alert.alert(
-        'Are you sure?',
-        'This action is final. It will send your order.',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Confirm',
-            onPress: async () => await initiateCheckout(mode),
-          },
-        ],
-      );
+      Alert.alert('Are you sure?', 'This action is final. It will send your order.', [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: async () => await initiateCheckout(mode),
+        },
+      ]);
     } else {
       await initiateCheckout(mode);
     }
@@ -238,8 +234,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
       <View style={styles.backButton}>
         <LeftChevronBackButton color={'#fff'} />
       </View>
-      <ScrollView style={styles.previewScrollContainer} contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ minHeight: '100%', paddingBottom: 30 }}>
+      <ScrollView style={styles.previewScrollContainer} contentContainerStyle={{flexGrow: 1}}>
+        <View style={{minHeight: '100%', paddingBottom: 30}}>
           <View style={styles.heading}>
             <Heading size="default" weight="Bold" color={Colors.white}>
               Summary
@@ -261,7 +257,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
                 <ApplePayButton
                   onPress={() => handleCheckout('apple')}
                   type="plain"
-                  buttonStyle='white'
+                  buttonStyle="white"
                   borderRadius={4}
                   style={{
                     width: '100%',
@@ -293,18 +289,16 @@ export const PreviewPage = (props: PreviewPageProps) => {
               </Pressable>
             </View>
           </PreviewSection>
-
-
         </View>
       </ScrollView>
       {loading && (
         <>
-          <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
+          {/*<BlurView style={styles.absolute} blurType="dark" blurAmount={10} />*/}
           <ActivityIndicator
             animating={loading}
             size="large"
             color={Colors.gold}
-            style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 5 }}
+            style={{position: 'absolute', top: '45%', left: '45%', zIndex: 5}}
           />
         </>
       )}
