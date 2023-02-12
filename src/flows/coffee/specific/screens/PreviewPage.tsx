@@ -1,6 +1,6 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ApplePayButton,
   GooglePayButton,
@@ -9,7 +9,7 @@ import {
   useGooglePay,
   useStripe,
 } from '@stripe/stripe-react-native';
-import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
 import {
   createGooglePaymentMethod,
   initializeGooglePay,
@@ -207,7 +207,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
     if (mode === 'card') {
       Alert.alert(
         'Are you sure?',
-        'Are you sure you want to checkout, this action is final. It will send your order.',
+        'This action is final. It will send your order.',
         [
           {
             text: 'Cancel',
@@ -238,8 +238,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
       <View style={styles.backButton}>
         <LeftChevronBackButton color={'#fff'} />
       </View>
-      <ScrollView style={styles.previewScrollContainer} contentContainerStyle={{flexGrow: 1}}>
-        <View style={{minHeight: '100%'}}>
+      <ScrollView style={styles.previewScrollContainer} contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={{ minHeight: '100%', paddingBottom: 30 }}>
           <View style={styles.heading}>
             <Heading size="default" weight="Bold" color={Colors.white}>
               Summary
@@ -261,11 +261,12 @@ export const PreviewPage = (props: PreviewPageProps) => {
                 <ApplePayButton
                   onPress={() => handleCheckout('apple')}
                   type="plain"
-                  buttonStyle="black"
+                  buttonStyle='white'
                   borderRadius={4}
                   style={{
                     width: '100%',
                     height: 50,
+                    marginBottom: 10,
                   }}
                 />
               )}
@@ -276,21 +277,24 @@ export const PreviewPage = (props: PreviewPageProps) => {
                   style={{
                     width: 200,
                     height: 50,
+                    marginBottom: 10,
                   }}
                 />
               )}
-              <ActionButton label="Checkout" onPress={() => handleCheckout('card')} />
+              <Body size="medium" weight="Extrabld" color={Colors.white}>
+                or
+              </Body>
+              <Pressable onPress={() => handleCheckout('card')}>
+                <View style={styles.cardButton}>
+                  <Body size="medium" weight="Bold" color={Colors.white}>
+                    Checkout with card
+                  </Body>
+                </View>
+              </Pressable>
             </View>
           </PreviewSection>
 
-          <View style={styles.totalContainer}>
-            <Body size="large" weight="Bold" color={Colors.white}>
-              Total
-            </Body>
-            <Body size="large" weight="Bold" color={Colors.white}>
-              £{(total / 100).toFixed(2)}
-            </Body>
-          </View>
+
         </View>
       </ScrollView>
       {loading && (
@@ -300,7 +304,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
             animating={loading}
             size="large"
             color={Colors.gold}
-            style={{position: 'absolute', top: '45%', left: '45%', zIndex: 5}}
+            style={{ position: 'absolute', top: '45%', left: '45%', zIndex: 5 }}
           />
         </>
       )}
@@ -332,6 +336,7 @@ const styles = StyleSheet.create({
 
   previewScrollContainer: {
     // flex: 1,
+    marginBottom: 30,
     // backgroundColor: 'red',
   },
 
@@ -364,12 +369,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   paymentRoot: {
-    // marginTop: 20,
-    height: 150,
     backgroundColor: Colors.red,
   },
   paymentContainer: {
-    marginTop: Spacings.s5,
+    marginTop: Spacings.s3,
     height: 100,
     width: '100%',
     flex: 1,
@@ -381,6 +384,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  cardButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.gold,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 15,
+    width: 350,
+    height: 45,
+  },
+
   totalContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

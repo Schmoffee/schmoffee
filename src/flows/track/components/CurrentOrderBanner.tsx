@@ -29,7 +29,7 @@ const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
   }, [global_state.current_user]);
 
   return (
-    <Pressable onPress={() => {}}>
+    <Pressable onPress={() => { }}>
       <View style={styles.root}>
         <View style={styles.container}>
           <View style={styles.cafe}>
@@ -64,9 +64,9 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     flexDirection: 'column',
-    height: HEIGHT / 6,
-    // backgroundColor: Colors.greyLight2,
-
+    height: HEIGHT / 7,
+    backgroundColor: Colors.greyLight2,
+    opacity: 0.9,
     width: WIDTH / 1.2,
     borderRadius: 20,
     // justifyContent: 'flex-start',
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   moreInfo: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 5,
     left: '13%',
     // backgroundColor: 'green',
     height: '20%',

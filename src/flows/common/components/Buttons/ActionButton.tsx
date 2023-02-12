@@ -59,21 +59,23 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: Spacings.s4,
+    marginTop: Spacings.s2,
   },
   disabledColor: {
     backgroundColor: Colors.grey,
   },
   activeColor: {
-    backgroundColor: Colors.darkBrown,
+    backgroundColor: Colors.darkBlue,
   },
   text: {
     color: Colors.white,
   },
   primaryButton: {
-    borderRadius: Spacings.s5,
+    borderRadius: Spacings.s3,
     padding: Spacings.s4,
-    paddingHorizontal: Spacings.s30,
+    // marginVertical: Spacings.s2,
+    width: '100%',
+    height: 50,
   },
   secondaryButton: {
     borderRadius: Spacings.s12,

@@ -6,8 +6,9 @@ install! 'cocoapods', :deterministic_uuids => false
 production = ENV["PRODUCTION"] == "1"
 rn_maps_path = '../node_modules/react-native-maps'
 pod 'react-native-google-maps', :path => rn_maps_path
-pod 'GoogleMaps'
+pod 'GoogleMaps', '7.3.0'
 pod 'Google-Maps-iOS-Utils'
+
 
 target 'Schmoffee' do
   config = use_native_modules!

@@ -1,5 +1,5 @@
-import React, {PropsWithChildren, useEffect, useState} from 'react';
-import {View, StyleSheet, Pressable, KeyboardAvoidingView, Platform, Keyboard} from 'react-native';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+import { View, StyleSheet, Pressable, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import Animated, {
   FadeOutLeft,
   FadeInRight,
@@ -11,12 +11,13 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from 'react-native-reanimated';
-import {Mode} from '../screens/AuthPage';
-import {FooterType} from '../../../utils/types/component.types';
-import {BlurView} from '@react-native-community/blur';
-import {Body, Heading} from '../../common/typography';
-import {Colors, Spacings} from '../../common/theme';
-import {Footer} from '../../common/components/Footer';
+import { Mode } from '../screens/AuthPage';
+import { FooterType } from '../../../utils/types/component.types';
+import { BlurView } from '@react-native-community/blur';
+import { Body, Heading } from '../../common/typography';
+import { Colors, Spacings } from '../../common/theme';
+import { Footer } from '../../common/components/Footer';
+
 
 interface AuthLayoutProps extends PropsWithChildren {
   style?: any;
@@ -77,9 +78,9 @@ export const AuthLayout = (props: AuthLayoutProps) => {
 
     return {
       transform: [
-        {scale: 0.2},
-        {translateY: interpolate(props.asteroidAnim.value, [0, 1], [0, -700])},
-        {translateX: interpolate(props.asteroidAnim.value, [0, 1], [0, 1000])},
+        { scale: 0.2 },
+        { translateY: interpolate(props.asteroidAnim.value, [0, 1], [0, -700]) },
+        { translateX: interpolate(props.asteroidAnim.value, [0, 1], [0, 1000]) },
         {
           // rotate: interpolate(props.asteroidAnim.value, [0, 1], [-1.6, -3.3])
           rotate: `${rotate}deg`,
@@ -103,8 +104,8 @@ export const AuthLayout = (props: AuthLayoutProps) => {
   return (
     <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={0}>
       <Pressable onPress={props.onPress} />
-      <View style={[styles.root, {backgroundColor: backgroundStyle}]}>
-        <Animated.Image source={require('../../../assets/pngs/planet.png')} style={[styles.planet, animatePlanet]} />
+      <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
+        <Animated.Image source={require('../../../assets/pngs/planet_brown.png')} style={[styles.planet, animatePlanet]} />
         <Animated.Image
           source={require('../../../assets/pngs/asteroid.png')}
           style={[styles.asteroid, animateAsteroid]}
@@ -175,7 +176,6 @@ export const AuthLayout = (props: AuthLayoutProps) => {
             )}
           </View>
         </View>
-
         {isKeyboardVisible ? (
           <Animated.View entering={SlideInDown} exiting={SlideOutDown} style={styles.blurView}>
             <BlurView
@@ -195,7 +195,7 @@ export const AuthLayout = (props: AuthLayoutProps) => {
         ) : null}
       </View>
       {/* </Pressable> */}
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView >
   );
 };
 

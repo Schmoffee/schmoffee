@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { EagerItem } from '../../../../models';
+import { Item } from '../../../../models';
 import { Body, Heading } from '../../../common/typography';
 import { CardSection } from './CardSection';
 
 interface TabNavigatorProps {
-  tab1: EagerItem[];
-  tab2: EagerItem[];
-  tab3: EagerItem[];
+  tab1: Item[];
+  tab2: Item[];
+  tab3: Item[];
   query: string;
 }
 

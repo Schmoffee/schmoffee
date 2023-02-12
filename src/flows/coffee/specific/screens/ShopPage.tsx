@@ -15,6 +15,7 @@ import { Colors, Spacings } from '../../../common/theme';
 import TabNavigator from '../../components/menu/TabNavigator';
 import { BasketPreview } from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
+import LinearGradient from 'react-native-linear-gradient';
 
 const { StatusBarManager } = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
@@ -148,47 +149,49 @@ export const ShopPage = () => {
     <View style={styles.root}>
       {/* back button for navigation */}
       <View style={styles.backButton}>
-        <LeftChevronBackButton color={'black'} />
+        <LeftChevronBackButton color={Colors.white} />
       </View>
-
       <View style={[styles.itemsContainer]}>
-        <View style={styles.header}>
-          <Animated.Image
-            source={require('../../../../assets/pngs/semi-circle.png')}
-            style={[styles.semiCircle, rCircleStyle]}
-          />
-          <Animated.View style={[styles.searchInputContainer, rSearchContainerStyle]}>
-            <View style={styles.searchIcon}>
-              <Pressable onPress={handleSearchPress}>
-                <Animated.Image
-                  style={rSearchIconStyle}
-                  source={require('../../../../assets/pngs/magnifyingglass.png')}
+        <LinearGradient locations={[0.2, 1]}
+          colors={[Colors.darkBrown2, Colors.cream]}>
+          <View style={styles.header}>
+            <Animated.Image
+              source={require('../../../../assets/pngs/semi-circle.png')}
+              style={[styles.semiCircle, rCircleStyle]}
+            />
+            <Animated.View style={[styles.searchInputContainer, rSearchContainerStyle]}>
+              <View style={styles.searchIcon}>
+                <Pressable onPress={handleSearchPress}>
+                  <Animated.Image
+                    style={rSearchIconStyle}
+                    source={require('../../../../assets/pngs/magnifyingglass.png')}
+                  />
+                </Pressable>
+              </View>
+              <Animated.View style={[styles.searchText]}>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  value={query}
+                  onChangeText={queryText => setQuery(queryText)}
+                  placeholder="What do you crave?"
+                  style={styles.searchText}
+                  placeholderTextColor={Colors.darkBrown}
+                  selectionColor={Colors.darkBrown}
                 />
-              </Pressable>
-            </View>
-            <Animated.View style={[styles.searchText]}>
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                value={query}
-                onChangeText={queryText => setQuery(queryText)}
-                placeholder="What do you crave?"
-                style={styles.searchText}
-                placeholderTextColor={Colors.darkBrown}
-                selectionColor={Colors.darkBrown}
-              />
+              </Animated.View>
+              <View style={styles.clearIcon}>
+                <Pressable onPress={handleSearchPress}>
+                  <Animated.Image
+                    style={[rSearchIconStyle, { width: 15, height: 15 }]}
+                    source={require('../../../../assets/pngs/x-outline.png')}
+                  />
+                </Pressable>
+              </View>
             </Animated.View>
-            <View style={styles.clearIcon}>
-              <Pressable onPress={handleSearchPress}>
-                <Animated.Image
-                  style={[rSearchIconStyle, { width: 15, height: 15 }]}
-                  source={require('../../../../assets/pngs/x-outline.png')}
-                />
-              </Pressable>
-            </View>
-          </Animated.View>
-          <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} query={query} />
-        </View>
+            <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} query={query} />
+          </View>
+        </LinearGradient>
       </View>
       <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
         <BasketPreview />
@@ -218,17 +221,17 @@ const styles = StyleSheet.create({
   itemsContainer: {
     // flex: 1,
     position: 'absolute',
-    top: -10,
+    top: -20,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: Colors.greyLight1,
+
   },
   basketContainer: {
     position: 'absolute',
     overflow: 'hidden',
-    bottom: -5,
-    height: '12%',
+    bottom: 0,
+    height: '13%',
     justifyContent: 'center',
     alignItems: 'center',
     left: 0,
@@ -299,6 +302,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
     position: 'absolute',
     top: -450,
+    tintColor: Colors.darkBrown,
   },
 
   footerContainer: {
@@ -321,8 +325,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 20,
-    left: -10,
+    top: 60,
+    left: -20,
     zIndex: 1,
   },
 });

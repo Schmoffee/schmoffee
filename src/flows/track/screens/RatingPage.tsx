@@ -79,6 +79,7 @@ export const RatingPage = (props: RatingPageProps) => {
 
   return (
     <PageLayout
+      backButton
       header={'How was your order?'}
       subHeader={'Help us improve our service by rating your order from ' + track_order_state.cafe?.name}
       footer={{
@@ -87,11 +88,6 @@ export const RatingPage = (props: RatingPageProps) => {
         buttonText: 'Rate',
       }}>
       <View style={styles.container}>
-        <View style={styles.headingContainer}>
-          <Heading size="default" weight="Bold">
-            {/* {current_shop.name} */}
-          </Heading>
-        </View>
         <View style={styles.detailsContainer}>
           <Image source={{uri: track_order_state.cafe?.image as string}} style={styles.cafeImage} />
           <RatingItem rating={rating} setRating={setRating} cafe={track_order_state.current_order?.cafeID} />
@@ -115,10 +111,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headingContainer: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    marginLeft: Spacings.s10,
+    position: 'absolute',
+    left: Spacings.s3,
+
   },
   detailsContainer: {
     alignItems: 'center',
@@ -138,8 +133,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   ratingStar: {
-    width: 53,
-    height: 50,
+    width: 43,
+    height: 40,
     tintColor: Colors.gold,
     alignSelf: 'center',
     marginTop: 3.5,
@@ -153,7 +148,6 @@ const styles = StyleSheet.create({
     border: 1,
     borderWidth: 0.5,
     marginTop: Spacings.s10,
-    marginBottom: Spacings.s5,
     paddingHorizontal: Spacings.s4,
   },
   reportButton: {

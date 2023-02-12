@@ -76,6 +76,7 @@ export const OrderPage = () => {
   return (
     <PageLayout
       header="Order Details"
+      backButton
       backgroundColor={Colors.greenFaded1}
       footer={{
         buttonDisabled: false,
