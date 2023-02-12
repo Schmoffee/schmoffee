@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, useWindowDimensions, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { StyleSheet, View, Image, useWindowDimensions, NativeScrollEvent, NativeSyntheticEvent, ScrollView } from 'react-native';
 import React, { useContext, useState } from 'react';
 import Animated, {
     useSharedValue,
@@ -96,13 +96,12 @@ const OrderCardCarousel = (props: OrderCardCarouselProps) => {
                                         <Body color={Colors.white} weight='Regular' size='large'>Items</Body>
                                         {/* <Body color={Colors.white} weight='Regular' size='small'>{track_order_state.current_order?.status}</Body> */}
                                         <View style={{ marginTop: Spacings.s4 }}>
-                                            <OrderItemsList scrollable={false} items={track_order_state.current_order?.items ? track_order_state.current_order.items : []} />
-
+                                            <OrderItemsList scrollable={true} items={track_order_state.current_order?.items ? track_order_state.current_order.items : []} />
                                         </View>
 
                                         <View style={styles.priceContainer}>
                                             <Heading color={Colors.white} weight='Regular' size='small'>Total:</Heading>
-                                            <Heading color={Colors.white} weight='Bold' size='large'>£{(track_order_state.current_order?.total / 100).toFixed(2)}</Heading>
+                                            <Heading color={Colors.white} weight='Bold' size='default'>£{(track_order_state.current_order?.total / 100).toFixed(2)}</Heading>
                                         </View>
                                     </View>
                                 ) : null}

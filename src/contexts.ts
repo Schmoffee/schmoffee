@@ -77,11 +77,11 @@ const OrderingContext = React.createContext<{
 const SignInContext = React.createContext<{
   sign_in_state: SignInState;
   sign_in_dispatch: React.Dispatch<SignInAction>;
-  sendOTP: (phoneNumber: string) => void;
+  sendOTP: (phoneNumber: string) => Promise<boolean>;
 }>({
   sign_in_state: signInData,
   sign_in_dispatch: () => null,
-  sendOTP: () => null,
+  sendOTP: () => Promise.resolve(false),
 });
 
 export {TrackOrderContext, GlobalContext, OrderingContext, SignInContext, MapContext};

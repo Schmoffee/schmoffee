@@ -4,13 +4,14 @@ import {AuthRoutes} from '../../utils/types/navigation.types';
 import {getFreeTime, getIsFirstTime, getPhone, getTrials, setFreeTime, setTrials} from '../../utils/helpers/storage';
 import {signIn} from '../../utils/queries/auth';
 import {CognitoUser} from 'amazon-cognito-identity-js';
-import {AuthState, GlobalActionName, SignInActionName} from '../../utils/types/enums';
+import {AuthState, ErrorTypes, GlobalActionName, SignInActionName} from '../../utils/types/enums';
 import {GlobalContext, SignInContext, signInData} from '../../contexts';
 import {signInReducer} from '../../reducers';
 import {Alert} from 'react-native';
 import {checkMultiSignIn, getUserById, newSignIn} from '../../utils/queries/datastore';
 import {Intro} from './screens/Intro';
 import {AuthPage} from './screens/AuthPage';
+import {Alerts} from '../../utils/helpers/alerts';
 
 const Root = () => {
   const AuthStack = createNativeStackNavigator<AuthRoutes>();
@@ -62,16 +63,21 @@ const Root = () => {
                 const success = await initiateSignIn(phoneNumber, +trials);
                 if (success) {
                   await newSignIn(user_id);
+                  return true;
                 }
+                return false;
               },
             },
             {
               text: 'Cancel',
+              onPress: () => {
+                return false;
+              },
             },
           ],
         );
       } else {
-        await initiateSignIn(phoneNumber, +trials);
+        return await initiateSignIn(phoneNumber, +trials);
       }
     } else {
       if (sign_in_state.blocked_time === 0) {
@@ -84,11 +90,12 @@ const Root = () => {
         'Too many tries',
         `You have exceeded the maximum number of trials. Please try again after ${remaining_time} minutes.`,
       );
+      return false;
     }
+    return false;
   }
 
   async function initiateSignIn(phoneNumber: string, trials: number) {
-    console.log('initiating sign in');
     const newSession = await signIn(phoneNumber);
     if (newSession && newSession instanceof CognitoUser) {
       sign_in_dispatch({type: SignInActionName.SET_TRIALS, payload: +trials + 1});
@@ -100,8 +107,11 @@ const Root = () => {
       sign_in_dispatch({type: SignInActionName.SET_SESSION, payload: newSession});
       return true;
     } else {
-      console.log('error signing in');
-      //TODO: Handle the error appropriately depending on the error type
+      if (newSession === ErrorTypes.USER_NOT_EXIST) {
+        Alerts.badPhoneNumberAlert();
+      } else {
+        Alerts.signInErrorAlert();
+      }
       return false;
     }
   }

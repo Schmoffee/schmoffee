@@ -29,9 +29,12 @@ export const Colors = {
   goldLight1: '#D5B57A',
   goldLight2: '#DDC393',
   goldLight3: '#f3fbff',
-  darkBrown: '#1c1414',
-  darkBrown2: '#4e3523',
-  darkBrownFaded: '#62483C'
+  cream: '#FFF5E6',
+  darkBrown: '#240903',
+  darkerBrown: '#1C1414',
+  darkBrown2: '#562A17',
+  darkBrownFaded: '#945128',
+  orange: '#9F3407',
 };
 
 export const Spacings = {

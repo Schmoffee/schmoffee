@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useReducer, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootRoutes} from '../utils/types/navigation.types';
@@ -59,7 +59,7 @@ function RootNavigator(props: NavigatorProps) {
         <RootStack.Group>
           {props.loading ? (
             <RootStack.Screen name="Loading" component={LoadingPage} />
-          ) : global_state.auth_state !== AuthState.SIGNED_IN ? (
+          ) : global_state.auth_state === AuthState.SIGNED_IN ? (
             <>
               <RootStack.Screen name="Coffee" component={CoffeeRoot} />
               <RootStack.Screen name="SideDrawer" component={SideDrawerRoot} />

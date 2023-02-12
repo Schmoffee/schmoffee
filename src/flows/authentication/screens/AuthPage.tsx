@@ -2,7 +2,7 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {Keyboard, Pressable, StatusBar, StyleSheet, View} from 'react-native';
 import {sendChallengeAnswer, signUp} from '../../../utils/queries/auth';
 import {GlobalContext, SignInContext} from '../../../contexts';
-import {AuthState, GlobalActionName, SignInActionName} from '../../../utils/types/enums';
+import {AuthState, ErrorTypes, GlobalActionName, SignInActionName} from '../../../utils/types/enums';
 import {createSignUpUser} from '../../../utils/queries/datastore';
 import {setFreeTime, setPhone, setTrials} from '../../../utils/helpers/storage';
 import {AuthLayout} from '../components/AuthLayout';
@@ -14,12 +14,13 @@ import {Footer} from '../../common/components/Footer';
 import {InputOTP} from '../components/InputOTP';
 import FormField from '../../common/components/FormField';
 import LoadingPage from '../../common/screens/LoadingPage';
+import {Alerts} from '../../../utils/helpers/alerts';
 
 export type Mode = 'signup' | 'login' | 'verify';
 
 export const AuthPage = () => {
-  const {global_state, global_dispatch} = useContext(GlobalContext);
-  const {sign_in_dispatch, sendOTP, sign_in_state} = useContext(SignInContext);
+  const { global_state, global_dispatch } = useContext(GlobalContext);
+  const { sign_in_dispatch, sendOTP, sign_in_state } = useContext(SignInContext);
   const [mode, setMode] = useState<Mode>('signup');
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -41,9 +42,9 @@ export const AuthPage = () => {
     }
     if (mode === 'verify') {
       setMode('signup');
-      planetAnim.value = withTiming(0, {duration: 1000});
-      asteroidAnim.value = withTiming(0, {duration: 1000});
-      asteroidAnimFinal.value = withTiming(0, {duration: 1000});
+      planetAnim.value = withTiming(0, { duration: 1000 });
+      asteroidAnim.value = withTiming(0, { duration: 1000 });
+      asteroidAnimFinal.value = withTiming(0, { duration: 1000 });
     }
   }
 
@@ -54,8 +55,8 @@ export const AuthPage = () => {
       if ((remaining_time = sign_in_state.blocked_time - Date.now()) > 1000) {
         timeoutID = setTimeout(async () => {
           setIsLocked(false);
-          sign_in_dispatch({type: SignInActionName.SET_BLOCKED_TIME, payload: 0});
-          sign_in_dispatch({type: SignInActionName.SET_TRIALS, payload: 0});
+          sign_in_dispatch({ type: SignInActionName.SET_BLOCKED_TIME, payload: 0 });
+          sign_in_dispatch({ type: SignInActionName.SET_TRIALS, payload: 0 });
           await setFreeTime(0);
           await setTrials(0);
         }, remaining_time);
@@ -71,7 +72,6 @@ export const AuthPage = () => {
 
   const handleResendOTP = async () => {
     setLoading(true);
-    console.log(sign_in_state.phone_number);
     await sendOTP(sign_in_state.phone_number);
     setOtp('');
     setLoading(false);
@@ -81,14 +81,14 @@ export const AuthPage = () => {
     setLoading(true);
     const session = sign_in_state.session;
     const result = await sendChallengeAnswer(otp, session as CognitoUser);
+    setLoading(false);
     if (!result) {
       global_dispatch({
         type: GlobalActionName.SET_AUTH_STATE,
         payload: AuthState.CONFIRMING_OTP_FAILED,
       });
+      Alerts.wrongOTPAlert();
     }
-    //TODO: Handle the error appropriately depending on the error type
-    setLoading(false);
   };
 
   const handleSignUp = async () => {
@@ -99,7 +99,11 @@ export const AuthPage = () => {
         type: GlobalActionName.SET_AUTH_STATE,
         payload: AuthState.SIGNING_UP_FAILED,
       });
-      // TODO: Handle the error appropriately depending on the error type: if the username already exists, then show a message to the user and redirect them to sign in page
+      if (result === ErrorTypes.USERNAME_EXISTS) {
+        Alerts.phoneExistsAlert();
+      } else {
+        Alerts.signUpErrorAlert();
+      }
     } else {
       await createSignUpUser(number, name, global_state.device_token);
       await handleSignIn();
@@ -110,26 +114,36 @@ export const AuthPage = () => {
     if (!loading) {
       setLoading(true);
     }
-    await setPhone(number);
-    await sendOTP(number);
-    setMode('verify');
+    const success = await sendOTP(number);
     setLoading(false);
+    if (success) {
+      await setPhone(number);
+      setMode('verify');
+      animate();
+    }
+  };
+
+  const animate = () => {
     planetAnim.value === 0 && mode !== 'verify'
-      ? (planetAnim.value = withTiming(1, {duration: 1000}))
-      : (planetAnim.value = withTiming(0, {duration: 1000}));
+      ? (planetAnim.value = withTiming(1, { duration: 1000 }))
+      : (planetAnim.value = withTiming(0, { duration: 1000 }));
     asteroidAnim.value === 0 && mode !== 'verify'
       ? (asteroidAnim.value = withTiming(1, {
-          duration: 900,
-          easing: Easing.bezier(0.32, 0, 0.39, 0),
-        }))
+        duration: 900,
+        easing: Easing.bezier(0.32, 0, 0.39, 0),
+      }))
       : (asteroidAnim.value = withTiming(0, {
-          duration: 900,
-          easing: Easing.bezier(0.22, 0, 0.39, 0),
-        }));
+        duration: 900,
+        easing: Easing.bezier(0.22, 0, 0.39, 0),
+      }));
   };
 
   const handleSubmit = async () => {
-    mode === 'signup' ? await handleSignUp() : mode === 'login' ? await handleSignIn() : await handleConfirmOTP();
+    mode === 'signup'
+      ? await handleSignUp()
+      : mode === 'login'
+      ? await handleSignIn()
+      : await Alerts.confirmOTPAlert(handleConfirmOTP);
   };
 
   const isValidNumber = useCallback(() => {
@@ -158,6 +172,7 @@ export const AuthPage = () => {
         </View>
       ) : (
         <>
+
           {mode === 'signup' ? (
             <View style={styles.formContainerName}>
               <FormField title="" placeholder={'Enter name...'} setField={setName} type={'name'} value={name} />
@@ -170,7 +185,7 @@ export const AuthPage = () => {
                 placeholder={'Enter phone number...'}
                 setField={(value: React.SetStateAction<string>) => {
                   setNumber(value);
-                  sign_in_dispatch({type: SignInActionName.SET_PHONE, payload: number});
+                  sign_in_dispatch({ type: SignInActionName.SET_PHONE, payload: number });
                 }}
                 type={'phone'}
                 value={number}
@@ -200,21 +215,22 @@ export const AuthPage = () => {
               mode === 'signup'
                 ? !(isValidName() && isValidNumber())
                 : mode === 'login'
-                ? !isValidNumber()
-                : !isPinComplete || isLocked
+                  ? !isValidNumber()
+                  : !isPinComplete || isLocked
             }
             onPress={handleSubmit}
             buttonVariant="secondary"
             buttonText={mode === 'signup' ? 'Sign Up' : mode === 'login' ? 'Log In' : 'Confirm OTP'}>
             <Pressable onPress={handleModeChange}>
               <Body size="medium" weight="Bold" color={Colors.blue}>
-                Change mode
+                {mode === 'signup' ? 'Already have an account? Log In' : mode === 'login' ? 'New to the app? Sign Up' : null}
               </Body>
             </Pressable>
           </Footer>
         </>
       )}
     </AuthLayout>
+
   );
 };
 

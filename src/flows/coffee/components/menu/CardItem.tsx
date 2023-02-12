@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Pressable, Image } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {useNavigation} from '@react-navigation/native';
-import Animated, {Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
-import {Colors, Spacings} from '../../../common/theme';
-import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
-import {Body} from '../../../common/typography';
-import {Item} from '../../../../models';
+import { useNavigation } from '@react-navigation/native';
+import Animated, { Easing, Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Colors, Spacings } from '../../../common/theme';
+import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
+import { Body } from '../../../common/typography';
+import { Item } from '../../../../models';
+import { transform } from '@babel/core';
 
 interface CardItemProps {
   item: Item;
@@ -21,7 +22,7 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
   useEffect(() => {
     anim.value = -1;
     anim.value = withTiming(1, {
-      duration: 900,
+      duration: 800,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
     });
   }, [anim]);
@@ -34,35 +35,25 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
     });
   };
 
-  const cardStyleDown = useAnimatedStyle(
-    () => ({
-      // opacity: anim.value,
-      transform: [
-        {
-          translateY: interpolate(anim.value, [0, 1], [-100, 0]),
-        },
-      ],
-    }),
-    [],
-  );
-
   const cardStyleUp = useAnimatedStyle(
     () => ({
-      // opacity: anim.value,
+      opacity: interpolate(anim.value, [0, 1], [0.93, 1], Extrapolate.CLAMP),
       transform: [
         {
-          translateY: interpolate(anim.value, [0, 1], [100, 0]),
+          translateY: interpolate(anim.value, [0, 1], [10, 0]),
+        },
+        {
+          scale: interpolate(anim.value, [0, 1], [1.03, 1]),
         },
       ],
     }),
     [],
   );
-
 
 
   return (
     <Pressable onPress={onItemPress}>
-      <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleDown : cardStyleUp]}>
+      <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleUp : cardStyleUp]}>
         <View style={styles.container}>
           <View style={styles.textContainer}>
             <Body size="medium" weight="Bold" color={Colors.darkBrown2} style={styles.titleText}>
@@ -83,10 +74,11 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
               <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
                 {item.ratings
                   ? item.ratings.length > 0
-                    ? item.ratings.reduce((acc, curr) => acc + (curr ? curr.rating : 0), 0) / item.ratings.length
+                    ? (item.ratings.reduce((acc, curr) => acc + (curr ? curr.rating : 0), 0) / item.ratings.length).toFixed(1)
                     : 'None'
                   : 'None'}
               </Body>
+              <Image source={require('../../../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
             </View>
           </View>
         </View>
@@ -100,7 +92,10 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
   },
-
+  image: {
+    width: '100%',
+    height: '100%'
+  },
   container: {
     position: 'relative',
     overflow: 'hidden',
@@ -183,15 +178,15 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     position: 'absolute',
-    right: 7,
+    right: 20,
     top: 4,
   },
 
   ratingStar: {
-    height: 15,
-    width: 15,
+    height: 10,
+    width: 10,
     position: 'absolute',
-    left: 0,
+    left: 22,
     tintColor: Colors.gold,
   },
   plusButton: {

@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
-import {ActivityIndicator, Alert, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, View} from 'react-native';
 import {
   ApplePayButton,
   GooglePayButton,
@@ -10,6 +10,7 @@ import {
   useStripe,
 } from '@stripe/stripe-react-native';
 import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+
 import {
   createGooglePaymentMethod,
   initializeGooglePay,
@@ -32,11 +33,11 @@ import {Colors, Spacings} from '../../../common/theme';
 import {useDeepCompareEffect} from 'react-use';
 import {Body, Heading} from '../../../common/typography';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
-import {ActionButton} from '../../../common/components/Buttons/ActionButton';
 import {BlurView} from '@react-native-community/blur';
 import {getOptionsPrice} from '../../../../utils/helpers/basket';
 import {getOrderId} from '../../../../utils/helpers/order_id';
 import {GlobalActionName} from '../../../../utils/types/enums';
+import {Alerts} from '../../../../utils/helpers/alerts';
 
 interface PreviewPageProps {}
 export const PreviewPage = (props: PreviewPageProps) => {
@@ -149,7 +150,9 @@ export const PreviewPage = (props: PreviewPageProps) => {
   }
 
   async function handleSendOrder(paymentId: string) {
-    if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
+    if (global_state.current_user?.current_order) {
+      Alerts.orderAlert();
+    } else if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
       const user: LocalUser = global_state.current_user as LocalUser;
       const {orderId, pin, final_color} = getOrderId();
       const order_info: OrderInfo = {
@@ -202,20 +205,16 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   const handleCheckout = async (mode: Payment) => {
     if (mode === 'card') {
-      Alert.alert(
-        'Are you sure?',
-        'Are you sure you want to checkout, this action is final. It will send your order.',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Confirm',
-            onPress: async () => await initiateCheckout(mode),
-          },
-        ],
-      );
+      Alert.alert('Are you sure?', 'This action is final. It will send your order.', [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: async () => await initiateCheckout(mode),
+        },
+      ]);
     } else {
       await initiateCheckout(mode);
     }
@@ -236,7 +235,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
         <LeftChevronBackButton color={'#fff'} />
       </View>
       <ScrollView style={styles.previewScrollContainer} contentContainerStyle={{flexGrow: 1}}>
-        <View style={{minHeight: '100%'}}>
+        <View style={{minHeight: '100%', paddingBottom: 30}}>
           <View style={styles.heading}>
             <Heading size="default" weight="Bold" color={Colors.white}>
               Summary
@@ -258,11 +257,12 @@ export const PreviewPage = (props: PreviewPageProps) => {
                 <ApplePayButton
                   onPress={() => handleCheckout('apple')}
                   type="plain"
-                  buttonStyle="black"
+                  buttonStyle="white"
                   borderRadius={4}
                   style={{
                     width: '100%',
                     height: 50,
+                    marginBottom: 10,
                   }}
                 />
               )}
@@ -273,26 +273,27 @@ export const PreviewPage = (props: PreviewPageProps) => {
                   style={{
                     width: 200,
                     height: 50,
+                    marginBottom: 10,
                   }}
                 />
               )}
-              <ActionButton label="Checkout" onPress={() => handleCheckout('card')} />
+              <Body size="medium" weight="Extrabld" color={Colors.white}>
+                or
+              </Body>
+              <Pressable onPress={() => handleCheckout('card')}>
+                <View style={styles.cardButton}>
+                  <Body size="medium" weight="Bold" color={Colors.white}>
+                    Checkout with card
+                  </Body>
+                </View>
+              </Pressable>
             </View>
           </PreviewSection>
-
-          <View style={styles.totalContainer}>
-            <Body size="large" weight="Bold" color={Colors.white}>
-              Total
-            </Body>
-            <Body size="large" weight="Bold" color={Colors.white}>
-              £{(total / 100).toFixed(2)}
-            </Body>
-          </View>
         </View>
       </ScrollView>
       {loading && (
         <>
-          <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
+          {/*<BlurView style={styles.absolute} blurType="dark" blurAmount={10} />*/}
           <ActivityIndicator
             animating={loading}
             size="large"
@@ -329,6 +330,7 @@ const styles = StyleSheet.create({
 
   previewScrollContainer: {
     // flex: 1,
+    marginBottom: 30,
     // backgroundColor: 'red',
   },
 
@@ -361,12 +363,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   paymentRoot: {
-    // marginTop: 20,
-    height: 150,
     backgroundColor: Colors.red,
   },
   paymentContainer: {
-    marginTop: Spacings.s5,
+    marginTop: Spacings.s3,
     height: 100,
     width: '100%',
     flex: 1,
@@ -378,6 +378,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  cardButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.gold,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 15,
+    width: 350,
+    height: 45,
+  },
+
   totalContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

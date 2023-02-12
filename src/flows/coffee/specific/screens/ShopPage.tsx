@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { OrderingContext } from '../../../../contexts';
-import { Item } from '../../../../models';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import {Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {OrderingContext} from '../../../../contexts';
+import {Item} from '../../../../models';
 import Animated, {
   Easing,
   Extrapolate,
@@ -11,20 +11,21 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Colors, Spacings } from '../../../common/theme';
+import {Colors, Spacings} from '../../../common/theme';
 import TabNavigator from '../../components/menu/TabNavigator';
-import { BasketPreview } from '../../components/basket/BasketPreview';
+import {BasketPreview} from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
+import LinearGradient from 'react-native-linear-gradient';
 
-const { StatusBarManager } = NativeModules;
+const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const { height: wHeight, width: wWidth } = Dimensions.get('window');
+const {height: wHeight, width: wWidth} = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
-  const { ordering_state } = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
   const anim = useSharedValue(0);
@@ -55,7 +56,7 @@ export const ShopPage = () => {
     }
   }, [basketAnim, ordering_state.specific_basket.length]);
 
-  const contains = ({ name }: Item, query: string) => {
+  const contains = ({name}: Item, query: string) => {
     const nameLower = name.toLowerCase();
     return nameLower.includes(query);
   };
@@ -148,47 +149,48 @@ export const ShopPage = () => {
     <View style={styles.root}>
       {/* back button for navigation */}
       <View style={styles.backButton}>
-        <LeftChevronBackButton color={'black'} />
+        <LeftChevronBackButton color={Colors.white} />
       </View>
-
       <View style={[styles.itemsContainer]}>
-        <View style={styles.header}>
-          <Animated.Image
-            source={require('../../../../assets/pngs/semi-circle.png')}
-            style={[styles.semiCircle, rCircleStyle]}
-          />
-          <Animated.View style={[styles.searchInputContainer, rSearchContainerStyle]}>
-            <View style={styles.searchIcon}>
-              <Pressable onPress={handleSearchPress}>
-                <Animated.Image
-                  style={rSearchIconStyle}
-                  source={require('../../../../assets/pngs/magnifyingglass.png')}
+        <LinearGradient locations={[0.2, 1]} colors={[Colors.darkBrown2, Colors.cream]}>
+          <View style={styles.header}>
+            <Animated.Image
+              source={require('../../../../assets/pngs/semi-circle.png')}
+              style={[styles.semiCircle, rCircleStyle]}
+            />
+            <Animated.View style={[styles.searchInputContainer, rSearchContainerStyle]}>
+              <View style={styles.searchIcon}>
+                <Pressable onPress={handleSearchPress}>
+                  <Animated.Image
+                    style={rSearchIconStyle}
+                    source={require('../../../../assets/pngs/magnifyingglass.png')}
+                  />
+                </Pressable>
+              </View>
+              <Animated.View style={[styles.searchText]}>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  value={query}
+                  onChangeText={queryText => setQuery(queryText)}
+                  placeholder="What do you crave?"
+                  style={styles.searchText}
+                  placeholderTextColor={Colors.darkBrown}
+                  selectionColor={Colors.darkBrown}
                 />
-              </Pressable>
-            </View>
-            <Animated.View style={[styles.searchText]}>
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                value={query}
-                onChangeText={queryText => setQuery(queryText)}
-                placeholder="What do you crave?"
-                style={styles.searchText}
-                placeholderTextColor={Colors.darkBrown}
-                selectionColor={Colors.darkBrown}
-              />
+              </Animated.View>
+              <View style={styles.clearIcon}>
+                <Pressable onPress={handleSearchPress}>
+                  <Animated.Image
+                    style={[rSearchIconStyle, {width: 15, height: 15}]}
+                    source={require('../../../../assets/pngs/x-outline.png')}
+                  />
+                </Pressable>
+              </View>
             </Animated.View>
-            <View style={styles.clearIcon}>
-              <Pressable onPress={handleSearchPress}>
-                <Animated.Image
-                  style={[rSearchIconStyle, { width: 15, height: 15 }]}
-                  source={require('../../../../assets/pngs/x-outline.png')}
-                />
-              </Pressable>
-            </View>
-          </Animated.View>
-          <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} query={query} />
-        </View>
+            <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} query={query} />
+          </View>
+        </LinearGradient>
       </View>
       <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
         <BasketPreview />
@@ -218,17 +220,16 @@ const styles = StyleSheet.create({
   itemsContainer: {
     // flex: 1,
     position: 'absolute',
-    top: -10,
+    top: -20,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: Colors.greyLight1,
   },
   basketContainer: {
     position: 'absolute',
     overflow: 'hidden',
-    bottom: -5,
-    height: '12%',
+    bottom: 0,
+    height: '13%',
     justifyContent: 'center',
     alignItems: 'center',
     left: 0,
@@ -245,6 +246,7 @@ const styles = StyleSheet.create({
     shadowRadius: 35,
     shadowOpacity: 0.9,
     elevation: 5,
+    zIndex: 1,
   },
   searchInputContainer: {
     flex: 1,
@@ -299,6 +301,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
     position: 'absolute',
     top: -450,
+    tintColor: Colors.darkBrown,
   },
 
   footerContainer: {
@@ -321,8 +324,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 20,
-    left: -10,
+    top: 60,
+    left: -20,
     zIndex: 1,
   },
 });

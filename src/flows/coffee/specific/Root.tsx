@@ -1,5 +1,5 @@
 import React, {useCallback, useContext} from 'react';
-import {OrderingContext} from '../../../contexts';
+import {GlobalContext, OrderingContext} from '../../../contexts';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {CoffeeRoutes} from '../../../utils/types/navigation.types';
 import {DataStore, SortDirection} from 'aws-amplify';
@@ -10,11 +10,11 @@ import ItemPage from './screens/ItemPage';
 import {useDeepCompareEffect} from 'react-use';
 import {OrderingActionName} from '../../../utils/types/enums';
 import {Alerts} from '../../../utils/helpers/alerts';
-import CafeBrowsingPage from './screens/CafeBrowsingPage';
 import {Home} from '../../common/screens/Home';
 import {getAllOptions, getAllRatings} from '../../../utils/queries/datastore';
 
 const Root = () => {
+  const {global_state} = useContext(GlobalContext);
   const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
   const CoffeeStack = createNativeStackNavigator<CoffeeRoutes>();
 
@@ -104,19 +104,22 @@ const Root = () => {
 
   return (
     <CoffeeStack.Navigator
-      initialRouteName="Cafes"
+      initialRouteName="Home"
       screenOptions={{
         gestureEnabled: false,
         headerShown: false,
       }}>
       <CoffeeStack.Group>
         <CoffeeStack.Screen name="Home" component={Home} />
-        <CoffeeStack.Screen name="Cafes" component={CafeBrowsingPage} />
-        <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
-        <CoffeeStack.Group screenOptions={{presentation: 'modal', headerShown: false}}>
-          <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
-          <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
-        </CoffeeStack.Group>
+        {global_state.current_user?.current_order ? null : (
+          <>
+            <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
+            <CoffeeStack.Group screenOptions={{presentation: 'modal', headerShown: false}}>
+              <CoffeeStack.Screen name="ItemPage" component={ItemPage} />
+              <CoffeeStack.Screen name="PreviewPage" component={PreviewPage} />
+            </CoffeeStack.Group>
+          </>
+        )}
       </CoffeeStack.Group>
     </CoffeeStack.Navigator>
   );

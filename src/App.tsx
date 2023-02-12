@@ -19,6 +19,7 @@ import Navigator from './navigation/Navigator';
 import {CurrentOrder, PastOrder, User} from './models';
 import {firebase} from '@react-native-firebase/messaging';
 import {Alerts} from './utils/helpers/alerts';
+
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
   const loading = useRef(true);

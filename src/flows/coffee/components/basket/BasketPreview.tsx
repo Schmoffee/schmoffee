@@ -12,10 +12,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import {BasketItem} from '../../../common/components/Items/BasketItem';
 import {OrderingContext} from '../../../../contexts';
-import {Body} from '../../../common/typography';
 import {Colors, Spacings} from '../../../common/theme';
 import {useNavigation} from '@react-navigation/native';
-import FullOrderItem from '../../../common/components/Items/FullOrderItem';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
 
 interface BasketPreviewProps {
   translateY?: Animated.SharedValue<number>;
@@ -23,7 +22,7 @@ interface BasketPreviewProps {
 
 export const BasketPreview = (props: BasketPreviewProps) => {
   const {ordering_state} = useContext(OrderingContext);
-  const navigation = useNavigation();
+  const navigation = useNavigation<CoffeeRoutes>();
 
   //  loop animation
   const anim = useSharedValue(1);
@@ -42,16 +41,23 @@ export const BasketPreview = (props: BasketPreviewProps) => {
 
   return (
     <View style={styles.itemRow}>
-      <Body size="large" weight="Extrabld" color="white" style={{marginRight: Spacings.s1}}>
-        Cart
-      </Body>
+      <View style={styles.cartIcon}>
+        <Image
+          source={require('../../../../assets/pngs/cart.png')}
+          style={{width: 35, height: 35, tintColor: Colors.white}}
+        />
+      </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {ordering_state.specific_basket.map((item, index) => {
           return <BasketItem item={item} key={item.id + index} />;
         })}
       </ScrollView>
-      <Pressable style={styles.circle} onPress={() => navigation.navigate('PreviewPage')}>
+      <Pressable
+        style={styles.circle}
+        onPress={() => {
+          navigation.navigate('Coffee', {screen: 'PreviewPage'});
+        }}>
         <Animated.View style={[rChevronStyle]}>
           <Image source={require('../../../../assets/pngs/right_chevron.png')} style={[styles.rightChevron]} />
         </Animated.View>
@@ -77,6 +83,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: Spacings.s1,
   },
+  cartIcon: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // marginRight: Spacings.s1,
+  },
+
   rightChevron: {
     width: 0,
     height: 0,
