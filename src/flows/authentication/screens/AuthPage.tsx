@@ -19,8 +19,8 @@ import {Alerts} from '../../../utils/helpers/alerts';
 export type Mode = 'signup' | 'login' | 'verify';
 
 export const AuthPage = () => {
-  const { global_state, global_dispatch } = useContext(GlobalContext);
-  const { sign_in_dispatch, sendOTP, sign_in_state } = useContext(SignInContext);
+  const {global_state, global_dispatch} = useContext(GlobalContext);
+  const {sign_in_dispatch, sendOTP, sign_in_state} = useContext(SignInContext);
   const [mode, setMode] = useState<Mode>('signup');
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -42,9 +42,9 @@ export const AuthPage = () => {
     }
     if (mode === 'verify') {
       setMode('signup');
-      planetAnim.value = withTiming(0, { duration: 1000 });
-      asteroidAnim.value = withTiming(0, { duration: 1000 });
-      asteroidAnimFinal.value = withTiming(0, { duration: 1000 });
+      planetAnim.value = withTiming(0, {duration: 1000});
+      asteroidAnim.value = withTiming(0, {duration: 1000});
+      asteroidAnimFinal.value = withTiming(0, {duration: 1000});
     }
   }
 
@@ -55,8 +55,8 @@ export const AuthPage = () => {
       if ((remaining_time = sign_in_state.blocked_time - Date.now()) > 1000) {
         timeoutID = setTimeout(async () => {
           setIsLocked(false);
-          sign_in_dispatch({ type: SignInActionName.SET_BLOCKED_TIME, payload: 0 });
-          sign_in_dispatch({ type: SignInActionName.SET_TRIALS, payload: 0 });
+          sign_in_dispatch({type: SignInActionName.SET_BLOCKED_TIME, payload: 0});
+          sign_in_dispatch({type: SignInActionName.SET_TRIALS, payload: 0});
           await setFreeTime(0);
           await setTrials(0);
         }, remaining_time);
@@ -125,17 +125,17 @@ export const AuthPage = () => {
 
   const animate = () => {
     planetAnim.value === 0 && mode !== 'verify'
-      ? (planetAnim.value = withTiming(1, { duration: 1000 }))
-      : (planetAnim.value = withTiming(0, { duration: 1000 }));
+      ? (planetAnim.value = withTiming(1, {duration: 1000}))
+      : (planetAnim.value = withTiming(0, {duration: 1000}));
     asteroidAnim.value === 0 && mode !== 'verify'
       ? (asteroidAnim.value = withTiming(1, {
-        duration: 900,
-        easing: Easing.bezier(0.32, 0, 0.39, 0),
-      }))
+          duration: 900,
+          easing: Easing.bezier(0.32, 0, 0.39, 0),
+        }))
       : (asteroidAnim.value = withTiming(0, {
-        duration: 900,
-        easing: Easing.bezier(0.22, 0, 0.39, 0),
-      }));
+          duration: 900,
+          easing: Easing.bezier(0.22, 0, 0.39, 0),
+        }));
   };
 
   const handleSubmit = async () => {
@@ -172,7 +172,6 @@ export const AuthPage = () => {
         </View>
       ) : (
         <>
-
           {mode === 'signup' ? (
             <View style={styles.formContainerName}>
               <FormField title="" placeholder={'Enter name...'} setField={setName} type={'name'} value={name} />
@@ -185,7 +184,7 @@ export const AuthPage = () => {
                 placeholder={'Enter phone number...'}
                 setField={(value: React.SetStateAction<string>) => {
                   setNumber(value);
-                  sign_in_dispatch({ type: SignInActionName.SET_PHONE, payload: number });
+                  sign_in_dispatch({type: SignInActionName.SET_PHONE, payload: number});
                 }}
                 type={'phone'}
                 value={number}
@@ -215,22 +214,25 @@ export const AuthPage = () => {
               mode === 'signup'
                 ? !(isValidName() && isValidNumber())
                 : mode === 'login'
-                  ? !isValidNumber()
-                  : !isPinComplete || isLocked
+                ? !isValidNumber()
+                : !isPinComplete || isLocked
             }
             onPress={handleSubmit}
             buttonVariant="secondary"
             buttonText={mode === 'signup' ? 'Sign Up' : mode === 'login' ? 'Log In' : 'Confirm OTP'}>
             <Pressable onPress={handleModeChange}>
               <Body size="medium" weight="Bold" color={Colors.blue}>
-                {mode === 'signup' ? 'Already have an account? Log In' : mode === 'login' ? 'New to the app? Sign Up' : null}
+                {mode === 'signup'
+                  ? 'Already have an account? Log In'
+                  : mode === 'login'
+                  ? 'New to the app? Sign Up'
+                  : null}
               </Body>
             </Pressable>
           </Footer>
         </>
       )}
     </AuthLayout>
-
   );
 };
 

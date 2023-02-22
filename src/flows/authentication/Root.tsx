@@ -53,29 +53,32 @@ const Root = () => {
     if (+trials <= 10000) {
       const user_id = await checkMultiSignIn(phoneNumber, global_state.device_token);
       if (user_id) {
-        Alert.alert(
-          'Already signed in',
-          'You are already signed in on another device. You will be signed out of the other device.',
-          [
-            {
-              text: 'OK',
-              onPress: async () => {
-                const success = await initiateSignIn(phoneNumber, +trials);
-                if (success) {
-                  await newSignIn(user_id);
-                  return true;
-                }
-                return false;
+        const sent: boolean = await new Promise(resolve =>
+          Alert.alert(
+            'Already signed in',
+            'You are already signed in on another device. You will be signed out of the other device.',
+            [
+              {
+                text: 'OK',
+                onPress: async () => {
+                  const success = await initiateSignIn(phoneNumber, +trials);
+                  if (success) {
+                    await newSignIn(user_id);
+                    resolve(true);
+                  }
+                  resolve(false);
+                },
               },
-            },
-            {
-              text: 'Cancel',
-              onPress: () => {
-                return false;
+              {
+                text: 'Cancel',
+                onPress: () => {
+                  resolve(false);
+                },
               },
-            },
-          ],
+            ],
+          ),
         );
+        return sent;
       } else {
         return await initiateSignIn(phoneNumber, +trials);
       }
@@ -92,7 +95,6 @@ const Root = () => {
       );
       return false;
     }
-    return false;
   }
 
   async function initiateSignIn(phoneNumber: string, trials: number) {

@@ -30,6 +30,7 @@ const RootStack = createNativeStackNavigator<RootRoutes>();
 function RootNavigator(props: NavigatorProps) {
   const {global_state} = useContext(GlobalContext);
   const location = useRef<MapLocation | null>(null);
+
   Geolocation.setRNConfiguration({
     skipPermissionRequests: false,
     authorizationLevel: 'auto',

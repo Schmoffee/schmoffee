@@ -68,6 +68,7 @@ const Root = () => {
    */
   useDeepCompareEffect(() => {
     if (ordering_state.current_shop_id) {
+      console.log(ordering_state.current_shop_id);
       const subscription = DataStore.observeQuery(
         Item,
         //@ts-ignore
@@ -77,20 +78,19 @@ const Root = () => {
         },
       ).subscribe(async snapshot => {
         const {items, isSynced} = snapshot;
-        let full_items: Item[] = [];
         if (isSynced) {
           const all_options = await getAllOptions();
           const all_ratings = await getAllRatings();
           const basket = ordering_state.specific_basket;
           const old_items = ordering_state.specific_items;
-          full_items = items.map(item => {
+          const full_items = items.map(item => {
             const options = all_options.filter(option => option.itemID === item.id);
             const ratings = all_ratings.filter(rating => rating.itemID === item.id);
             return {...item, options: options, ratings: ratings};
           });
+          ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_ITEMS, payload: full_items});
           filterSpecificBasket(full_items, basket, old_items);
         }
-        ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_ITEMS, payload: full_items});
       });
       return () => subscription.unsubscribe();
     }
@@ -111,7 +111,7 @@ const Root = () => {
       }}>
       <CoffeeStack.Group>
         <CoffeeStack.Screen name="Home" component={Home} />
-        {global_state.current_user?.current_order ? null : (
+        {global_state.current_order ? null : (
           <>
             <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
             <CoffeeStack.Group screenOptions={{presentation: 'modal', headerShown: false}}>

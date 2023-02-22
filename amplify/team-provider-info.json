@@ -56,6 +56,16 @@
           "deploymentBucketName": "amplify-schmoffee-dev-111934-deployment",
           "s3Key": "amplify-builds/schmoffeeSendNotification-4c772b67454f62794167-build.zip"
         }
+      },
+      "analytics": {
+        "Pinpoint": {
+          "Name": "schmoffee-dev",
+          "Id": "3648ce85f9d543e1877c149dccf556b4",
+          "Region": "eu-central-1"
+        }
+      },
+      "storage": {
+        "storage": {}
       }
     }
   }

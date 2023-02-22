@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useRef} from 'react';
+import React, {useEffect, useReducer, useRef, useState} from 'react';
 import {BackHandler, NativeModules, Platform} from 'react-native';
 import {globalReducer} from './reducers';
 import {GlobalContext, globalData} from './contexts';
@@ -6,23 +6,20 @@ import {DataStore, Hub} from 'aws-amplify';
 import {authListener, datastoreListener} from './utils/helpers/listeners';
 import {getCurrentAuthUser, signOut} from './utils/queries/auth';
 import {AuthState, GlobalActionName} from './utils/types/enums';
-import {
-  getCurrOrder,
-  getPastOrders,
-  getUserById,
-  getUserByPhoneNumber,
-  updateDeviceToken,
-} from './utils/queries/datastore';
-import {LocalUser} from './utils/types/data.types';
+import {getPastOrders, getUserById, getUserByPhoneNumber, updateDeviceToken} from './utils/queries/datastore';
+import {LocalUser, Payment} from './utils/types/data.types';
 import {updateEndpoint} from './utils/helpers/notifications';
 import Navigator from './navigation/Navigator';
-import {CurrentOrder, PastOrder, User} from './models';
+import {CurrentOrder, OrderStatus, PastOrder, User} from './models';
 import {firebase} from '@react-native-firebase/messaging';
 import {Alerts} from './utils/helpers/alerts';
+import {cancelPayment, confirmPayment} from './utils/helpers/payment';
+import {getDeletedOrders} from './utils/helpers/storage';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
-  const loading = useRef(true);
+  const [loading, setLoading] = useState(true);
+  const authLoading = useRef(true);
 
   /**
    * This effect runs a dummy database query to manually initiate the synchronisation with the cloud.
@@ -30,7 +27,10 @@ const App = () => {
   useEffect(() => {
     const init = async () => {
       // Instead of using Datastore.start().
+      setLoading(true);
+      // await DataStore.clear();
       await getUserById('init');
+      setLoading(false);
     };
     init().catch(e => Alerts.databaseAlert());
   }, []);
@@ -40,7 +40,6 @@ const App = () => {
    */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      console.log('back pressed');
       return true;
     });
     return () => backHandler.remove();
@@ -118,45 +117,84 @@ const App = () => {
           payload: AuthState.SIGNED_OUT,
         });
       }
-      loading.current = false;
     };
-    if (global_state.device_token !== '') {
+    if (global_state.device_token !== '' && !loading) {
       refreshAuthState().catch(error => {
         console.log(error);
         Alerts.elseAlert();
       });
+      authLoading.current = false;
     }
-  }, [global_state.current_user?.id, global_state.auth_state, global_state.device_token]);
+  }, [global_state.current_user?.id, global_state.auth_state, global_state.device_token, loading]);
 
   useEffect(() => {
-    const subscription = DataStore.observeQuery(User, user =>
-      user.device_token('eq', global_state.device_token),
-    ).subscribe(async snapshot => {
-      const {items} = snapshot;
-      if (global_state.auth_state === AuthState.SIGNED_IN && items.length > 0) {
-        const currentUser = items[0];
-        const curr_order: CurrentOrder | null = await getCurrOrder(currentUser.id);
-        const past_orders: PastOrder[] = await getPastOrders(currentUser.id);
-        const localUser: LocalUser = {
-          id: currentUser.id,
-          name: currentUser.name,
-          phone: currentUser.phone,
-          payment_method: currentUser.payment_method,
-          the_usual: currentUser.the_usual,
-          customer_id: currentUser.customer_id,
-          device_token: global_state.device_token,
-          current_order: curr_order,
-          past_orders: past_orders,
-        };
-        global_dispatch({type: GlobalActionName.SET_CURRENT_USER, payload: localUser});
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [global_state.auth_state, global_state.device_token]);
+    if (!loading) {
+      const subscription = DataStore.observeQuery(User, user =>
+        user.device_token('eq', global_state.device_token),
+      ).subscribe(async snapshot => {
+        const {items} = snapshot;
+        if (global_state.auth_state === AuthState.SIGNED_IN && items.length > 0) {
+          const currentUser = items[0];
+          const past_orders: PastOrder[] = await getPastOrders(currentUser.id);
+          const localUser: LocalUser = {
+            id: currentUser.id,
+            name: currentUser.name,
+            phone: currentUser.phone,
+            payment_method: currentUser.payment_method,
+            the_usual: currentUser.the_usual,
+            customer_id: currentUser.customer_id,
+            device_token: global_state.device_token,
+            past_orders: past_orders,
+          };
+          global_dispatch({type: GlobalActionName.SET_CURRENT_USER, payload: localUser});
+        }
+      });
+      return () => subscription.unsubscribe();
+    }
+  }, [global_state.auth_state, global_state.device_token, loading]);
+
+  /**
+   * Get the user's current order from the database and subscribe to any changes to it.
+   */
+  useEffect(() => {
+    if (global_state.current_user !== null && !loading) {
+      const user: LocalUser = global_state.current_user;
+      const subscription = DataStore.observeQuery(CurrentOrder, current_order =>
+        current_order.userID('eq', user.id),
+      ).subscribe(async snapshot => {
+        const {items, isSynced} = snapshot;
+        const deletedOrders: string[] | void = await getDeletedOrders();
+        const actualOrders = items.filter(item => !deletedOrders?.includes(item.id));
+        if (isSynced) {
+          if (actualOrders.length === 1) {
+            const prevStatus = global_state.current_order?.status;
+            const new_order = actualOrders[0];
+            global_dispatch({type: GlobalActionName.SET_CURRENT_ORDER, payload: actualOrders[0]});
+            if (new_order.status !== prevStatus) {
+              switch (new_order.status) {
+                case OrderStatus.ACCEPTED:
+                  await confirmPayment(user.payment_method as Payment, new_order.payment_id);
+                  break;
+                case OrderStatus.REJECTED:
+                  await cancelPayment(new_order.payment_id);
+                  break;
+              }
+            }
+          } else {
+            actualOrders.length === 0
+              ? global_dispatch({type: GlobalActionName.SET_CURRENT_ORDER, payload: null})
+              : Alerts.elseAlert();
+          }
+        }
+      });
+      return () => subscription.unsubscribe();
+    }
+    // Don't track the current order status, otherwise it will cause an infinite loop.
+  }, [global_state.current_user, loading, global_dispatch]);
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>
-      <Navigator loading={loading.current} />
+      <Navigator loading={authLoading.current} />
     </GlobalContext.Provider>
   );
 };

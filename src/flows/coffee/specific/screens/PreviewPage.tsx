@@ -22,7 +22,7 @@ import {BasketSection} from '../../components/basket/BasketSection';
 import {GlobalContext, OrderingContext} from '../../../../contexts';
 import {OrderInfo, PlatformType, User, UserInfo, UsualOrder} from '../../../../models';
 import {CONST_SCREEN_ORDER} from '../../../../../constants';
-import {sendOrder, setUsualOrder, updatePaymentMethod} from '../../../../utils/queries/datastore';
+import {getCurrOrder, sendOrder, setUsualOrder, updatePaymentMethod} from '../../../../utils/queries/datastore';
 import {LocalUser, Payment, PaymentParams} from '../../../../utils/types/data.types';
 import Map from '../../../common/components/Map/Map';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
@@ -36,13 +36,13 @@ import LeftChevronBackButton from '../../../common/components/LeftChevronBackBut
 import {BlurView} from '@react-native-community/blur';
 import {getOptionsPrice} from '../../../../utils/helpers/basket';
 import {getOrderId} from '../../../../utils/helpers/order_id';
-import {GlobalActionName} from '../../../../utils/types/enums';
 import {Alerts} from '../../../../utils/helpers/alerts';
+import {OrderingActionName} from '../../../../utils/types/enums';
 
 interface PreviewPageProps {}
 export const PreviewPage = (props: PreviewPageProps) => {
-  const {global_state, global_dispatch} = useContext(GlobalContext);
-  const {ordering_state} = useContext(OrderingContext);
+  const {global_state} = useContext(GlobalContext);
+  const {ordering_state, ordering_dispatch} = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
   const {initPaymentSheet, presentPaymentSheet} = useStripe(); // Stripe hook payment methods
   const {isGooglePaySupported} = useGooglePay();
@@ -87,7 +87,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
   async function checkout(mode: Payment) {
     const user: User = global_state.current_user as LocalUser;
     let paymentParams: PaymentParams;
-    setLoading(true);
     await updatePaymentMethod(user.id, mode);
     let payment_id;
     if (user) {
@@ -117,14 +116,12 @@ export const PreviewPage = (props: PreviewPageProps) => {
       }
 
       if (payment_id) {
-        setLoading(false);
         if (Platform.OS === 'ios') await PushNotificationIOS.requestPermissions();
         await handleSendOrder(payment_id);
         return true;
       }
       return false;
     }
-    setLoading(false);
     return false;
   }
 
@@ -150,9 +147,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
   }
 
   async function handleSendOrder(paymentId: string) {
-    if (global_state.current_user?.current_order) {
-      Alerts.orderAlert();
-    } else if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
+    if (global_state.current_user && ordering_state.current_shop_id && paymentId) {
       const user: LocalUser = global_state.current_user as LocalUser;
       const {orderId, pin, final_color} = getOrderId();
       const order_info: OrderInfo = {
@@ -169,8 +164,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
         device_token: user.device_token,
         platform: platform,
       };
-
-      const order = await sendOrder(
+      await sendOrder(
         ordering_state.specific_basket,
         total,
         order_info,
@@ -179,13 +173,10 @@ export const PreviewPage = (props: PreviewPageProps) => {
         user_info,
         paymentId,
       );
-      global_dispatch({
-        type: GlobalActionName.SET_CURRENT_USER,
-        payload: {...global_state.current_user, current_order: order},
-      });
       if (usual) {
         await saveUsualOrder();
       }
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: []});
       await clearStorageSpecificBasket();
     } else {
       console.log('User or shop or payment_id is not defined');
@@ -222,11 +213,17 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   const initiateCheckout = async (mode: Payment) => {
     setLoading(true);
-    const success = await checkout(mode);
-    setLoading(false);
-    if (success) {
-      navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
+    const order = await getCurrOrder(global_state.current_user?.id as string);
+    if (order) {
+      Alerts.orderAlert();
+    } else {
+      const success = await checkout(mode);
+      setLoading(false);
+      if (success) {
+        navigation.navigate('TrackOrder', {screen: CONST_SCREEN_ORDER});
+      }
     }
+    setLoading(false);
   };
 
   return (
@@ -293,7 +290,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
       </ScrollView>
       {loading && (
         <>
-          {/*<BlurView style={styles.absolute} blurType="dark" blurAmount={10} />*/}
+          <BlurView style={styles.absolute} blurType="dark" blurAmount={10} />
           <ActivityIndicator
             animating={loading}
             size="large"
