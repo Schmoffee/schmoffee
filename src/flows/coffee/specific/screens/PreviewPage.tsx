@@ -26,7 +26,7 @@ import {getCurrOrder, sendOrder, setUsualOrder, updatePaymentMethod} from '../..
 import {LocalUser, Payment, PaymentParams} from '../../../../utils/types/data.types';
 import Map from '../../../common/components/Map/Map';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import {clearStorageSpecificBasket} from '../../../../utils/helpers/storage';
+import {clearStorageSpecificBasket, getDeletedOrders} from '../../../../utils/helpers/storage';
 import ScheduleSection from '../../components/preview/ScheduleSection';
 import PreviewSection from '../../components/preview/PreviewSection';
 import {Colors, Spacings} from '../../../common/theme';
@@ -213,8 +213,10 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   const initiateCheckout = async (mode: Payment) => {
     setLoading(true);
-    const order = await getCurrOrder(global_state.current_user?.id as string);
-    if (order) {
+    const orders = await getCurrOrder(global_state.current_user?.id as string);
+    const deletedOrders: string[] | void = await getDeletedOrders();
+    const actualOrders = orders ? orders.filter(order => !deletedOrders?.includes(order.id)) : [];
+    if (orders && actualOrders.length > 0) {
       Alerts.orderAlert();
     } else {
       const success = await checkout(mode);

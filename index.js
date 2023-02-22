@@ -11,7 +11,7 @@ import {DataStore} from 'aws-amplify';
 import awsConfig from './src/aws-exports';
 import {Amplify} from 'aws-amplify';
 import RemotePushNotification from '@aws-amplify/pushnotification';
-import LocalPushNotification from 'react-native-push-notification';
+import LocalPushNotification, {Importance} from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {SendLocalNotification} from './src/utils/helpers/notifications';
 import {LogBox} from 'react-native';
@@ -25,13 +25,28 @@ RemotePushNotification.onNotification(async notification => {
     const specs = {};
     SendLocalNotification(genericSpec, specs);
   } else {
+    const specs = {};
     LocalPushNotification.getChannels(function (channel_ids) {
       if (channel_ids.length > 0) {
-        const specs = {};
         specs.channelId = channel_ids[0];
         SendLocalNotification(genericSpec, specs);
       } else {
-        console.log('no channel_ids');
+        LocalPushNotification.createChannel(
+          {
+            channelId: '1',
+            channelName: 'My channel',
+            channelDescription: 'A channel to categorise your notifications',
+            playSound: true,
+            soundName: 'default',
+            importance: Importance.HIGH,
+            vibrate: true,
+          },
+          created => {
+            console.log(`createChannel returned '${created}'`);
+            specs.channelId = '1';
+            SendLocalNotification(genericSpec, specs);
+          },
+        );
       }
     });
   }

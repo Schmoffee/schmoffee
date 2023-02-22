@@ -249,6 +249,14 @@
         }
       ]
     },
+    "AMPLIFY_function_schmoffeeCancelPayment_secretsPathAmplifyAppId": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeCancelPayment"
+        }
+      ]
+    },
     "AMPLIFY_function_schmoffeeGooglePayConfirmPayment_deploymentBucketName": {
       "usedBy": [
         {
@@ -265,6 +273,14 @@
         }
       ]
     },
+    "AMPLIFY_function_schmoffeeGooglePayConfirmPayment_secretsPathAmplifyAppId": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeGooglePayConfirmPayment"
+        }
+      ]
+    },
     "AMPLIFY_function_schmoffeePayWithStripe_deploymentBucketName": {
       "usedBy": [
         {
@@ -274,6 +290,14 @@
       ]
     },
     "AMPLIFY_function_schmoffeePayWithStripe_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeePayWithStripe"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeePayWithStripe_secretsPathAmplifyAppId": {
       "usedBy": [
         {
           "category": "function",
