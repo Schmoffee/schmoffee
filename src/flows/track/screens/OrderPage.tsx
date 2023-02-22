@@ -1,9 +1,9 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
-import {TrackOrderContext} from '../../../contexts';
+import {GlobalContext} from '../../../contexts';
 import {TrackOrderRoutes} from '../../../utils/types/navigation.types';
-import {OrderStatus} from '../../../models';
+import {CurrentOrder, OrderStatus} from '../../../models';
 import {Body, Heading} from '../../common/typography';
 import {PageLayout} from '../../common/components/PageLayout';
 import {Colors, Spacings} from '../../common/theme';
@@ -15,17 +15,16 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {HEIGHT, WIDTH} from '../../../../constants';
+import {CONST_SCREEN_HOME, CONST_SCREEN_SHOP, HEIGHT, WIDTH} from '../../../../constants';
 import OrderCardCarousel from '../components/OrderCardCarousel';
 import {getNiceTime} from '../../../utils/helpers/others';
+import {terminateOrder} from '../../../utils/queries/datastore';
 
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
-  const {track_order_state} = useContext(TrackOrderContext);
-  const color = track_order_state.current_order ? track_order_state.current_order?.order_info.color : Colors.red;
-  const pin = track_order_state.current_order ? track_order_state.current_order?.order_info.pin : '0000';
-
-  console.log('track_order_state.current_order', track_order_state.current_order);
+  const {global_state} = useContext(GlobalContext);
+  const color = global_state.current_order ? global_state.current_order?.order_info.color : Colors.red;
+  const pin = global_state.current_order ? global_state.current_order?.order_info.pin : '0000';
 
   const anim = useSharedValue(0);
   const [showPin, setShowPin] = useState(false);
@@ -34,28 +33,45 @@ export const OrderPage = () => {
   const [showRejectionModal, setShowRejectionModal] = useState(false);
 
   useEffect(() => {
-    if (track_order_state.current_order?.status === OrderStatus.ACCEPTED) {
+    if (global_state.current_order?.status === OrderStatus.ACCEPTED) {
       setShowSuccessModal(true);
     }
-  }, [track_order_state.current_order?.status]);
+  }, [global_state.current_order?.status]);
 
   useEffect(() => {
-    if (track_order_state.current_order?.status === OrderStatus.REJECTED) {
+    if (global_state.current_order?.status === OrderStatus.REJECTED) {
       setShowRejectionModal(true);
     }
-  }, [track_order_state.current_order?.status]);
+  }, [global_state.current_order?.status]);
 
-  const handlePress = () => {
-    showPin ? setShowPin(false) : setShowPin(true);
-    anim.value = withTiming(showPin ? 0 : 1, {duration: 300});
+  const handlePress = async () => {
+    if (global_state.current_order?.status === OrderStatus.COLLECTED) {
+      navigation.navigate('RatingPage');
+    } else {
+      showPin ? setShowPin(false) : setShowPin(true);
+      anim.value = withTiming(showPin ? 0 : 1, {duration: 300});
+    }
+  };
+
+  function getButtonText() {
+    if (global_state.current_order) {
+      if (global_state.current_order?.status === OrderStatus.COLLECTED) {
+        return 'Rate Order';
+      } else {
+        return showPin ? 'Hide Pin' : 'Show Pin';
+      }
+    }
+  }
+
+  const handleRejection = async () => {
+    const order: CurrentOrder = global_state.current_order as CurrentOrder;
+    await terminateOrder(order.id, [], true);
+    navigation.navigate('Coffee', {screen: CONST_SCREEN_SHOP});
   };
 
   const rStyleShowPin = useAnimatedStyle(() => {
     return {
       transform: [
-        // {
-        //   translateX: interpolate(anim.value, [0, 1], [0, WIDTH]),
-        // },
         {
           translateY: interpolate(anim.value, [0, 1], [45, 0], Extrapolate.CLAMP),
         },
@@ -68,8 +84,8 @@ export const OrderPage = () => {
   });
 
   function getTime() {
-    if (track_order_state.current_order) {
-      return getNiceTime(track_order_state.current_order?.order_info.scheduled_times[0]);
+    if (global_state.current_order) {
+      return getNiceTime(global_state.current_order?.order_info.scheduled_times[0]);
     }
   }
 
@@ -78,10 +94,11 @@ export const OrderPage = () => {
       header="Order Details"
       backButton
       backgroundColor={Colors.greenFaded1}
+      backPress={() => navigation.navigate('Coffee', {screen: CONST_SCREEN_HOME})}
       footer={{
         buttonDisabled: false,
-        onPress: () => handlePress(),
-        buttonText: showPin ? 'Hide Pin' : 'Show Pin',
+        onPress: async () => await handlePress(),
+        buttonText: getButtonText(),
       }}>
       <Animated.View style={[styles.showPin, rStyleShowPin, {backgroundColor: color}]}>
         <Heading size="large" weight="Bold" color={Colors.black} style={styles.pinText}>
@@ -101,10 +118,13 @@ export const OrderPage = () => {
 
           <View style={styles.timeText}>
             <Body size="small" weight="Extrabld" color={Colors.greyLight3}>
-              Pickup time
+              Pickup time and status
             </Body>
             <Body size="large" weight="Bold" color={Colors.black}>
               {getTime()}
+            </Body>
+            <Body size="large" weight="Bold" color={Colors.blue} style={{marginTop: '2%'}}>
+              {global_state.current_order?.status}
             </Body>
           </View>
         </View>
@@ -119,7 +139,7 @@ export const OrderPage = () => {
               Pickup address
             </Body>
             <Body size="large" weight="Bold" color={Colors.black}>
-              {track_order_state.cafe?.address}
+              Chapters Cafe, Strand Campus
             </Body>
           </View>
         </View>
@@ -134,9 +154,10 @@ export const OrderPage = () => {
       <CustomModal
         visible={showRejectionModal}
         setVisible={setShowRejectionModal}
+        onDismiss={handleRejection}
         type="error"
         title="Order Rejected"
-        message="Your order has been rejected."
+        message={'Your order has been rejected. We are sorry for the inconvenience.'}
       />
     </PageLayout>
   );
@@ -144,20 +165,17 @@ export const OrderPage = () => {
 
 const styles = StyleSheet.create({
   mapContainer: {
-    // flex: 1,
     height: '40%',
     width: '80%',
     borderRadius: 40,
-    // marginTop: Spacings.s5,
     borderWidth: 1,
     borderColor: Colors.greyLight3,
     overflow: 'hidden',
   },
   carouselContainer: {
-    marginTop: Spacings.s10,
+    marginTop: Spacings.s15,
     height: '60%',
     width: '100%',
-    // backgroundColor: 'red'
   },
   orderDetailsContainer: {
     height: '30%',

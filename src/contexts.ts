@@ -19,13 +19,12 @@ export const globalData: GlobalState = {
   network_status: false,
   synced: false,
   device_token: '',
+  current_order: null,
 };
 
 export const trackOrderData: TrackOrderState = {
-  current_order: null,
   ratings: [],
   destination: undefined,
-  cafe: null,
 };
 
 export const orderingData: OrderingState = {

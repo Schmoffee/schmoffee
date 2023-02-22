@@ -22,13 +22,12 @@ export enum GlobalActionName {
   SET_SYNCED,
   SET_DEVICE_TOKEN,
   SET_NETWORK_STATUS,
+  SET_CURRENT_ORDER,
 }
 
 export enum TrackOrderActionName {
-  SET_CURRENT_ORDER,
   SET_RATINGS,
   SET_DESTINATION,
-  SET_CAFE,
 }
 export enum OrderingActionName {
   SET_CURRENT_SHOP_ID,

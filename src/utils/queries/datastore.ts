@@ -2,7 +2,6 @@ import {
   Cafe,
   CurrentOrder,
   Error,
-  Item,
   Option,
   OrderInfo,
   OrderItem,
@@ -16,15 +15,7 @@ import {
 import {DataStore} from 'aws-amplify';
 import {DigitalQueue, LocalUser, Location, PreferenceWeights, PreRating} from '../types/data.types';
 import {getDistance} from 'geolib';
-
-async function getCommonItems(): Promise<Item[] | null> {
-  try {
-    return await DataStore.query(Item);
-  } catch (error) {
-    console.log('Error retrieving items', error);
-    return null;
-  }
-}
+import {getDeletedOrders, setDeletedOrders} from '../helpers/storage';
 
 async function createSignUpUser(phone: string, name: string, device_token: string): Promise<User> {
   return await DataStore.save(
@@ -98,7 +89,7 @@ async function sendOrder(
   user_info: UserInfo,
   payment_id: string,
 ): Promise<CurrentOrder> {
-  const order: CurrentOrder = await DataStore.save(
+  return await DataStore.save(
     new CurrentOrder({
       items: items,
       total: total,
@@ -111,7 +102,6 @@ async function sendOrder(
       display: true,
     }),
   );
-  return order;
 }
 
 async function deleteOrder(order_id: string): Promise<CurrentOrder | null> {
@@ -122,6 +112,9 @@ async function deleteOrder(order_id: string): Promise<CurrentOrder | null> {
 async function terminateOrder(order_id: string, ratings: PreRating[], usual: boolean) {
   const terminated_order = await deleteOrder(order_id);
   if (terminated_order) {
+    const deletedOrders = await getDeletedOrders();
+    const newDeletedOrders = deletedOrders ? [...deletedOrders, terminated_order.id] : [terminated_order.id];
+    await setDeletedOrders(newDeletedOrders);
     const past_order = await DataStore.save(
       new PastOrder({
         items: terminated_order.items,
@@ -341,7 +334,6 @@ async function getPastOrders(userID: string): Promise<PastOrder[]> {
 }
 
 export {
-  getCommonItems,
   getUserByPhoneNumber,
   createSignUpUser,
   getUserById,

@@ -43,7 +43,7 @@ const CustomModal = (props: ModalProps) => {
                 props.setVisible(!props.visible);
                 props.onDismiss && props.onDismiss();
               }}>
-              <Text style={styles.textStyle}>Close</Text>
+              <Text style={styles.textStyle}>{props.type === 'error' ? 'Finish' : 'Close'}</Text>
             </Pressable>
           </View>
         </View>

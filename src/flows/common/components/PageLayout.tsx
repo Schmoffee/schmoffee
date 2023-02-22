@@ -1,9 +1,9 @@
-import React, { PropsWithChildren } from 'react';
-import { View, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
-import { Footer } from './Footer';
-import { Colors, Spacings } from '../theme';
-import { Body, Heading } from '../typography';
-import { FooterType } from '../../../utils/types/component.types';
+import React, {PropsWithChildren} from 'react';
+import {View, StyleSheet, Pressable, TouchableOpacity} from 'react-native';
+import {Footer} from './Footer';
+import {Colors, Spacings} from '../theme';
+import {Body, Heading} from '../typography';
+import {FooterType} from '../../../utils/types/component.types';
 import HamburgerIcon from '../../hamburger/components/HamburgerIcon';
 import LeftChevronBackButton from './LeftChevronBackButton';
 
@@ -15,6 +15,7 @@ interface PageLayoutProps extends PropsWithChildren {
   footer?: FooterType;
   transformContent?: boolean;
   onPress?: () => void;
+  backPress?: () => void;
   backgroundColor?: string;
   showCircle?: boolean;
   hamburger?: boolean;
@@ -27,12 +28,12 @@ export const PageLayout = (props: PageLayoutProps) => {
   return (
     <>
       <Pressable onPress={props.onPress} />
-      <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
+      <View style={[styles.root, {backgroundColor: backgroundStyle}]}>
         {props.showCircle ? <View style={[styles.bigSemiCircle]} /> : null}
         <View style={styles.header}>
           {props.backButton ? (
             <View style={styles.backChevron}>
-              <LeftChevronBackButton color={Colors.black} />
+              <LeftChevronBackButton color={Colors.black} onPress={props.backPress} />
             </View>
           ) : null}
           {props.hamburger ? (

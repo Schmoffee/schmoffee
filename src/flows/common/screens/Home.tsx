@@ -1,40 +1,35 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import Video from 'react-native-video';
+import {useNavigation} from '@react-navigation/native';
+import React, {useContext, useEffect, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 import CurrentOrderBanner from '../../track/components/CurrentOrderBanner';
-import { GlobalContext } from '../../../contexts';
-import { RootRoutes } from '../../../utils/types/navigation.types';
-import { CONST_SCREEN_ORDER, CONST_SCREEN_SHOP, HEIGHT, WIDTH } from '../../../../constants';
+import {GlobalContext} from '../../../contexts';
+import {RootRoutes} from '../../../utils/types/navigation.types';
+import {CONST_SCREEN_ORDER, CONST_SCREEN_SHOP, HEIGHT, WIDTH} from '../../../../constants';
 import HoverButton from '../components/Buttons/HoverButton';
 import FastImage from 'react-native-fast-image';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors } from '../theme';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Colors} from '../theme';
+import {getCurrOrder} from '../../../utils/queries/datastore';
 
 export const Home = () => {
-  const { global_state } = useContext(GlobalContext);
+  const {global_state} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const [currentVideo, setCurrentVideo] = useState<number>(0);
   const insets = useSafeAreaInsets();
 
-
-
-  const onVideoEnd = () => {
-    global_state.current_user?.current_order
-      ? navigation.navigate('TrackOrder', CONST_SCREEN_ORDER)
-      : navigation.navigate(CONST_SCREEN_SHOP);
-    setTimeout(() => {
+  useEffect(() => {
+    if (global_state.current_order) {
       setCurrentVideo(2);
+    } else {
+      setCurrentVideo(0);
     }
-      , 1000);
-  };
+  }, [global_state.current_order]);
 
   const handlePress = () => {
     if (currentVideo === 0) {
       setCurrentVideo(1);
-    }
-    else if (currentVideo === 2) {
-      navigation.navigate('TrackOrder', CONST_SCREEN_ORDER)
+    } else if (currentVideo === 2) {
+      navigation.navigate('TrackOrder', CONST_SCREEN_ORDER);
     }
   };
 
@@ -49,34 +44,37 @@ export const Home = () => {
           }
         />
       </View>
-
       <View>
         {currentVideo !== 1 ? (
-          <View style={[styles.hoverButtonContainer, { top: insets.bottom + HEIGHT * 0.81 }]}>
+          <View style={[styles.hoverButtonContainer, {top: insets.bottom + HEIGHT * 0.81}]}>
             <HoverButton
               backgroundColor={currentVideo === 2 ? Colors.darkBlue : Colors.darkBrown}
               buttonPressedColor={currentVideo === 2 ? Colors.blueFaded : Colors.darkBrown2}
-              onShortPressOut={() => handlePress()} onLongPress={() => navigation.navigate('PreviewPage')} />
+              onShortPressOut={() => handlePress()}
+              onLongPress={() => navigation.navigate('PreviewPage')}
+            />
           </View>
         ) : null}
-        <FastImage source={
-          currentVideo === 0 ? require('../../../assets/gifs/home-loop.gif') :
-            currentVideo === 1 ? require('../../../assets/gifs/fly-complete.gif') :
-              require('../../../assets/gifs/astronaut.gif')
-        }
+        <FastImage
+          source={
+            global_state.current_order
+              ? require('../../../assets/gifs/astronaut.gif')
+              : currentVideo === 1
+              ? require('../../../assets/gifs/fly-complete.gif')
+              : require('../../../assets/gifs/home-loop.gif')
+          }
           onLoad={() => {
             if (currentVideo === 1) {
               setTimeout(() => {
-                onVideoEnd();
+                navigation.navigate(CONST_SCREEN_SHOP);
               }, 2700);
             }
           }}
-
-          style={styles.videoContainer} />
-
+          style={styles.videoContainer}
+        />
       </View>
       <View style={styles.currentOrderBanner}>
-        {global_state.current_user?.current_order ? <CurrentOrderBanner /> : null}
+        <CurrentOrderBanner />
       </View>
       {/* <SideDrawerContent anim={anim} /> */}
     </View>

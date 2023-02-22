@@ -1,62 +1,47 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {StyleSheet, View, Pressable} from 'react-native';
 import {HEIGHT, WIDTH} from '../../../../constants';
 import {Colors} from '../../common/theme';
 import {Body, Heading} from '../../common/typography';
 import {getNiceTime} from '../../../utils/helpers/others';
 import {GlobalContext} from '../../../contexts';
-import {LocalUser} from '../../../utils/types/data.types';
-import {DataStore} from 'aws-amplify';
-import {CurrentOrder} from '../../../models';
-
 interface CurrentOrderBannerProps {}
 
 const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
   const {global_state} = useContext(GlobalContext);
-  const [current_order, setCurrentOrder] = useState<CurrentOrder>();
-
-  useEffect(() => {
-    if (global_state.current_user !== null && global_state.current_user.current_order) {
-      const user: LocalUser = global_state.current_user;
-      const subscription = DataStore.observeQuery(CurrentOrder, order =>
-        order.id('eq', user.current_order?.id as string),
-      ).subscribe(async snapshot => {
-        const {items, isSynced} = snapshot;
-        setCurrentOrder(items[0]);
-      });
-      return () => subscription.unsubscribe();
-    }
-  }, [global_state.current_user]);
+  const order = global_state.current_order;
 
   return (
-    <Pressable onPress={() => { }}>
-      <View style={styles.root}>
-        <View style={styles.container}>
-          <View style={styles.cafe}>
-            <Heading size="small" weight="Bold" color={Colors.black}>
-              KINGS CAFE
-            </Heading>
-            <Body size="large" weight="Bold" color={Colors.greyLight3}>
-              Pickup time
+    order && (
+      <Pressable onPress={() => {}}>
+        <View style={styles.root}>
+          <View style={styles.container}>
+            <View style={styles.cafe}>
+              <Heading size="small" weight="Bold" color={Colors.black}>
+                KINGS CAFE
+              </Heading>
+              <Body size="large" weight="Bold" color={Colors.greyLight3}>
+                Pickup time
+              </Body>
+            </View>
+
+            <View style={styles.time}>
+              <Heading size="small" weight="Extrabld" color={'green'} style={{marginTop: 10}}>
+                {order?.status}
+              </Heading>
+              <Heading size="small" weight="Extrabld" color={Colors.black}>
+                {getNiceTime(order?.order_info.scheduled_times[0] as string)}
+              </Heading>
+            </View>
+          </View>
+          <View style={styles.moreInfo}>
+            <Body size="small" weight="Regular" color={Colors.black}>
+              More Info{'>>'}
             </Body>
           </View>
-
-          <View style={styles.time}>
-            <Heading size="small" weight="Extrabld" color={'green'} style={{marginTop: 10}}>
-              {current_order?.status}
-            </Heading>
-            <Heading size="small" weight="Extrabld" color={Colors.black}>
-              {getNiceTime(current_order?.order_info.scheduled_times[0] as string)}
-            </Heading>
-          </View>
         </View>
-        <View style={styles.moreInfo}>
-          <Body size="small" weight="Regular" color={Colors.black}>
-            More Info{'>>'}
-          </Body>
-        </View>
-      </View>
-    </Pressable>
+      </Pressable>
+    )
   );
 };
 

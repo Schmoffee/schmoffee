@@ -5,16 +5,18 @@
  */
 import {SetupParams} from '@stripe/stripe-react-native/lib/typescript/src/types/PaymentSheet';
 import {
+  confirmApplePayPayment,
+  confirmPaymentSheetPayment,
   createGooglePayPaymentMethod,
   initGooglePay,
   InitPaymentSheetResult,
   presentApplePay,
   PresentPaymentSheetResult,
 } from '@stripe/stripe-react-native';
-import {PaymentParams} from '../types/data.types';
+import {Payment, PaymentParams} from '../types/data.types';
 import {updateCustomerId} from '../queries/datastore';
 import {Alert} from 'react-native';
-import {setClientSecret} from './storage';
+import {getClientSecret, setClientSecret} from './storage';
 
 async function createPaymentIntent(paymentParams: PaymentParams, paymentMethod?: string) {
   let body;
@@ -218,6 +220,24 @@ async function payWithApplePay(userID: string, paymentParams: PaymentParams) {
   }
 }
 
+async function confirmPayment(mode: Payment, payment_id: string) {
+  if (mode === 'card') {
+    const {error} = await confirmPaymentSheetPayment();
+    if (error) {
+      Alert.alert(`Error confirming card payment: ${error.code}`, error.message);
+    }
+  } else if (mode === 'google') {
+    await confirmGooglePayPayment(payment_id);
+  } else if (mode === 'apple') {
+    const secret = await getClientSecret();
+    if (secret != null) {
+      await confirmApplePayPayment(secret);
+    } else {
+      Alert.alert('Error', 'Unable to confirm apple pay payment');
+    }
+  }
+}
+
 export {
   initializePaymentSheet,
   openPaymentSheet,
@@ -226,4 +246,5 @@ export {
   createGooglePaymentMethod,
   confirmGooglePayPayment,
   payWithApplePay,
+  confirmPayment,
 };

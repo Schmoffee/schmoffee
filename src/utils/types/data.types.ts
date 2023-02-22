@@ -20,6 +20,7 @@ export type GlobalState = {
   network_status: boolean;
   synced: boolean;
   device_token: string;
+  current_order: CurrentOrder | null;
 };
 
 export type CommonBasketItem = {
@@ -34,10 +35,8 @@ export type AuthUser = {
 };
 
 export type TrackOrderState = {
-  current_order: CurrentOrder | null;
   destination: {latitude: number; longitude: number} | undefined;
   ratings: PreRating[];
-  cafe: Cafe | null;
 };
 
 export type OrderingState = {
@@ -90,13 +89,12 @@ export type GlobalAction =
   | {type: GlobalActionName.SET_AUTH_USER; payload: AuthUser | null}
   | {type: GlobalActionName.SET_SYNCED; payload: boolean}
   | {type: GlobalActionName.SET_DEVICE_TOKEN; payload: string}
+  | {type: GlobalActionName.SET_CURRENT_ORDER; payload: CurrentOrder | null}
   | {type: GlobalActionName.SET_NETWORK_STATUS; payload: boolean};
 
 export type TrackOrderAction =
-  | {type: TrackOrderActionName.SET_CURRENT_ORDER; payload: CurrentOrder}
   | {type: TrackOrderActionName.SET_RATINGS; payload: PreRating[]}
-  | {type: TrackOrderActionName.SET_DESTINATION; payload: {latitude: number; longitude: number}}
-  | {type: TrackOrderActionName.SET_CAFE; payload: Cafe};
+  | {type: TrackOrderActionName.SET_DESTINATION; payload: {latitude: number; longitude: number}};
 
 export type OrderingAction =
   | {type: OrderingActionName.SET_CURRENT_SHOP_ID; payload: string}
@@ -184,6 +182,5 @@ export type LocalUser = {
   the_usual: UsualOrder | null | undefined;
   customer_id: string | null | undefined;
   device_token: string;
-  current_order: CurrentOrder | null;
   past_orders: PastOrder[];
 };

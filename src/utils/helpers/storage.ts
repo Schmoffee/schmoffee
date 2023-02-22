@@ -15,6 +15,7 @@ async function initiateStorage(): Promise<void> {
     await AsyncStorage.setItem('@FreeTime', '0');
     await AsyncStorage.setItem('@Trials', '0');
     await AsyncStorage.setItem('@Phone', '');
+    await AsyncStorage.setItem('@DeletedOrders', emptyBasket);
   } catch (err) {
     console.log('Error initiating storage', err);
   }
@@ -73,6 +74,29 @@ async function setTrials(trials: number) {
 async function getTrials(): Promise<string | void> {
   try {
     return (await AsyncStorage.getItem('@Trials')) as string;
+  } catch (err) {
+    console.log('Error getting isLocatable', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function setDeletedOrders(deletedIds: string[]) {
+  try {
+    await AsyncStorage.setItem('@DeletedOrders', JSON.stringify(deletedIds));
+  } catch (err) {
+    console.log('Error setting  Deleted Orders', err);
+  }
+}
+
+/**
+ * Set the time when the app can be used again.
+ */
+async function getDeletedOrders(): Promise<string[] | void> {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@DeletedOrders');
+    return jsonValue ? JSON.parse(jsonValue) : [];
   } catch (err) {
     console.log('Error getting isLocatable', err);
   }
@@ -240,4 +264,6 @@ export {
   getPhone,
   setClientSecret,
   getClientSecret,
+  getDeletedOrders,
+  setDeletedOrders,
 };
