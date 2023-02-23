@@ -32,6 +32,10 @@ export const ShopPage = () => {
   const anim = useSharedValue(0);
   const basketAnim = useSharedValue(0);
   const searchAnim = useSharedValue(0);
+  const cafe = useMemo(
+    () => ordering_state.cafes.find((c: Cafe) => c.id === ordering_state.current_shop_id),
+    [ordering_state.current_shop_id, ordering_state.cafes],
+  );
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 

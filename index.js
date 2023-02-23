@@ -52,9 +52,7 @@ LocalPushNotification.configure({
   onNotification: function (notification) {
     // Do nothing. This is already handled by the RemotePushNotification.onNotification handler
   },
-
   senderID: '954779945360',
-
   requestPermissions: Platform.OS !== 'ios',
 });
 
