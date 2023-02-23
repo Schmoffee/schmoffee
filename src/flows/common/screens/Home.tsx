@@ -10,15 +10,19 @@ import FastImage from 'react-native-fast-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../theme';
 import { SideDrawerContent } from '../../hamburger/components/SideDrawerContent';
-import { useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import HamburgerIcon from '../../hamburger/components/HamburgerIcon';
+import NetworkBanner from '../components/Banners/NetworkBanner';
 
 export const Home = () => {
   const { global_state } = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const [currentVideo, setCurrentVideo] = useState<number>(0);
   const insets = useSafeAreaInsets();
-  const anim = useSharedValue(0)
+  const hamburgerAnim = useSharedValue(0)
+  const networkAnim = useSharedValue(0)
+
+
 
   useEffect(() => {
     if (global_state.current_order) {
@@ -28,6 +32,16 @@ export const Home = () => {
     }
   }, [global_state.current_order]);
 
+  useEffect(() => {
+    if (global_state.network_status) {
+      networkAnim.value = withTiming(0, { duration: 100 })
+    }
+    else {
+      networkAnim.value = withTiming(HEIGHT * 0.02, { duration: 300 })
+    }
+  }, [global_state.network_status])
+
+
   const handleShortButtonPress = () => {
     if (currentVideo === 0) {
       // setCurrentVideo(1);
@@ -35,34 +49,53 @@ export const Home = () => {
     } else if (currentVideo === 2) {
       navigation.navigate('TrackOrder', CONST_SCREEN_ORDER);
     }
+  };
 
+  const handleLongButtonPress = () => {
+    if (currentVideo === 0) {
+      navigation.navigate('PreviewPage');
+    } else if (currentVideo === 2) {
+      navigation.navigate('TrackOrder', CONST_SCREEN_ORDER);
+    }
   };
 
   const handleHamburgerPress = () => {
     console.log('hamburger pressed')
-    console.log(anim.value)
-    if (anim.value === 0) {
-      anim.value = withTiming(195)
+    console.log(hamburgerAnim.value)
+    if (hamburgerAnim.value === 0) {
+      hamburgerAnim.value = withTiming(195)
     }
     else {
-      anim.value = withTiming(0)
+      hamburgerAnim.value = withTiming(0)
     }
   }
 
   const handlePagePress = () => {
-    if (anim.value !== 0) {
-      anim.value = withTiming(0)
+    if (hamburgerAnim.value !== 0) {
+      hamburgerAnim.value = withTiming(0)
     }
   }
+
+  const rNetworkBannerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: networkAnim.value }]
+    }
+  })
+
 
 
   return (
     <Pressable style={styles.root} onPress={handlePagePress}>
       <View style={styles.root}>
+        {global_state.network_status ? null : (
+          <Animated.View style={[styles.networkStatusContainer, rNetworkBannerStyle]}>
+            <NetworkBanner />
+          </Animated.View>
+        )}
         <Pressable style={[styles.hamburgerButton]} onPress={handleHamburgerPress}>
           <HamburgerIcon />
         </Pressable>
-        <SideDrawerContent anim={anim} />
+        <SideDrawerContent anim={hamburgerAnim} />
         <View style={styles.bgStill}>
           <FastImage
             source={
@@ -79,7 +112,7 @@ export const Home = () => {
                 backgroundColor={currentVideo === 2 ? Colors.darkBlue : Colors.darkBrown}
                 buttonPressedColor={currentVideo === 2 ? Colors.blueFaded : Colors.darkBrown2}
                 onShortPressOut={() => handleShortButtonPress()}
-                onLongPress={() => navigation.navigate('PreviewPage')}
+                onLongPress={() => handleLongButtonPress()}
               />
             </View>
           ) : null}
@@ -104,7 +137,7 @@ export const Home = () => {
         <View style={styles.currentOrderBanner}>
           <CurrentOrderBanner />
         </View>
-        {/* <SideDrawerContent anim={anim} /> */}
+        {/* <SideDrawerContent hamburgerAnim={hamburgerAnim} /> */}
       </View >
     </Pressable>
   );
@@ -114,6 +147,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  networkStatusContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 3,
+  },
+
   hamburgerButton: {
     position: 'absolute',
     top: '5%',
