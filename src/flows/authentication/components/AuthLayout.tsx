@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    paddingBottom: '50%',
   },
   planet: {
     position: 'absolute',
