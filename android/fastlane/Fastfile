@@ -18,10 +18,16 @@ default_platform(:android)
 platform :android do
 
   desc "Deploy a new Internal testing release to Google Play"
-      lane :alpha do
+      lane :internal do
+          increment_version_code(
+              gradle_file_path: "app/build.gradle",
+              #ext_constant_name: "test"
+              #app_folder_name:"app"
+          )
           gradle(tasks: ["clean", "bundleRelease"])
           upload_to_play_store(
               track: 'internal',
+              release_status: 'draft',
               skip_upload_screenshots: true,
               skip_upload_changelogs: true,
               skip_upload_metadata: true,
