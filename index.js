@@ -11,10 +11,10 @@ import {DataStore} from 'aws-amplify';
 import awsConfig from './src/aws-exports';
 import {Amplify} from 'aws-amplify';
 import RemotePushNotification from '@aws-amplify/pushnotification';
-import LocalPushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {SendLocalNotification} from './src/utils/helpers/notifications';
 import {LogBox} from 'react-native';
+import PushNotification, {Importance} from 'react-native-push-notification';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 RemotePushNotification.onNotification(async notification => {
@@ -25,13 +25,29 @@ RemotePushNotification.onNotification(async notification => {
     const specs = {};
     SendLocalNotification(genericSpec, specs);
   } else {
-    LocalPushNotification.getChannels(function (channel_ids) {
+    const specs = {};
+    PushNotification.checkPermissions(permissions => console.log('permissions', permissions));
+    PushNotification.getChannels(function (channel_ids) {
       if (channel_ids.length > 0) {
-        const specs = {};
         specs.channelId = channel_ids[0];
         SendLocalNotification(genericSpec, specs);
       } else {
-        console.log('no channel_ids');
+        PushNotification.createChannel(
+          {
+            channelId: '1',
+            channelName: 'My channel',
+            channelDescription: 'A channel to categorise your notifications',
+            playSound: true,
+            soundName: 'default',
+            importance: Importance.HIGH,
+            vibrate: true,
+          },
+          created => {
+            console.log(`createChannel returned '${created}'`);
+            specs.channelId = '1';
+            SendLocalNotification(genericSpec, specs);
+          },
+        );
       }
     });
   }
@@ -47,7 +63,7 @@ RemotePushNotification.onNotificationOpened(notification => {
   console.log('the remote notification is opened', notification);
 });
 
-LocalPushNotification.configure({
+PushNotification.configure({
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
     // Do nothing. This is already handled by the RemotePushNotification.onNotification handler
