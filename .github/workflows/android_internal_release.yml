@@ -14,14 +14,8 @@ jobs:
 
       - name: Run npm install
         run: npm i
-        
-      - name: Install bundle
-        run:  |
-          cd android
-          bundle install --path vendor/bundle
-          cd ..
 
       - name: Run fastlane bundle + release
         run: |
           cd android
-          bundle exec fastlane android internal
+          fastlane android internal --verbose
