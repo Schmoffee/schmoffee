@@ -1,16 +1,18 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useState } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
-import { GlobalContext } from '../../../contexts';
-import { PageLayout } from '../../common/components/PageLayout';
+import {useNavigation} from '@react-navigation/native';
+import React, {useContext, useState} from 'react';
+import {StyleSheet, View, Alert} from 'react-native';
+import {GlobalContext} from '../../../contexts';
+import {PageLayout} from '../../common/components/PageLayout';
 import FormField from '../../common/components/FormField';
+import {updateName} from '../../../utils/queries/datastore';
 
 const UpdateProfile = () => {
-  const { global_state } = useContext(GlobalContext);
+  const {global_state} = useContext(GlobalContext);
   const navigation = useNavigation();
   const [first_name, setFirstName] = useState(global_state.current_user?.name);
 
-  function changeDetailsConfirm() {
+  async function changeDetailsConfirm() {
+    await updateName(global_state.current_user?.id as string, first_name as string);
     Alert.alert('Details Updated!', '', [
       {
         text: 'OK',
@@ -34,14 +36,13 @@ const UpdateProfile = () => {
       footer={{
         buttonDisabled: false,
         buttonText: 'Update Details',
-        onPress: () => {
+        onPress: async () => {
           if (handleChangeDetailsErrorsFrontEnd()) {
-            changeDetailsConfirm();
+            await changeDetailsConfirm();
           }
         },
       }}
-      backButton
-    >
+      backButton>
       <View style={styles.form}>
         <View style={styles.DetailsContainer}>
           <FormField title={'First Name'} setField={setFirstName} value={first_name} type={'name'} />

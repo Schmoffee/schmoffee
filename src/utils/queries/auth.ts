@@ -73,4 +73,13 @@ async function signOut(): Promise<boolean> {
   }
 }
 
-export {signUp, signIn, sendChallengeAnswer, getCurrentAuthUser, signOut};
+async function deleteUser() {
+  try {
+    const result = await Auth.deleteUser();
+    console.log(result);
+  } catch (error) {
+    console.log('Error deleting user', error);
+  }
+}
+
+export {signUp, signIn, sendChallengeAnswer, getCurrentAuthUser, signOut, deleteUser};

@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Dimensions, Image, Keyboard, KeyboardAvoidingView, NativeModules, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
-import { OrderingContext } from '../../../../contexts';
-import { Item } from '../../../../models';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import {Dimensions, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {OrderingContext} from '../../../../contexts';
+import {Cafe, Item} from '../../../../models';
 import Animated, {
   Easing,
   Extrapolate,
@@ -11,22 +11,21 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Colors, Spacings } from '../../../common/theme';
+import {Colors, Spacings} from '../../../common/theme';
 import TabNavigator from '../../components/menu/TabNavigator';
-import { BasketPreview } from '../../components/basket/BasketPreview';
+import {BasketPreview} from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 import LinearGradient from 'react-native-linear-gradient';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-const { StatusBarManager } = NativeModules;
+const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const { height: wHeight, width: wWidth } = Dimensions.get('window');
+const {height: wHeight, width: wWidth} = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
-  const { ordering_state } = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
   const anim = useSharedValue(0);
@@ -36,22 +35,6 @@ export const ShopPage = () => {
     () => ordering_state.cafes.find((c: Cafe) => c.id === ordering_state.current_shop_id),
     [ordering_state.current_shop_id, ordering_state.cafes],
   );
-
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', () => {
-      setKeyboardVisible(true); // or some other action
-    });
-    const keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', () => {
-      setKeyboardVisible(false); // or some other action
-    });
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
 
   useEffect(() => {
     anim.value = 0;
@@ -77,7 +60,7 @@ export const ShopPage = () => {
     }
   }, [basketAnim, ordering_state.specific_basket.length]);
 
-  const contains = ({ name }: Item, query: string) => {
+  const contains = ({name}: Item, query: string) => {
     const nameLower = name.toLowerCase();
     return nameLower.includes(query);
   };
@@ -151,7 +134,8 @@ export const ShopPage = () => {
       width: interpolate(searchAnim.value, [0, 1], [25, 330]),
       backgroundColor,
     };
-  });[]
+  });
+  [];
   const rSearchIconStyle = useAnimatedStyle(() => {
     let rotate = interpolate(searchAnim.value, [0, 1], [0, -360], Extrapolate.CLAMP);
     const tintColor = interpolateColor(searchAnim.value, [0, 1], [Colors.greyLight3, Colors.darkBrown]);
@@ -167,7 +151,7 @@ export const ShopPage = () => {
   });
 
   return (
-    <View style={styles.root} >
+    <View style={styles.root}>
       {/* back button for navigation */}
       <View style={styles.backButton}>
         <LeftChevronBackButton color={Colors.white} />
@@ -203,7 +187,7 @@ export const ShopPage = () => {
               <View style={styles.clearIcon}>
                 <Pressable onPress={handleSearchPress}>
                   <Animated.Image
-                    style={[rSearchIconStyle, { width: 15, height: 15 }]}
+                    style={[rSearchIconStyle, {width: 15, height: 15}]}
                     source={require('../../../../assets/pngs/x-outline.png')}
                   />
                 </Pressable>
@@ -216,8 +200,7 @@ export const ShopPage = () => {
       <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
         <BasketPreview />
       </Animated.View>
-    </View >
-
+    </View>
   );
 };
 
@@ -244,7 +227,6 @@ const styles = StyleSheet.create({
     top: -20,
     left: 0,
     right: 0,
-
   },
   basketContainer: {
     position: 'absolute',
@@ -285,7 +267,6 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     position: 'relative',
-
   },
   searchText: {
     height: 40,
