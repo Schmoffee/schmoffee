@@ -15,16 +15,11 @@ jobs:
       - name: Run npm install
         run: npm i
         
-      - uses: actions/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2.1"
-          
-      - run: gem install bundler
-      
-      - run: | 
-          cd android
-          bundle install --path vendor/bundle
-          cd ..
+          ruby-version: '3.0' # Not needed with a .ruby-version file
+          working-directory: 'android'
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Run fastlane bundle + release
         run: |
