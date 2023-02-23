@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, Pressable, StyleSheet, View} from 'react-native';
+import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface HamburgerButtonProps {
@@ -14,8 +14,8 @@ const HamburgerButton = (props: HamburgerButtonProps) => {
           onPress={() => props.navigation.openDrawer()}
           name="bars"
           color={'#046D66'}
-          backgroundColor={'white'}
-          underlayColor={'white'}
+          backgroundColor={'red'}
+          underlayColor={'red'}
           style={styles.hamburger}
           size={0.04 * screenHeight}
           borderRadius={10}
@@ -31,8 +31,9 @@ const styles = StyleSheet.create({
   header: {
     height: 100,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   floating_button: {
     opacity: 0,

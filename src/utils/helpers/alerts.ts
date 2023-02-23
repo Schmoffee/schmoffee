@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 export const AlertMessage = {
   OFFLINE: {
     title: 'You are offline.',
@@ -110,13 +110,30 @@ export const Alerts = {
     Alert.alert(AlertMessage.PAYMENT.title, AlertMessage.PAYMENT.message);
   },
   logoutAlert: async (logout: () => Promise<boolean>) => {
-    let val = {logout: false, success: false};
+    let val = { logout: false, success: false };
     await Alert.alert(AlertMessage.LOGOUT.title, AlertMessage.LOGOUT.message, [
       {
         text: 'Yes',
         onPress: async () => {
           val.logout = true;
           val.success = await logout();
+        },
+      },
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+    ]);
+    return val;
+  },
+  deleteAccountAlert: async (deleteAccount: () => Promise<boolean>) => {
+    let val = { delete: false, success: false };
+    await Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
+      {
+        text: 'Yes',
+        onPress: async () => {
+          val.delete = true;
+          val.success = await deleteAccount();
         },
       },
       {
@@ -141,12 +158,12 @@ export const Alerts = {
       },
     ]);
   },
-  outOfStockAlert: (deleted_items: string[], deleted_options: {item: string; option: string}[]) => {
+  outOfStockAlert: (deleted_items: string[], deleted_options: { item: string; option: string }[]) => {
     Alert.alert(
       AlertMessage.OUT_OF_STOCK.title,
       AlertMessage.OUT_OF_STOCK.message +
-        deleted_items.join(', ') +
-        deleted_options.map(option => option.item + ' - ' + option.option).join(', '),
+      deleted_items.join(', ') +
+      deleted_options.map(option => option.item + ' - ' + option.option).join(', '),
     );
   },
 };
