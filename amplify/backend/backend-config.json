@@ -138,7 +138,6 @@
   "notifications": {
     "schmoffee": {
       "channels": [
-        "APNS",
         "FCM"
       ],
       "service": "Pinpoint"
