@@ -18,4 +18,4 @@ jobs:
       - name: Run fastlane bundle + release
         run: |
           cd android
-          fastlane android internal
+          bundle exec fastlane android internal
