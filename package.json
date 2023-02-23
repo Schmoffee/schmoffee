@@ -50,6 +50,7 @@
     "react": "18.1.0",
     "react-dom": "^18.1.0",
     "react-native": "0.70.6",
+    "react-native-blurhash": "^1.1.10",
     "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-get-random-values": "1.8.0",

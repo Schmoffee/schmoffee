@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { View, StyleSheet, Pressable, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import { View, StyleSheet, Pressable, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Animated, {
   FadeOutLeft,
   FadeInRight,
@@ -17,6 +17,9 @@ import { BlurView } from '@react-native-community/blur';
 import { Body, Heading } from '../../common/typography';
 import { Colors, Spacings } from '../../common/theme';
 import { Footer } from '../../common/components/Footer';
+import { Blurhash } from 'react-native-blurhash';
+import LeftChevronBackButton from '../../common/components/LeftChevronBackButton';
+
 
 
 interface AuthLayoutProps extends PropsWithChildren {
@@ -31,6 +34,7 @@ interface AuthLayoutProps extends PropsWithChildren {
   hamburger?: boolean;
   hamburgerOnPress?: () => void;
   mode: Mode;
+  handleModeChange: () => void;
   planetAnim: Animated.SharedValue<number>;
   asteroidAnim: Animated.SharedValue<number>;
   asteroidAnimFinal: Animated.SharedValue<number>;
@@ -101,100 +105,111 @@ export const AuthLayout = (props: AuthLayoutProps) => {
   //     };
   // });
 
+
+
   return (
     <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={0}>
-      <Pressable onPress={props.onPress} />
-      <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
-        <Animated.Image source={require('../../../assets/pngs/planet_brown.png')} style={[styles.planet, animatePlanet]} />
-        <Animated.Image
-          source={require('../../../assets/pngs/asteroid.png')}
-          style={[styles.asteroid, animateAsteroid]}
-        />
-        <View style={[styles.headingContainer]}>
-          <View style={styles.header}>
-            {props.mode === 'login' && (
-              <>
-                <Animated.View
-                  entering={FadeInRight.damping(1000).duration(1000)}
-                  exiting={FadeOutLeft.damping(500).duration(700)}>
-                  <Heading size="large" weight="Bold" color={Colors.black}>
-                    Log in
-                  </Heading>
-                </Animated.View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
+          <Animated.Image source={require('../../../assets/pngs/planet_brown.png')} style={[styles.planet, animatePlanet]} />
+          <Animated.Image
+            source={require('../../../assets/pngs/asteroid.png')}
+            style={[styles.asteroid, animateAsteroid]}
+          />
+          {props.mode === 'verify' && (
+            <View style={styles.otpBackButton}>
+              <LeftChevronBackButton color={Colors.red} onPress={() => props.handleModeChange()} />
+            </View>
+          )}
+          <View style={[styles.headingContainer]}>
+            <View style={styles.header}>
+              {props.mode === 'login' && (
+                <>
+                  <Animated.View
+                    entering={FadeInRight.damping(1000).duration(1000)}
+                    exiting={FadeOutLeft.damping(500).duration(700)}>
+                    <Heading size="large" weight="Bold" color={Colors.black}>
+                      Log in
+                    </Heading>
+                  </Animated.View>
 
-                <Animated.View
-                  entering={FadeInLeft.damping(1000).duration(1000)}
-                  exiting={FadeOut.damping(1000)}
-                  style={styles.subHeader}>
-                  <Body size="medium" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
-                    {props.subHeader}
-                  </Body>
-                </Animated.View>
-              </>
-            )}
+                  <Animated.View
+                    entering={FadeInLeft.damping(1000).duration(1000)}
+                    exiting={FadeOut.damping(1000)}
+                    style={styles.subHeader}>
+                    <Body size="medium" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
+                      {props.subHeader}
+                    </Body>
+                  </Animated.View>
+                </>
+              )}
 
-            {props.mode === 'signup' && (
-              <>
-                <Animated.View
-                  entering={FadeInRight.damping(1000).duration(1000)}
-                  exiting={FadeOutLeft.damping(1000).duration(700)}>
-                  <Heading size="large" weight="Bold" color={Colors.black}>
-                    Sign up
-                  </Heading>
-                </Animated.View>
+              {props.mode === 'signup' && (
+                <>
+                  <Animated.View
+                    entering={FadeInRight.damping(1000).duration(1000)}
+                    exiting={FadeOutLeft.damping(1000).duration(700)}>
+                    <Heading size="large" weight="Bold" color={Colors.black}>
+                      Sign up
+                    </Heading>
+                  </Animated.View>
 
-                <Animated.View
-                  entering={FadeInLeft.damping(1000).duration(1000)}
-                  exiting={FadeOut.damping(1000)}
-                  style={styles.subHeader}>
-                  <Body size="medium" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
-                    {props.subHeader}
-                  </Body>
-                </Animated.View>
-              </>
-            )}
+                  <Animated.View
+                    entering={FadeInLeft.damping(1000).duration(1000)}
+                    exiting={FadeOut.damping(1000)}
+                    style={styles.subHeader}>
+                    <Body size="medium" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
+                      {props.subHeader}
+                    </Body>
+                  </Animated.View>
+                </>
+              )}
 
-            {props.mode === 'verify' && (
-              <View style={styles.verificationContainer}>
-                <Animated.View
-                  entering={FadeInRight.damping(1000).duration(1000)}
-                  exiting={FadeOutLeft.damping(1000).duration(700)}>
-                  <Heading size="large" weight="Bold" color={Colors.black}>
-                    Verification
-                  </Heading>
-                </Animated.View>
+              {props.mode === 'verify' && (
+                <View style={styles.verificationContainer}>
+                  <Animated.View
+                    entering={FadeInRight.damping(1000).duration(1000)}
+                    exiting={FadeOutLeft.damping(1000).duration(700)}>
+                    <Heading size="large" weight="Bold" color={Colors.black}>
+                      Verification
+                    </Heading>
+                  </Animated.View>
 
-                <Animated.View
-                  entering={FadeInLeft.damping(1000).duration(1000)}
-                  exiting={FadeOut.damping(1000)}
-                  style={styles.subHeader}>
-                  <Body size="medium" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
-                    Please check your texts for a confirmation code
-                  </Body>
-                </Animated.View>
-              </View>
-            )}
+                  <Animated.View
+                    entering={FadeInLeft.damping(1000).duration(1000)}
+                    exiting={FadeOut.damping(1000)}
+                    style={styles.subHeader}>
+                    <Body size="medium" weight="Bold" color={Colors.greyLight3} style={styles.subHeader}>
+                      Please check your texts for a confirmation code
+                    </Body>
+                  </Animated.View>
+                </View>
+              )}
+            </View>
           </View>
+          {isKeyboardVisible ? (
+            <Animated.View entering={SlideInDown} exiting={SlideOutDown} style={styles.blurView}>
+              <BlurView
+                style={styles.absolute}
+                blurType="light"
+                blurAmount={10}
+                reducedTransparencyFallbackColor="white"
+              />
+            </Animated.View>
+
+            // <Blurhash blurhash="LEHV6nWB2yk8pyo0adR*.7kCMdnj" decodeWidth={200} />
+
+          ) : null}
+
+          <View style={styles.contentContainer}>{props.children}</View>
+          {props.footer ? (
+            <View>
+              <Footer {...props.footer} />
+            </View>
+          ) : null}
         </View>
-        {isKeyboardVisible ? (
-          <Animated.View entering={SlideInDown} exiting={SlideOutDown} style={styles.blurView}>
-            <BlurView
-              style={styles.absolute}
-              blurType="light"
-              blurAmount={10}
-              reducedTransparencyFallbackColor="white"
-            />
-          </Animated.View>
-        ) : null}
-
-        <View style={styles.contentContainer}>{props.children}</View>
-        {props.footer ? (
-          <View>
-            <Footer {...props.footer} />
-          </View>
-        ) : null}
-      </View>
-      {/* </Pressable> */}
+        {/* </Pressable> */}
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView >
   );
 };
@@ -257,5 +272,13 @@ const styles = StyleSheet.create({
     bottom: '1%',
     right: 0,
     height: '1%',
+  },
+  otpBackButton: {
+    position: 'absolute',
+    top: 50,
+    left: -20,
+    padding: Spacings.s2,
+    zIndex: 1,
+    elevation: 1,
   },
 });
