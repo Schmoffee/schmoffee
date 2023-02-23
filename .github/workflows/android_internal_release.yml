@@ -1,0 +1,21 @@
+name: Android Internal Release
+
+on:
+  push:
+    branches: [ test ]
+
+jobs:
+  build:
+    runs-on: Ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Run npm install
+        run: npm i
+
+      - name: Run fastlane bundle + release
+        run: |
+          cd android
+          fastlane android internal
