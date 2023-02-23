@@ -93,19 +93,6 @@ export const AuthLayout = (props: AuthLayoutProps) => {
     };
   });
 
-  // const animateAsteroidFinal = useAnimatedStyle(() => {
-  //     return {
-  //         transform: [
-  //             { scale: 0.2 },
-  //             { translateY: interpolate(props.asteroidAnimFinal.value, [0, 1], [-700, -3000]) },
-  //             { translateX: interpolate(props.asteroidAnimFinal.value, [0, 1], [1000, 3000]) },
-  //             { rotate: `${-12.3}deg` }
-  //         ],
-  //         opacity: interpolate(props.asteroidAnimFinal.value, [0, 1], [1, 0])
-  //     };
-  // });
-
-
 
   return (
     <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={0}>

@@ -1,18 +1,18 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import CurrentOrderBanner from '../../track/components/CurrentOrderBanner';
-import {GlobalContext} from '../../../contexts';
-import {RootRoutes} from '../../../utils/types/navigation.types';
-import {CONST_SCREEN_ORDER, CONST_SCREEN_SHOP, HEIGHT, WIDTH} from '../../../../constants';
+import { GlobalContext } from '../../../contexts';
+import { RootRoutes } from '../../../utils/types/navigation.types';
+import { CONST_SCREEN_ORDER, CONST_SCREEN_SHOP, HEIGHT, WIDTH } from '../../../../constants';
 import HoverButton from '../components/Buttons/HoverButton';
 import FastImage from 'react-native-fast-image';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Colors} from '../theme';
-import {getCurrOrder} from '../../../utils/queries/datastore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Colors } from '../theme';
+import { getCurrOrder } from '../../../utils/queries/datastore';
 
 export const Home = () => {
-  const {global_state} = useContext(GlobalContext);
+  const { global_state } = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
   const [currentVideo, setCurrentVideo] = useState<number>(0);
   const insets = useSafeAreaInsets();
@@ -27,7 +27,8 @@ export const Home = () => {
 
   const handlePress = () => {
     if (currentVideo === 0) {
-      setCurrentVideo(1);
+      // setCurrentVideo(1);
+      navigation.navigate(CONST_SCREEN_SHOP);
     } else if (currentVideo === 2) {
       navigation.navigate('TrackOrder', CONST_SCREEN_ORDER);
     }
@@ -46,7 +47,7 @@ export const Home = () => {
       </View>
       <View>
         {currentVideo !== 1 ? (
-          <View style={[styles.hoverButtonContainer, {top: insets.bottom + HEIGHT * 0.81}]}>
+          <View style={[styles.hoverButtonContainer, { top: insets.bottom + HEIGHT * 0.84 }]}>
             <HoverButton
               backgroundColor={currentVideo === 2 ? Colors.darkBlue : Colors.darkBrown}
               buttonPressedColor={currentVideo === 2 ? Colors.blueFaded : Colors.darkBrown2}
@@ -60,8 +61,8 @@ export const Home = () => {
             global_state.current_order
               ? require('../../../assets/gifs/astronaut.gif')
               : currentVideo === 1
-              ? require('../../../assets/gifs/fly-complete.gif')
-              : require('../../../assets/gifs/home-loop.gif')
+                ? require('../../../assets/gifs/fly-complete.gif')
+                : require('../../../assets/gifs/home-loop.gif')
           }
           onLoad={() => {
             if (currentVideo === 1) {
@@ -94,11 +95,9 @@ const styles = StyleSheet.create({
 
   hoverButtonContainer: {
     position: 'absolute',
-    // top: HEIGHT / 1.17,
     left: WIDTH / 5.5,
     zIndex: 1,
   },
-
   videoContainer: {
     width: WIDTH,
     height: HEIGHT,

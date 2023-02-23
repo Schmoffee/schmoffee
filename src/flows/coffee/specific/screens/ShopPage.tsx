@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
-import {OrderingContext} from '../../../../contexts';
-import {Item} from '../../../../models';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Dimensions, Image, Keyboard, KeyboardAvoidingView, NativeModules, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { OrderingContext } from '../../../../contexts';
+import { Item } from '../../../../models';
 import Animated, {
   Easing,
   Extrapolate,
@@ -11,26 +11,43 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {Colors, Spacings} from '../../../common/theme';
+import { Colors, Spacings } from '../../../common/theme';
 import TabNavigator from '../../components/menu/TabNavigator';
-import {BasketPreview} from '../../components/basket/BasketPreview';
+import { BasketPreview } from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 import LinearGradient from 'react-native-linear-gradient';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-const {StatusBarManager} = NativeModules;
+const { StatusBarManager } = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const {height: wHeight, width: wWidth} = Dimensions.get('window');
+const { height: wHeight, width: wWidth } = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
-  const {ordering_state} = useContext(OrderingContext);
+  const { ordering_state } = useContext(OrderingContext);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
   const anim = useSharedValue(0);
   const basketAnim = useSharedValue(0);
   const searchAnim = useSharedValue(0);
+
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', () => {
+      setKeyboardVisible(true); // or some other action
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', () => {
+      setKeyboardVisible(false); // or some other action
+    });
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
     anim.value = 0;
@@ -56,7 +73,7 @@ export const ShopPage = () => {
     }
   }, [basketAnim, ordering_state.specific_basket.length]);
 
-  const contains = ({name}: Item, query: string) => {
+  const contains = ({ name }: Item, query: string) => {
     const nameLower = name.toLowerCase();
     return nameLower.includes(query);
   };
@@ -127,10 +144,10 @@ export const ShopPage = () => {
   const rSearchContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(searchAnim.value, [0, 1], [Colors.darkBrown, Colors.greyLight1]);
     return {
-      width: interpolate(searchAnim.value, [0, 1], [25, 350]),
+      width: interpolate(searchAnim.value, [0, 1], [25, 330]),
       backgroundColor,
     };
-  });
+  });[]
   const rSearchIconStyle = useAnimatedStyle(() => {
     let rotate = interpolate(searchAnim.value, [0, 1], [0, -360], Extrapolate.CLAMP);
     const tintColor = interpolateColor(searchAnim.value, [0, 1], [Colors.greyLight3, Colors.darkBrown]);
@@ -146,7 +163,7 @@ export const ShopPage = () => {
   });
 
   return (
-    <View style={styles.root}>
+    <View style={styles.root} >
       {/* back button for navigation */}
       <View style={styles.backButton}>
         <LeftChevronBackButton color={Colors.white} />
@@ -182,7 +199,7 @@ export const ShopPage = () => {
               <View style={styles.clearIcon}>
                 <Pressable onPress={handleSearchPress}>
                   <Animated.Image
-                    style={[rSearchIconStyle, {width: 15, height: 15}]}
+                    style={[rSearchIconStyle, { width: 15, height: 15 }]}
                     source={require('../../../../assets/pngs/x-outline.png')}
                   />
                 </Pressable>
@@ -195,14 +212,15 @@ export const ShopPage = () => {
       <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
         <BasketPreview />
       </Animated.View>
-    </View>
+    </View >
+
   );
 };
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    zIndex: 1,
+    // zIndex: 1,
   },
   header: {
     paddingTop: STATUSBAR_HEIGHT,
@@ -213,7 +231,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 160,
     paddingTop: 70,
-    paddingBottom: 70,
     // justifyContent: 'center',
     alignItems: 'center',
   },
@@ -223,7 +240,7 @@ const styles = StyleSheet.create({
     top: -20,
     left: 0,
     right: 0,
-    bottom: 0,
+
   },
   basketContainer: {
     position: 'absolute',
@@ -251,19 +268,20 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flex: 1,
     flexDirection: 'row',
-    height: '5%',
+    height: 30,
     borderRadius: 15,
     position: 'absolute',
-    top: '10.5%',
+    top: '8.5%',
     right: '5%',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: Spacings.s2,
+    paddingHorizontal: Spacings.s2,
     elevation: 2,
-    zIndex: 5,
+    zIndex: 2,
+    width: 330,
   },
   searchIcon: {
     position: 'relative',
+
   },
   searchText: {
     height: 40,
@@ -272,12 +290,11 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: Colors.darkBrown,
     // backgroundColor: 'red',
-
     minWidth: 250,
   },
   clearIcon: {
     position: 'relative',
-    left: 305,
+    left: 280,
   },
   shopImage: {
     zIndex: -1,
@@ -288,22 +305,16 @@ const styles = StyleSheet.create({
   bottomSheetContainer: {
     flex: 1,
     zIndex: 1,
-    // height: 300,
-    // backgroundColor: Colors.red,
   },
   bottomSheet: {
     backgroundColor: Colors.blue,
-    // zIndex: 1,
-    // height: '100%',
   },
-
   semiCircle: {
     zIndex: -1,
     position: 'absolute',
     top: -450,
     tintColor: Colors.darkBrown,
   },
-
   footerContainer: {
     position: 'absolute',
     bottom: 0,
@@ -314,7 +325,6 @@ const styles = StyleSheet.create({
     height: 100,
     backgroundColor: Colors.greyLight1,
   },
-
   footer: {
     position: 'absolute',
     bottom: 30,
@@ -324,8 +334,10 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 60,
-    left: -20,
-    zIndex: 1,
+    top: '4.5%',
+    left: '-5%',
+
+    zIndex: 2,
+    elevation: 1,
   },
 });
