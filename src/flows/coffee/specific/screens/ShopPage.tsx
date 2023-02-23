@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {Dimensions, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
 import {OrderingContext} from '../../../../contexts';
-import {Item} from '../../../../models';
+import {Cafe, Item} from '../../../../models';
 import Animated, {
   Easing,
   Extrapolate,
@@ -31,6 +31,10 @@ export const ShopPage = () => {
   const anim = useSharedValue(0);
   const basketAnim = useSharedValue(0);
   const searchAnim = useSharedValue(0);
+  const cafe = useMemo(
+    () => ordering_state.cafes.find((c: Cafe) => c.id === ordering_state.current_shop_id),
+    [ordering_state.current_shop_id, ordering_state.cafes],
+  );
 
   useEffect(() => {
     anim.value = 0;
