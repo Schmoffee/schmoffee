@@ -110,15 +110,6 @@ const HoverButton = (props: HoverButtonProps) => {
                         pressed ? [styles.buttonPressed, { backgroundColor: buttonPressedColor }] : null
                     ]}
                 >
-                    {/* {pressed ?
-                        <View style={styles.buttonText}>
-                            <Text>USUAL</Text>
-                        </View>
-                        :
-                        <View style={styles.buttonText}>
-                            <Text>GO</Text>
-                        </View>
-                    } */}
                 </Pressable>
             </Animated.View>
             <View style={styles.buttonContainer}>
@@ -140,12 +131,12 @@ const styles = StyleSheet.create({
 
     button: {
         padding: 16,
-        width: 70,
-        height: 70,
+        width: 60,
+        height: 60,
         borderRadius: 35,
         elevation: 4,
-        marginTop: -50,
-        marginLeft: -70,
+        marginTop: -45,
+        marginLeft: -65,
     },
     buttonPressed: {
         elevation: 0,
@@ -171,10 +162,9 @@ const styles = StyleSheet.create({
     },
 
     image: {
-        width: 150,
-        height: 150,
+        width: 130,
+        height: 130,
         marginTop: 0,
-
     }
 });
 

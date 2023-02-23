@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {Dimensions, Image, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {Dimensions, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
 import {OrderingContext} from '../../../../contexts';
-import {Item} from '../../../../models';
+import {Cafe, Item} from '../../../../models';
 import Animated, {
   Easing,
   Extrapolate,
@@ -31,6 +31,10 @@ export const ShopPage = () => {
   const anim = useSharedValue(0);
   const basketAnim = useSharedValue(0);
   const searchAnim = useSharedValue(0);
+  const cafe = useMemo(
+    () => ordering_state.cafes.find((c: Cafe) => c.id === ordering_state.current_shop_id),
+    [ordering_state.current_shop_id, ordering_state.cafes],
+  );
 
   useEffect(() => {
     anim.value = 0;
@@ -127,10 +131,11 @@ export const ShopPage = () => {
   const rSearchContainerStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(searchAnim.value, [0, 1], [Colors.darkBrown, Colors.greyLight1]);
     return {
-      width: interpolate(searchAnim.value, [0, 1], [25, 350]),
+      width: interpolate(searchAnim.value, [0, 1], [25, 330]),
       backgroundColor,
     };
   });
+  [];
   const rSearchIconStyle = useAnimatedStyle(() => {
     let rotate = interpolate(searchAnim.value, [0, 1], [0, -360], Extrapolate.CLAMP);
     const tintColor = interpolateColor(searchAnim.value, [0, 1], [Colors.greyLight3, Colors.darkBrown]);
@@ -202,7 +207,7 @@ export const ShopPage = () => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    zIndex: 1,
+    // zIndex: 1,
   },
   header: {
     paddingTop: STATUSBAR_HEIGHT,
@@ -213,7 +218,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 160,
     paddingTop: 70,
-    paddingBottom: 70,
     // justifyContent: 'center',
     alignItems: 'center',
   },
@@ -223,7 +227,6 @@ const styles = StyleSheet.create({
     top: -20,
     left: 0,
     right: 0,
-    bottom: 0,
   },
   basketContainer: {
     position: 'absolute',
@@ -251,16 +254,16 @@ const styles = StyleSheet.create({
   searchInputContainer: {
     flex: 1,
     flexDirection: 'row',
-    height: '5%',
+    height: 30,
     borderRadius: 15,
     position: 'absolute',
-    top: '10.5%',
+    top: '8.5%',
     right: '5%',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: Spacings.s2,
+    paddingHorizontal: Spacings.s2,
     elevation: 2,
-    zIndex: 5,
+    zIndex: 2,
+    width: 330,
   },
   searchIcon: {
     position: 'relative',
@@ -272,12 +275,11 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: Colors.darkBrown,
     // backgroundColor: 'red',
-
     minWidth: 250,
   },
   clearIcon: {
     position: 'relative',
-    left: 305,
+    left: 280,
   },
   shopImage: {
     zIndex: -1,
@@ -288,22 +290,16 @@ const styles = StyleSheet.create({
   bottomSheetContainer: {
     flex: 1,
     zIndex: 1,
-    // height: 300,
-    // backgroundColor: Colors.red,
   },
   bottomSheet: {
     backgroundColor: Colors.blue,
-    // zIndex: 1,
-    // height: '100%',
   },
-
   semiCircle: {
     zIndex: -1,
     position: 'absolute',
     top: -450,
     tintColor: Colors.darkBrown,
   },
-
   footerContainer: {
     position: 'absolute',
     bottom: 0,
@@ -314,7 +310,6 @@ const styles = StyleSheet.create({
     height: 100,
     backgroundColor: Colors.greyLight1,
   },
-
   footer: {
     position: 'absolute',
     bottom: 30,
@@ -324,8 +319,10 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 60,
-    left: -20,
-    zIndex: 1,
+    top: '4.5%',
+    left: '-5%',
+
+    zIndex: 2,
+    elevation: 1,
   },
 });

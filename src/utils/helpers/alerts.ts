@@ -126,6 +126,22 @@ export const Alerts = {
     ]);
     return val;
   },
+  deleteAccountAlert: async () => {
+    let deleteAccount = false;
+    await Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
+      {
+        text: 'Yes',
+        onPress: async () => {
+          deleteAccount = true;
+        },
+      },
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+    ]);
+    return deleteAccount;
+  },
 
   confirmOTPAlert: async (confirmOTP: () => Promise<void>) => {
     await Alert.alert(AlertMessage.CONFIRM_OTP.title, AlertMessage.CONFIRM_OTP.message, [
