@@ -333,6 +333,11 @@ async function getPastOrders(userID: string): Promise<PastOrder[]> {
   return await DataStore.query(PastOrder, past_order => past_order.userID('eq', userID));
 }
 
+async function deleteAccount(userID: string) {
+  await DataStore.delete(User, user => user.id('eq', userID));
+  await DataStore.delete(PastOrder, past_order => past_order.userID('eq', userID));
+}
+
 export {
   getUserByPhoneNumber,
   createSignUpUser,
@@ -355,4 +360,5 @@ export {
   getCafeById,
   setUsualOrder,
   getPastOrders,
+  deleteAccount,
 };
