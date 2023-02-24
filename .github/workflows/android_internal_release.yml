@@ -20,16 +20,12 @@ jobs:
           ruby-version: '3.0' # Not needed with a .ruby-version file
           working-directory: 'android'
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-          
-      - name: configure amplify
-        uses: ambientlight/amplify-cli-action@0.3.0
-        with:
-          amplify_command: configure
-          amplify_env: test
+       
+      - uses: "finnp/create-file-action@master"
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: eu-central-1
+          FILE_NAME: "src/aws-exports.js"
+          FILE_DATA:  ${{ secrets.AWS_EXPORTS }}
+       
 
       - name: Run fastlane bundle + release
         run: |
