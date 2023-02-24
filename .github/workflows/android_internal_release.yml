@@ -21,11 +21,11 @@ jobs:
           working-directory: 'android'
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
        
-      - uses: timheuer/base64-to-file@v1.2
+      - uses: 1arp/create-a-file-action@0.2
         with:
-          fileName: 'aws-exports.js'
-          fileDir: './src'
-          encodedString: ${{ secrets.AWS_EXPORTS }}
+          path: 'src'
+          file: 'aws-exports.js'
+          content: ${{ secrets.AWS_EXPORTS }}
 
 
       - name: Run fastlane bundle + release
