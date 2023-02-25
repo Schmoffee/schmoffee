@@ -142,8 +142,8 @@ android {
         applicationId "com.schmoffee"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.0"
+        versionCode 5
+        versionName "0.1.5"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type for detox
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

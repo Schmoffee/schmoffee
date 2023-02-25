@@ -20,7 +20,8 @@
     "buildIos": "detox build --configuration ios",
     "testIos": "detox test --configuration ios",
     "format": "prettier . --ignore-unknown --write",
-    "generate:bundle": "react-native bundle --platform android --dev false --bundle-output android/app/src/main/assets/index.android.bundle --entry-file index.js"
+    "generate:bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
+    "release:android": "npm run generate:bundle && cd android && fastlane android internal"
 
   },
   "dependencies": {

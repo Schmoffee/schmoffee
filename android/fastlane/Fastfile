@@ -19,12 +19,23 @@ platform :android do
 
   desc "Deploy a new Internal testing release to Google Play"
       lane :internal do
-          increment_version_code(
-              gradle_file_path: "app/build.gradle",
-              #ext_constant_name: "test"
-              #app_folder_name:"app"
+          previous_build_number = google_play_track_version_codes(
+              package_name: "com.schmoffee",
+              track: "internal",
+              json_key: "app/play-store-credentials.json",
+          )[0]
+
+          current_build_number = previous_build_number + 1
+
+          android_set_version_code(
+              version_code: current_build_number
           )
+          android_set_version_name(
+              version_name: "0.1.#{current_build_number}"
+          )
+
           gradle(tasks: ["clean", "bundleRelease"])
+
           upload_to_play_store(
               track: 'internal',
               release_status: 'draft',
