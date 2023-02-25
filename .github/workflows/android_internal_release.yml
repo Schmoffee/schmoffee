@@ -30,5 +30,6 @@ jobs:
 
       - name: Run fastlane bundle + release
         run: |
+          npm run generate:build
           cd android
           bundle exec fastlane android internal --verbose
