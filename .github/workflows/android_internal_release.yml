@@ -20,6 +20,13 @@ jobs:
           ruby-version: '3.0' # Not needed with a .ruby-version file
           working-directory: 'android'
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+       
+      - uses: 1arp/create-a-file-action@0.2
+        with:
+          path: 'src'
+          file: 'aws-exports.js'
+          content: ${{ secrets.AWS_EXPORTS }}
+
 
       - name: Run fastlane bundle + release
         run: |
