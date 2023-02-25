@@ -14,6 +14,7 @@
 		1A89795135014FB6BCA73045 /* ProximaNovaT-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5A1377DBD13E423A92CB9BFD /* ProximaNovaT-Thin.otf */; };
 		1C6D7C9889514179AFE27891 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6E8757BC5F824EA9912CDEF1 /* ProximaNova-Regular.otf */; };
 		1E1AEEC829141DF400C223B2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1E1AEEC729141DF300C223B2 /* GoogleService-Info.plist */; };
+		1EDB1EE629AA5D4C0061B364 /* coffee_time.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 1EDB1EE529AA5D4C0061B364 /* coffee_time.mp3 */; };
 		3619A7F6E3C34B4198C80BA1 /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C27BEFD1D1E1464298D05B26 /* ProximaNova-Bold.otf */; };
 		41748F9278ED45258337958D /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 57D61B6DE0D24233AF4453E3 /* ProximaNova-Black.otf */; };
 		792654CAC9B84F97836D3910 /* ProximaNova-Extrabld.otf in Resources */ = {isa = PBXBuildFile; fileRef = B89B3D29E6AF41948A6B6032 /* ProximaNova-Extrabld.otf */; };
@@ -43,6 +44,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Schmoffee/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Schmoffee/main.m; sourceTree = "<group>"; };
 		1E1AEEC729141DF300C223B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		1EDB1EE529AA5D4C0061B364 /* coffee_time.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = coffee_time.mp3; sourceTree = "<group>"; };
 		2364DF0AD854B35EF6C81F50 /* Pods-Schmoffee-SchmoffeeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Schmoffee-SchmoffeeTests.release.xcconfig"; path = "Target Support Files/Pods-Schmoffee-SchmoffeeTests/Pods-Schmoffee-SchmoffeeTests.release.xcconfig"; sourceTree = "<group>"; };
 		57D61B6DE0D24233AF4453E3 /* ProximaNova-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ProximaNova-Black.otf"; path = "../src/assets/fonts/ProximaNova-Black.otf"; sourceTree = "<group>"; };
 		5901AE7785B1EF1C5A648836 /* Pods-Schmoffee.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Schmoffee.release.xcconfig"; path = "Target Support Files/Pods-Schmoffee/Pods-Schmoffee.release.xcconfig"; sourceTree = "<group>"; };
@@ -343,6 +345,7 @@
 		C7095594F895492B849B6FE2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1EDB1EE529AA5D4C0061B364 /* coffee_time.mp3 */,
 				57D61B6DE0D24233AF4453E3 /* ProximaNova-Black.otf */,
 				C27BEFD1D1E1464298D05B26 /* ProximaNova-Bold.otf */,
 				B89B3D29E6AF41948A6B6032 /* ProximaNova-Extrabld.otf */,
@@ -455,6 +458,7 @@
 				792654CAC9B84F97836D3910 /* ProximaNova-Extrabld.otf in Resources */,
 				1C6D7C9889514179AFE27891 /* ProximaNova-Regular.otf in Resources */,
 				1A89795135014FB6BCA73045 /* ProximaNovaT-Thin.otf in Resources */,
+				1EDB1EE629AA5D4C0061B364 /* coffee_time.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

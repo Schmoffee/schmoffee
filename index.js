@@ -20,7 +20,7 @@ LogBox.ignoreLogs(['new NativeEventEmitter']);
 RemotePushNotification.onNotification(async notification => {
   // Note that the notification object structure is different from Android and IOS
   console.log('Remote notification received', notification);
-  const genericSpec = {title: notification.title, message: notification.body};
+  const genericSpec = {title: notification.title, message: notification.body, soundName: 'coffee_time.mp3'};
   if (Platform.OS === 'ios') {
     const specs = {};
     SendLocalNotification(genericSpec, specs);
@@ -38,7 +38,7 @@ RemotePushNotification.onNotification(async notification => {
             channelName: 'My channel',
             channelDescription: 'A channel to categorise your notifications',
             playSound: true,
-            soundName: 'default',
+            soundName: 'coffee_time.mp3',
             importance: Importance.HIGH,
             vibrate: true,
           },
