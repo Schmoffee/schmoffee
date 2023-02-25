@@ -1,0 +1,33 @@
+name: Android Internal Release
+
+on:
+  push:
+    branches: [ test ]
+
+jobs:
+  build:
+    runs-on: Ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Run npm install
+        run: npm i
+        
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0' # Not needed with a .ruby-version file
+          working-directory: 'android'
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+       
+      - uses: "finnp/create-file-action@master"
+        env:
+          FILE_NAME: "src/aws-exports.js"
+          FILE_DATA:  ${{ secrets.AWS_EXPORTS }}
+       
+
+      - name: Run fastlane bundle + release
+        run: |
+          cd android
+          bundle exec fastlane android internal --verbose

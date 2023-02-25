@@ -11,10 +11,10 @@ import {DataStore} from 'aws-amplify';
 import awsConfig from './src/aws-exports';
 import {Amplify} from 'aws-amplify';
 import RemotePushNotification from '@aws-amplify/pushnotification';
-import PushNotification, {Importance} from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {SendLocalNotification} from './src/utils/helpers/notifications';
 import {LogBox} from 'react-native';
+import PushNotification, {Importance} from 'react-native-push-notification';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 RemotePushNotification.onNotification(async notification => {

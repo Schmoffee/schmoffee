@@ -316,9 +316,9 @@ async function registerError(phone: string, description: string, type: string) {
   );
 }
 
-async function getCurrOrder(userID: string): Promise<CurrentOrder | null> {
+async function getCurrOrder(userID: string): Promise<CurrentOrder[] | null> {
   const order = await DataStore.query(CurrentOrder, current_order => current_order.userID('eq', userID));
-  return order[0] ? order[0] : null;
+  return order.length > 0 ? order : null;
 }
 
 async function getAllOptions(): Promise<Option[]> {

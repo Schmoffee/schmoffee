@@ -68,5 +68,82 @@
         "storage": {}
       }
     }
+  },
+  "test": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-schmoffee-test-151151-authRole",
+      "UnauthRoleArn": "arn:aws:iam::137688097985:role/amplify-schmoffee-test-151151-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::137688097985:role/amplify-schmoffee-test-151151-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-schmoffee-test-151151-deployment",
+      "UnauthRoleName": "amplify-schmoffee-test-151151-unauthRole",
+      "StackName": "amplify-schmoffee-test-151151",
+      "StackId": "arn:aws:cloudformation:eu-central-1:137688097985:stack/amplify-schmoffee-test-151151/3ce65bd0-b2c3-11ed-9cf3-0aace8015d3a",
+      "AmplifyAppId": "dsvkug5oudm85",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-schmoffee-test-151151-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "notifications": {
+        "Pinpoint": {
+          "Name": "schmoffee-test",
+          "Id": "2e057c00daac4dcf9ec421551ee0243d",
+          "Region": "eu-central-1"
+        }
+      },
+      "auth": {
+        "schmoffeeAuth": {}
+      },
+      "function": {
+        "schmoffeeAuthCreateAuthChallenge": {
+          "deploymentBucketName": "amplify-schmoffee-test-151151-deployment",
+          "s3Key": "amplify-builds/schmoffeeAuthCreateAuthChallenge-78455a3555704a545335-build.zip"
+        },
+        "schmoffeeAuthDefineAuthChallenge": {
+          "deploymentBucketName": "amplify-schmoffee-test-151151-deployment",
+          "s3Key": "amplify-builds/schmoffeeAuthDefineAuthChallenge-6130774667466b624e59-build.zip"
+        },
+        "schmoffeeAuthPreSignup": {
+          "deploymentBucketName": "amplify-schmoffee-test-151151-deployment",
+          "s3Key": "amplify-builds/schmoffeeAuthPreSignup-6b34733973662f445a64-build.zip"
+        },
+        "schmoffeeAuthVerifyAuthChallengeResponse": {
+          "deploymentBucketName": "amplify-schmoffee-test-151151-deployment",
+          "s3Key": "amplify-builds/schmoffeeAuthVerifyAuthChallengeResponse-3364566e456f68373563-build.zip"
+        },
+        "schmoffeeCancelPayment": {
+          "deploymentBucketName": "amplify-schmoffee-test-151151-deployment",
+          "s3Key": "amplify-builds/schmoffeeCancelPayment-6d52597a785248744161-build.zip",
+          "secretsPathAmplifyAppId": "dsvkug5oudm85"
+        },
+        "schmoffeeGooglePayConfirmPayment": {
+          "deploymentBucketName": "amplify-schmoffee-test-151151-deployment",
+          "s3Key": "amplify-builds/schmoffeeGooglePayConfirmPayment-33674451345846493444-build.zip",
+          "secretsPathAmplifyAppId": "dsvkug5oudm85"
+        },
+        "schmoffeePayWithStripe": {
+          "deploymentBucketName": "amplify-schmoffee-test-151151-deployment",
+          "s3Key": "amplify-builds/schmoffeePayWithStripe-5558552f5a6378387a41-build.zip",
+          "secretsPathAmplifyAppId": "dsvkug5oudm85"
+        },
+        "schmoffeeSendNotification": {
+          "deploymentBucketName": "amplify-schmoffee-test-151151-deployment",
+          "s3Key": "amplify-builds/schmoffeeSendNotification-4c772b67454f62794167-build.zip"
+        }
+      },
+      "analytics": {
+        "schmoffee": {},
+        "Pinpoint": {
+          "Name": "schmoffee-test",
+          "Id": "2e057c00daac4dcf9ec421551ee0243d",
+          "Region": "eu-central-1"
+        }
+      },
+      "api": {
+        "schmoffee": {}
+      },
+      "storage": {
+        "storage": {}
+      }
+    }
   }
 }

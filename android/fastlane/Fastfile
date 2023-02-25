@@ -1,0 +1,39 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+
+  desc "Deploy a new Internal testing release to Google Play"
+      lane :internal do
+          increment_version_code(
+              gradle_file_path: "app/build.gradle",
+              #ext_constant_name: "test"
+              #app_folder_name:"app"
+          )
+          gradle(tasks: ["clean", "bundleRelease"])
+          upload_to_play_store(
+              track: 'internal',
+              release_status: 'draft',
+              skip_upload_screenshots: true,
+              skip_upload_changelogs: true,
+              skip_upload_metadata: true,
+              skip_upload_apk: true,
+              aab: 'app/build/outputs/bundle/release/app-release.aab',
+          )
+      end
+end
+
