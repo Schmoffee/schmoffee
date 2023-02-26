@@ -26,7 +26,7 @@ export const Home = () => {
 
   useEffect(() => {
     if (global_state.current_order) {
-      setCurrentVideo(2);
+      setCurrentVideo(0);
     } else {
       setCurrentVideo(0);
     }

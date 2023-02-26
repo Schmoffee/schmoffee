@@ -19,6 +19,7 @@ import { Colors, Spacings } from '../../common/theme';
 import { Footer } from '../../common/components/Footer';
 import { Blurhash } from 'react-native-blurhash';
 import LeftChevronBackButton from '../../common/components/LeftChevronBackButton';
+import useKeyboardVisible from '../../../utils/helpers/others';
 
 
 
@@ -42,21 +43,7 @@ interface AuthLayoutProps extends PropsWithChildren {
 
 export const AuthLayout = (props: AuthLayoutProps) => {
   const backgroundStyle = props.backgroundColor || Colors.white;
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', () => {
-      setKeyboardVisible(true); // or some other action
-    });
-    const keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', () => {
-      setKeyboardVisible(false); // or some other action
-    });
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
+  const isKeyboardVisible = useKeyboardVisible();
 
   const animatePlanet = useAnimatedStyle(() => {
     let rotate = interpolate(props.asteroidAnim.value, [0, 1], [0, 90], Extrapolate.CLAMP);
