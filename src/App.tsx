@@ -1,20 +1,20 @@
-import React, {useEffect, useReducer, useRef, useState} from 'react';
-import {BackHandler, NativeModules, Platform} from 'react-native';
-import {globalReducer} from './reducers';
-import {GlobalContext, globalData} from './contexts';
-import {DataStore, Hub} from 'aws-amplify';
-import {authListener, datastoreListener} from './utils/helpers/listeners';
-import {getCurrentAuthUser, signOut} from './utils/queries/auth';
-import {AuthState, GlobalActionName} from './utils/types/enums';
-import {getPastOrders, getUserById, getUserByPhoneNumber, updateDeviceToken} from './utils/queries/datastore';
-import {LocalUser, Payment} from './utils/types/data.types';
-import {updateEndpoint} from './utils/helpers/notifications';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
+import { BackHandler, NativeModules, Platform } from 'react-native';
+import { globalReducer } from './reducers';
+import { GlobalContext, globalData } from './contexts';
+import { DataStore, Hub } from 'aws-amplify';
+import { authListener, datastoreListener } from './utils/helpers/listeners';
+import { getCurrentAuthUser, signOut } from './utils/queries/auth';
+import { AuthState, GlobalActionName } from './utils/types/enums';
+import { getPastOrders, getUserById, getUserByPhoneNumber, updateDeviceToken } from './utils/queries/datastore';
+import { LocalUser, Payment } from './utils/types/data.types';
+import { updateEndpoint } from './utils/helpers/notifications';
 import Navigator from './navigation/Navigator';
-import {CurrentOrder, OrderStatus, PastOrder, User} from './models';
-import {firebase} from '@react-native-firebase/messaging';
-import {Alerts} from './utils/helpers/alerts';
-import {cancelPayment, confirmPayment} from './utils/helpers/payment';
-import {getDeletedOrders} from './utils/helpers/storage';
+import { CurrentOrder, OrderStatus, PastOrder, User } from './models';
+import { firebase } from '@react-native-firebase/messaging';
+import { Alerts } from './utils/helpers/alerts';
+import { cancelPayment, confirmPayment } from './utils/helpers/payment';
+import { getDeletedOrders } from './utils/helpers/storage';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
@@ -53,19 +53,19 @@ const App = () => {
       if (Platform.OS === 'ios') {
         const fcmToken = await firebase.messaging().getToken();
         if (fcmToken) {
-          global_dispatch({type: GlobalActionName.SET_DEVICE_TOKEN, payload: fcmToken});
+          global_dispatch({ type: GlobalActionName.SET_DEVICE_TOKEN, payload: fcmToken });
           await updateEndpoint(fcmToken);
         } else {
-          Alerts.tokenAlert();
+          // Alerts.tokenAlert();
         }
       } else {
         NativeModules.RNPushNotification.getToken(
           async (token: string) => {
-            global_dispatch({type: GlobalActionName.SET_DEVICE_TOKEN, payload: token});
+            global_dispatch({ type: GlobalActionName.SET_DEVICE_TOKEN, payload: token });
             await updateEndpoint(token);
           },
           (error: any) => {
-            Alerts.tokenAlert();
+            // Alerts.tokenAlert();
             console.log(error);
           },
         );
@@ -106,7 +106,7 @@ const App = () => {
               payload: AuthState.SIGNED_IN,
             });
           }
-          global_dispatch({type: GlobalActionName.SET_AUTH_USER, payload: user});
+          global_dispatch({ type: GlobalActionName.SET_AUTH_USER, payload: user });
         } else {
           await signOut();
           console.log('Auth user found but corresponding database user not found');
@@ -132,7 +132,7 @@ const App = () => {
       const subscription = DataStore.observeQuery(User, user =>
         user.device_token('eq', global_state.device_token),
       ).subscribe(async snapshot => {
-        const {items} = snapshot;
+        const { items } = snapshot;
         if (global_state.auth_state === AuthState.SIGNED_IN && items.length > 0) {
           const currentUser = items[0];
           const past_orders: PastOrder[] = await getPastOrders(currentUser.id);
@@ -146,7 +146,7 @@ const App = () => {
             device_token: global_state.device_token,
             past_orders: past_orders,
           };
-          global_dispatch({type: GlobalActionName.SET_CURRENT_USER, payload: localUser});
+          global_dispatch({ type: GlobalActionName.SET_CURRENT_USER, payload: localUser });
         }
       });
       return () => subscription.unsubscribe();
@@ -162,14 +162,14 @@ const App = () => {
       const subscription = DataStore.observeQuery(CurrentOrder, current_order =>
         current_order.userID('eq', user.id),
       ).subscribe(async snapshot => {
-        const {items, isSynced} = snapshot;
+        const { items, isSynced } = snapshot;
         const deletedOrders: string[] | void = await getDeletedOrders();
         const actualOrders = items.filter(item => !deletedOrders?.includes(item.id));
         if (isSynced) {
           if (actualOrders.length === 1) {
             const prevStatus = global_state.current_order?.status;
             const new_order = actualOrders[0];
-            global_dispatch({type: GlobalActionName.SET_CURRENT_ORDER, payload: actualOrders[0]});
+            global_dispatch({ type: GlobalActionName.SET_CURRENT_ORDER, payload: actualOrders[0] });
             if (new_order.status !== prevStatus) {
               switch (new_order.status) {
                 case OrderStatus.ACCEPTED:
@@ -182,7 +182,7 @@ const App = () => {
             }
           } else {
             actualOrders.length === 0
-              ? global_dispatch({type: GlobalActionName.SET_CURRENT_ORDER, payload: null})
+              ? global_dispatch({ type: GlobalActionName.SET_CURRENT_ORDER, payload: null })
               : Alerts.elseAlert();
           }
         }
@@ -193,7 +193,7 @@ const App = () => {
   }, [global_state.current_user, loading, global_dispatch]);
 
   return (
-    <GlobalContext.Provider value={{global_state, global_dispatch}}>
+    <GlobalContext.Provider value={{ global_state, global_dispatch }}>
       <Navigator loading={authLoading.current} />
     </GlobalContext.Provider>
   );
