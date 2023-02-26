@@ -118,12 +118,13 @@ const App = () => {
         });
       }
     };
-    if (global_state.device_token !== '' && !loading) {
+    if (!loading) {
       refreshAuthState().catch(error => {
         console.log(error);
         Alerts.elseAlert();
       });
       authLoading.current = false;
+
     }
   }, [global_state.current_user?.id, global_state.auth_state, global_state.device_token, loading]);
 

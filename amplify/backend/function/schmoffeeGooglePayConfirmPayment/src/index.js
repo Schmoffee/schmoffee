@@ -1,15 +1,6 @@
-const aws = require('aws-sdk');
-
-const {Parameters} = await new aws.SSM()
-  .getParameters({
-    Names: ['stripeKey'].map(secretName => process.env[secretName]),
-    WithDecryption: true,
-  })
-  .promise();
-
-// Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
-
-const stripe = require('stripe')(Parameters.find(({Name}) => Name === 'stripeKey').Value);
+const stripe = require('stripe')(
+  'sk_test_51LpXnPHooJo3N51bI8csPCrV7HNR3bHYSaO1tOhO60allyrVeEFmoXqf5sVhtEEhu40IzSwsXtT2OKoQsDJh6Az900zfxgBpvs',
+);
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
