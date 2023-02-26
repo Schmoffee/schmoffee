@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Keyboard, Pressable, StatusBar, StyleSheet, View } from 'react-native';
 import { sendChallengeAnswer, signUp } from '../../../utils/queries/auth';
 import { GlobalContext, SignInContext } from '../../../contexts';
@@ -48,6 +48,10 @@ export const AuthPage = () => {
     }
   }
 
+  const formattedNumber = useMemo(() => {
+    return '+44' + number;
+  }, [number]);
+
   useEffect(() => {
     let timeoutID: string | number | NodeJS.Timeout | undefined;
     async function unlock() {
@@ -93,7 +97,7 @@ export const AuthPage = () => {
 
   const handleSignUp = async () => {
     setLoading(true);
-    const result = await signUp(number, name);
+    const result = await signUp(formattedNumber, name);
     if (typeof result === 'string') {
       global_dispatch({
         type: GlobalActionName.SET_AUTH_STATE,
@@ -105,19 +109,20 @@ export const AuthPage = () => {
         Alerts.signUpErrorAlert();
       }
     } else {
-      await createSignUpUser(number, name, global_state.device_token);
+      await createSignUpUser(formattedNumber, name, global_state.device_token);
       await handleSignIn();
     }
   };
 
   const handleSignIn = async () => {
+    console.log(formattedNumber)
     if (!loading) {
       setLoading(true);
     }
-    const success = await sendOTP(number);
+    const success = await sendOTP(formattedNumber);
     setLoading(false);
     if (success) {
-      await setPhone(number);
+      await setPhone(formattedNumber);
       setMode('verify');
       animate();
     }
@@ -143,16 +148,40 @@ export const AuthPage = () => {
       ? await handleSignUp()
       : mode === 'login'
         ? await handleSignIn()
-        : await Alerts.confirmOTPAlert(handleConfirmOTP);
+        : await handleConfirmOTP();
   };
 
   const isValidNumber = useCallback(() => {
-    return number.length === 13;
+    if (number.length === 11 && number[0] === '0') {
+      return true;
+    }
+    if (number.length === 10 && number[0] !== '0') {
+      return true;
+    }
+    return false;
   }, [number]);
 
   const isValidName = useCallback(() => {
     return name.length > 0;
   }, [name]);
+
+  function formatNumber(text: string) {
+    if (text.length === 11 && text[0] === '0') {
+      return text.substring(1, text.length);
+    }
+    4
+    if (text.length === 12 && text[0] === '+' && text[1] === '4' && text[2] === '4') {
+      return text.substring(3, text.length);
+    }
+    if (text.length > 10 && text[0] !== '0') {
+      return text.substring(0, 10);
+    }
+
+    // remove all spaces and dashes
+    text = text.replace(/[-\s]/g, '');
+    return text;
+  }
+
 
   const signup_subheader = 'Sign up with your name and phone number.';
   const login_subheader = 'Enter your phone number to sign in.';
@@ -182,12 +211,12 @@ export const AuthPage = () => {
               <FormField
                 title=""
                 placeholder={'Enter phone number...'}
-                setField={(value: React.SetStateAction<string>) => {
-                  setNumber(value);
-                  sign_in_dispatch({ type: SignInActionName.SET_PHONE, payload: number });
+                setField={(value: string) => {
+                  setNumber(formatNumber(value));
+                  sign_in_dispatch({ type: SignInActionName.SET_PHONE, payload: formattedNumber });
                 }}
                 type={'phone'}
-                value={number}
+                value={formatNumber(number)}
               />
             </View>
           ) : null}
