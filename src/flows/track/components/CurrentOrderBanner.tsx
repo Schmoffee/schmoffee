@@ -1,34 +1,34 @@
-import React, {useContext} from 'react';
-import {StyleSheet, View, Pressable} from 'react-native';
-import {HEIGHT, WIDTH} from '../../../../constants';
-import {Colors} from '../../common/theme';
-import {Body, Heading} from '../../common/typography';
-import {getNiceTime} from '../../../utils/helpers/others';
-import {GlobalContext} from '../../../contexts';
-interface CurrentOrderBannerProps {}
+import React, { useContext } from 'react';
+import { StyleSheet, View, Pressable } from 'react-native';
+import { HEIGHT, WIDTH } from '../../../../constants';
+import { Colors } from '../../common/theme';
+import { Body, Heading } from '../../common/typography';
+import { getNiceTime } from '../../../utils/helpers/others';
+import { GlobalContext } from '../../../contexts';
+interface CurrentOrderBannerProps { }
 
 const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
-  const {global_state} = useContext(GlobalContext);
+  const { global_state } = useContext(GlobalContext);
   const order = global_state.current_order;
 
   return (
     order && (
-      <Pressable onPress={() => {}}>
+      <Pressable onPress={() => { }}>
         <View style={styles.root}>
           <View style={styles.container}>
             <View style={styles.cafe}>
-              <Heading size="small" weight="Bold" color={Colors.black}>
+              <Body size="extraLarge" weight="Bold" color={Colors.black}>
                 KINGS CAFE
-              </Heading>
+              </Body>
               <Body size="large" weight="Bold" color={Colors.greyLight3}>
                 Pickup time
               </Body>
             </View>
 
             <View style={styles.time}>
-              <Heading size="small" weight="Extrabld" color={'green'} style={{marginTop: 10}}>
+              <Body size="extraLarge" weight="Extrabld" color={'green'}>
                 {order?.status}
-              </Heading>
+              </Body>
               <Heading size="small" weight="Extrabld" color={Colors.black}>
                 {getNiceTime(order?.order_info.scheduled_times[0] as string)}
               </Heading>
@@ -36,7 +36,7 @@ const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
           </View>
           <View style={styles.moreInfo}>
             <Body size="small" weight="Regular" color={Colors.black}>
-              More Info{'>>'}
+              {/* More Info{'>>'} */}
             </Body>
           </View>
         </View>
@@ -73,17 +73,18 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    // backgroundColor: 'red',
     height: '80%',
     width: '60%',
     borderBottomWidth: 1,
+    paddingVertical: 5,
   },
   time: {
     justifyContent: 'space-between',
     alignItems: 'center',
     height: '80%',
-    width: '40%',
+    width: '45%',
     borderBottomWidth: 1,
+    paddingVertical: 5,
   },
   moreInfo: {
     position: 'absolute',

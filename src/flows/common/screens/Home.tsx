@@ -25,7 +25,7 @@ export const Home = () => {
 
 
   useEffect(() => {
-    if (global_state.current_order) {
+    if (global_state.current_order && global_state.current_order.status !== 'COLLECTED') {
       setCurrentVideo(2);
     } else {
       setCurrentVideo(0);
