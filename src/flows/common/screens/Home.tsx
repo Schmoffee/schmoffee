@@ -10,9 +10,10 @@ import FastImage from 'react-native-fast-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../theme';
 import { SideDrawerContent } from '../../hamburger/components/SideDrawerContent';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import HamburgerIcon from '../../hamburger/components/HamburgerIcon';
 import NetworkBanner from '../components/Banners/NetworkBanner';
+import { BlurView } from '@react-native-community/blur';
 
 export const Home = () => {
   const { global_state } = useContext(GlobalContext);
@@ -21,6 +22,7 @@ export const Home = () => {
   const insets = useSafeAreaInsets();
   const hamburgerAnim = useSharedValue(0)
   const networkAnim = useSharedValue(0)
+
 
 
 
@@ -60,8 +62,7 @@ export const Home = () => {
   };
 
   const handleHamburgerPress = () => {
-    console.log('hamburger pressed')
-    console.log(hamburgerAnim.value)
+
     if (hamburgerAnim.value === 0) {
       hamburgerAnim.value = withTiming(195)
     }
@@ -81,6 +82,14 @@ export const Home = () => {
       transform: [{ translateY: networkAnim.value }]
     }
   })
+
+  const rBlurStyle = useAnimatedStyle(() => {
+    return {
+
+      opacity: interpolate(hamburgerAnim.value, [0, 195], [0, 1])
+    }
+  })
+
 
 
 
@@ -137,8 +146,11 @@ export const Home = () => {
         <View style={styles.currentOrderBanner}>
           <CurrentOrderBanner />
         </View>
-        {/* <SideDrawerContent hamburgerAnim={hamburgerAnim} /> */}
+        {/* <Animated.View style={[styles.blurView, rBlurStyle]}>
+          <BlurView blurType='dark' blurAmount={40} />
+        </Animated.View> */}
       </View >
+
     </Pressable>
   );
 };
@@ -197,4 +209,17 @@ const styles = StyleSheet.create({
     top: HEIGHT / 1.5,
     left: WIDTH / 12,
   },
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 999,
+    elevation: 999,
+    height: HEIGHT,
+    width: WIDTH,
+
+  },
+
 });
