@@ -65,10 +65,12 @@ export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
         </View>
 
         <View style={styles.sideDrawerContent}>
-          <Heading size="small" weight="Extrabld">
-            {/* Hi, {global_state.current_user?.name}! */}
-            SCHMOFFEE
-          </Heading>
+          <View style={styles.sideDrawerHeader}>
+            <Heading size="small" weight="Extrabld">
+              {/* Hi, {global_state.current_user?.name}! */}
+              SCHMOFFEE
+            </Heading>
+          </View>
 
 
           <Pressable onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_UPDATE_PROFILE })}>
@@ -136,9 +138,23 @@ const styles = StyleSheet.create({
     height: '100%',
     marginVertical: Spacings.s8,
   },
+  sideDrawerHeader: {
+    marginBottom: Spacings.s4,
+    borderBottomColor: Colors.greyLight2,
+    borderBottomWidth: 2,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+
+  },
+
+
   sideDrawerButton: {
-    borderColor: Colors.gold,
-    borderWidth: 3,
+    borderLeftColor: Colors.gold,
+    borderLeftWidth: 5,
+    borderBottomColor: Colors.greyLight2,
+    borderBottomWidth: 2,
+    borderRightColor: Colors.greyLight2,
+    borderRightWidth: 2,
     padding: Spacings.s2,
     borderRadius: 5,
     alignItems: 'center',
@@ -147,21 +163,25 @@ const styles = StyleSheet.create({
   },
   logOutDelete: {
     justifyContent: 'flex-end',
-    height: '65%',
+    height: '55%',
   },
-
   logOut: {
+    position: 'absolute',
     padding: 10,
-    marginTop: Spacings.s8,
-    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Colors.greyLight2,
+    width: 195,
+    right: -26,
+    top: -40,
   },
   deleteAccount: {
+    position: 'absolute',
     padding: 10,
-    marginTop: Spacings.s2,
-    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Colors.redFaded,
+    width: 195,
+    right: -26,
   },
 });
