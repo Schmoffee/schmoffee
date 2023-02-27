@@ -68,7 +68,6 @@ const Root = () => {
    */
   useDeepCompareEffect(() => {
     if (ordering_state.current_shop_id) {
-      console.log(ordering_state.current_shop_id);
       const subscription = DataStore.observeQuery(
         Item,
         //@ts-ignore

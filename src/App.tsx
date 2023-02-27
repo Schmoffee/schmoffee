@@ -18,21 +18,23 @@ import {getDeletedOrders} from './utils/helpers/storage';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const authLoading = useRef(true);
-
   /**
    * This effect runs a dummy database query to manually initiate the synchronisation with the cloud.
    */
   useEffect(() => {
     const init = async () => {
-      // Instead of using Datastore.start().
       setLoading(true);
-      // await DataStore.clear();
       await getUserById('init');
       setLoading(false);
     };
-    init().catch(e => Alerts.databaseAlert());
+    if (!loading) {
+      init().catch(e => {
+        console.log('dccs', e);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**
@@ -56,7 +58,7 @@ const App = () => {
           global_dispatch({type: GlobalActionName.SET_DEVICE_TOKEN, payload: fcmToken});
           await updateEndpoint(fcmToken);
         } else {
-          Alerts.tokenAlert();
+          // Alerts.tokenAlert();
         }
       } else {
         NativeModules.RNPushNotification.getToken(
@@ -65,7 +67,7 @@ const App = () => {
             await updateEndpoint(token);
           },
           (error: any) => {
-            Alerts.tokenAlert();
+            // Alerts.tokenAlert();
             console.log(error);
           },
         );
@@ -109,7 +111,6 @@ const App = () => {
           global_dispatch({type: GlobalActionName.SET_AUTH_USER, payload: user});
         } else {
           await signOut();
-          console.log('Auth user found but corresponding database user not found');
         }
       } else {
         global_dispatch({
@@ -118,7 +119,7 @@ const App = () => {
         });
       }
     };
-    if (global_state.device_token !== '' && !loading) {
+    if (!loading && global_state.device_token !== '') {
       refreshAuthState().catch(error => {
         console.log(error);
         Alerts.elseAlert();
@@ -133,6 +134,7 @@ const App = () => {
         user.device_token('eq', global_state.device_token),
       ).subscribe(async snapshot => {
         const {items} = snapshot;
+
         if (global_state.auth_state === AuthState.SIGNED_IN && items.length > 0) {
           const currentUser = items[0];
           const past_orders: PastOrder[] = await getPastOrders(currentUser.id);

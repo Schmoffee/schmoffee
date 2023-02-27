@@ -1,8 +1,8 @@
-import React, {useEffect} from 'react';
-import {StyleSheet, View, TextInput} from 'react-native';
-import {Colors, Spacings} from '../theme';
-import {Body} from '../typography';
-import Animated, {Easing, FadeInLeft, FadeOutLeft, useSharedValue, withTiming} from 'react-native-reanimated';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, TextInput, KeyboardAvoidingView } from 'react-native';
+import { Colors, Spacings } from '../theme';
+import { Body } from '../typography';
+import Animated, { Easing, FadeInLeft, FadeOutLeft, useSharedValue, withTiming } from 'react-native-reanimated';
 
 /**
  * Custom form field reused throughout the app.
@@ -44,41 +44,49 @@ const FormField = ({
   }, [anim]);
 
   return (
-    <Animated.View
-      entering={FadeInLeft.duration(400).easing(Easing.ease)}
-      exiting={FadeOutLeft.easing(Easing.ease)}
-      style={[styles.root]}>
-      <View style={styles.titleContainer}>
-        <Body size="medium" weight="Bold">
-          {title}
-        </Body>
-      </View>
-      {type === 'phone' ? (
-        <TextInput
-          style={styles.input}
-          secureTextEntry={secureTextEntry}
-          placeholder={placeholder}
-          placeholderTextColor={Colors.greyLight3}
-          onChangeText={text => setField(text)}
-          value={value}
-          autoCorrect={autoCorrect}
-          maxLength={maxLength}
-          keyboardType={'default'}
-        />
-      ) : (
-        <TextInput
-          style={styles.input}
-          secureTextEntry={secureTextEntry}
-          placeholder={placeholder}
-          placeholderTextColor={Colors.greyLight3}
-          onChangeText={text => setField(text)}
-          value={value}
-          autoCorrect={autoCorrect}
-          maxLength={maxLength}
-          keyboardType={'default'}
-        />
-      )}
-    </Animated.View>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <Animated.View
+        entering={FadeInLeft.duration(400).easing(Easing.ease)}
+        exiting={FadeOutLeft.easing(Easing.ease)}
+        style={[styles.root]}>
+        <View style={styles.titleContainer}>
+          <Body size="medium" weight="Bold">
+            {title}
+          </Body>
+        </View>
+        {type === 'phone' ? (
+          <View style={styles.phoneInputContainer}>
+            <Body size="medium" weight="Regular" style={styles.countryCode}>
+              (+44)
+            </Body>
+            <TextInput
+              style={styles.phoneInput}
+              secureTextEntry={secureTextEntry}
+              placeholder={placeholder}
+              placeholderTextColor={Colors.greyLight3}
+              onChangeText={text => setField(text)}
+              value={value}
+              autoCorrect={autoCorrect}
+              maxLength={maxLength}
+              keyboardType={'phone-pad'}
+            />
+          </View>
+        ) : (
+          <TextInput
+            style={styles.textInput}
+            secureTextEntry={secureTextEntry}
+            placeholder={placeholder}
+            placeholderTextColor={Colors.greyLight3}
+            onChangeText={text => setField(text)}
+            value={value}
+            autoCorrect={autoCorrect}
+            maxLength={maxLength}
+            keyboardType={'default'}
+          />
+        )
+        }
+      </Animated.View >
+    </KeyboardAvoidingView>
   );
 };
 
@@ -89,27 +97,40 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingHorizontal: Spacings.s7,
   },
-  input: {
+  textInput: {
     height: Spacings.s13,
     width: '80%',
-    borderBottomColor: Colors.black,
-    borderBottomWidth: 1,
     fontSize: 16,
     fontFamily: 'Helvetica',
     color: Colors.black,
+    borderBottomColor: Colors.black,
+    borderBottomWidth: 1,
+  },
+  phoneInput: {
+    height: Spacings.s13,
+    width: '80%',
+    fontSize: 16,
+    fontFamily: 'Helvetica',
+    color: Colors.black,
+  },
+  phoneInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 13,
+    height: 50,
+    marginTop: 10,
+    borderBottomColor: Colors.black,
+    borderBottomWidth: 1,
+  },
+  countryCode: {
+    color: Colors.black,
+    marginRight: Spacings.s1,
   },
   titleContainer: {
     marginBottom: Spacings.s1,
     marginLeft: Spacings.s1,
   },
-  phoneInputContainer: {
-    backgroundColor: Colors.greyLight1,
-    borderRadius: 13,
-    paddingHorizontal: Spacings.s3,
-    width: '80%',
-    height: 80,
-    alignSelf: 'center',
-  },
+
 });
 
 export default FormField;

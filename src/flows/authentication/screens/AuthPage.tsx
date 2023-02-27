@@ -1,26 +1,25 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Keyboard, Pressable, StatusBar, StyleSheet, View } from 'react-native';
-import { sendChallengeAnswer, signUp } from '../../../utils/queries/auth';
-import { GlobalContext, SignInContext } from '../../../contexts';
-import { AuthState, ErrorTypes, GlobalActionName, SignInActionName } from '../../../utils/types/enums';
-import { createSignUpUser } from '../../../utils/queries/datastore';
-import { setFreeTime, setPhone, setTrials } from '../../../utils/helpers/storage';
-import { AuthLayout } from '../components/AuthLayout';
-import { CognitoUser } from 'amazon-cognito-identity-js';
-import { Easing, useSharedValue, withTiming } from 'react-native-reanimated';
-import { Body } from '../../common/typography';
-import { Colors, Spacings } from '../../common/theme';
-import { Footer } from '../../common/components/Footer';
-import { InputOTP } from '../components/InputOTP';
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import {ActivityIndicator, Pressable, StatusBar, StyleSheet, View} from 'react-native';
+import {sendChallengeAnswer, signUp} from '../../../utils/queries/auth';
+import {GlobalContext, SignInContext} from '../../../contexts';
+import {AuthState, ErrorTypes, GlobalActionName, SignInActionName} from '../../../utils/types/enums';
+import {createSignUpUser} from '../../../utils/queries/datastore';
+import {setFreeTime, setPhone, setTrials} from '../../../utils/helpers/storage';
+import {AuthLayout} from '../components/AuthLayout';
+import {CognitoUser} from 'amazon-cognito-identity-js';
+import {Easing, useSharedValue, withTiming} from 'react-native-reanimated';
+import {Body} from '../../common/typography';
+import {Colors, Spacings} from '../../common/theme';
+import {Footer} from '../../common/components/Footer';
+import {InputOTP} from '../components/InputOTP';
 import FormField from '../../common/components/FormField';
-import LoadingPage from '../../common/screens/LoadingPage';
-import { Alerts } from '../../../utils/helpers/alerts';
+import {Alerts} from '../../../utils/helpers/alerts';
 
 export type Mode = 'signup' | 'login' | 'verify';
 
 export const AuthPage = () => {
-  const { global_state, global_dispatch } = useContext(GlobalContext);
-  const { sign_in_dispatch, sendOTP, sign_in_state } = useContext(SignInContext);
+  const {global_state, global_dispatch} = useContext(GlobalContext);
+  const {sign_in_dispatch, sendOTP, sign_in_state} = useContext(SignInContext);
   const [mode, setMode] = useState<Mode>('signup');
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -42,11 +41,15 @@ export const AuthPage = () => {
     }
     if (mode === 'verify') {
       setMode('login');
-      planetAnim.value = withTiming(0, { duration: 1000 });
-      asteroidAnim.value = withTiming(0, { duration: 1000 });
-      asteroidAnimFinal.value = withTiming(0, { duration: 1000 });
+      planetAnim.value = withTiming(0, {duration: 1000});
+      asteroidAnim.value = withTiming(0, {duration: 1000});
+      asteroidAnimFinal.value = withTiming(0, {duration: 1000});
     }
   }
+
+  const formattedNumber = useMemo(() => {
+    return '+44' + number;
+  }, [number]);
 
   useEffect(() => {
     let timeoutID: string | number | NodeJS.Timeout | undefined;
@@ -55,8 +58,8 @@ export const AuthPage = () => {
       if ((remaining_time = sign_in_state.blocked_time - Date.now()) > 1000) {
         timeoutID = setTimeout(async () => {
           setIsLocked(false);
-          sign_in_dispatch({ type: SignInActionName.SET_BLOCKED_TIME, payload: 0 });
-          sign_in_dispatch({ type: SignInActionName.SET_TRIALS, payload: 0 });
+          sign_in_dispatch({type: SignInActionName.SET_BLOCKED_TIME, payload: 0});
+          sign_in_dispatch({type: SignInActionName.SET_TRIALS, payload: 0});
           await setFreeTime(0);
           await setTrials(0);
         }, remaining_time);
@@ -93,7 +96,7 @@ export const AuthPage = () => {
 
   const handleSignUp = async () => {
     setLoading(true);
-    const result = await signUp(number, name);
+    const result = await signUp(formattedNumber, name);
     if (typeof result === 'string') {
       global_dispatch({
         type: GlobalActionName.SET_AUTH_STATE,
@@ -104,20 +107,22 @@ export const AuthPage = () => {
       } else {
         Alerts.signUpErrorAlert();
       }
+      setLoading(false);
     } else {
-      await createSignUpUser(number, name, global_state.device_token);
+      await createSignUpUser(formattedNumber, name, global_state.device_token);
       await handleSignIn();
     }
   };
 
   const handleSignIn = async () => {
+    console.log(formattedNumber);
     if (!loading) {
       setLoading(true);
     }
-    const success = await sendOTP(number);
+    const success = await sendOTP(formattedNumber);
     setLoading(false);
     if (success) {
-      await setPhone(number);
+      await setPhone(formattedNumber);
       setMode('verify');
       animate();
     }
@@ -125,34 +130,53 @@ export const AuthPage = () => {
 
   const animate = () => {
     planetAnim.value === 0 && mode !== 'verify'
-      ? (planetAnim.value = withTiming(1, { duration: 1000 }))
-      : (planetAnim.value = withTiming(0, { duration: 1000 }));
+      ? (planetAnim.value = withTiming(1, {duration: 1000}))
+      : (planetAnim.value = withTiming(0, {duration: 1000}));
     asteroidAnim.value === 0 && mode !== 'verify'
       ? (asteroidAnim.value = withTiming(1, {
-        duration: 900,
-        easing: Easing.bezier(0.32, 0, 0.39, 0),
-      }))
+          duration: 900,
+          easing: Easing.bezier(0.32, 0, 0.39, 0),
+        }))
       : (asteroidAnim.value = withTiming(0, {
-        duration: 900,
-        easing: Easing.bezier(0.22, 0, 0.39, 0),
-      }));
+          duration: 900,
+          easing: Easing.bezier(0.22, 0, 0.39, 0),
+        }));
   };
 
   const handleSubmit = async () => {
-    mode === 'signup'
-      ? await handleSignUp()
-      : mode === 'login'
-        ? await handleSignIn()
-        : await Alerts.confirmOTPAlert(handleConfirmOTP);
+    mode === 'signup' ? await handleSignUp() : mode === 'login' ? await handleSignIn() : await handleConfirmOTP();
   };
 
   const isValidNumber = useCallback(() => {
-    return number.length === 13;
+    if (number.length === 11 && number[0] === '0') {
+      return true;
+    }
+    if (number.length === 10 && number[0] !== '0') {
+      return true;
+    }
+    return false;
   }, [number]);
 
   const isValidName = useCallback(() => {
     return name.length > 0;
   }, [name]);
+
+  function formatNumber(text: string) {
+    if (text.length === 11 && text[0] === '0') {
+      return text.substring(1, text.length);
+    }
+    4;
+    if (text.length === 12 && text[0] === '+' && text[1] === '4' && text[2] === '4') {
+      return text.substring(3, text.length);
+    }
+    if (text.length > 10 && text[0] !== '0') {
+      return text.substring(0, 10);
+    }
+
+    // remove all spaces and dashes
+    text = text.replace(/[-\s]/g, '');
+    return text;
+  }
 
   const signup_subheader = 'Sign up with your name and phone number.';
   const login_subheader = 'Enter your phone number to sign in.';
@@ -167,9 +191,12 @@ export const AuthPage = () => {
       subHeader={mode === 'signup' ? signup_subheader : login_subheader}>
       <StatusBar translucent={true} backgroundColor="transparent" />
       {loading ? (
-        <View style={styles.loadingContainer}>
-          <LoadingPage />
-        </View>
+        <ActivityIndicator
+          animating={loading}
+          size="large"
+          color={Colors.brown2}
+          style={{position: 'absolute', top: '100%', left: '45%'}}
+        />
       ) : (
         <>
           {mode === 'signup' ? (
@@ -182,12 +209,12 @@ export const AuthPage = () => {
               <FormField
                 title=""
                 placeholder={'Enter phone number...'}
-                setField={(value: React.SetStateAction<string>) => {
-                  setNumber(value);
-                  sign_in_dispatch({ type: SignInActionName.SET_PHONE, payload: number });
+                setField={(value: string) => {
+                  setNumber(formatNumber(value));
+                  sign_in_dispatch({type: SignInActionName.SET_PHONE, payload: formattedNumber});
                 }}
                 type={'phone'}
-                value={number}
+                value={formatNumber(number)}
               />
             </View>
           ) : null}
@@ -214,8 +241,8 @@ export const AuthPage = () => {
               mode === 'signup'
                 ? !(isValidName() && isValidNumber())
                 : mode === 'login'
-                  ? !isValidNumber()
-                  : !isPinComplete || isLocked
+                ? !isValidNumber()
+                : !isPinComplete || isLocked
             }
             onPress={handleSubmit}
             buttonVariant="secondary"
@@ -225,8 +252,8 @@ export const AuthPage = () => {
                 {mode === 'signup'
                   ? 'Already have an account? Log In'
                   : mode === 'login'
-                    ? 'New to the app? Sign Up'
-                    : null}
+                  ? 'New to the app? Sign Up'
+                  : null}
               </Body>
             </Pressable>
           </Footer>
@@ -264,12 +291,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   otpContainer: {
-    marginBottom: Spacings.s2,
+    paddingBottom: Spacings.s4,
     alignItems: 'center',
   },
-
-
   otpText: {
     marginTop: Spacings.s8,
+  },
+
+  absolute: {
+    position: 'absolute',
+    top: '90%',
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 });

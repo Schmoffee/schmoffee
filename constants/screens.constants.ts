@@ -17,3 +17,4 @@ export const CONST_SCREEN_RATING_PAGE = 'RatingPage';
 export const CONST_SCREEN_CHANGE_PAYMENT = 'ChangePayment';
 export const CONST_SCREEN_UPDATE_PROFILE = 'UpdateProfile';
 export const CONST_SCREEN_SETTINGS = 'Settings';
+export const CONST_SCREEN_PAST_ORDERS = 'PastOrders';

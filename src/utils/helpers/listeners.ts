@@ -1,7 +1,6 @@
 import {GlobalAction, GlobalState, HubPayload} from '../types/data.types';
 import {AuthState, GlobalActionName} from '../types/enums';
 import {Dispatch} from 'react';
-import {DataStore} from 'aws-amplify';
 
 const authListener = async (data: {payload: HubPayload}, state: GlobalState, dispatch: Dispatch<GlobalAction>) => {
   switch (data.payload.event) {
@@ -14,7 +13,6 @@ const authListener = async (data: {payload: HubPayload}, state: GlobalState, dis
       console.log('user signed up');
       break;
     case 'signOut':
-      await DataStore.clear();
       dispatch({type: GlobalActionName.SET_AUTH_STATE, payload: AuthState.SIGNED_OUT});
       dispatch({type: GlobalActionName.SET_CURRENT_USER, payload: null});
       dispatch({type: GlobalActionName.SET_AUTH_USER, payload: null});

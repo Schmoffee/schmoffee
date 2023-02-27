@@ -3,7 +3,7 @@ export const Colors = {
   white2: '#FFFDFA',
   greyLight1: '#F5F5F5',
   greyLight2: '#E1E1E1',
-  greyLight3: '#ADADAD',
+  greyLight3: '#9b9b9b',
   grey: '#ededed',
   black: '#1D1D1D',
   greenLight: '#DEFFF1',

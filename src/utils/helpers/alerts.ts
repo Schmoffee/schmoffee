@@ -14,7 +14,7 @@ export const AlertMessage = {
   },
   WRONG_OTP: {
     title: 'Wrong OTP',
-    message: 'You entered the wrong OTP, ask for a new one.',
+    message: 'You have entered the wrong OTP. Please click on resend OTP and try again.',
   },
   EXPIRED_OTP: {
     title: 'OTP Expired',
@@ -109,53 +109,60 @@ export const Alerts = {
   paymentAlert: () => {
     Alert.alert(AlertMessage.PAYMENT.title, AlertMessage.PAYMENT.message);
   },
-  logoutAlert: async (logout: () => Promise<boolean>) => {
-    let val = {logout: false, success: false};
-    await Alert.alert(AlertMessage.LOGOUT.title, AlertMessage.LOGOUT.message, [
-      {
-        text: 'Yes',
-        onPress: async () => {
-          val.logout = true;
-          val.success = await logout();
+  logoutAlert: async () => {
+    return await new Promise(resolve =>
+      Alert.alert(AlertMessage.LOGOUT.title, AlertMessage.LOGOUT.message, [
+        {
+          text: 'Yes',
+          onPress: async () => {
+            resolve(true);
+          },
         },
-      },
-      {
-        text: 'No',
-        style: 'cancel',
-      },
-    ]);
-    return val;
+        {
+          text: 'No',
+          style: 'cancel',
+          onPress: async () => {
+            resolve(false);
+          },
+        },
+      ]),
+    );
   },
   deleteAccountAlert: async () => {
-    let deleteAccount = false;
-    await Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
-      {
-        text: 'Yes',
-        onPress: async () => {
-          deleteAccount = true;
+    return await new Promise(resolve =>
+      Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
+        {
+          text: 'Yes',
+          onPress: async () => {
+            resolve(true);
+          },
         },
-      },
-      {
-        text: 'No',
-        style: 'cancel',
-      },
-    ]);
-    return deleteAccount;
+        {
+          text: 'No',
+          style: 'cancel',
+          onPress: async () => {
+            resolve(false);
+          },
+        },
+      ]),
+    );
   },
 
   confirmOTPAlert: async (confirmOTP: () => Promise<void>) => {
-    await Alert.alert(AlertMessage.CONFIRM_OTP.title, AlertMessage.CONFIRM_OTP.message, [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'OK',
-        onPress: async () => {
-          await confirmOTP();
+    await new Promise(resolve =>
+      Alert.alert(AlertMessage.CONFIRM_OTP.title, AlertMessage.CONFIRM_OTP.message, [
+        {
+          text: 'Cancel',
+          style: 'cancel',
         },
-      },
-    ]);
+        {
+          text: 'OK',
+          onPress: async () => {
+            await confirmOTP();
+          },
+        },
+      ]),
+    );
   },
   outOfStockAlert: (deleted_items: string[], deleted_options: {item: string; option: string}[]) => {
     Alert.alert(

@@ -3,17 +3,27 @@ import {View, StyleSheet} from 'react-native';
 import {Colors} from '../../theme';
 import {Body} from '../../typography';
 
-const NetworkBanner = () => {
+interface ReusableBannerProps {
+  text: string;
+  color: string;
+}
+
+const ReusableBanner = (props: ReusableBannerProps) => {
   return (
-    <View style={styles.container}>
-      <Body style={styles.text}>You are currently offline. Please connect to the internet to continue.</Body>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: props.color,
+        },
+      ]}>
+      <Body style={styles.text}>{props.text}</Body>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.red,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -26,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NetworkBanner;
+export default ReusableBanner;

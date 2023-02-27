@@ -1,9 +1,11 @@
+import React from 'react';
 import {useContext, useEffect, useState} from 'react';
 import {GlobalContext} from '../../../contexts';
 import {DataStore, SortDirection} from 'aws-amplify';
 import {PastOrder} from '../../../models';
-import React from 'react';
-import {Text, View} from 'react-native';
+import {Text} from 'react-native';
+import {PageLayout} from '../../common/components/PageLayout';
+import {FlatList} from 'react-native-gesture-handler';
 
 const PastOrders = () => {
   const {global_state} = useContext(GlobalContext);
@@ -25,12 +27,10 @@ const PastOrders = () => {
   }, [global_state.current_user]);
 
   return (
-    <View>
-      {past_orders.map(order => (
-        <View key={order.id}>
-          <Text>{order.id}</Text>
-        </View>
-      ))}
-    </View>
+    <PageLayout header="Past Orders" backButton>
+      <FlatList data={past_orders} renderItem={({item}) => <Text>{item.id}</Text>} />
+    </PageLayout>
   );
 };
+
+export default PastOrders;

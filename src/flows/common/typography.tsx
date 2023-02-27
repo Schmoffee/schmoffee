@@ -1,11 +1,11 @@
-import React, {FC, PropsWithChildren} from 'react';
-import {Text, StyleSheet, TextProps} from 'react-native';
-import {Colors} from './theme';
+import React, { FC, PropsWithChildren } from 'react';
+import { Text, StyleSheet, TextProps } from 'react-native';
+import { Colors } from './theme';
 interface BodyProps extends TextProps, PropsWithChildren {
   style?: any;
   color?: string;
   weight?: 'Regular' | 'Thin' | 'Bold' | 'Extrabld' | 'Black';
-  size?: 'extraSmall' | 'small' | 'medium' | 'large';
+  size?: 'extraSmall' | 'small' | 'medium' | 'large' | 'extraLarge'
 }
 interface HeadingProps extends TextProps, PropsWithChildren {
   style?: any;
@@ -18,8 +18,9 @@ const bodyFontSizes = {
   small: 14,
   medium: 16,
   large: 18,
+  extraLarge: 20,
 };
-export const Body: FC<BodyProps> = ({children, style, color, weight, size, ...props}) => {
+export const Body: FC<BodyProps> = ({ children, style, color, weight, size, ...props }) => {
   const textColor = color ? color : Colors.black;
   const fontFamily = weight ? 'ProximaNova-' + weight : weight === 'Thin' ? 'ProximaNovaT-Thin' : 'ProximaNova-Regular';
   let fontSize;
@@ -36,6 +37,10 @@ export const Body: FC<BodyProps> = ({children, style, color, weight, size, ...pr
     case 'large':
       fontSize = bodyFontSizes.large;
       break;
+    case 'extraLarge':
+      fontSize = bodyFontSizes.extraLarge;
+      break;
+
   }
   const bodyStyles = StyleSheet.create({
     root: {
@@ -55,7 +60,7 @@ const headingFontSizes = {
   default: 32,
   large: 42,
 };
-export const Heading: FC<HeadingProps> = ({children, style, color, weight, size, ...props}) => {
+export const Heading: FC<HeadingProps> = ({ children, style, color, weight, size, ...props }) => {
   const textColor = color ? color : Colors.black;
   const fontFamily = weight ? 'ProximaNova-' + weight : weight === 'Thin' ? 'ProximaNovaT-Thin' : 'ProximaNova-Regular';
   let fontSize;
@@ -83,7 +88,7 @@ export const Heading: FC<HeadingProps> = ({children, style, color, weight, size,
     </Text>
   );
 };
-export const Error: FC<BodyProps> = ({children}) => {
+export const Error: FC<BodyProps> = ({ children }) => {
   return (
     <Body weight={'Bold'} size={'small'} color={Colors.red}>
       {children}

@@ -16,6 +16,8 @@ import TabNavigator from '../../components/menu/TabNavigator';
 import {BasketPreview} from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 import LinearGradient from 'react-native-linear-gradient';
+import ReusableBanner from '../../../common/components/Banners/ReusableBanner';
+import {BlurView} from '@react-native-community/blur';
 
 const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
@@ -135,7 +137,6 @@ export const ShopPage = () => {
       backgroundColor,
     };
   });
-  [];
   const rSearchIconStyle = useAnimatedStyle(() => {
     let rotate = interpolate(searchAnim.value, [0, 1], [0, -360], Extrapolate.CLAMP);
     const tintColor = interpolateColor(searchAnim.value, [0, 1], [Colors.greyLight3, Colors.darkBrown]);
@@ -152,7 +153,6 @@ export const ShopPage = () => {
 
   return (
     <View style={styles.root}>
-      {/* back button for navigation */}
       <View style={styles.backButton}>
         <LeftChevronBackButton color={Colors.white} />
       </View>
@@ -200,6 +200,14 @@ export const ShopPage = () => {
       <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
         <BasketPreview />
       </Animated.View>
+      {!cafe?.is_open ? (
+        <>
+          <BlurView style={styles.blurView} blurType="dark" blurAmount={10} />
+          <View style={styles.banner}>
+            <ReusableBanner text="This cafe is currently closed" color={Colors.greyLight3} />
+          </View>
+        </>
+      ) : null}
     </View>
   );
 };
@@ -227,6 +235,7 @@ const styles = StyleSheet.create({
     top: -20,
     left: 0,
     right: 0,
+    height: '102%',
   },
   basketContainer: {
     position: 'absolute',
@@ -321,8 +330,22 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '4.5%',
     left: '-5%',
-
     zIndex: 2,
+    elevation: 1,
+  },
+  banner: {
+    position: 'absolute',
+    top: '10%',
+    width: '100%',
+    zIndex: 5,
+    elevation: 1,
+  },
+  blurView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     elevation: 1,
   },
 });

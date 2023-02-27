@@ -2,7 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useContext} from 'react';
 import {Pressable, StyleSheet, useWindowDimensions, View} from 'react-native';
 import Animated, {useAnimatedStyle, withTiming} from 'react-native-reanimated';
-import {CONST_SCREEN_CHANGE_PAYMENT, CONST_SCREEN_SETTINGS, CONST_SCREEN_UPDATE_PROFILE} from '../../../../constants';
+import {CONST_SCREEN_UPDATE_PROFILE, CONST_SCREEN_PAST_ORDERS} from '../../../../constants';
 import {deleteUser, signOut} from '../../../utils/queries/auth';
 import {AuthState, GlobalActionName} from '../../../utils/types/enums';
 import {RootRoutes} from '../../../utils/types/navigation.types';
@@ -24,14 +24,15 @@ export const SideDrawerContent = ({anim}: SideDrawerContentProps) => {
 
   const handleSignOut = async () => {
     const id = global_state.current_user?.id as string;
-    const {logout, success} = await Alerts.logoutAlert(signOut);
-    if (logout && !success) {
-      global_dispatch({
-        type: GlobalActionName.SET_AUTH_STATE,
-        payload: AuthState.SIGNING_OUT_FAILED,
-      });
-    } else if (logout && success) {
-      await updateDeviceToken(id, '');
+    const logout = await Alerts.logoutAlert();
+    if (logout) {
+      const success = await signOut();
+      success
+        ? global_dispatch({
+            type: GlobalActionName.SET_AUTH_STATE,
+            payload: AuthState.SIGNING_OUT_FAILED,
+          })
+        : await updateDeviceToken(id, '');
     }
   };
 
@@ -65,18 +66,12 @@ export const SideDrawerContent = ({anim}: SideDrawerContentProps) => {
         </View>
 
         <View style={styles.sideDrawerContent}>
-          <Heading size="small" weight="Extrabld">
-            {/* Hi, {global_state.current_user?.name}! */}
-            SCHMOFFEE
-          </Heading>
-
-          {/* <Pressable onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_SETTINGS })}>
-            <View style={styles.sideDrawerButton}>
-              <Body size="medium" weight="Bold">
-                Settings
-              </Body>
-            </View>
-          </Pressable> */}
+          <View style={styles.sideDrawerHeader}>
+            <Heading size="small" weight="Extrabld">
+              {/* Hi, {global_state.current_user?.name}! */}
+              SCHMOFFEE
+            </Heading>
+          </View>
 
           <Pressable onPress={() => navigation.navigate('SideDrawer', {screen: CONST_SCREEN_UPDATE_PROFILE})}>
             <View style={styles.sideDrawerButton}>
@@ -86,21 +81,23 @@ export const SideDrawerContent = ({anim}: SideDrawerContentProps) => {
             </View>
           </Pressable>
 
-          {/* <Pressable onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_CHANGE_PAYMENT })}>
+          <Pressable onPress={() => navigation.navigate('SideDrawer', {screen: CONST_SCREEN_PAST_ORDERS})}>
             <View style={styles.sideDrawerButton}>
               <Body size="medium" weight="Bold">
-                Change payment
-              </Body>
-            </View>
-          </Pressable> */}
-
-          <Pressable onPress={handleSignOut}>
-            <View style={styles.logOut}>
-              <Body size="medium" weight="Extrabld">
-                Log Out
+                Past Orders
               </Body>
             </View>
           </Pressable>
+
+          <View style={styles.logOutDelete}>
+            <Pressable onPress={handleSignOut}>
+              <View style={styles.logOut}>
+                <Body size="medium" weight="Extrabld">
+                  Log Out
+                </Body>
+              </View>
+            </Pressable>
+          </View>
 
           <Pressable onPress={() => handleDeleteAccount()}>
             <View style={styles.deleteAccount}>
@@ -141,27 +138,48 @@ const styles = StyleSheet.create({
     height: '100%',
     marginVertical: Spacings.s8,
   },
+  sideDrawerHeader: {
+    marginBottom: Spacings.s4,
+    borderBottomColor: Colors.greyLight2,
+    borderBottomWidth: 2,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+
   sideDrawerButton: {
-    borderColor: Colors.gold,
-    borderWidth: 3,
+    borderLeftColor: Colors.gold,
+    borderLeftWidth: 5,
+    borderBottomColor: Colors.greyLight2,
+    borderBottomWidth: 2,
+    borderRightColor: Colors.greyLight2,
+    borderRightWidth: 2,
     padding: Spacings.s2,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: Spacings.s12,
   },
+  logOutDelete: {
+    justifyContent: 'flex-end',
+    height: '55%',
+  },
   logOut: {
+    position: 'absolute',
     padding: 10,
-    marginTop: Spacings.s8,
-    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Colors.greyLight2,
+    width: 195,
+    right: -26,
+    top: -40,
   },
   deleteAccount: {
+    position: 'absolute',
     padding: 10,
-    marginTop: Spacings.s2,
-    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Colors.redFaded,
+    width: 195,
+    right: -26,
   },
 });
