@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Dimensions, Keyboard, KeyboardAvoidingView, NativeModules, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { OrderingContext } from '../../../../contexts';
-import { Cafe, Item } from '../../../../models';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import {Dimensions, NativeModules, Platform, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {OrderingContext} from '../../../../contexts';
+import {Cafe, Item} from '../../../../models';
 import Animated, {
   Easing,
   Extrapolate,
@@ -11,26 +11,23 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Colors, Spacings } from '../../../common/theme';
+import {Colors, Spacings} from '../../../common/theme';
 import TabNavigator from '../../components/menu/TabNavigator';
-import { BasketPreview } from '../../components/basket/BasketPreview';
+import {BasketPreview} from '../../components/basket/BasketPreview';
 import LeftChevronBackButton from '../../../common/components/LeftChevronBackButton';
 import LinearGradient from 'react-native-linear-gradient';
-import useKeyboardVisible from '../../../../utils/helpers/others';
 import ReusableBanner from '../../../common/components/Banners/ReusableBanner';
-import NetworkBanner from '../../../common/components/Banners/NetworkBanner';
-import { BlurView } from '@react-native-community/blur';
+import {BlurView} from '@react-native-community/blur';
 
-const { StatusBarManager } = NativeModules;
+const {StatusBarManager} = NativeModules;
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 50 : StatusBarManager.HEIGHT;
 
-const { height: wHeight, width: wWidth } = Dimensions.get('window');
+const {height: wHeight, width: wWidth} = Dimensions.get('window');
 
 export const HEADER_IMAGE_HEIGHT = wHeight / 3;
 
 export const ShopPage = () => {
-  const isKeyboardVisible = useKeyboardVisible();
-  const { ordering_state } = useContext(OrderingContext);
+  const {ordering_state} = useContext(OrderingContext);
   const landing_anim = useSharedValue(0);
   const [query, setQuery] = useState('');
   const anim = useSharedValue(0);
@@ -41,7 +38,6 @@ export const ShopPage = () => {
     [ordering_state.current_shop_id, ordering_state.cafes],
   );
 
-  console.log(isKeyboardVisible)
   useEffect(() => {
     anim.value = 0;
     anim.value = withTiming(1, {
@@ -66,8 +62,7 @@ export const ShopPage = () => {
     }
   }, [basketAnim, ordering_state.specific_basket.length]);
 
-
-  const contains = ({ name }: Item, query: string) => {
+  const contains = ({name}: Item, query: string) => {
     const nameLower = name.toLowerCase();
     return nameLower.includes(query);
   };
@@ -142,7 +137,6 @@ export const ShopPage = () => {
       backgroundColor,
     };
   });
-  [];
   const rSearchIconStyle = useAnimatedStyle(() => {
     let rotate = interpolate(searchAnim.value, [0, 1], [0, -360], Extrapolate.CLAMP);
     const tintColor = interpolateColor(searchAnim.value, [0, 1], [Colors.greyLight3, Colors.darkBrown]);
@@ -158,68 +152,63 @@ export const ShopPage = () => {
   });
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
-        <View style={styles.backButton}>
-          <LeftChevronBackButton color={Colors.white} />
-        </View>
-        <View style={[styles.itemsContainer]}>
-          <LinearGradient locations={[0.2, 1]} colors={[Colors.darkBrown2, Colors.cream]}>
-            <View style={styles.header}>
-              <Animated.Image
-                source={require('../../../../assets/pngs/semi-circle.png')}
-                style={[styles.semiCircle, rCircleStyle]}
-              />
-              <Animated.View style={[styles.searchInputContainer, rSearchContainerStyle]}>
-                <View style={styles.searchIcon}>
-                  <Pressable onPress={handleSearchPress}>
-                    <Animated.Image
-                      style={rSearchIconStyle}
-                      source={require('../../../../assets/pngs/magnifyingglass.png')}
-                    />
-                  </Pressable>
-                </View>
-                <Animated.View style={[styles.searchText]}>
-                  <TextInput
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    value={query}
-                    onChangeText={queryText => setQuery(queryText)}
-                    placeholder="What do you crave?"
-                    style={styles.searchText}
-                    placeholderTextColor={Colors.darkBrown}
-                    selectionColor={Colors.darkBrown}
+    <View style={styles.root}>
+      <View style={styles.backButton}>
+        <LeftChevronBackButton color={Colors.white} />
+      </View>
+      <View style={[styles.itemsContainer]}>
+        <LinearGradient locations={[0.2, 1]} colors={[Colors.darkBrown2, Colors.cream]}>
+          <View style={styles.header}>
+            <Animated.Image
+              source={require('../../../../assets/pngs/semi-circle.png')}
+              style={[styles.semiCircle, rCircleStyle]}
+            />
+            <Animated.View style={[styles.searchInputContainer, rSearchContainerStyle]}>
+              <View style={styles.searchIcon}>
+                <Pressable onPress={handleSearchPress}>
+                  <Animated.Image
+                    style={rSearchIconStyle}
+                    source={require('../../../../assets/pngs/magnifyingglass.png')}
                   />
-                </Animated.View>
-                <View style={styles.clearIcon}>
-                  <Pressable onPress={handleSearchPress}>
-                    <Animated.Image
-                      style={[rSearchIconStyle, { width: 15, height: 15 }]}
-                      source={require('../../../../assets/pngs/x-outline.png')}
-                    />
-                  </Pressable>
-                </View>
+                </Pressable>
+              </View>
+              <Animated.View style={[styles.searchText]}>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  value={query}
+                  onChangeText={queryText => setQuery(queryText)}
+                  placeholder="What do you crave?"
+                  style={styles.searchText}
+                  placeholderTextColor={Colors.darkBrown}
+                  selectionColor={Colors.darkBrown}
+                />
               </Animated.View>
-              <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} query={query} />
-            </View>
-          </LinearGradient>
-        </View>
-        <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
-          <BasketPreview />
-        </Animated.View>
-        {cafe?.is_open ? (
+              <View style={styles.clearIcon}>
+                <Pressable onPress={handleSearchPress}>
+                  <Animated.Image
+                    style={[rSearchIconStyle, {width: 15, height: 15}]}
+                    source={require('../../../../assets/pngs/x-outline.png')}
+                  />
+                </Pressable>
+              </View>
+            </Animated.View>
+            <TabNavigator tab1={getCoffees()} tab2={getJuices()} tab3={getPastries()} query={query} />
+          </View>
+        </LinearGradient>
+      </View>
+      <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
+        <BasketPreview />
+      </Animated.View>
+      {!cafe?.is_open ? (
+        <>
+          <BlurView style={styles.blurView} blurType="dark" blurAmount={10} />
           <View style={styles.banner}>
             <ReusableBanner text="This cafe is currently closed" color={Colors.greyLight3} />
-            <BlurView style={styles.blurView} />
           </View>
-        ) : null}
-
-
-      </KeyboardAvoidingView>
-    </ScrollView>
+        </>
+      ) : null}
+    </View>
   );
 };
 
@@ -346,9 +335,9 @@ const styles = StyleSheet.create({
   },
   banner: {
     position: 'absolute',
-    top: '4.5%',
+    top: '10%',
     width: '100%',
-    zIndex: 1,
+    zIndex: 5,
     elevation: 1,
   },
   blurView: {
@@ -357,9 +346,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: -1,
     elevation: 1,
   },
-
-
 });

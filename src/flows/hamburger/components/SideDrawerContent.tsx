@@ -1,49 +1,50 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
-import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { CONST_SCREEN_CHANGE_PAYMENT, CONST_SCREEN_PAST_ORDERS, CONST_SCREEN_SETTINGS, CONST_SCREEN_UPDATE_PROFILE } from '../../../../constants';
-import { deleteUser, signOut } from '../../../utils/queries/auth';
-import { AuthState, GlobalActionName } from '../../../utils/types/enums';
-import { RootRoutes } from '../../../utils/types/navigation.types';
-import { deleteAccount, updateDeviceToken } from '../../../utils/queries/datastore';
-import { GlobalContext } from '../../../contexts';
-import { Body, Heading } from '../../common/typography';
-import { Colors, Spacings } from '../../common/theme';
-import { Alerts } from '../../../utils/helpers/alerts';
+import {useNavigation} from '@react-navigation/native';
+import React, {useContext} from 'react';
+import {Pressable, StyleSheet, useWindowDimensions, View} from 'react-native';
+import Animated, {useAnimatedStyle, withTiming} from 'react-native-reanimated';
+import {CONST_SCREEN_UPDATE_PROFILE, CONST_SCREEN_PAST_ORDERS} from '../../../../constants';
+import {deleteUser, signOut} from '../../../utils/queries/auth';
+import {AuthState, GlobalActionName} from '../../../utils/types/enums';
+import {RootRoutes} from '../../../utils/types/navigation.types';
+import {deleteAccount, updateDeviceToken} from '../../../utils/queries/datastore';
+import {GlobalContext} from '../../../contexts';
+import {Body, Heading} from '../../common/typography';
+import {Colors, Spacings} from '../../common/theme';
+import {Alerts} from '../../../utils/helpers/alerts';
 import FastImage from 'react-native-fast-image';
 
 interface SideDrawerContentProps {
   anim: Animated.SharedValue<number>;
 }
 
-export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
+export const SideDrawerContent = ({anim}: SideDrawerContentProps) => {
   const navigation = useNavigation<RootRoutes>();
   const HOME_WIDTH = useWindowDimensions().width;
-  const { global_state, global_dispatch } = useContext(GlobalContext);
+  const {global_state, global_dispatch} = useContext(GlobalContext);
 
   const handleSignOut = async () => {
     const id = global_state.current_user?.id as string;
-    const { logout, success } = await Alerts.logoutAlert(signOut);
-    if (logout && !success) {
-      global_dispatch({
-        type: GlobalActionName.SET_AUTH_STATE,
-        payload: AuthState.SIGNING_OUT_FAILED,
-      });
-    } else if (logout && success) {
-      await updateDeviceToken(id, '');
+    const logout = await Alerts.logoutAlert();
+    if (logout) {
+      const success = await signOut();
+      success
+        ? global_dispatch({
+            type: GlobalActionName.SET_AUTH_STATE,
+            payload: AuthState.SIGNING_OUT_FAILED,
+          })
+        : await updateDeviceToken(id, '');
     }
   };
 
   const rSideDrawerStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: anim.value - HOME_WIDTH }],
+      transform: [{translateX: anim.value - HOME_WIDTH}],
       opacity: (anim.value / HOME_WIDTH) * 10,
     };
   });
 
   const handleCloseDrawer = () => {
-    anim.value = withTiming(0, { duration: 300 });
+    anim.value = withTiming(0, {duration: 300});
   };
 
   const handleDeleteAccount = async () => {
@@ -72,8 +73,7 @@ export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
             </Heading>
           </View>
 
-
-          <Pressable onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_UPDATE_PROFILE })}>
+          <Pressable onPress={() => navigation.navigate('SideDrawer', {screen: CONST_SCREEN_UPDATE_PROFILE})}>
             <View style={styles.sideDrawerButton}>
               <Body size="medium" weight="Bold">
                 Update profile
@@ -81,7 +81,7 @@ export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
             </View>
           </Pressable>
 
-          <Pressable onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_PAST_ORDERS })}>
+          <Pressable onPress={() => navigation.navigate('SideDrawer', {screen: CONST_SCREEN_PAST_ORDERS})}>
             <View style={styles.sideDrawerButton}>
               <Body size="medium" weight="Bold">
                 Past Orders
@@ -144,9 +144,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-
   },
-
 
   sideDrawerButton: {
     borderLeftColor: Colors.gold,

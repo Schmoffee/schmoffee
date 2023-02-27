@@ -1,5 +1,5 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { View, StyleSheet, Pressable, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, {PropsWithChildren} from 'react';
+import {View, StyleSheet, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import Animated, {
   FadeOutLeft,
   FadeInRight,
@@ -11,17 +11,14 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from 'react-native-reanimated';
-import { Mode } from '../screens/AuthPage';
-import { FooterType } from '../../../utils/types/component.types';
-import { BlurView } from '@react-native-community/blur';
-import { Body, Heading } from '../../common/typography';
-import { Colors, Spacings } from '../../common/theme';
-import { Footer } from '../../common/components/Footer';
-import { Blurhash } from 'react-native-blurhash';
+import {Mode} from '../screens/AuthPage';
+import {FooterType} from '../../../utils/types/component.types';
+import {BlurView} from '@react-native-community/blur';
+import {Body, Heading} from '../../common/typography';
+import {Colors, Spacings} from '../../common/theme';
+import {Footer} from '../../common/components/Footer';
 import LeftChevronBackButton from '../../common/components/LeftChevronBackButton';
-import useKeyboardVisible from '../../../utils/helpers/others';
-
-
+import {useKeyboardVisible} from '../../../utils/helpers/others';
 
 interface AuthLayoutProps extends PropsWithChildren {
   style?: any;
@@ -69,9 +66,9 @@ export const AuthLayout = (props: AuthLayoutProps) => {
 
     return {
       transform: [
-        { scale: 0.2 },
-        { translateY: interpolate(props.asteroidAnim.value, [0, 1], [0, -700]) },
-        { translateX: interpolate(props.asteroidAnim.value, [0, 1], [0, 1000]) },
+        {scale: 0.2},
+        {translateY: interpolate(props.asteroidAnim.value, [0, 1], [0, -700])},
+        {translateX: interpolate(props.asteroidAnim.value, [0, 1], [0, 1000])},
         {
           // rotate: interpolate(props.asteroidAnim.value, [0, 1], [-1.6, -3.3])
           rotate: `${rotate}deg`,
@@ -80,12 +77,14 @@ export const AuthLayout = (props: AuthLayoutProps) => {
     };
   });
 
-
   return (
     <KeyboardAvoidingView enabled behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={0}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.root, { backgroundColor: backgroundStyle }]}>
-          <Animated.Image source={require('../../../assets/pngs/planet_brown.png')} style={[styles.planet, animatePlanet]} />
+        <View style={[styles.root, {backgroundColor: backgroundStyle}]}>
+          <Animated.Image
+            source={require('../../../assets/pngs/planet_brown.png')}
+            style={[styles.planet, animatePlanet]}
+          />
           <Animated.Image
             source={require('../../../assets/pngs/asteroid.png')}
             style={[styles.asteroid, animateAsteroid]}
@@ -170,10 +169,8 @@ export const AuthLayout = (props: AuthLayoutProps) => {
                 reducedTransparencyFallbackColor="white"
               />
             </Animated.View>
-
-            // <Blurhash blurhash="LEHV6nWB2yk8pyo0adR*.7kCMdnj" decodeWidth={200} />
-          ) : null}
-
+          ) : // <Blurhash blurhash="LEHV6nWB2yk8pyo0adR*.7kCMdnj" decodeWidth={200} />
+          null}
 
           <View style={styles.contentContainer}>{props.children}</View>
           {props.footer ? (
@@ -184,7 +181,7 @@ export const AuthLayout = (props: AuthLayoutProps) => {
         </View>
         {/* </Pressable> */}
       </TouchableWithoutFeedback>
-    </KeyboardAvoidingView >
+    </KeyboardAvoidingView>
   );
 };
 
