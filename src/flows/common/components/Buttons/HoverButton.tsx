@@ -17,7 +17,7 @@ const HoverButton = (props: HoverButtonProps) => {
     const [longPressed, setLongPressed] = useState(false);
     const anim = useSharedValue(1);
     const backgroundColor = props.backgroundColor ? props.backgroundColor : Colors.darkBrown;
-    const buttonPressedColor = props.buttonPressedColor ? props.buttonPressedColor : Colors.brownFaded2;
+    const buttonPressedColor = props.buttonPressedColor ? props.buttonPressedColor : Colors.darkerBrown;
 
     const handlePressIn = () => {
         setPressed(true);
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
         borderRadius: 35,
         elevation: 4,
         marginTop: -45,
-        marginLeft: -65,
+        marginLeft: -64.5,
     },
     buttonPressed: {
         elevation: 0,

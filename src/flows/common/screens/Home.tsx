@@ -10,7 +10,7 @@ import FastImage from 'react-native-fast-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../theme';
 import { SideDrawerContent } from '../../hamburger/components/SideDrawerContent';
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { interpolate, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withTiming } from 'react-native-reanimated';
 import HamburgerIcon from '../../hamburger/components/HamburgerIcon';
 import NetworkBanner from '../components/Banners/NetworkBanner';
 import { BlurView } from '@react-native-community/blur';
@@ -22,6 +22,8 @@ export const Home = () => {
   const insets = useSafeAreaInsets();
   const hamburgerAnim = useSharedValue(0)
   const networkAnim = useSharedValue(0)
+  const buttonBreathe = useSharedValue(1.5);
+
 
 
 
@@ -90,6 +92,14 @@ export const Home = () => {
     }
   })
 
+  const rHoverButtonStyle = useAnimatedStyle(() => {
+    return {
+
+      transform: [{ translateY: withDelay(20, withRepeat(withTiming(-5, { duration: 2000 }), -1, true)) }]
+
+    }
+  })
+
 
 
 
@@ -116,14 +126,14 @@ export const Home = () => {
         </View>
         <View>
           {currentVideo !== 1 ? (
-            <View style={[styles.hoverButtonContainer, { top: insets.bottom + HEIGHT * 0.84 }]}>
+            <Animated.View style={[styles.hoverButtonContainer, { top: insets.bottom + HEIGHT * 0.84 }, rHoverButtonStyle]}>
               <HoverButton
                 backgroundColor={currentVideo === 2 ? Colors.darkBlue : Colors.darkBrown}
                 buttonPressedColor={currentVideo === 2 ? Colors.blueFaded : Colors.darkBrown2}
                 onShortPressOut={() => handleShortButtonPress()}
                 onLongPress={() => handleLongButtonPress()}
               />
-            </View>
+            </Animated.View>
           ) : null}
           <FastImage
             source={

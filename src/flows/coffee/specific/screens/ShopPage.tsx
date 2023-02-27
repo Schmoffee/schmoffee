@@ -210,7 +210,7 @@ export const ShopPage = () => {
         <Animated.View style={[styles.basketContainer, rBasketOpenStyle]}>
           <BasketPreview />
         </Animated.View>
-        {!cafe?.is_open ? (
+        {cafe?.is_open ? (
           <View style={styles.banner}>
             <ReusableBanner text="This cafe is currently closed" color={Colors.greyLight3} />
             <BlurView style={styles.blurView} />
