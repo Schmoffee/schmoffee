@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { CONST_SCREEN_CHANGE_PAYMENT, CONST_SCREEN_SETTINGS, CONST_SCREEN_UPDATE_PROFILE } from '../../../../constants';
+import { CONST_SCREEN_CHANGE_PAYMENT, CONST_SCREEN_PAST_ORDERS, CONST_SCREEN_SETTINGS, CONST_SCREEN_UPDATE_PROFILE } from '../../../../constants';
 import { deleteUser, signOut } from '../../../utils/queries/auth';
 import { AuthState, GlobalActionName } from '../../../utils/types/enums';
 import { RootRoutes } from '../../../utils/types/navigation.types';
@@ -75,6 +75,14 @@ export const SideDrawerContent = ({ anim }: SideDrawerContentProps) => {
             <View style={styles.sideDrawerButton}>
               <Body size="medium" weight="Bold">
                 Update profile
+              </Body>
+            </View>
+          </Pressable>
+
+          <Pressable onPress={() => navigation.navigate('SideDrawer', { screen: CONST_SCREEN_PAST_ORDERS })}>
+            <View style={styles.sideDrawerButton}>
+              <Body size="medium" weight="Bold">
+                Past Orders
               </Body>
             </View>
           </Pressable>
