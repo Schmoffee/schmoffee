@@ -295,10 +295,7 @@ const styles = StyleSheet.create({
   otpContainer: {
     paddingBottom: Spacings.s4,
     alignItems: 'center',
-
   },
-
-
   otpText: {
     marginTop: Spacings.s8,
   },

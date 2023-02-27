@@ -166,14 +166,14 @@ export const AuthLayout = (props: AuthLayoutProps) => {
               <BlurView
                 style={styles.absolute}
                 blurType="light"
-                blurAmount={10}
+                blurAmount={30}
                 reducedTransparencyFallbackColor="white"
               />
             </Animated.View>
 
             // <Blurhash blurhash="LEHV6nWB2yk8pyo0adR*.7kCMdnj" decodeWidth={200} />
-
           ) : null}
+
 
           <View style={styles.contentContainer}>{props.children}</View>
           {props.footer ? (
@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: Spacings.s7,
     flexDirection: 'column',
+    zIndex: 1,
   },
   subHeader: {
     alignSelf: 'flex-start',
@@ -234,19 +235,19 @@ const styles = StyleSheet.create({
   },
   absolute: {
     position: 'absolute',
-    top: '10%',
+    top: '0%',
     left: 0,
-    bottom: '30%',
+    bottom: '0%',
     right: 0,
-    height: 20000,
+    height: '100%',
   },
   blurView: {
     position: 'absolute',
-    top: '10%',
+    top: 0,
     left: 0,
-    bottom: '1%',
+    bottom: 0,
     right: 0,
-    height: '1%',
+    height: '200%',
   },
   otpBackButton: {
     position: 'absolute',
@@ -254,6 +255,6 @@ const styles = StyleSheet.create({
     left: -20,
     padding: Spacings.s2,
     zIndex: 1,
-    elevation: 1,
+    // elevation: 1,/
   },
 });

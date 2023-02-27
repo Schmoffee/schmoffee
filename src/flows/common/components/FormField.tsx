@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View, TextInput, KeyboardAvoidingView } from 'react-native';
 import { Colors, Spacings } from '../theme';
 import { Body } from '../typography';
 import Animated, { Easing, FadeInLeft, FadeOutLeft, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -44,22 +44,36 @@ const FormField = ({
   }, [anim]);
 
   return (
-    <Animated.View
-      entering={FadeInLeft.duration(400).easing(Easing.ease)}
-      exiting={FadeOutLeft.easing(Easing.ease)}
-      style={[styles.root]}>
-      <View style={styles.titleContainer}>
-        <Body size="medium" weight="Bold">
-          {title}
-        </Body>
-      </View>
-      {type === 'phone' ? (
-        <View style={styles.phoneInputContainer}>
-          <Body size="medium" weight="Regular" style={styles.countryCode}>
-            (+44)
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <Animated.View
+        entering={FadeInLeft.duration(400).easing(Easing.ease)}
+        exiting={FadeOutLeft.easing(Easing.ease)}
+        style={[styles.root]}>
+        <View style={styles.titleContainer}>
+          <Body size="medium" weight="Bold">
+            {title}
           </Body>
+        </View>
+        {type === 'phone' ? (
+          <View style={styles.phoneInputContainer}>
+            <Body size="medium" weight="Regular" style={styles.countryCode}>
+              (+44)
+            </Body>
+            <TextInput
+              style={styles.phoneInput}
+              secureTextEntry={secureTextEntry}
+              placeholder={placeholder}
+              placeholderTextColor={Colors.greyLight3}
+              onChangeText={text => setField(text)}
+              value={value}
+              autoCorrect={autoCorrect}
+              maxLength={maxLength}
+              keyboardType={'phone-pad'}
+            />
+          </View>
+        ) : (
           <TextInput
-            style={styles.phoneInput}
+            style={styles.textInput}
             secureTextEntry={secureTextEntry}
             placeholder={placeholder}
             placeholderTextColor={Colors.greyLight3}
@@ -67,24 +81,12 @@ const FormField = ({
             value={value}
             autoCorrect={autoCorrect}
             maxLength={maxLength}
-            keyboardType={'phone-pad'}
+            keyboardType={'default'}
           />
-        </View>
-      ) : (
-        <TextInput
-          style={styles.textInput}
-          secureTextEntry={secureTextEntry}
-          placeholder={placeholder}
-          placeholderTextColor={Colors.greyLight3}
-          onChangeText={text => setField(text)}
-          value={value}
-          autoCorrect={autoCorrect}
-          maxLength={maxLength}
-          keyboardType={'default'}
-        />
-      )
-      }
-    </Animated.View >
+        )
+        }
+      </Animated.View >
+    </KeyboardAvoidingView>
   );
 };
 

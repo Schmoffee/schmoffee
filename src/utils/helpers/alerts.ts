@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 export const AlertMessage = {
   OFFLINE: {
     title: 'You are offline.',
@@ -14,7 +14,7 @@ export const AlertMessage = {
   },
   WRONG_OTP: {
     title: 'Wrong OTP',
-    message: 'You entered the wrong OTP, ask for a new one.',
+    message: 'You have entered the wrong OTP. Please click on resend OTP and try again.',
   },
   EXPIRED_OTP: {
     title: 'OTP Expired',
@@ -110,7 +110,7 @@ export const Alerts = {
     Alert.alert(AlertMessage.PAYMENT.title, AlertMessage.PAYMENT.message);
   },
   logoutAlert: async (logout: () => Promise<boolean>) => {
-    let val = {logout: false, success: false};
+    let val = { logout: false, success: false };
     await Alert.alert(AlertMessage.LOGOUT.title, AlertMessage.LOGOUT.message, [
       {
         text: 'Yes',
@@ -157,12 +157,12 @@ export const Alerts = {
       },
     ]);
   },
-  outOfStockAlert: (deleted_items: string[], deleted_options: {item: string; option: string}[]) => {
+  outOfStockAlert: (deleted_items: string[], deleted_options: { item: string; option: string }[]) => {
     Alert.alert(
       AlertMessage.OUT_OF_STOCK.title,
       AlertMessage.OUT_OF_STOCK.message +
-        deleted_items.join(', ') +
-        deleted_options.map(option => option.item + ' - ' + option.option).join(', '),
+      deleted_items.join(', ') +
+      deleted_options.map(option => option.item + ' - ' + option.option).join(', '),
     );
   },
 };
