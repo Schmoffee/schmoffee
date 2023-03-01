@@ -571,6 +571,11 @@ PODS:
     - React-Core
   - RNLaunchNavigator (1.0.9):
     - React
+  - RNNotifee (7.5.0):
+    - React-Core
+    - RNNotifee/NotifeeCore (= 7.5.0)
+  - RNNotifee/NotifeeCore (7.5.0):
+    - React-Core
   - RNReanimated (2.14.4):
     - DoubleConversion
     - FBLazyVector
@@ -722,6 +727,7 @@ DEPENDENCIES:
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNLaunchNavigator (from `../node_modules/react-native-launch-navigator`)
+  - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -878,6 +884,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNLaunchNavigator:
     :path: "../node_modules/react-native-launch-navigator"
+  RNNotifee:
+    :path: "../node_modules/@notifee/react-native"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -974,6 +982,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: 04ecf12bae7543cd8df145f1b26d89d867594be7
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNLaunchNavigator: d855643e1f842f13c6cc65575e0755975667032c
+  RNNotifee: 053c0ace9c73634709a0214fd9c436a5777a562f
   RNReanimated: 6668b0587bebd4b15dd849b99e5a9c70fc12ed95
   RNScreens: ea4cd3a853063cda19a4e3c28d2e52180c80f4eb
   RNSVG: c1e76b81c76cdcd34b4e1188852892dc280eb902

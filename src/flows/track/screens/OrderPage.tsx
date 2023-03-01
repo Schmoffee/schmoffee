@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {GlobalContext} from '../../../contexts';
 import {TrackOrderRoutes} from '../../../utils/types/navigation.types';
@@ -19,18 +19,26 @@ import {CONST_SCREEN_HOME, CONST_SCREEN_SHOP, HEIGHT, WIDTH} from '../../../../c
 import OrderCardCarousel from '../components/OrderCardCarousel';
 import {getNiceTime} from '../../../utils/helpers/others';
 import {terminateOrder} from '../../../utils/queries/datastore';
+import {checkPermissions} from '../../../utils/helpers/notifications';
 
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
   const {global_state} = useContext(GlobalContext);
   const color = global_state.current_order ? global_state.current_order?.order_info.color : Colors.red;
   const pin = global_state.current_order ? global_state.current_order?.order_info.pin : '0000';
+  const [notifEnabled, setNotifEnabled] = useState<boolean>(true);
 
   const anim = useSharedValue(0);
   const [showPin, setShowPin] = useState(false);
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showRejectionModal, setShowRejectionModal] = useState(false);
+
+  useEffect(() => {
+    checkPermissions().then(res => {
+      setNotifEnabled(res);
+    });
+  }, []);
 
   useEffect(() => {
     if (global_state.current_order?.status === OrderStatus.ACCEPTED) {
@@ -45,21 +53,13 @@ export const OrderPage = () => {
   }, [global_state.current_order?.status]);
 
   const handlePress = async () => {
-    if (global_state.current_order?.status === OrderStatus.COLLECTED) {
-      navigation.navigate('RatingPage');
-    } else {
-      showPin ? setShowPin(false) : setShowPin(true);
-      anim.value = withTiming(showPin ? 0 : 1, {duration: 300});
-    }
+    showPin ? setShowPin(false) : setShowPin(true);
+    anim.value = withTiming(showPin ? 0 : 1, {duration: 300});
   };
 
   function getButtonText() {
     if (global_state.current_order) {
-      if (global_state.current_order?.status === OrderStatus.COLLECTED) {
-        return 'Rate Order';
-      } else {
-        return showPin ? 'Hide Pin' : 'Show Pin';
-      }
+      return showPin ? 'Hide Pin' : 'Show Pin';
     }
   }
 
@@ -120,12 +120,21 @@ export const OrderPage = () => {
             <Body size="small" weight="Extrabld" color={Colors.greyLight3}>
               Pickup time and status
             </Body>
-            <Body size="large" weight="Bold" color={Colors.black}>
-              {getTime()}
-            </Body>
-            <Body size="large" weight="Bold" color={Colors.blue} style={{marginTop: '2%'}}>
-              {global_state.current_order?.status}
-            </Body>
+            <View style={{display: 'flex', flexDirection: 'row', maxWidth: '80%'}}>
+              <View>
+                <Body size="large" weight="Bold" color={Colors.black}>
+                  {getTime()}
+                </Body>
+                <Body size="large" weight="Bold" color={Colors.blue} style={{marginTop: '2%'}}>
+                  {global_state.current_order?.status}
+                </Body>
+              </View>
+              {notifEnabled ? null : (
+                <Body size="extraSmall" weight="Bold" color={Colors.red} style={{marginLeft: '5%'}}>
+                  Your notifications are disabled. Enable them to receive updates on your order.
+                </Body>
+              )}
+            </View>
           </View>
         </View>
 

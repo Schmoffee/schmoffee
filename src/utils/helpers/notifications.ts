@@ -1,8 +1,6 @@
 import {Analytics} from 'aws-amplify';
-import {Platform} from 'react-native';
-// @ts-ignore
-import PushNotification from 'react-native-push-notification';
-import {AndroidNotifSpec, GenericNotifSpec, iosNotifSpec} from '../types/data.types';
+import notifee, {AndroidImportance, AndroidVisibility, AuthorizationStatus, Notification} from '@notifee/react-native';
+import {getNotificationsAsked} from './storage';
 
 async function updateEndpoint(token: string): Promise<void> {
   console.log('Updating endpoint with token: ', token);
@@ -23,18 +21,53 @@ async function updateEndpoint(token: string): Promise<void> {
     });
 }
 
-const SendLocalNotification = (genericSpec: GenericNotifSpec, deviceSpec: AndroidNotifSpec | iosNotifSpec) => {
-  if (Platform.OS === 'ios') {
-    PushNotification.localNotification({
-      ...genericSpec,
-      ...deviceSpec,
-    });
-  } else {
-    PushNotification.localNotification({
-      ...genericSpec,
-      ...deviceSpec,
-    });
-  }
-};
+async function sendLocalNotification(notification: Notification) {
+  const notificationId = await notifee.displayNotification({
+    title: notification.title,
+    body: notification.body,
+    android: {
+      channelId: '1',
+      pressAction: {
+        id: 'default',
+      },
+      visibility: AndroidVisibility.PUBLIC,
+      sound: 'coffee_time.mp3',
+    },
+  });
+  console.log('Notification sent: ', notificationId);
+}
 
-export {updateEndpoint, SendLocalNotification};
+async function checkPermissions() {
+  const settings = await notifee.getNotificationSettings();
+  if (settings) {
+    if (settings.authorizationStatus !== AuthorizationStatus.AUTHORIZED) {
+      const asked = await getNotificationsAsked();
+      console.log('Asked for permission: ', asked);
+      if (asked) {
+        return false;
+      } else {
+        const res = await notifee.requestPermission();
+        return res.authorizationStatus === AuthorizationStatus.AUTHORIZED;
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
+async function checkChannel() {
+  const schannel = await notifee.getChannel('1');
+  if (schannel === null) {
+    const res = await notifee.createChannel({
+      id: '1',
+      name: 'Schmoffee',
+      importance: AndroidImportance.HIGH,
+      sound: 'coffee_time',
+      visibility: AndroidVisibility.PUBLIC,
+      description: 'A channel to categorise your Schmoffee Notifications',
+    });
+    console.log('Channel created: ', res);
+  }
+}
+
+export {updateEndpoint, checkChannel, sendLocalNotification, checkPermissions};

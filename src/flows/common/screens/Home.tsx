@@ -1,10 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 import CurrentOrderBanner from '../../track/components/CurrentOrderBanner';
 import {GlobalContext} from '../../../contexts';
 import {RootRoutes} from '../../../utils/types/navigation.types';
-import {CONST_SCREEN_ORDER, CONST_SCREEN_SHOP, HEIGHT, WIDTH} from '../../../../constants';
+import {CONST_SCREEN_ORDER, CONST_SCREEN_RATING_PAGE, CONST_SCREEN_SHOP, HEIGHT, WIDTH} from '../../../../constants';
 import HoverButton from '../components/Buttons/HoverButton';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -20,23 +20,15 @@ import Animated, {
 } from 'react-native-reanimated';
 import HamburgerIcon from '../../hamburger/components/HamburgerIcon';
 import NetworkBanner from '../components/Banners/NetworkBanner';
+import {OrderStatus} from '../../../models';
 
 export const Home = () => {
   const {global_state} = useContext(GlobalContext);
   const navigation = useNavigation<RootRoutes>();
-  const [currentVideo, setCurrentVideo] = useState<number>(0);
   const insets = useSafeAreaInsets();
   const hamburgerAnim = useSharedValue(0);
   const networkAnim = useSharedValue(0);
   const buttonBreathe = useSharedValue(1.5);
-
-  useEffect(() => {
-    if (global_state.current_order) {
-      setCurrentVideo(0);
-    } else {
-      setCurrentVideo(0);
-    }
-  }, [global_state.current_order]);
 
   useEffect(() => {
     if (global_state.network_status) {
@@ -46,20 +38,25 @@ export const Home = () => {
     }
   }, [global_state.network_status, networkAnim]);
 
+  useEffect(() => {
+    if (global_state.current_order?.status === OrderStatus.COLLECTED) {
+      navigation.navigate('TrackOrder', CONST_SCREEN_RATING_PAGE);
+    }
+  }, [global_state.current_order, navigation]);
+
   const handleShortButtonPress = () => {
-    if (currentVideo === 0) {
-      // setCurrentVideo(1);
-      navigation.navigate(CONST_SCREEN_SHOP);
-    } else if (currentVideo === 2) {
+    if (global_state.current_order) {
       navigation.navigate('TrackOrder', CONST_SCREEN_ORDER);
+    } else {
+      navigation.navigate(CONST_SCREEN_SHOP);
     }
   };
 
   const handleLongButtonPress = () => {
-    if (currentVideo === 0) {
-      navigation.navigate('PreviewPage');
-    } else if (currentVideo === 2) {
+    if (global_state.current_order) {
       navigation.navigate('TrackOrder', CONST_SCREEN_ORDER);
+    } else {
+      navigation.navigate('PreviewPage');
     }
   };
 
@@ -108,50 +105,29 @@ export const Home = () => {
         </Pressable>
         <SideDrawerContent anim={hamburgerAnim} />
         <View style={styles.bgStill}>
-          <FastImage
-            source={
-              currentVideo === 0
-                ? require('../../../assets/pngs/home-image.png')
-                : require('../../../assets/pngs/cream-still.png')
-            }
-          />
+          <FastImage source={require('../../../assets/pngs/home-image.png')} />
         </View>
         <View>
-          {currentVideo !== 1 ? (
-            <Animated.View
-              style={[styles.hoverButtonContainer, {top: insets.bottom + HEIGHT * 0.84}, rHoverButtonStyle]}>
-              <HoverButton
-                backgroundColor={currentVideo === 2 ? Colors.darkBlue : Colors.darkBrown}
-                buttonPressedColor={currentVideo === 2 ? Colors.blueFaded : Colors.darkBrown2}
-                onShortPressOut={() => handleShortButtonPress()}
-                onLongPress={() => handleLongButtonPress()}
-              />
-            </Animated.View>
-          ) : null}
+          <Animated.View style={[styles.hoverButtonContainer, {top: insets.bottom + HEIGHT * 0.84}, rHoverButtonStyle]}>
+            <HoverButton
+              backgroundColor={global_state.current_order ? Colors.darkBlue : Colors.darkBrown}
+              buttonPressedColor={global_state.current_order ? Colors.blueFaded : Colors.darkBrown2}
+              onShortPressOut={() => handleShortButtonPress()}
+              onLongPress={() => handleLongButtonPress()}
+            />
+          </Animated.View>
           <FastImage
             source={
               global_state.current_order
                 ? require('../../../assets/gifs/astronaut.gif')
-                : currentVideo === 1
-                ? require('../../../assets/gifs/fly-complete.gif')
                 : require('../../../assets/gifs/home-loop.gif')
             }
-            onLoad={() => {
-              if (currentVideo === 1) {
-                setTimeout(() => {
-                  navigation.navigate(CONST_SCREEN_SHOP);
-                }, 2700);
-              }
-            }}
             style={styles.videoContainer}
           />
         </View>
         <View style={styles.currentOrderBanner}>
           <CurrentOrderBanner />
         </View>
-        {/* <Animated.View style={[styles.blurView, rBlurStyle]}>
-          <BlurView blurType='dark' blurAmount={40} />
-        </Animated.View> */}
       </View>
     </Pressable>
   );

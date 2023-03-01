@@ -1,5 +1,5 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React, {useContext, useEffect, useReducer} from 'react';
+import React, {useContext, useEffect, useReducer, useState} from 'react';
 import {AuthRoutes} from '../../utils/types/navigation.types';
 import {getFreeTime, getIsFirstTime, getPhone, getTrials, setFreeTime, setTrials} from '../../utils/helpers/storage';
 import {signIn} from '../../utils/queries/auth';
@@ -12,19 +12,23 @@ import {checkMultiSignIn, getUserById, newSignIn} from '../../utils/queries/data
 import {Intro} from './screens/Intro';
 import {AuthPage} from './screens/AuthPage';
 import {Alerts} from '../../utils/helpers/alerts';
+import LoadingPage from '../common/screens/LoadingPage';
 
 const Root = () => {
   const AuthStack = createNativeStackNavigator<AuthRoutes>();
   const {global_state, global_dispatch} = useContext(GlobalContext);
   const [sign_in_state, sign_in_dispatch] = useReducer(signInReducer, signInData);
-  const [isFirstTime, setIsFirstTime] = React.useState<boolean>(true);
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const init = async () => {
       // Instead of using Datastore.start() to force a cloud sync.
+      setLoading(true);
       await getUserById('init');
-      const is_first: boolean = await getIsFirstTime();
-      setIsFirstTime(is_first);
+      const is_first = await getIsFirstTime();
+      setIsFirstTime(is_first === null);
+      setLoading(false);
     };
     init().catch(e => console.log(e));
   }, []);
@@ -121,12 +125,20 @@ const Root = () => {
   return (
     <SignInContext.Provider value={{sign_in_state, sign_in_dispatch, sendOTP}}>
       <AuthStack.Navigator
-        initialRouteName="AuthPage"
+        initialRouteName={isFirstTime ? 'Intro' : 'AuthPage'}
         screenOptions={{
           headerShown: false,
         }}>
-        {isFirstTime && <AuthStack.Screen name="Intro" component={Intro} />}
-        <AuthStack.Screen name="AuthPage" component={AuthPage} />
+        {loading ? (
+          <AuthStack.Screen name="Loading" component={LoadingPage} />
+        ) : isFirstTime ? (
+          <>
+            <AuthStack.Screen name="Intro" component={Intro} />
+            <AuthStack.Screen name="AuthPage" component={AuthPage} />
+          </>
+        ) : (
+          <AuthStack.Screen name="AuthPage" component={AuthPage} />
+        )}
       </AuthStack.Navigator>
     </SignInContext.Provider>
   );
