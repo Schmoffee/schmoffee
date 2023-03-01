@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {RootRoutes} from '../../../utils/types/navigation.types';
-import {initiateStorage} from '../../../utils/helpers/storage';
+import {initiateStorage, setFirstTime} from '../../../utils/helpers/storage';
 import {Colors} from '../../common/theme';
 import {Body, Heading} from '../../common/typography';
 import {CONST_SCREEN_AUTH} from '../../../../constants';
@@ -126,6 +126,7 @@ const IntroPage = (props: IntroPageProps) => {
             style={{backgroundColor: 'red'}}
             onPress={async () => {
               await initiateStorage();
+              await setFirstTime();
               navigation.navigate(CONST_SCREEN_AUTH);
             }}>
             <Body size="large" weight="Black" color={Colors.blue} style={styles.start}>

@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useRef, useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import {BackHandler, NativeModules, Platform} from 'react-native';
 import {globalReducer} from './reducers';
 import {GlobalContext, globalData} from './contexts';
@@ -18,23 +18,20 @@ import {getDeletedOrders} from './utils/helpers/storage';
 
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
-  const [loading, setLoading] = useState(false);
-  const authLoading = useRef(true);
+  const [initLoading, setInitLoading] = useState(true);
+  const [tokenLoading, setTokenLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
   /**
    * This effect runs a dummy database query to manually initiate the synchronisation with the cloud.
    */
   useEffect(() => {
     const init = async () => {
-      setLoading(true);
       await getUserById('init');
-      setLoading(false);
+      setInitLoading(false);
     };
-    if (!loading) {
-      init().catch(e => {
-        console.log('dccs', e);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    init().catch(e => {
+      console.log('Datastore initialization error ', e);
+    });
   }, []);
 
   /**
@@ -57,6 +54,7 @@ const App = () => {
         if (fcmToken) {
           global_dispatch({type: GlobalActionName.SET_DEVICE_TOKEN, payload: fcmToken});
           await updateEndpoint(fcmToken);
+          return fcmToken;
         } else {
           // Alerts.tokenAlert();
         }
@@ -65,6 +63,7 @@ const App = () => {
           async (token: string) => {
             global_dispatch({type: GlobalActionName.SET_DEVICE_TOKEN, payload: token});
             await updateEndpoint(token);
+            return token;
           },
           (error: any) => {
             // Alerts.tokenAlert();
@@ -74,7 +73,10 @@ const App = () => {
       }
     }
 
-    getDeviceToken().then(() => console.log('device token refreshed'));
+    getDeviceToken().then(token => {
+      console.log('device token refreshed: ', token);
+      setTokenLoading(false);
+    });
   }, []);
 
   /**
@@ -119,23 +121,29 @@ const App = () => {
         });
       }
     };
-    if (!loading && global_state.device_token !== '') {
-      refreshAuthState().catch(error => {
-        console.log(error);
-        Alerts.elseAlert();
-      });
-      authLoading.current = false;
+    if (!initLoading && !tokenLoading && global_state.device_token !== '') {
+      refreshAuthState()
+        .then(() => {
+          console.log('auth state refreshed');
+          setAuthLoading(false);
+        })
+        .catch(error => {
+          console.log(error);
+          Alerts.elseAlert();
+        });
+    } else if (!initLoading && !tokenLoading && global_state.device_token === '') {
+      console.log('device token not set');
+      setAuthLoading(false);
     }
-  }, [global_state.current_user?.id, global_state.auth_state, global_state.device_token, loading]);
+  }, [global_state.auth_state, global_state.device_token, initLoading, tokenLoading]);
 
   useEffect(() => {
-    if (!loading) {
+    if (!authLoading && global_state.auth_state === AuthState.SIGNED_IN && global_state.device_token !== '') {
       const subscription = DataStore.observeQuery(User, user =>
         user.device_token('eq', global_state.device_token),
       ).subscribe(async snapshot => {
         const {items} = snapshot;
-
-        if (global_state.auth_state === AuthState.SIGNED_IN && items.length > 0) {
+        if (items.length > 0) {
           const currentUser = items[0];
           const past_orders: PastOrder[] = await getPastOrders(currentUser.id);
           const localUser: LocalUser = {
@@ -149,17 +157,21 @@ const App = () => {
             past_orders: past_orders,
           };
           global_dispatch({type: GlobalActionName.SET_CURRENT_USER, payload: localUser});
+          console.log('user refreshed');
         }
+        global_dispatch({type: GlobalActionName.SET_LOADING, payload: false});
       });
       return () => subscription.unsubscribe();
+    } else if (!authLoading && (global_state.auth_state === AuthState.SIGNED_IN || global_state.device_token !== '')) {
+      global_dispatch({type: GlobalActionName.SET_LOADING, payload: false});
     }
-  }, [global_state.auth_state, global_state.device_token, loading]);
+  }, [authLoading, global_state.auth_state, global_state.device_token]);
 
   /**
    * Get the user's current order from the database and subscribe to any changes to it.
    */
   useEffect(() => {
-    if (global_state.current_user !== null && !loading) {
+    if (!global_state.loading && global_state.current_user !== null) {
       const user: LocalUser = global_state.current_user;
       const subscription = DataStore.observeQuery(CurrentOrder, current_order =>
         current_order.userID('eq', user.id),
@@ -191,12 +203,13 @@ const App = () => {
       });
       return () => subscription.unsubscribe();
     }
-    // Don't track the current order status, otherwise it will cause an infinite loop.
-  }, [global_state.current_user, loading, global_dispatch]);
+    // Don't track the current order status, otherwise it will cause an infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [global_state.current_user, global_dispatch, global_state.loading]);
 
   return (
     <GlobalContext.Provider value={{global_state, global_dispatch}}>
-      <Navigator loading={authLoading.current} />
+      <Navigator />
     </GlobalContext.Provider>
   );
 };

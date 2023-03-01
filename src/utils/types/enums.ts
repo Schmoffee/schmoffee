@@ -23,6 +23,7 @@ export enum GlobalActionName {
   SET_DEVICE_TOKEN,
   SET_NETWORK_STATUS,
   SET_CURRENT_ORDER,
+  SET_LOADING,
 }
 
 export enum TrackOrderActionName {

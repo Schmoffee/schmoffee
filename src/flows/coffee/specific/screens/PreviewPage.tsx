@@ -25,7 +25,6 @@ import {CONST_SCREEN_ORDER} from '../../../../../constants';
 import {getCurrOrder, sendOrder, setUsualOrder, updatePaymentMethod} from '../../../../utils/queries/datastore';
 import {LocalUser, Payment, PaymentParams} from '../../../../utils/types/data.types';
 import Map from '../../../common/components/Map/Map';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import {clearStorageSpecificBasket, getDeletedOrders} from '../../../../utils/helpers/storage';
 import ScheduleSection from '../../components/preview/ScheduleSection';
 import PreviewSection from '../../components/preview/PreviewSection';
@@ -38,6 +37,7 @@ import {getOptionsPrice} from '../../../../utils/helpers/basket';
 import {getOrderId} from '../../../../utils/helpers/order_id';
 import {Alerts} from '../../../../utils/helpers/alerts';
 import {OrderingActionName} from '../../../../utils/types/enums';
+import {checkPermissions} from '../../../../utils/helpers/notifications';
 
 interface PreviewPageProps {}
 export const PreviewPage = (props: PreviewPageProps) => {
@@ -49,7 +49,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
   const {isApplePaySupported} = useApplePay();
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
-  const [usual, setUsual] = useState(true);
   const [scheduled_time, setScheduledTime] = useState(5);
 
   useDeepCompareEffect(() => {
@@ -116,7 +115,8 @@ export const PreviewPage = (props: PreviewPageProps) => {
       }
 
       if (payment_id) {
-        if (Platform.OS === 'ios') await PushNotificationIOS.requestPermissions();
+        const authorized = await checkPermissions();
+        console.log('Authorized: ', authorized);
         await handleSendOrder(payment_id);
         return true;
       }
@@ -173,9 +173,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
         user_info,
         paymentId,
       );
-      if (usual) {
-        await saveUsualOrder();
-      }
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: []});
       await clearStorageSpecificBasket();
     } else {
@@ -183,16 +180,16 @@ export const PreviewPage = (props: PreviewPageProps) => {
     }
   }
 
-  async function saveUsualOrder() {
-    if (global_state.current_user && ordering_state.current_shop_id) {
-      const usual_order: UsualOrder = {
-        items: ordering_state.specific_basket,
-        schedule: scheduled_time,
-        cafeID: ordering_state.current_shop_id,
-      };
-      await setUsualOrder(usual_order, global_state.current_user.id);
-    }
-  }
+  // async function saveUsualOrder() {
+  //   if (global_state.current_user && ordering_state.current_shop_id) {
+  //     const usual_order: UsualOrder = {
+  //       items: ordering_state.specific_basket,
+  //       schedule: scheduled_time,
+  //       cafeID: ordering_state.current_shop_id,
+  //     };
+  //     await setUsualOrder(usual_order, global_state.current_user.id);
+  //   }
+  // }
 
   const handleCheckout = async (mode: Payment) => {
     if (mode === 'card') {
@@ -213,10 +210,7 @@ export const PreviewPage = (props: PreviewPageProps) => {
 
   const initiateCheckout = async (mode: Payment) => {
     setLoading(true);
-    const orders = await getCurrOrder(global_state.current_user?.id as string);
-    const deletedOrders: string[] | void = await getDeletedOrders();
-    const actualOrders = orders ? orders.filter(order => !deletedOrders?.includes(order.id)) : [];
-    if (orders && actualOrders.length > 0) {
+    if (global_state.current_order) {
       Alerts.orderAlert();
     } else {
       const success = await checkout(mode);
@@ -249,7 +243,6 @@ export const PreviewPage = (props: PreviewPageProps) => {
               <Map cafeIdFilter={ordering_state.current_shop_id} cafeLocationFilter={getCafeLocation()} />
             </View>
           </PreviewSection>
-
           <PreviewSection title="Payment method">
             <View style={styles.paymentContainer}>
               {Platform.OS === 'ios' && (

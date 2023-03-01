@@ -4,73 +4,31 @@
 import '@azure/core-asynciterator-polyfill';
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill';
-import {AppRegistry, Platform} from 'react-native';
+import {AppRegistry} from 'react-native';
 import App from './src/App';
 import {name as appName} from './app.json';
 import {DataStore} from 'aws-amplify';
 import awsConfig from './src/aws-exports';
 import {Amplify} from 'aws-amplify';
-import RemotePushNotification from '@aws-amplify/pushnotification';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import {SendLocalNotification} from './src/utils/helpers/notifications';
 import {LogBox} from 'react-native';
-import PushNotification, {Importance} from 'react-native-push-notification';
+import messaging from '@react-native-firebase/messaging';
+import {checkChannel, sendLocalNotification} from './src/utils/helpers/notifications';
+import {getCurrentAuthUser} from './src/utils/queries/auth';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
-RemotePushNotification.onNotification(async notification => {
-  // Note that the notification object structure is different from Android and IOS
-  console.log('Remote notification received', notification);
-  const genericSpec = {title: notification.title, message: notification.body, soundName: 'coffee_time.mp3'};
-  if (Platform.OS === 'ios') {
-    const specs = {};
-    SendLocalNotification(genericSpec, specs);
-  } else {
-    const specs = {};
-    PushNotification.checkPermissions(permissions => console.log('permissions', permissions));
-    PushNotification.getChannels(function (channel_ids) {
-      if (channel_ids.length > 0) {
-        specs.channelId = channel_ids[0];
-        SendLocalNotification(genericSpec, specs);
-      } else {
-        PushNotification.createChannel(
-          {
-            channelId: '1',
-            channelName: 'My channel',
-            channelDescription: 'A channel to categorise your notifications',
-            playSound: true,
-            soundName: 'coffee_time.mp3',
-            importance: Importance.HIGH,
-            vibrate: true,
-          },
-          created => {
-            console.log(`createChannel returned '${created}'`);
-            specs.channelId = '1';
-            SendLocalNotification(genericSpec, specs);
-          },
-        );
-      }
-    });
+async function onMessageReceived(message) {
+  console.log('onMessageReceived', message);
+  const data = message.data;
+  const title = data['pinpoint.notification.title'];
+  const body = data['pinpoint.notification.body'];
+  const user = await getCurrentAuthUser();
+  if (user) {
+    const NotifeeNotif = {title: title, body: body};
+    await checkChannel();
+    await sendLocalNotification(NotifeeNotif);
   }
-
-  // required on iOS only (see fetchCompletionHandler docs: https://github.com/react-native-community/push-notification-ios#finish)
-  if (Platform.OS === 'ios') {
-    notification.finish(PushNotificationIOS.FetchResult.NoData);
-  }
-});
-
-// get the notification data when notification is opened
-RemotePushNotification.onNotificationOpened(notification => {
-  console.log('the remote notification is opened', notification);
-});
-
-PushNotification.configure({
-  // (required) Called when a remote is received or opened, or local notification is opened
-  onNotification: function (notification) {
-    // Do nothing. This is already handled by the RemotePushNotification.onNotification handler
-  },
-  senderID: '954779945360',
-  requestPermissions: Platform.OS !== 'ios',
-});
+  // notification.finish(PushNotificationIOS.FetchResult.NoData);
+}
 
 Amplify.configure({
   ...awsConfig,
@@ -85,4 +43,6 @@ DataStore.configure({
   syncPageSize: 1000,
 });
 
+messaging().onMessage(onMessageReceived);
+messaging().setBackgroundMessageHandler(onMessageReceived);
 AppRegistry.registerComponent(appName, () => App);

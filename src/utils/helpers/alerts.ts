@@ -16,6 +16,11 @@ export const AlertMessage = {
     title: 'Wrong OTP',
     message: 'You have entered the wrong OTP. Please click on resend OTP and try again.',
   },
+  DELETE_ACCOUNT_ERROR: {
+    title: 'Order running',
+    message:
+      'You cannot delete your account when you still have an order running. Please finish your order and try again.',
+  },
   EXPIRED_OTP: {
     title: 'OTP Expired',
     message: 'This code has expired. Please request a new one.',
@@ -171,5 +176,8 @@ export const Alerts = {
         deleted_items.join(', ') +
         deleted_options.map(option => option.item + ' - ' + option.option).join(', '),
     );
+  },
+  deleteAccountErrorAlert: () => {
+    Alert.alert(AlertMessage.DELETE_ACCOUNT_ERROR.title, AlertMessage.DELETE_ACCOUNT_ERROR.message);
   },
 };

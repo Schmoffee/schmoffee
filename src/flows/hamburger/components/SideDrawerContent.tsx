@@ -47,12 +47,21 @@ export const SideDrawerContent = ({anim}: SideDrawerContentProps) => {
     anim.value = withTiming(0, {duration: 300});
   };
 
+  function checkValidity() {
+    return global_state.current_order === null;
+  }
+
   const handleDeleteAccount = async () => {
-    const del = await Alerts.deleteAccountAlert();
-    if (del) {
-      await deleteAccount(global_state.current_user?.id as string);
-      await signOut();
-      await deleteUser();
+    const validity = checkValidity();
+    if (!validity) {
+      Alerts.deleteAccountErrorAlert();
+    } else {
+      const del = await Alerts.deleteAccountAlert();
+      if (del) {
+        await deleteAccount(global_state.current_user?.id as string);
+        await deleteUser();
+        await signOut();
+      }
     }
   };
 

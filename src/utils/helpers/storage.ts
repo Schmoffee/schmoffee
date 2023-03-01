@@ -8,7 +8,6 @@ import {CommonBasketItem} from '../types/data.types';
 async function initiateStorage(): Promise<void> {
   try {
     const emptyBasket = JSON.stringify([]);
-    await AsyncStorage.setItem('@isFirstTime', 'false');
     await AsyncStorage.setItem('@CurrentShopId', '');
     await AsyncStorage.setItem('@CommonBasket', emptyBasket);
     await AsyncStorage.setItem('@SpecificBasket', emptyBasket);
@@ -25,13 +24,38 @@ async function initiateStorage(): Promise<void> {
  * Return whether it is the first time the app is used after download.
  * @return boolean return true if it is first time, false otherwise
  */
-async function getIsFirstTime(): Promise<boolean> {
+async function getIsFirstTime(): Promise<string | null> {
   try {
-    const result = await AsyncStorage.getItem('@isFirstTime');
-    return result !== 'false';
+    return await AsyncStorage.getItem('@isFirstTime');
+  } catch (error) {
+    console.log('Error getting isFirstTime', error);
+    return null;
+  }
+}
+
+async function setFirstTime(): Promise<void> {
+  try {
+    await AsyncStorage.setItem('@isFirstTime', 'false');
+  } catch (error) {
+    console.log('Error setting isFirstTime', error);
+  }
+}
+
+async function getNotificationsAsked(): Promise<boolean> {
+  try {
+    const value = await AsyncStorage.getItem('@AskedNotifications');
+    return value === 'true';
   } catch (error) {
     console.log('Error getting isFirstTime', error);
     return false;
+  }
+}
+
+async function setNotificationsAsked(): Promise<void> {
+  try {
+    await AsyncStorage.setItem('@AskedNotifications', 'true');
+  } catch (error) {
+    console.log('Error setting isFirstTime', error);
   }
 }
 
@@ -266,4 +290,7 @@ export {
   getClientSecret,
   getDeletedOrders,
   setDeletedOrders,
+  setFirstTime,
+  getNotificationsAsked,
+  setNotificationsAsked,
 };

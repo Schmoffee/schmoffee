@@ -25,6 +25,8 @@ export const globalReducer = (state: GlobalState, action: GlobalAction): GlobalS
       return {...state, current_order: action.payload};
     case GlobalActionName.SET_DEVICE_TOKEN:
       return {...state, device_token: action.payload};
+    case GlobalActionName.SET_LOADING:
+      return {...state, loading: action.payload};
     default:
       return state;
   }

@@ -20,6 +20,7 @@ export const globalData: GlobalState = {
   synced: false,
   device_token: '',
   current_order: null,
+  loading: true,
 };
 
 export const trackOrderData: TrackOrderState = {

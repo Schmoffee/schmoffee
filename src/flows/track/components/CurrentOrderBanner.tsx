@@ -1,23 +1,25 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View, Pressable } from 'react-native';
-import { HEIGHT, WIDTH } from '../../../../constants';
-import { Colors } from '../../common/theme';
-import { Body, Heading } from '../../common/typography';
-import { getNiceTime } from '../../../utils/helpers/others';
-import { GlobalContext } from '../../../contexts';
-interface CurrentOrderBannerProps { }
+import React, {useContext} from 'react';
+import {StyleSheet, View, Pressable} from 'react-native';
+import {HEIGHT, WIDTH} from '../../../../constants';
+import {Colors} from '../../common/theme';
+import {Body, Heading} from '../../common/typography';
+import {getNiceTime} from '../../../utils/helpers/others';
+import {GlobalContext} from '../../../contexts';
+import {OrderStatus} from '../../../models';
+
+interface CurrentOrderBannerProps {}
 
 const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
-  const { global_state } = useContext(GlobalContext);
+  const {global_state} = useContext(GlobalContext);
   const order = global_state.current_order;
 
-  return (
-    order && (
-      <Pressable onPress={() => { }}>
+  return order ? (
+    order.status === OrderStatus.COLLECTED ? null : (
+      <Pressable onPress={() => {}}>
         <View style={styles.root}>
           <View style={styles.container}>
             <View style={styles.cafe}>
-              <Body size="extraLarge" weight="Bold" color={Colors.black}>
+              <Body size="large" weight="Bold" color={Colors.black}>
                 KINGS CAFE
               </Body>
               <Body size="large" weight="Bold" color={Colors.greyLight3}>
@@ -26,7 +28,7 @@ const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
             </View>
 
             <View style={styles.time}>
-              <Body size="extraLarge" weight="Extrabld" color={'green'}>
+              <Body size="large" weight="Extrabld" color={'green'}>
                 {order?.status}
               </Body>
               <Heading size="small" weight="Extrabld" color={Colors.black}>
@@ -42,7 +44,7 @@ const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
         </View>
       </Pressable>
     )
-  );
+  ) : null;
 };
 
 const styles = StyleSheet.create({

@@ -16,34 +16,11 @@
             android:networkSecurityConfig="@xml/network_security_config"
             android:exported="true"
             android:theme="@style/AppTheme">
-        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
-                    android:value="false"/>
         <meta-data  android:name="com.google.android.geo.API_KEY"
                     android:value="AIzaSyAeJAH2Ezqz7VwvjAAaEtkiAJ2K70iUhmU"/>
-        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
-                    android:resource="@color/white"/>
         <meta-data
                 android:name="com.google.android.gms.wallet.api.enabled"
                 android:value="true" />
-        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
-        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
-        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver"
-                  android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
-            </intent-filter>
-        </receiver>
-        <!--[START Push notification config -->
-        <!-- [START firebase_service] -->
-        <service
-                android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
-                android:exported="false" >
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
         <!-- [END firebase_service] -->
         <!-- [START firebase_iid_service] -->
         <service
