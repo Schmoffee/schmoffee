@@ -37,7 +37,7 @@ async function createPaymentIntent(paymentParams: PaymentParams, paymentMethod?:
     };
   }
 
-  const response = await fetch('https://myxpomnspkvsnn4i2kb6uuonta0cjdap.lambda-url.eu-central-1.on.aws/', {
+  const response = await fetch('https://bk2evy2sbhnzypx55ajo5qragq0vtyjs.lambda-url.eu-west-2.on.aws/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ async function cancelPayment(payment_id: string) {
   const body = {
     payment_id: payment_id,
   };
-  const response = await fetch('https://ww6tttf7xjqe5koqhf32x5qzru0xonvy.lambda-url.eu-central-1.on.aws/', {
+  const response = await fetch('https://mplu6fglqzhb6ca5qckbondkr40nwftd.lambda-url.eu-west-2.on.aws/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ async function confirmGooglePayPayment(payment_id: string) {
   const body = {
     payment_id: payment_id,
   };
-  const response = await fetch('https://cisd7652yszt7dme7yl2wlblny0wlrxz.lambda-url.eu-central-1.on.aws/', {
+  const response = await fetch('https://gynx3h5r6osopsliryl72u6mhy0obmup.lambda-url.eu-west-2.on.aws/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
