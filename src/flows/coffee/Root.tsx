@@ -23,6 +23,7 @@ const Root = () => {
       sort: cafe => cafe.name(SortDirection.ASCENDING),
     }).subscribe(snapshot => {
       const {items, isSynced} = snapshot;
+      console.log(items);
       if (isSynced) {
         ordering_dispatch({type: OrderingActionName.SET_CAFES, payload: items});
       }

@@ -1,13 +1,20 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Pressable, Image } from 'react-native';
+import React, {useEffect} from 'react';
+import {View, StyleSheet, Pressable, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { useNavigation } from '@react-navigation/native';
-import Animated, { Easing, Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { Colors, Spacings } from '../../../common/theme';
-import { CoffeeRoutes } from '../../../../utils/types/navigation.types';
-import { Body } from '../../../common/typography';
-import { Item } from '../../../../models';
-import { transform } from '@babel/core';
+import {useNavigation} from '@react-navigation/native';
+import Animated, {
+  Easing,
+  Extrapolate,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import {Colors, Spacings} from '../../../common/theme';
+import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
+import {Body} from '../../../common/typography';
+import {Item} from '../../../../models';
+import {transform} from '@babel/core';
 
 interface CardItemProps {
   item: Item;
@@ -15,9 +22,10 @@ interface CardItemProps {
   query?: string;
 }
 
-export const CardItem = ({ item, index, query }: CardItemProps) => {
+export const CardItem = ({item, index, query}: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const anim = useSharedValue(0);
+  const randomRating: number = Math.random() * (5 - 3) + 3;
 
   useEffect(() => {
     anim.value = -1;
@@ -50,7 +58,6 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
     [],
   );
 
-
   return (
     <Pressable onPress={onItemPress}>
       <Animated.View style={[styles.root, index % 2 === 0 ? cardStyleUp : cardStyleUp]}>
@@ -69,14 +76,10 @@ export const CardItem = ({ item, index, query }: CardItemProps) => {
             </View>
           </View>
           <View style={styles.imageContainer}>
-            <FastImage source={{ uri: item.image ? item.image : undefined }} style={styles.image} />
+            <FastImage source={{uri: item.image ? item.image : undefined}} style={styles.image} />
             <View style={styles.ratingContainer}>
               <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
-                {item.ratings
-                  ? item.ratings.length > 0
-                    ? (item.ratings.reduce((acc, curr) => acc + (curr ? curr.rating : 0), 0) / item.ratings.length).toFixed(1)
-                    : 'None'
-                  : 'None'}
+                {randomRating.toFixed(1)}
               </Body>
               <Image source={require('../../../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
             </View>
@@ -94,7 +97,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   container: {
     position: 'relative',
@@ -137,7 +140,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
-    transform: [{ scale: 0.9 }],
+    transform: [{scale: 0.9}],
   },
   ratingContainer: {
     flex: 1,

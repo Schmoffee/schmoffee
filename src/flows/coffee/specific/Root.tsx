@@ -77,6 +77,7 @@ const Root = () => {
         },
       ).subscribe(async snapshot => {
         const {items, isSynced} = snapshot;
+        console.log(items);
         if (isSynced) {
           const all_options = await getAllOptions();
           const all_ratings = await getAllRatings();

@@ -6,6 +6,8 @@ const password = Math.random().toString(10) + 'Abc#';
 
 async function signUp(phoneNumber: string, name: string): Promise<{user: CognitoUser; userSub: string} | ErrorTypes> {
   try {
+    console.log(phoneNumber);
+    console.log(name);
     const {user, userSub} = await Auth.signUp({
       username: phoneNumber,
       password,
@@ -32,7 +34,7 @@ async function signIn(phoneNumber: string): Promise<CognitoUser | ErrorTypes> {
     if (error.code === 'UserNotFoundException') {
       return ErrorTypes.USER_NOT_EXIST;
     } else {
-      console.log(error.code);
+      console.log(error);
       return ErrorTypes.ELSE;
     }
   }

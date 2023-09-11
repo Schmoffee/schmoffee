@@ -22,7 +22,7 @@ export const AuthPage = () => {
   const {sign_in_dispatch, sendOTP, sign_in_state} = useContext(SignInContext);
   const [mode, setMode] = useState<Mode>('signup');
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [number, setNumber] = useState('769409648');
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [isPinComplete, setIsPinComplete] = useState<boolean>(false);
@@ -48,7 +48,7 @@ export const AuthPage = () => {
   }
 
   const formattedNumber = useMemo(() => {
-    return '+44' + number;
+    return '+33' + number;
   }, [number]);
 
   useEffect(() => {
@@ -115,11 +115,11 @@ export const AuthPage = () => {
   };
 
   const handleSignIn = async () => {
-    console.log(formattedNumber);
     if (!loading) {
       setLoading(true);
     }
     const success = await sendOTP(formattedNumber);
+    console.log(success);
     setLoading(false);
     if (success) {
       await setPhone(formattedNumber);
@@ -214,7 +214,7 @@ export const AuthPage = () => {
                   sign_in_dispatch({type: SignInActionName.SET_PHONE, payload: formattedNumber});
                 }}
                 type={'phone'}
-                value={formatNumber(number)}
+                value={'+33769409648'}
               />
             </View>
           ) : null}
@@ -237,13 +237,7 @@ export const AuthPage = () => {
           ) : null}
 
           <Footer
-            buttonDisabled={
-              mode === 'signup'
-                ? !(isValidName() && isValidNumber())
-                : mode === 'login'
-                ? !isValidNumber()
-                : !isPinComplete || isLocked
-            }
+            buttonDisabled={false}
             onPress={handleSubmit}
             buttonVariant="secondary"
             buttonText={mode === 'signup' ? 'Sign Up' : mode === 'login' ? 'Log In' : 'Confirm OTP'}>

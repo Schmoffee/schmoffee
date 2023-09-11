@@ -13,7 +13,7 @@ exports.handler = (event, context, callback) => {
   console.log(event, context);
 
   //sns sms
-  const sns = new AWS.SNS({region: 'eu-central-1'});
+  const sns = new AWS.SNS({region: 'eu-west-2'});
   sns.publish(
     {
       Message: 'To sign in, enter the following code: ' + challengeAnswer,

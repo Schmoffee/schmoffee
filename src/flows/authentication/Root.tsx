@@ -99,6 +99,7 @@ const Root = () => {
 
   async function initiateSignIn(phoneNumber: string, trials: number) {
     const newSession = await signIn(phoneNumber);
+    console.log(newSession);
     if (newSession && newSession instanceof CognitoUser) {
       sign_in_dispatch({type: SignInActionName.SET_TRIALS, payload: +trials + 1});
       await setTrials(+trials + 1);

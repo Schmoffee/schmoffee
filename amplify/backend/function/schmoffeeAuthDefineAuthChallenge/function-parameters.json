@@ -1,7 +1,7 @@
 {
   "trigger": true,
   "modules": ["boilerplate-define-challenge"],
-  "parentResource": "schmoffeeAuth",
+  "parentResource": "SchmoffeeAuth",
   "functionName": "schmoffeeAuthDefineAuthChallenge",
   "resourceName": "schmoffeeAuthDefineAuthChallenge",
   "parentStack": "auth",

@@ -15,7 +15,6 @@ import {firebase} from '@react-native-firebase/messaging';
 import {Alerts} from './utils/helpers/alerts';
 import {cancelPayment, confirmPayment} from './utils/helpers/payment';
 import {getDeletedOrders} from './utils/helpers/storage';
-
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
   const [loading, setLoading] = useState(false);
@@ -79,7 +78,7 @@ const App = () => {
   }, []);
 
   /**
-   * This effect attachs 2 listeners respectively to the auth and datastore hub events.
+   * This effect attaches 2 listeners respectively to the auth and datastore hub events.
    */
   useEffect(() => {
     const auth_hub = Hub.listen('auth', data => authListener(data, global_state, global_dispatch));
@@ -120,7 +119,7 @@ const App = () => {
         });
       }
     };
-    if (!loading && global_state.device_token !== '') {
+    if (!loading) {
       refreshAuthState().catch(error => {
         console.log(error);
         Alerts.elseAlert();

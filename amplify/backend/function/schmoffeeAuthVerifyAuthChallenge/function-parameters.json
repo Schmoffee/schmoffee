@@ -1,7 +1,7 @@
 {
   "trigger": true,
   "modules": ["boilerplate-verify"],
-  "parentResource": "schmoffeeAuth",
+  "parentResource": "SchmoffeeAuth",
   "functionName": "schmoffeeAuthVerifyAuthChallengeResponse",
   "resourceName": "schmoffeeAuthVerifyAuthChallengeResponse",
   "parentStack": "auth",

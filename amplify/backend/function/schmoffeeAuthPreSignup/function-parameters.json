@@ -1,7 +1,7 @@
 {
   "trigger": true,
   "modules": ["custom"],
-  "parentResource": "schmoffeeAuth",
+  "parentResource": "SchmoffeeAuth",
   "functionName": "schmoffeeAuthPreSignup",
   "resourceName": "schmoffeeAuthPreSignup",
   "parentStack": "auth",

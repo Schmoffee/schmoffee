@@ -4,12 +4,15 @@
       "dependsOn": [],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [],
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
           "defaultAuthentication": {
             "apiKeyConfig": {
-              "apiKeyExpirationDate": "2024-09-10T12:12:56.843Z",
-              "apiKeyExpirationDays": 365,
-              "description": "API key"
+              "apiKeyExpirationDays": 30,
+              "description": "api key description"
             },
             "authenticationType": "API_KEY"
           }
@@ -20,7 +23,7 @@
     }
   },
   "auth": {
-    "schmoffeee28f02eb": {
+    "SchmoffeeAuth": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -33,14 +36,15 @@
           "passwordPolicyMinLength": 8
         },
         "signupAttributes": [
-          "EMAIL"
+          "NAME",
+          "PHONE_NUMBER"
         ],
         "socialProviders": [],
         "usernameAttributes": [
           "PHONE_NUMBER"
         ],
         "verificationMechanisms": [
-          "EMAIL"
+          "PHONE_NUMBER"
         ]
       },
       "providerPlugin": "awscloudformation",
@@ -48,6 +52,11 @@
     }
   },
   "function": {
+    "payWithStripe": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "schmoffeeAuthCreateAuthChallenge": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -67,9 +76,40 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "schmoffeeCancelPayment": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "schmoffeeConfirmGooglePay": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "schmoffeeSendNotification": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
+    "AMPLIFY_function_payWithStripe_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "payWithStripe"
+        }
+      ]
+    },
+    "AMPLIFY_function_payWithStripe_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "payWithStripe"
+        }
+      ]
+    },
     "AMPLIFY_function_schmoffeeAuthCreateAuthChallenge_deploymentBucketName": {
       "usedBy": [
         {
@@ -131,6 +171,54 @@
         {
           "category": "function",
           "resourceName": "schmoffeeAuthVerifyAuthChallenge"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeCancelPayment_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeCancelPayment"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeCancelPayment_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeCancelPayment"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeConfirmGooglePay_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeConfirmGooglePay"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeConfirmGooglePay_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeConfirmGooglePay"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeSendNotification_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeSendNotification"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeSendNotification_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeSendNotification"
         }
       ]
     }
