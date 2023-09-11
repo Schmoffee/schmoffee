@@ -1,15 +1,3 @@
 {
-  "trigger": true,
-  "modules": ["boilerplate-define-challenge"],
-  "parentResource": "schmoffeeAuth",
-  "functionName": "schmoffeeAuthDefineAuthChallenge",
-  "resourceName": "schmoffeeAuthDefineAuthChallenge",
-  "parentStack": "auth",
-  "triggerEnvs": [],
-  "triggerDir": "/snapshot/repo/build/node_modules/@aws-amplify/amplify-category-auth/provider-utils/awscloudformation/triggers/DefineAuthChallenge",
-  "triggerTemplate": "DefineAuthChallenge.json.ejs",
-  "triggerEventPath": "DefineAuthChallenge.event.json",
-  "roleName": "schmoffeeAuthDefineAuthChallenge",
-  "skipEdit": true,
-  "enableCors": false
+  "lambdaLayers": []
 }

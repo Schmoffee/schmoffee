@@ -1,4 +1,25 @@
 {
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-schmoffee-staging-120651-authRole",
+      "UnauthRoleArn": "arn:aws:iam::640667074405:role/amplify-schmoffee-staging-120651-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::640667074405:role/amplify-schmoffee-staging-120651-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-schmoffee-staging-120651-deployment",
+      "UnauthRoleName": "amplify-schmoffee-staging-120651-unauthRole",
+      "StackName": "amplify-schmoffee-staging-120651",
+      "StackId": "arn:aws:cloudformation:eu-west-2:640667074405:stack/amplify-schmoffee-staging-120651/5c90af70-4f09-11ee-9cb3-0a046d304e52",
+      "AmplifyAppId": "d42wpf1zkftcs"
+    },
+    "categories": {
+      "function": {
+        "schmoffeeAuthCreateAuthChallenge": {},
+        "schmoffeePreSignup": {},
+        "schmoffeeAuthVerifyChallenge": {},
+        "schmoffeeAuthDefineAuthChallenge": {}
+      }
+    }
+  },
   "dev": {
     "awscloudformation": {
       "AuthRoleName": "amplify-schmoffee-dev-111934-authRole",

@@ -20,6 +20,7 @@ const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
   const [loading, setLoading] = useState(false);
   const authLoading = useRef(true);
+
   /**
    * This effect runs a dummy database query to manually initiate the synchronisation with the cloud.
    */
