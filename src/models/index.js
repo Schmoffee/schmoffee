@@ -2,12 +2,6 @@
 import { initSchema } from '@aws-amplify/datastore';
 import { schema } from './schema';
 
-const OptionType = {
-  "BEAN": "BEAN",
-  "SYRUP": "SYRUP",
-  "MILK": "MILK"
-};
-
 const PlatformType = {
   "IOS": "IOS",
   "ANDROID": "ANDROID"
@@ -29,6 +23,12 @@ const OrderStatus = {
   "SENT": "SENT"
 };
 
+const OptionType = {
+  "BEAN": "BEAN",
+  "SYRUP": "SYRUP",
+  "MILK": "MILK"
+};
+
 const Day = {
   "MONDAY": "MONDAY",
   "TUESDAY": "TUESDAY",
@@ -39,7 +39,7 @@ const Day = {
   "SUNDAY": "SUNDAY"
 };
 
-const { Error, Option, PastOrder, CurrentOrder, Item, Rating, Cafe, User, UsualOrder, OrderItem, OrderOption, UserInfo, OrderInfo } = initSchema(schema);
+const { Error, Option, PastOrder, CurrentOrder, Item, Cafe, Rating, User, UsualOrder, UserInfo, OrderOption, OrderItem, OrderInfo } = initSchema(schema);
 
 export {
   Error,
@@ -47,17 +47,17 @@ export {
   PastOrder,
   CurrentOrder,
   Item,
-  Rating,
   Cafe,
+  Rating,
   User,
-  OptionType,
   PlatformType,
   ItemType,
   OrderStatus,
+  OptionType,
   Day,
   UsualOrder,
-  OrderItem,
-  OrderOption,
   UserInfo,
+  OrderOption,
+  OrderItem,
   OrderInfo
 };

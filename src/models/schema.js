@@ -514,7 +514,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "itemID"
+                        "associatedWith": [
+                            "itemID"
+                        ]
                     }
                 },
                 "options": {
@@ -528,7 +530,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "itemID"
+                        "associatedWith": [
+                            "itemID"
+                        ]
                     }
                 },
                 "type": {
@@ -570,134 +574,6 @@ export const schema = {
                         "name": "byCafe",
                         "fields": [
                             "cafeID"
-                        ]
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "Rating": {
-            "name": "Rating",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "rating": {
-                    "name": "rating",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "cafeID": {
-                    "name": "cafeID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "userID": {
-                    "name": "userID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "itemID": {
-                    "name": "itemID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "order": {
-                    "name": "order",
-                    "isArray": false,
-                    "type": {
-                        "model": "PastOrder"
-                    },
-                    "isRequired": true,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "HAS_ONE",
-                        "associatedWith": "id",
-                        "targetName": "ratingOrderId"
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "ratingOrderId": {
-                    "name": "ratingOrderId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                }
-            },
-            "syncable": true,
-            "pluralName": "Ratings",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byCafe",
-                        "fields": [
-                            "cafeID"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byUser",
-                        "fields": [
-                            "userID"
-                        ]
-                    }
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byItem",
-                        "fields": [
-                            "itemID"
                         ]
                     }
                 },
@@ -814,7 +690,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "cafeID"
+                        "associatedWith": [
+                            "cafeID"
+                        ]
                     }
                 },
                 "past_orders": {
@@ -828,7 +706,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "cafeID"
+                        "associatedWith": [
+                            "cafeID"
+                        ]
                     }
                 },
                 "current_orders": {
@@ -842,7 +722,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "cafeID"
+                        "associatedWith": [
+                            "cafeID"
+                        ]
                     }
                 },
                 "ratings": {
@@ -856,7 +738,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "cafeID"
+                        "associatedWith": [
+                            "cafeID"
+                        ]
                     }
                 },
                 "address": {
@@ -889,6 +773,138 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Rating": {
+            "name": "Rating",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "rating": {
+                    "name": "rating",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "cafeID": {
+                    "name": "cafeID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "userID": {
+                    "name": "userID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "itemID": {
+                    "name": "itemID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "order": {
+                    "name": "order",
+                    "isArray": false,
+                    "type": {
+                        "model": "PastOrder"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "ratingOrderId"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "ratingOrderId": {
+                    "name": "ratingOrderId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "Ratings",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byCafe",
+                        "fields": [
+                            "cafeID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byUser",
+                        "fields": [
+                            "userID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byItem",
+                        "fields": [
+                            "itemID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -950,7 +966,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "userID"
+                        "associatedWith": [
+                            "userID"
+                        ]
                     }
                 },
                 "past_orders": {
@@ -964,7 +982,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "userID"
+                        "associatedWith": [
+                            "userID"
+                        ]
                     }
                 },
                 "the_usual": {
@@ -1034,14 +1054,6 @@ export const schema = {
         }
     },
     "enums": {
-        "OptionType": {
-            "name": "OptionType",
-            "values": [
-                "BEAN",
-                "SYRUP",
-                "MILK"
-            ]
-        },
         "PlatformType": {
             "name": "PlatformType",
             "values": [
@@ -1067,6 +1079,14 @@ export const schema = {
                 "COLLECTED",
                 "RECEIVED",
                 "SENT"
+            ]
+        },
+        "OptionType": {
+            "name": "OptionType",
+            "values": [
+                "BEAN",
+                "SYRUP",
+                "MILK"
             ]
         },
         "Day": {
@@ -1107,6 +1127,69 @@ export const schema = {
                     "name": "cafeID",
                     "isArray": false,
                     "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                }
+            }
+        },
+        "UserInfo": {
+            "name": "UserInfo",
+            "fields": {
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "phone": {
+                    "name": "phone",
+                    "isArray": false,
+                    "type": "AWSPhone",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "device_token": {
+                    "name": "device_token",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "platform": {
+                    "name": "platform",
+                    "isArray": false,
+                    "type": {
+                        "enum": "PlatformType"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                }
+            }
+        },
+        "OrderOption": {
+            "name": "OrderOption",
+            "fields": {
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "price": {
+                    "name": "price",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "option_type": {
+                    "name": "option_type",
+                    "isArray": false,
+                    "type": {
+                        "enum": "OptionType"
+                    },
                     "isRequired": true,
                     "attributes": []
                 }
@@ -1166,69 +1249,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": [],
                     "isArrayNullable": true
-                }
-            }
-        },
-        "OrderOption": {
-            "name": "OrderOption",
-            "fields": {
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "price": {
-                    "name": "price",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "option_type": {
-                    "name": "option_type",
-                    "isArray": false,
-                    "type": {
-                        "enum": "OptionType"
-                    },
-                    "isRequired": true,
-                    "attributes": []
-                }
-            }
-        },
-        "UserInfo": {
-            "name": "UserInfo",
-            "fields": {
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "phone": {
-                    "name": "phone",
-                    "isArray": false,
-                    "type": "AWSPhone",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "device_token": {
-                    "name": "device_token",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "platform": {
-                    "name": "platform",
-                    "isArray": false,
-                    "type": {
-                        "enum": "PlatformType"
-                    },
-                    "isRequired": true,
-                    "attributes": []
                 }
             }
         },
@@ -1323,5 +1343,6 @@ export const schema = {
             }
         }
     },
+    "codegenVersion": "3.4.4",
     "version": "3c9c35e37dc9e03a0cf2d990f258bf07"
 };

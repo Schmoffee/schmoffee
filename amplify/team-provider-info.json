@@ -13,10 +13,28 @@
     },
     "categories": {
       "function": {
-        "schmoffeeAuthCreateAuthChallenge": {},
-        "schmoffeeAuthDefineAuthChallenge": {},
-        "schmoffeeAuthVerifyAuthChallenge": {},
-        "schmoffeeAuthPreSignup": {}
+        "schmoffeeAuthCreateAuthChallenge": {
+          "deploymentBucketName": "amplify-schmoffee-staging-120651-deployment",
+          "s3Key": "amplify-builds/schmoffeeAuthCreateAuthChallenge-6250624230415a394532-build.zip"
+        },
+        "schmoffeeAuthDefineAuthChallenge": {
+          "deploymentBucketName": "amplify-schmoffee-staging-120651-deployment",
+          "s3Key": "amplify-builds/schmoffeeAuthDefineAuthChallenge-2f665453324379526973-build.zip"
+        },
+        "schmoffeeAuthVerifyAuthChallenge": {
+          "deploymentBucketName": "amplify-schmoffee-staging-120651-deployment",
+          "s3Key": "amplify-builds/schmoffeeAuthVerifyAuthChallenge-6d6c5452556559717a66-build.zip"
+        },
+        "schmoffeeAuthPreSignup": {
+          "deploymentBucketName": "amplify-schmoffee-staging-120651-deployment",
+          "s3Key": "amplify-builds/schmoffeeAuthPreSignup-6f393939384f70795843-build.zip"
+        }
+      },
+      "auth": {
+        "schmoffeee28f02eb": {}
+      },
+      "api": {
+        "schmoffeeAPI": {}
       }
     }
   },

@@ -1,0 +1,180 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type Error @model @auth(rules: [{allow: public}]) {
+    id: ID!
+    user_phone: AWSPhone
+    time: AWSDateTime
+    description: String
+    type: String
+}
+
+type UsualOrder {
+    items: [OrderItem!]!
+    schedule: Int!
+    cafeID: ID!
+}
+
+type UserInfo {
+    name: String!
+    phone: AWSPhone!
+    device_token: String!
+    platform: PlatformType!
+}
+
+enum PlatformType {
+    IOS
+    ANDROID
+}
+
+enum ItemType {
+    COFFEE
+    COLD_DRINKS
+    SNACKS
+}
+
+type Option @model @auth(rules: [{allow: public}]) {
+    id: ID!
+    name: String!
+    option_type: OptionType!
+    price: Float!
+    image: AWSURL
+    is_in_stock: Boolean!
+    itemID: ID! @index(name: "byItem")
+}
+
+type PastOrder @model @auth(rules: [{allow: public}]) {
+    id: ID!
+    items: [OrderItem!]!
+    order_info: OrderInfo!
+    cafeID: ID! @index(name: "byCafe")
+    userID: ID! @index(name: "byUser")
+    final_status: OrderStatus!
+    total: Float!
+    payment_id: String!
+}
+
+type OrderOption {
+    name: String!
+    price: Float!
+    option_type: OptionType!
+}
+
+type OrderItem {
+    quantity: Int!
+    id: String!
+    name: String!
+    price: Float!
+    image: AWSURL
+    preparation_time: Int!
+    options: [OrderOption!]
+}
+
+enum OrderStatus {
+    ACCEPTED
+    REJECTED
+    PREPARING
+    READY
+    COLLECTED
+    RECEIVED
+    SENT
+}
+
+type OrderInfo {
+    accepted_time: AWSDateTime
+    rejected_time: AWSDateTime
+    ready_time: AWSDateTime
+    collected_time: AWSDateTime
+    received_time: AWSDateTime
+    scheduled_times: [AWSDateTime!]!
+    preparing_time: AWSDateTime
+    sent_time: AWSDateTime!
+    rejection_justification: String
+    color: String!
+    pin: String!
+    unique_id: String!
+}
+
+type CurrentOrder @model @auth(rules: [{allow: public}]) {
+    id: ID!
+    items: [OrderItem!]!
+    total: Float!
+    order_info: OrderInfo!
+    cafeID: ID! @index(name: "byCafe")
+    user_info: UserInfo!
+    status: OrderStatus!
+    payment_id: String!
+    display: Boolean!
+    userID: String!
+}
+
+enum OptionType {
+    BEAN
+    SYRUP
+    MILK
+}
+
+type Item @model @auth(rules: [{allow: public}]) {
+    id: ID!
+    name: String!
+    price: Float!
+    image: AWSURL
+    is_common: Boolean!
+    is_in_stock: Boolean!
+    preparation_time: Int!
+    cafeID: ID! @index(name: "byCafe")
+    ratings: [Rating] @hasMany(indexName: "byItem", fields: ["id"])
+    options: [Option] @hasMany(indexName: "byItem", fields: ["id"])
+    type: ItemType
+}
+
+enum Day {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
+}
+
+type Cafe @model @auth(rules: [{allow: public}]) {
+    id: ID!
+    name: String!
+    email: AWSEmail!
+    latitude: Float!
+    longitude: Float!
+    opening_hours: [AWSTime!]!
+    is_open: Boolean!
+    opening_days: [Day!]
+    image: AWSURL
+    description: String!
+    digital_queue: AWSJSON!
+    menu: [Item!] @hasMany(indexName: "byCafe", fields: ["id"])
+    past_orders: [PastOrder] @hasMany(indexName: "byCafe", fields: ["id"])
+    current_orders: [CurrentOrder] @hasMany(indexName: "byCafe", fields: ["id"])
+    ratings: [Rating] @hasMany(indexName: "byCafe", fields: ["id"])
+    address: String!
+}
+
+type Rating @model @auth(rules: [{allow: public}]) {
+    id: ID!
+    rating: Float!
+    cafeID: ID! @index(name: "byCafe")
+    userID: ID! @index(name: "byUser")
+    itemID: ID! @index(name: "byItem")
+    order: PastOrder! @hasOne
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+    id: ID!
+    phone: AWSPhone!
+    name: String!
+    payment_method: String
+    ratings: [Rating] @hasMany(indexName: "byUser", fields: ["id"])
+    past_orders: [PastOrder] @hasMany(indexName: "byUser", fields: ["id"])
+    the_usual: UsualOrder
+    customer_id: String
+    device_token: String!
+}

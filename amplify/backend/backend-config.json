@@ -1,4 +1,52 @@
 {
+  "api": {
+    "schmoffeeAPI": {
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDate": "2024-09-10T12:12:56.843Z",
+              "apiKeyExpirationDays": 365,
+              "description": "API key"
+            },
+            "authenticationType": "API_KEY"
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
+  "auth": {
+    "schmoffeee28f02eb": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "PHONE_NUMBER"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    }
+  },
   "function": {
     "schmoffeeAuthCreateAuthChallenge": {
       "build": true,
@@ -19,6 +67,72 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_schmoffeeAuthCreateAuthChallenge_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthCreateAuthChallenge"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeAuthCreateAuthChallenge_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthCreateAuthChallenge"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeAuthDefineAuthChallenge_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthDefineAuthChallenge"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeAuthDefineAuthChallenge_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthDefineAuthChallenge"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeAuthPreSignup_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthPreSignup"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeAuthPreSignup_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthPreSignup"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeAuthVerifyAuthChallenge_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthVerifyAuthChallenge"
+        }
+      ]
+    },
+    "AMPLIFY_function_schmoffeeAuthVerifyAuthChallenge_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "schmoffeeAuthVerifyAuthChallenge"
+        }
+      ]
     }
   }
 }
