@@ -2,10 +2,6 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.0.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
     "Parameters": {
-        "CHALLENGEANSWER": {
-            "Type": "String",
-            "Default": ""
-        },
         "modules": {
             "Type": "String",
             "Default": "",
@@ -67,12 +63,12 @@
                 "FunctionName": {
                     "Fn::If": [
                         "ShouldNotCreateEnvResources",
-                        "schmoffeeAuthCreateAuthChallenge",
+                        "schmoffeeAuthDefineAuthChallenge",
                         {
                             "Fn::Join": [
                                 "",
                                 [
-                                    "schmoffeeAuthCreateAuthChallenge",
+                                    "schmoffeeAuthDefineAuthChallenge",
                                     "-",
                                     {
                                         "Ref": "env"
@@ -92,9 +88,6 @@
                         },
                         "REGION": {
                             "Ref": "AWS::Region"
-                        },
-                        "CHALLENGEANSWER": {
-                            "Ref": "CHALLENGEANSWER"
                         }
                     }
                 },
@@ -122,12 +115,12 @@
                 "RoleName": {
                     "Fn::If": [
                         "ShouldNotCreateEnvResources",
-                        "schmoffeeAuthCreateAuthChallenge",
+                        "schmoffeeAuthDefineAuthChallenge",
                         {
                             "Fn::Join": [
                                 "",
                                 [
-                                    "schmoffeeAuthCreateAuthChallenge",
+                                    "schmoffeeAuthDefineAuthChallenge",
                                     "-",
                                     {
                                         "Ref": "env"
@@ -193,12 +186,6 @@
                                     }
                                 ]
                             }
-                        },
-                        {
-                            "Sid": "VisualEditor1",
-                            "Effect": "Allow",
-                            "Action": "sns:Publish",
-                            "Resource": "*"
                         }
                     ]
                 }

@@ -2,7 +2,11 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.0.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
     "Parameters": {
-        "CHALLENGEANSWER": {
+        "DOMAINBLACKLIST": {
+            "Type": "String",
+            "Default": ""
+        },
+        "DOMAINWHITELIST": {
             "Type": "String",
             "Default": ""
         },
@@ -67,12 +71,12 @@
                 "FunctionName": {
                     "Fn::If": [
                         "ShouldNotCreateEnvResources",
-                        "schmoffeeAuthCreateAuthChallenge",
+                        "schmoffeeAuthPreSignup",
                         {
                             "Fn::Join": [
                                 "",
                                 [
-                                    "schmoffeeAuthCreateAuthChallenge",
+                                    "schmoffeeAuthPreSignup",
                                     "-",
                                     {
                                         "Ref": "env"
@@ -93,8 +97,11 @@
                         "REGION": {
                             "Ref": "AWS::Region"
                         },
-                        "CHALLENGEANSWER": {
-                            "Ref": "CHALLENGEANSWER"
+                        "DOMAINWHITELIST": {
+                            "Ref": "DOMAINWHITELIST"
+                        },
+                        "DOMAINBLACKLIST": {
+                            "Ref": "DOMAINBLACKLIST"
                         }
                     }
                 },
@@ -122,12 +129,12 @@
                 "RoleName": {
                     "Fn::If": [
                         "ShouldNotCreateEnvResources",
-                        "schmoffeeAuthCreateAuthChallenge",
+                        "schmoffeeAuthPreSignup",
                         {
                             "Fn::Join": [
                                 "",
                                 [
-                                    "schmoffeeAuthCreateAuthChallenge",
+                                    "schmoffeeAuthPreSignup",
                                     "-",
                                     {
                                         "Ref": "env"
@@ -193,12 +200,6 @@
                                     }
                                 ]
                             }
-                        },
-                        {
-                            "Sid": "VisualEditor1",
-                            "Effect": "Allow",
-                            "Action": "sns:Publish",
-                            "Resource": "*"
                         }
                     ]
                 }

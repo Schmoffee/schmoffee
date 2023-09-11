@@ -1,17 +1,9 @@
+const moduleNames = process.env.MODULES.split(',');
+const modules = moduleNames.map(name => require(`./${name}`));
 
-
-/**
- * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
- */
-exports.handler = async (event) => {
-    console.log(`EVENT: ${JSON.stringify(event)}`);
-    return {
-        statusCode: 200,
-    //  Uncomment below to enable CORS requests
-    //  headers: {
-    //      "Access-Control-Allow-Origin": "*",
-    //      "Access-Control-Allow-Headers": "*"
-    //  },
-        body: JSON.stringify('Hello from Lambda!'),
-    };
+exports.handler = (event, context, callback) => {
+  for (let i = 0; i < modules.length; i += 1) {
+    const {handler} = modules[i];
+    handler(event, context, callback);
+  }
 };

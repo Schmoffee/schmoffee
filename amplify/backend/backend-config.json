@@ -10,12 +10,12 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "schmoffeeAuthVerifyChallenge": {
+    "schmoffeeAuthPreSignup": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "schmoffeePreSignup": {
+    "schmoffeeAuthVerifyAuthChallenge": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
