@@ -2,7 +2,7 @@ import React, {useEffect, useReducer} from 'react';
 import {orderingData, OrderingContext} from '../../contexts';
 import {orderingReducer} from '../../reducers';
 import SpecificRoot from './specific/Root';
-import {getSpecificBasket} from '../../utils/helpers/storage';
+import {getCurrentShopId, getSpecificBasket} from '../../utils/helpers/storage';
 import {Cafe, OrderItem} from '../../models';
 import {OrderingActionName} from '../../utils/types/enums';
 import {DataStore, SortDirection} from 'aws-amplify';
@@ -15,6 +15,12 @@ const Root = () => {
       const specific_basket: OrderItem[] = await getSpecificBasket();
       ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: specific_basket});
     }
+
+    async function refreshCurrentCafe() {
+      const id = await getCurrentShopId();
+      ordering_dispatch({type: OrderingActionName.SET_CURRENT_SHOP_ID, payload: id});
+    }
+    refreshCurrentCafe().then(() => console.log('Current cafe refreshed'));
     refreshBaskets().then(() => console.log('Basket refreshed'));
   }, []);
 
@@ -23,7 +29,6 @@ const Root = () => {
       sort: cafe => cafe.name(SortDirection.ASCENDING),
     }).subscribe(snapshot => {
       const {items, isSynced} = snapshot;
-      console.log(items);
       if (isSynced) {
         ordering_dispatch({type: OrderingActionName.SET_CAFES, payload: items});
       }

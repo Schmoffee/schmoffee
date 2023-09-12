@@ -28,7 +28,7 @@ export const trackOrderData: TrackOrderState = {
 };
 
 export const orderingData: OrderingState = {
-  current_shop_id: 'c8ac8211-c3e5-42bb-8651-d20afdcb3dc9',
+  current_shop_id: null,
   scheduled_time: 5,
   specific_basket: [],
   specific_items: [],

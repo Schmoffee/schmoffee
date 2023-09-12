@@ -4,7 +4,7 @@ import {Pressable, StyleSheet, View} from 'react-native';
 import CurrentOrderBanner from '../../track/components/CurrentOrderBanner';
 import {GlobalContext} from '../../../contexts';
 import {RootRoutes} from '../../../utils/types/navigation.types';
-import {CONST_SCREEN_ORDER, CONST_SCREEN_SHOP, HEIGHT, WIDTH} from '../../../../constants';
+import {CONST_SCREEN_CAFES, CONST_SCREEN_ORDER, CONST_SCREEN_SHOP, HEIGHT, WIDTH} from '../../../../constants';
 import HoverButton from '../components/Buttons/HoverButton';
 import FastImage from 'react-native-fast-image';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -31,14 +31,6 @@ export const Home = () => {
   const buttonBreathe = useSharedValue(1.5);
 
   useEffect(() => {
-    if (global_state.current_order) {
-      setCurrentVideo(0);
-    } else {
-      setCurrentVideo(0);
-    }
-  }, [global_state.current_order]);
-
-  useEffect(() => {
     if (global_state.network_status) {
       networkAnim.value = withTiming(0, {duration: 100});
     } else {
@@ -49,7 +41,7 @@ export const Home = () => {
   const handleShortButtonPress = () => {
     if (currentVideo === 0) {
       // setCurrentVideo(1);
-      navigation.navigate(CONST_SCREEN_SHOP);
+      navigation.navigate(CONST_SCREEN_CAFES);
     } else if (currentVideo === 2) {
       navigation.navigate('TrackOrder', CONST_SCREEN_ORDER);
     }

@@ -13,8 +13,7 @@ import {MapAppName} from '../../../../utils/types/enums';
 import {CARD_HEIGHT, HEIGHT, WIDTH} from '../../../../../constants';
 
 interface MapProps {
-  cafeIdFilter: string | null | undefined;
-  cafeLocationFilter: {latitude: number; longitude: number} | undefined;
+  cafeLocationFilter: {latitude: number; longitude: number};
   preview?: boolean;
 }
 
@@ -27,11 +26,11 @@ const Map = (props: MapProps) => {
   const [centredInfo, setCentredInfo] = useState({manuallyCentred: false, userCentred: true});
   const currentMarkerSelected = useRef<number | null>(null);
   const destination = props.cafeLocationFilter;
-  const GOOGLE_MAPS_APIKEY = 'AIzaSyAeJAH2Ezqz7VwvjAAaEtkiAJ2K70iUhmU';
+  const GOOGLE_MAPS_APIKEY = 'AIzaSyCn17enS_Cmd-lm0diR8C3FPngjFogLl0M';
 
   useEffect(() => {
     async function fetchData() {
-      const displayShops: Cafe[] = (await getShops(props.cafeIdFilter)) as Cafe[];
+      const displayShops: Cafe[] = (await getShops(null)) as Cafe[];
       const shopMarkers: ShopMarker[] = displayShops.map(shop => {
         return {
           name: shop.name,
@@ -45,13 +44,13 @@ const Map = (props: MapProps) => {
       setRegion({
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
-        latitude: location?.latitude ? location.latitude : 51.5131,
-        longitude: location?.longitude ? location.longitude : 0.1174,
+        latitude: props.cafeLocationFilter?.latitude,
+        longitude: props.cafeLocationFilter?.longitude,
       });
     }
 
     fetchData().then(() => setMapLoading(false));
-  }, [location, props.cafeIdFilter]);
+  }, [location, props.cafeLocationFilter?.latitude, props.cafeLocationFilter?.longitude]);
 
   /**
    * Dismiss the keyboard and search results when the map is clicked
@@ -99,11 +98,11 @@ const Map = (props: MapProps) => {
         onPanDrag={() => mapDragged()}
         provider={PROVIDER_GOOGLE}
         style={styles.map}>
-        {destination && (
+        {destination && location && (
           <MapViewDirections
             origin={{
-              latitude: location?.latitude ? location.latitude : 51.5152,
-              longitude: location?.longitude ? location.longitude : -0.1105,
+              latitude: location.latitude,
+              longitude: location.longitude,
             }}
             destination={destination}
             apikey={GOOGLE_MAPS_APIKEY}
@@ -131,21 +130,20 @@ const Map = (props: MapProps) => {
             </View>
           </Marker>
         ))}
-        <Marker
-          draggable
-          coordinate={{
-            latitude: location?.latitude ? location.latitude : 51.5152,
-            longitude: location?.longitude ? location.longitude : -0.1105,
-          }}
-          onDragEnd={e => console.log(e)}
-          title={'You are here'}>
-          <View>
-            <Image
-              source={require('../../../../assets/pngs/schmoff_dino.png')}
-              style={{width: 50, height: 50, resizeMode: 'cover'}}
-            />
-          </View>
-        </Marker>
+        {/*<Marker*/}
+        {/*  draggable*/}
+        {/*  coordinate={{*/}
+        {/*    latitude: location?.latitude ? location.latitude : 51.5131,*/}
+        {/*    longitude: location?.longitude ? location.longitude : -0.1174,*/}
+        {/*  }}*/}
+        {/*  title={'You are here'}>*/}
+        {/*  <View>*/}
+        {/*    <Image*/}
+        {/*      source={require('../../../../assets/pngs/x-outline.png')}*/}
+        {/*      style={{width: 20, height: 20, resizeMode: 'cover'}}*/}
+        {/*    />*/}
+        {/*  </View>*/}
+        {/*</Marker>*/}
       </MapView>
       <View style={props.preview ? styles.previewButton : styles.navigatorButton}>
         <MapNavigatorButton

@@ -1,5 +1,5 @@
-import React from 'react';
-import {Cafe, Rating} from '../../../../models';
+import React, {useContext} from 'react';
+import {Cafe} from '../../../../models';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {CARD_HEIGHT, CARD_WIDTH} from '../../../../../constants';
 import {Colors, Spacings} from '../../../common/theme';
@@ -7,32 +7,38 @@ import {Body} from '../../../common/typography';
 import {useNavigation} from '@react-navigation/native';
 import {CoffeeRoutes} from '../../../../utils/types/navigation.types';
 import FastImage from 'react-native-fast-image';
+import {OrderingContext} from '../../../../contexts';
+import {OrderingActionName} from '../../../../utils/types/enums';
+import {setCurrentShopId} from '../../../../utils/helpers/storage';
 
 interface CafeCardProps {
   cafe: Cafe;
 }
 const CafeCard = (props: CafeCardProps) => {
+  const {ordering_dispatch} = useContext(OrderingContext);
   const {cafe} = props;
   const navigation = useNavigation<CoffeeRoutes>();
 
+  async function handlePress() {
+    ordering_dispatch({type: OrderingActionName.SET_CURRENT_SHOP_ID, payload: cafe.id});
+    await setCurrentShopId(cafe.id);
+    navigation.navigate('ShopPage');
+  }
+
   return (
-    <Pressable style={styles.root} onPress={() => navigation.navigate('ShopPage')}>
+    <Pressable style={styles.root} onPress={() => handlePress()}>
       <View style={styles.cardImage}>
-        <FastImage source={{uri: cafe.image ? cafe.image : undefined}} />
+        <FastImage source={{uri: cafe.image ? cafe.image : undefined}} style={styles.image} />
       </View>
       <View style={styles.cafeDetails}>
         <Body size="medium" weight="Extrabld" color={Colors.black}>
           {cafe.name}
         </Body>
         <Body size="medium" weight="Regular" color={Colors.black}>
-          N1 8RA
+          {cafe.address}
         </Body>
         <Body size="medium" weight="Regular" color={Colors.black}>
-          3.3km
-        </Body>
-        {/* CAFE DESCRIPTION */}
-        <Body size="small" weight="Regular" color={Colors.black}>
-          {cafe.description}
+          0.6miles away
         </Body>
       </View>
     </Pressable>
@@ -64,6 +70,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     marginTop: Spacings.s3,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
   },
 });
 

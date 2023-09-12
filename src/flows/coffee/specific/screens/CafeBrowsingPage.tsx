@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {FlatList, Platform, SafeAreaView, StyleSheet, View} from 'react-native';
 import {OrderingContext} from '../../../../contexts';
 import {useContext} from 'react';
@@ -8,6 +8,7 @@ import {CARD_WIDTH, SPACING_FOR_CARD_INSET} from '../../../../../constants';
 
 const CafeBrowsingPage = () => {
   const {ordering_state} = useContext(OrderingContext);
+  const [selectedCafe, setSelectedCafe] = useState(ordering_state.cafes[0]);
 
   const viewabilityConfig = {
     waitForInteraction: true,
@@ -15,13 +16,13 @@ const CafeBrowsingPage = () => {
   };
 
   const handleViewableItemsChanged = useCallback((info: any) => {
-    console.log('info', info);
+    setSelectedCafe(info.viewableItems[0].item);
   }, []);
 
   return (
     <View style={styles.root}>
       <View style={styles.mapContainer}>
-        <Map cafeIdFilter={null} cafeLocationFilter={undefined} />
+        <Map cafeLocationFilter={{latitude: selectedCafe.latitude, longitude: selectedCafe.longitude}} />
       </View>
       <View style={styles.scrollViewContainer}>
         <SafeAreaView style={styles.flatListContainer}>

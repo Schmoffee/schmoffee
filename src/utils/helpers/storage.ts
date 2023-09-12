@@ -128,10 +128,10 @@ async function getPhone(): Promise<string | void> {
  * Returns the storage shop key
  * @return Number The key of the shop
  */
-async function getCurrentShopId(): Promise<string> {
+async function getCurrentShopId(): Promise<string | null> {
   try {
     const jsonValue = await AsyncStorage.getItem('@CurrentShopId');
-    return jsonValue ? jsonValue : '';
+    return jsonValue ? jsonValue : null;
   } catch (err) {
     console.log('Error getting current shop id', err);
     return '';

@@ -19,7 +19,7 @@
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
                     android:value="false"/>
         <meta-data  android:name="com.google.android.geo.API_KEY"
-                    android:value="AIzaSyAeJAH2Ezqz7VwvjAAaEtkiAJ2K70iUhmU"/>
+                    android:value="AIzaSyCn17enS_Cmd-lm0diR8C3FPngjFogLl0M"/>
         <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
                     android:resource="@color/white"/>
         <meta-data

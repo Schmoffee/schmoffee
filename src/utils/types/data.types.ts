@@ -97,7 +97,7 @@ export type TrackOrderAction =
   | {type: TrackOrderActionName.SET_DESTINATION; payload: {latitude: number; longitude: number}};
 
 export type OrderingAction =
-  | {type: OrderingActionName.SET_CURRENT_SHOP_ID; payload: string}
+  | {type: OrderingActionName.SET_CURRENT_SHOP_ID; payload: string | null}
   | {type: OrderingActionName.SET_SPECIFIC_BASKET; payload: OrderItem[]}
   | {type: OrderingActionName.SET_SCHEDULED_TIME; payload: number}
   | {type: OrderingActionName.SET_SPECIFIC_ITEMS; payload: Item[]}

@@ -12,6 +12,7 @@ import {OrderingActionName} from '../../../utils/types/enums';
 import {Alerts} from '../../../utils/helpers/alerts';
 import {Home} from '../../common/screens/Home';
 import {getAllOptions, getAllRatings} from '../../../utils/queries/datastore';
+import CafeBrowsingPage from './screens/CafeBrowsingPage';
 
 const Root = () => {
   const {global_state} = useContext(GlobalContext);
@@ -68,6 +69,7 @@ const Root = () => {
    */
   useDeepCompareEffect(() => {
     if (ordering_state.current_shop_id) {
+      console.log(ordering_state.current_shop_id);
       const subscription = DataStore.observeQuery(
         Item,
         //@ts-ignore
@@ -112,6 +114,7 @@ const Root = () => {
         <CoffeeStack.Screen name="Home" component={Home} />
         {global_state.current_order ? null : (
           <>
+            <CoffeeStack.Screen name="Cafes" component={CafeBrowsingPage} />
             <CoffeeStack.Screen name="ShopPage" component={ShopPage} />
             <CoffeeStack.Group screenOptions={{presentation: 'modal', headerShown: false}}>
               <CoffeeStack.Screen name="ItemPage" component={ItemPage} />

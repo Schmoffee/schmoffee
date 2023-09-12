@@ -1,10 +1,10 @@
 import React from 'react';
-import { ActionButton } from '../Buttons/ActionButton';
+import {ActionButton} from '../Buttons/ActionButton';
 import LaunchNavigator from 'react-native-launch-navigator';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
-import { MapAppName } from '../../../../utils/types/enums';
-import { Body } from '../../typography';
-import { Colors } from '../../theme';
+import {Platform, Pressable, StyleSheet, View} from 'react-native';
+import {MapAppName} from '../../../../utils/types/enums';
+import {Body} from '../../typography';
+import {Colors} from '../../theme';
 
 interface MapNavigatorButtonProps {
   latitude: number | undefined;
@@ -26,7 +26,7 @@ const MapNavigatorButton = (props: MapNavigatorButtonProps) => {
 
   function setGoogleAPIKey() {
     // @ts-ignore
-    if (Platform.OS === 'android') LaunchNavigator.setGoogleApiKey('your_api_key');
+    if (Platform.OS === 'android') LaunchNavigator.setGoogleApiKey('AIzaSyCn17enS_Cmd-lm0diR8C3FPngjFogLl0M');
   }
 
   function navigateTo(latitude: number, longitude: number, app: MapAppName) {
@@ -44,7 +44,6 @@ const MapNavigatorButton = (props: MapNavigatorButtonProps) => {
   }
 
   function handlePress() {
-    printAvailableApps();
     if (props.latitude && props.longitude) navigateTo(props.latitude, props.longitude, props.app);
   }
 
@@ -68,8 +67,7 @@ const MapNavigatorButton = (props: MapNavigatorButtonProps) => {
         </Body>
       </View>
     </Pressable>
-
-  )
+  );
 };
 export default MapNavigatorButton;
 
@@ -88,4 +86,4 @@ const styles = StyleSheet.create({
       height: 0,
     },
   },
-})
+});
