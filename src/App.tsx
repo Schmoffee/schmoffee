@@ -15,10 +15,27 @@ import {firebase} from '@react-native-firebase/messaging';
 import {Alerts} from './utils/helpers/alerts';
 import {cancelPayment, confirmPayment} from './utils/helpers/payment';
 import {getDeletedOrders} from './utils/helpers/storage';
+
 const App = () => {
   const [global_state, global_dispatch] = useReducer(globalReducer, globalData);
   const [loading, setLoading] = useState(false);
   const authLoading = useRef(true);
+
+  const deleteAllCurrentOrdersForUser = async (userID: string) => {
+    try {
+      // Query all current orders for the specific user
+      const ordersForUser = await DataStore.query(CurrentOrder, c => c.userID('eq', userID));
+
+      // Delete each order
+      for (const order of ordersForUser) {
+        await DataStore.delete(order);
+      }
+
+      console.log(`Successfully deleted all current orders for user ${userID}`);
+    } catch (error) {
+      console.error('Error deleting orders:', error);
+    }
+  };
 
   /**
    * This effect runs a dummy database query to manually initiate the synchronisation with the cloud.
@@ -28,6 +45,7 @@ const App = () => {
       setLoading(true);
       await getUserById('init');
       setLoading(false);
+      // if (global_state.current_user) await deleteAllCurrentOrdersForUser(global_state.current_user.id);
     };
     if (!loading) {
       init().catch(e => {

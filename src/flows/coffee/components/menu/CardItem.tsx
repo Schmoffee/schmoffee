@@ -25,7 +25,6 @@ interface CardItemProps {
 export const CardItem = ({item, index, query}: CardItemProps) => {
   const navigation = useNavigation<CoffeeRoutes>();
   const anim = useSharedValue(0);
-  const randomRating: number = Math.random() * (5 - 3) + 3;
 
   useEffect(() => {
     anim.value = -1;
@@ -79,7 +78,7 @@ export const CardItem = ({item, index, query}: CardItemProps) => {
             <FastImage source={{uri: item.image ? item.image : undefined}} style={styles.image} />
             <View style={styles.ratingContainer}>
               <Body size="extraSmall" weight="Regular" color={Colors.black} style={styles.ratingText}>
-                {randomRating.toFixed(1)}
+                5.0
               </Body>
               <Image source={require('../../../../assets/pngs/star-filled.png')} style={styles.ratingStar} />
             </View>
