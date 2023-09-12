@@ -13,6 +13,7 @@ import {MapAppName} from '../../../../utils/types/enums';
 import {CARD_HEIGHT, HEIGHT, WIDTH} from '../../../../../constants';
 
 interface MapProps {
+  cafeIdFilter?: string;
   cafeLocationFilter: {latitude: number; longitude: number};
   preview?: boolean;
 }
@@ -30,7 +31,7 @@ const Map = (props: MapProps) => {
 
   useEffect(() => {
     async function fetchData() {
-      const displayShops: Cafe[] = (await getShops(null)) as Cafe[];
+      const displayShops: Cafe[] = (await getShops(props.cafeIdFilter)) as Cafe[];
       const shopMarkers: ShopMarker[] = displayShops.map(shop => {
         return {
           name: shop.name,
@@ -98,19 +99,19 @@ const Map = (props: MapProps) => {
         onPanDrag={() => mapDragged()}
         provider={PROVIDER_GOOGLE}
         style={styles.map}>
-        {destination && location && (
-          <MapViewDirections
-            origin={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }}
-            destination={destination}
-            apikey={GOOGLE_MAPS_APIKEY}
-            mode="WALKING"
-            strokeWidth={3}
-            strokeColor="#000"
-          />
-        )}
+        {/*{destination && location && (*/}
+        {/*  <MapViewDirections*/}
+        {/*    origin={{*/}
+        {/*      latitude: location.latitude,*/}
+        {/*      longitude: location.longitude,*/}
+        {/*    }}*/}
+        {/*    destination={destination}*/}
+        {/*    apikey={GOOGLE_MAPS_APIKEY}*/}
+        {/*    mode="WALKING"*/}
+        {/*    strokeWidth={3}*/}
+        {/*    strokeColor="#000"*/}
+        {/*  />*/}
+        {/*)}*/}
 
         {/*//map each of the shops to a marker on the map*/}
         {markers.map((marker, index) => (

@@ -39,11 +39,10 @@ export const Home = () => {
   }, [global_state.network_status, networkAnim]);
 
   const handleShortButtonPress = () => {
-    if (currentVideo === 0) {
-      // setCurrentVideo(1);
-      navigation.navigate(CONST_SCREEN_CAFES);
-    } else if (currentVideo === 2) {
+    if (global_state.current_order) {
       navigation.navigate('TrackOrder', CONST_SCREEN_ORDER);
+    } else {
+      navigation.navigate(CONST_SCREEN_CAFES);
     }
   };
 

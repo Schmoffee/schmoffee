@@ -169,10 +169,9 @@ const App = () => {
         const actualOrders = items.filter(item => !deletedOrders?.includes(item.id));
         if (isSynced) {
           if (actualOrders.length === 1) {
-            console.log('current order found');
             const prevStatus = global_state.current_order?.status;
             const new_order = actualOrders[0];
-            global_dispatch({type: GlobalActionName.SET_CURRENT_ORDER, payload: null});
+            global_dispatch({type: GlobalActionName.SET_CURRENT_ORDER, payload: new_order});
             if (new_order.status !== prevStatus) {
               switch (new_order.status) {
                 case OrderStatus.ACCEPTED:

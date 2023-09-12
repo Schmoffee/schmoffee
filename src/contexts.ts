@@ -24,7 +24,7 @@ export const globalData: GlobalState = {
 
 export const trackOrderData: TrackOrderState = {
   ratings: [],
-  destination: undefined,
+  shop: null,
 };
 
 export const orderingData: OrderingState = {

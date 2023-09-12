@@ -23,6 +23,7 @@ interface BasketPreviewProps {
 export const BasketPreview = (props: BasketPreviewProps) => {
   const {ordering_state} = useContext(OrderingContext);
   const navigation = useNavigation<CoffeeRoutes>();
+  console.log('basket preview', ordering_state.specific_basket);
 
   //  loop animation
   const anim = useSharedValue(1);

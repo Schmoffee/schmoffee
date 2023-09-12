@@ -13,7 +13,7 @@ const Root = () => {
   useEffect(() => {
     async function refreshBaskets() {
       const specific_basket: OrderItem[] = await getSpecificBasket();
-      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: specific_basket});
+      ordering_dispatch({type: OrderingActionName.SET_SPECIFIC_BASKET, payload: []});
     }
 
     async function refreshCurrentCafe() {

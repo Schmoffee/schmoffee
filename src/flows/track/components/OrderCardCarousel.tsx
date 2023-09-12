@@ -19,6 +19,7 @@ interface OrderCardCarouselProps {}
 const OrderCardCarousel = (props: OrderCardCarouselProps) => {
   const {track_order_state} = useContext(TrackOrderContext);
   const {global_state} = useContext(GlobalContext);
+  const location = {latitude: track_order_state.shop?.latitude, longitude: track_order_state.shop?.longitude};
 
   const scrollViewRef = useAnimatedRef();
   const [newData] = useState([
@@ -86,11 +87,7 @@ const OrderCardCarousel = (props: OrderCardCarouselProps) => {
                 {/* <Image source={image} style={styles.image} /> */}
                 {item.key === 'LEFT' ? (
                   <View style={styles.childrenContainer} key={item.key}>
-                    <Map
-                      cafeIdFilter={global_state.current_order?.cafeID}
-                      cafeLocationFilter={track_order_state.destination}
-                      preview
-                    />
+                    <Map cafeLocationFilter={location} cafeIdFilter={track_order_state.shop?.id} />
                   </View>
                 ) : item.key === 'RIGHT' ? (
                   <View style={styles.orderListContainer} key={item.key}>

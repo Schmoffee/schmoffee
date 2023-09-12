@@ -27,9 +27,9 @@ const FullOrderItem = (props: FullOrderItemProps) => {
           </Body>
         ))}
       </View>
-      <Body size="small" weight="Bold" color={Colors.greyLight2} style={{position: 'absolute', right: 0}}>
-        £{(((item.price + getOptionsPrice(item)) * item.quantity) / 100).toFixed(2)}
-      </Body>
+      {/*<Body size="small" weight="Bold" color={Colors.greyLight2} style={{position: 'absolute', right: 0}}>*/}
+      {/*  £{(((item.price + getOptionsPrice(item)) * item.quantity) / 100).toFixed(2)}*/}
+      {/*</Body>*/}
     </View>
   );
 };

@@ -1,24 +1,40 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View, Pressable } from 'react-native';
-import { HEIGHT, WIDTH } from '../../../../constants';
-import { Colors } from '../../common/theme';
-import { Body, Heading } from '../../common/typography';
-import { getNiceTime } from '../../../utils/helpers/others';
-import { GlobalContext } from '../../../contexts';
-interface CurrentOrderBannerProps { }
+import React, {useContext, useEffect, useState} from 'react';
+import {StyleSheet, View, Pressable} from 'react-native';
+import {HEIGHT, WIDTH} from '../../../../constants';
+import {Colors} from '../../common/theme';
+import {Body, Heading} from '../../common/typography';
+import {getNiceTime} from '../../../utils/helpers/others';
+import {GlobalContext} from '../../../contexts';
+import {DataStore} from 'aws-amplify';
+import {Cafe} from '../../../models';
+interface CurrentOrderBannerProps {}
 
 const CurrentOrderBanner = (props: CurrentOrderBannerProps) => {
-  const { global_state } = useContext(GlobalContext);
+  const {global_state} = useContext(GlobalContext);
+  const [shop, setShop] = useState<Cafe | null>(null);
   const order = global_state.current_order;
+
+  useEffect(() => {
+    if (!order) return;
+    async function getOrderCafe(cafeID: string) {
+      const cafe = await DataStore.query(Cafe, cafeID);
+      if (cafe) {
+        setShop(cafe);
+      }
+    }
+    getOrderCafe(order.cafeID).then(() => {
+      console.log('cafe set');
+    });
+  }, [order]);
 
   return (
     order && (
-      <Pressable onPress={() => { }}>
+      <Pressable onPress={() => {}}>
         <View style={styles.root}>
           <View style={styles.container}>
             <View style={styles.cafe}>
-              <Body size="extraLarge" weight="Bold" color={Colors.black}>
-                KINGS CAFE
+              <Body size="extraSmall" weight="Bold" color={Colors.black}>
+                {shop?.address}
               </Body>
               <Body size="large" weight="Bold" color={Colors.greyLight3}>
                 Pickup time

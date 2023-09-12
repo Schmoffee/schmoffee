@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useContext, useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
-import {GlobalContext} from '../../../contexts';
+import {GlobalContext, TrackOrderContext} from '../../../contexts';
 import {TrackOrderRoutes} from '../../../utils/types/navigation.types';
 import {CurrentOrder, OrderStatus} from '../../../models';
 import {Body, Heading} from '../../common/typography';
@@ -23,6 +23,7 @@ import {terminateOrder} from '../../../utils/queries/datastore';
 export const OrderPage = () => {
   const navigation = useNavigation<TrackOrderRoutes>();
   const {global_state} = useContext(GlobalContext);
+  const {track_order_state} = useContext(TrackOrderContext);
   const color = global_state.current_order ? global_state.current_order?.order_info.color : Colors.red;
   const pin = global_state.current_order ? global_state.current_order?.order_info.pin : '0000';
 
@@ -139,7 +140,7 @@ export const OrderPage = () => {
               Pickup address
             </Body>
             <Body size="large" weight="Bold" color={Colors.black}>
-              Chapters Cafe, Strand Campus
+              {track_order_state.shop?.address}
             </Body>
           </View>
         </View>
