@@ -31,6 +31,7 @@ const Map = (props: MapProps) => {
 
   useEffect(() => {
     async function fetchData() {
+      setMapLoading(true);
       const displayShops: Cafe[] = (await getShops(props.cafeIdFilter)) as Cafe[];
       const shopMarkers: ShopMarker[] = displayShops.map(shop => {
         return {
@@ -51,7 +52,7 @@ const Map = (props: MapProps) => {
     }
 
     fetchData().then(() => setMapLoading(false));
-  }, [location, props.cafeLocationFilter?.latitude, props.cafeLocationFilter?.longitude]);
+  }, [location, props.cafeIdFilter, props.cafeLocationFilter]);
 
   /**
    * Dismiss the keyboard and search results when the map is clicked
@@ -68,6 +69,13 @@ const Map = (props: MapProps) => {
 
   return !mapLoading ? (
     <>
+      <View style={props.cafeIdFilter ? styles.previewButton : styles.navigatorButton}>
+        <MapNavigatorButton
+          latitude={destination?.latitude}
+          longitude={destination?.longitude}
+          app={MapAppName.GOOGLE_MAPS}
+        />
+      </View>
       <MapView
         ref={map => {
           mapRef.current = map;
@@ -146,13 +154,6 @@ const Map = (props: MapProps) => {
         {/*  </View>*/}
         {/*</Marker>*/}
       </MapView>
-      <View style={props.preview ? styles.previewButton : styles.navigatorButton}>
-        <MapNavigatorButton
-          latitude={destination?.latitude}
-          longitude={destination?.longitude}
-          app={MapAppName.GOOGLE_MAPS}
-        />
-      </View>
     </>
   ) : (
     <LoadingPage />
@@ -179,11 +180,10 @@ const styles = StyleSheet.create({
   },
   previewButton: {
     height: 50,
-    width: WIDTH * 0.6,
+    width: '100%',
+    zIndex: 1,
     position: 'absolute',
     bottom: 0,
-    zIndex: 1,
-    paddingBottom: 0,
     backgroundColor: 'transparent',
   },
 });
